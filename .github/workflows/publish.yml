@@ -5,6 +5,7 @@ name: publish
 
 env:
   INDEX_0X_API: ${{ secrets.INDEX_0X_API }}
+  INDEX_0X_API_KEY: ${{ secrets.INDEX_0X_API_KEY }}
   MAINNET_ALCHEMY_API: ${{ secrets.MAINNET_ALCHEMY_API }}
 
 on:
