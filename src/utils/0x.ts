@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosRequestHeaders } from 'axios'
 
 import { ChainId } from '../constants/chains'
 
@@ -19,24 +19,18 @@ export type ZeroExApiSwapResponse = {
 }
 
 export class ZeroExApi {
-  private affilliateAddress: string | null
-  private baseUrl: string | null
-  private swapPathOverride: string | null
-
   /**
    * @param baseUrl              The base url (default: https://api.0x.org, watch rate limits)
    * @param affilliateAddress    (Optional) Affiliate address
+   * @param headersOverride      (Optional) Override for headers
    * @param swapPathOverride     (Optional) Override of the API path - in case your using a custom path format e.g. through a proxy
    */
   constructor(
-    baseUrl: string | null = null,
-    affilliateAddress: string | null = null,
-    swapPathOverride: string | null = null
-  ) {
-    this.affilliateAddress = affilliateAddress
-    this.baseUrl = baseUrl
-    this.swapPathOverride = swapPathOverride
-  }
+    private readonly baseUrl: string | null = null,
+    private readonly affilliateAddress: string | null = null,
+    private readonly headersOverride: AxiosRequestHeaders | null = null,
+    private readonly swapPathOverride: string | null = null
+  ) {}
 
   /**
    * Builds the 0x API URL.
@@ -62,9 +56,15 @@ export class ZeroExApi {
   public async getSwapQuote(params: any, chainId: number): Promise<any | null> {
     const path = this.swapPathOverride ?? '/swap/v1/quote'
     const query = new URLSearchParams(params).toString()
+    let config = {}
+    if (this.headersOverride) {
+      config = {
+        headers: this.headersOverride,
+      }
+    }
     const url = this.buildUrl(path, query, chainId)
     try {
-      const response = await axios.get(url)
+      const response = await axios.get(url, config)
       const res: ZeroExApiSwapResponse = response.data
       return res
     } catch (err: any) {

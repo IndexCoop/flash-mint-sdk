@@ -101,6 +101,7 @@ describe('ZeroExApi', () => {
     const zeroExApi = new ZeroExApi(
       index0xApiBaseUrl,
       '',
+      { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
       '/mainnet/swap/v1/quote'
     )
     const quote = await zeroExApi.getSwapQuote(params, chainId)

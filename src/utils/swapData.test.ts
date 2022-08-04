@@ -9,7 +9,12 @@ import {
 } from './swapData'
 
 const index0xApiBaseUrl = process.env.INDEX_0X_API
-const zeroExApi = new ZeroExApi(index0xApiBaseUrl, '', '/mainnet/swap/v1/quote')
+const zeroExApi = new ZeroExApi(
+  index0xApiBaseUrl,
+  '',
+  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+  '/mainnet/swap/v1/quote'
+)
 
 describe('getEchangeFrom0xKey()', () => {
   test('returns null if 0x key undefined', async () => {
