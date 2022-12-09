@@ -64,8 +64,8 @@ describe('ZeroExApi', () => {
 
   test('building a url with a different base url and affiliate address', async () => {
     const expectedUrl =
-      'https://api.index.com/swap/v1/quote?buyAmount=1000000000000000000&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellToken=ETH&affilliateAddress=0xaffilliate'
-    const affilliateAddress = '0xaffilliate'
+      'https://api.index.com/swap/v1/quote?buyAmount=1000000000000000000&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellToken=ETH&affiliateAddress=0xaffiliate'
+    const affiliateAddress = '0xaffiliate'
     const baseUrl = 'https://api.index.com'
     const chainId = 10
     const query = new URLSearchParams({
@@ -73,7 +73,7 @@ describe('ZeroExApi', () => {
       buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(baseUrl, affilliateAddress)
+    const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
