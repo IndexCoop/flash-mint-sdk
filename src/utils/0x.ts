@@ -21,13 +21,13 @@ export type ZeroExApiSwapResponse = {
 export class ZeroExApi {
   /**
    * @param baseUrl              The base url (default: https://api.0x.org, watch rate limits)
-   * @param affilliateAddress    (Optional) Affiliate address
+   * @param affiliateAddress    (Optional) Affiliate address
    * @param headersOverride      (Optional) Override for headers
    * @param swapPathOverride     (Optional) Override of the API path - in case your using a custom path format e.g. through a proxy
    */
   constructor(
     private readonly baseUrl: string | null = null,
-    private readonly affilliateAddress: string | null = null,
+    private readonly affiliateAddress: string | null = null,
     private readonly headersOverride: AxiosRequestHeaders | null = null,
     private readonly swapPathOverride: string | null = null
   ) {}
@@ -41,8 +41,8 @@ export class ZeroExApi {
   public buildUrl(path: string, query: string, chainId: number): string {
     const baseUrl = this.getBaseUrl(chainId)
     let url = `${baseUrl}${path}?${query}`
-    if (this.affilliateAddress) {
-      url += `&affilliateAddress=${this.affilliateAddress}`
+    if (this.affiliateAddress) {
+      url += `&affiliateAddress=${this.affiliateAddress}`
     }
     return url
   }

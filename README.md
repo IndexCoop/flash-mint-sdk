@@ -28,7 +28,7 @@ $ yarn add @indexcoop/flash-mint-sdk
 
 A limitation to be aware of with the contracts (especially for getting quotes) is that they can only mint or redeem an exact amount of a Set token. :warning: The SDK currently does not support finding these amounts e.g. compared to other quotes. You're welcome to approach us though, to see how we do it in our frontend.
 
-Also, please note that (Set) tokens have to be approved on the contracts before they can be use with any of the contract's functions.
+Also, please note that (Set) tokens have to be approved on the contracts before they can be used with any of the contract's functions.
 
 ## Usage
 
