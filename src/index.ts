@@ -1,4 +1,5 @@
 export type { ChainId } from './constants/chains'
+export type { ComponentQuotesResult } from './quote/zeroEx/componentsQuoteProvider'
 export type { QuoteToken } from './quote/quoteToken'
 export type { TransactionOverrides } from './utils/overrides'
 export * from './constants/contracts'

@@ -5,7 +5,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { GMIIndex, MetaverseIndex } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 import { wei } from 'utils/numbers'
-import { getFlashMintZeroExQuote, getRequiredComponents } from './zeroEx'
+import { getFlashMintZeroExQuote, getRequiredComponents } from '.'
 
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 const provider = new JsonRpcProvider(process.env.MAINNET_ALCHEMY_API, 1)
