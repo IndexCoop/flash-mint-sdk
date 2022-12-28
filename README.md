@@ -3,7 +3,6 @@
 The SDK provides helper functions for using Index's Flash Mint contracts from your app.
 
 :warning: Disclaimer: the SDK should be treated as **beta**.<br />
-We might aggressively change APIs in further development.
 
 ## The Contracts
 
@@ -26,7 +25,7 @@ $ yarn add @indexcoop/flash-mint-sdk
 
 ## Limitations
 
-A limitation to be aware of with the contracts (especially for getting quotes) is that they can only mint or redeem an exact amount of a Set token. :warning: The SDK currently does not support finding these amounts e.g. compared to other quotes. You're welcome to approach us though, to see how we do it in our frontend.
+A limitation to be aware of with the contracts (especially for getting quotes), is that they can only mint or redeem an exact amount of a Set token. :warning: The SDK currently does not support finding these amounts e.g. compared to other quotes. You're welcome to approach us though, to see how we do it in our frontend.
 
 Also, please note that (Set) tokens have to be approved on the contracts before they can be used with any of the contract's functions.
 
