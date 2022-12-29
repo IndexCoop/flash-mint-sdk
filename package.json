@@ -12,6 +12,7 @@
   "types": "./build/index.d.ts",
   "scripts": {
     "build": "npm run typegen && tsc",
+    "hardhat": "npx hardhat node",
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "prepare": "npm run build",
@@ -50,6 +51,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.17.0",
+    "hardhat": "^2.12.4",
     "jest": "^28.1.1",
     "prettier": "^2.6.2",
     "semantic-release": "^18.0.1",
