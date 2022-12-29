@@ -55,8 +55,8 @@ export class ComponentsQuoteProvider {
 
       if (buyToken === sellToken) {
         const amount = isMinting ? buyAmount : sellAmount
-        const emptyResponse = this.getFakeZeroExResponse(amount)
-        quotePromises.push(emptyResponse)
+        const fakeResponse = this.getFakeZeroExResponse(amount)
+        quotePromises.push(fakeResponse)
       } else {
         const params = isMinting
           ? {
