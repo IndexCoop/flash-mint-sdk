@@ -19,4 +19,6 @@ export default {
     'node',
   ],
   roots: ['src'],
+  // Increased timeout due to long taking tests
+  testTimeout: 100000,
 }
