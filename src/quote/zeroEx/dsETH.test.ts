@@ -1,26 +1,17 @@
-import 'dotenv/config'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MetaverseIndex, WETH } from 'constants/tokens'
-import { ZeroExApi } from 'utils/0x'
 import { wei } from 'utils/numbers'
-import { LocalhostProvider } from 'utils/_test-utils'
+import { LocalhostProvider, ZeroExApiSwapQuote } from 'utils/_test-utils'
 
 import { getFlashMintZeroExQuote } from '.'
 
-const index0xApiBaseUrl = process.env.INDEX_0X_API
-
 describe('FlashMintZeroEx - Quotes for dsETH', () => {
   const chainId = 1
-  const zeroExApi = new ZeroExApi(
-    index0xApiBaseUrl,
-    '',
-    { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-    '/mainnet/swap/v1/quote'
-  )
+  const zeroExApi = ZeroExApiSwapQuote
 
   beforeEach((): void => {
-    jest.setTimeout(1000000)
+    jest.setTimeout(10000000)
   })
 
   test('returns a quote for minting', async () => {
