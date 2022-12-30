@@ -15,6 +15,10 @@ const index0xApiBaseUrl = process.env.INDEX_0X_API
 const provider = new JsonRpcProvider(process.env.MAINNET_ALCHEMY_API, 1)
 
 describe('getFlashMintZeroExQuote()', () => {
+  beforeEach((): void => {
+    jest.setTimeout(100000)
+  })
+
   test('returns a quote for minting', async () => {
     const isMinting = true
     const setToken = '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7'
