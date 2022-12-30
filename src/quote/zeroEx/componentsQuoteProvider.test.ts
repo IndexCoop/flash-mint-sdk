@@ -92,7 +92,9 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     }
     const { componentQuotes, inputOutputTokenAmount } = result
     expect(componentQuotes.length).toEqual(components.length)
-    expect(componentQuotes[1]).toEqual('')
+    expect(componentQuotes[1]).toEqual(
+      '0x0000000000000000000000000000000000000000'
+    )
     // When the input token equals the component, the position amount should just be
     // added to the input/ouput token amount. So the result should be greater than that.
     expect(inputOutputTokenAmount.gt(3)).toBe(true)
@@ -124,7 +126,9 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     }
     const { componentQuotes, inputOutputTokenAmount } = result
     expect(componentQuotes.length).toEqual(components.length)
-    expect(componentQuotes[0]).not.toEqual('')
+    expect(componentQuotes[0]).not.toEqual(
+      '0x0000000000000000000000000000000000000000'
+    )
     expect(inputOutputTokenAmount.gt(0)).toBe(true)
   })
 
@@ -154,7 +158,9 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     }
     const { componentQuotes, inputOutputTokenAmount } = result
     expect(componentQuotes.length).toEqual(components.length)
-    expect(componentQuotes[0]).toEqual('')
+    expect(componentQuotes[0]).toEqual(
+      '0x0000000000000000000000000000000000000000'
+    )
     // When the input token equals the component, the position amount should just be
     // added to the input/ouput token amount. So the result should be equal to that.
     expect(inputOutputTokenAmount.eq(3)).toBe(true)

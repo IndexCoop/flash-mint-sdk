@@ -20,7 +20,7 @@ describe('FlashMintZeroEx - Quotes for dsETH', () => {
   )
 
   beforeEach((): void => {
-    jest.setTimeout(1000000)
+    jest.setTimeout(10000000)
   })
 
   test('returns a quote for minting', async () => {

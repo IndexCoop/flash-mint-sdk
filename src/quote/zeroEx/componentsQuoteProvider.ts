@@ -98,7 +98,12 @@ export class ComponentsQuoteProvider {
    * component and input/output token are the same.
    */
   async getFakeZeroExResponse(amount: BigNumber): Promise<any> {
-    return Promise.resolve({ buyAmount: amount, data: '', sellAmount: amount })
+    return Promise.resolve({
+      buyAmount: amount,
+      // Needs valid formatted hash - as otherwise validation will fail
+      data: '0x0000000000000000000000000000000000000000',
+      sellAmount: amount,
+    })
   }
 
   /**
