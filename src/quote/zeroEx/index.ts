@@ -1,14 +1,16 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { WETH } from '../constants/tokens'
-import { FlashMintZeroEx } from '../flashMint/zeroEx'
-import { ZeroExApi } from '../utils/0x'
-import { getFlashMintZeroExContract } from '../utils/contracts'
-import { getIssuanceModule } from '../utils/issuanceModules'
-import { slippageAdjustedTokenAmount } from '../utils/slippage'
-import { getAddressForToken } from '../utils/tokens'
-import { QuoteToken } from './quoteToken'
+import { WETH } from '../../constants/tokens'
+import { FlashMintZeroEx } from '../../flashMint/zeroEx'
+import { ZeroExApi } from '../../utils/0x'
+import { getFlashMintZeroExContract } from '../../utils/contracts'
+import { getIssuanceModule } from '../../utils/issuanceModules'
+import { slippageAdjustedTokenAmount } from '../../utils/slippage'
+import { getAddressForToken } from '../../utils/tokens'
+import { QuoteToken } from '../quoteToken'
+
+import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
 export interface FlashMintZeroExQuote {
   componentQuotes: string[]
@@ -61,68 +63,27 @@ export const getFlashMintZeroExQuote = async (
     chainId
   )
 
-  let componentQuotes: string[] = []
-  // Input for issuing / output for redeeming
-  let inputOutputTokenAmount = BigNumber.from(0)
-  // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
-  const slippagePercentage = slippage / 100
-
-  const inputTokenIsEth = inputToken.symbol === 'ETH'
-  const outputTokenIsEth = outputToken.symbol === 'ETH'
-  const inputTokenAddressOrWeth = inputTokenIsEth
-    ? wethAddress
-    : inputTokenAddress
-  const outputTokenAddressOrWeth = outputTokenIsEth
-    ? wethAddress
-    : outputTokenAddress
-
-  const quotePromises: Promise<any>[] = []
-  components.forEach((component, index) => {
-    const buyAmount = positions[index]
-    const sellAmount = positions[index]
-    const buyToken = isMinting ? component : outputTokenAddressOrWeth
-    const sellToken = isMinting ? inputTokenAddressOrWeth : component
-
-    if (buyToken === sellToken) {
-      inputOutputTokenAmount = isMinting
-        ? inputOutputTokenAmount.add(buyAmount)
-        : inputOutputTokenAmount.add(sellAmount)
-    } else {
-      const params = isMinting
-        ? {
-            buyToken,
-            sellToken,
-            buyAmount: buyAmount.toString(),
-            slippagePercentage,
-          }
-        : {
-            buyToken,
-            sellToken,
-            sellAmount: sellAmount.toString(),
-            slippagePercentage,
-          }
-      const quotePromise = zeroExApi.getSwapQuote(params, chainId ?? 1)
-      quotePromises.push(quotePromise)
-    }
-  })
-
-  const results = await Promise.all(quotePromises)
-  if (results.length < 1) return null
-
-  componentQuotes = results.map((result) => result.data)
-  inputOutputTokenAmount = results
-    .map((result) =>
-      BigNumber.from(isMinting ? result.sellAmount : result.buyAmount)
-    )
-    .reduce((prevValue, currValue) => {
-      return currValue.add(prevValue)
-    })
+  const quoteProvider = new ComponentsQuoteProvider(
+    chainId,
+    slippage,
+    wethAddress,
+    zeroExApi
+  )
+  const quoteResult = await quoteProvider.getComponentQuotes(
+    components,
+    positions,
+    isMinting,
+    inputToken,
+    outputToken
+  )
+  if (!quoteResult) return null
+  const { componentQuotes, inputOutputTokenAmount: ioTokenAmount } = quoteResult
 
   const inputOuputTokenDecimals = isMinting
     ? inputToken.decimals
     : outputToken.decimals
-  inputOutputTokenAmount = slippageAdjustedTokenAmount(
-    inputOutputTokenAmount,
+  const inputOutputTokenAmount = slippageAdjustedTokenAmount(
+    ioTokenAmount,
     inputOuputTokenDecimals,
     slippage,
     isMinting
