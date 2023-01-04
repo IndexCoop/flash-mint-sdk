@@ -3,6 +3,7 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
+  FlashMintZeroExMainnetAddress,
 } from 'constants/contracts'
 
 import {
@@ -10,6 +11,7 @@ import {
   getFlashMintLeveragedContract,
   getExchangeIssuanceZeroExContractAddress,
   getFlashMintZeroExContract,
+  getIndexFlashMintZeroExContract,
 } from './contracts'
 
 describe('getExchangeIssuanceLeveragedContractAddress()', () => {
@@ -116,6 +118,26 @@ describe('getFlashMintZeroExContract()', () => {
   test('returns mainnet contract by default', async () => {
     const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
     const contract = getFlashMintZeroExContract(undefined)
+    expect(contract.address).toEqual(expectedAddress)
+  })
+})
+
+describe('getIndexFlashMintZeroExContract()', () => {
+  test('return correct contract for mainnet', async () => {
+    const expectedAddress = FlashMintZeroExMainnetAddress
+    const contract = getIndexFlashMintZeroExContract(undefined, 1)
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
+    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.issueExactSetFromToken).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForToken).toBeDefined()
+  })
+
+  test('returns mainnet contract by default', async () => {
+    const expectedAddress = FlashMintZeroExMainnetAddress
+    const contract = getIndexFlashMintZeroExContract(undefined)
     expect(contract.address).toEqual(expectedAddress)
   })
 })

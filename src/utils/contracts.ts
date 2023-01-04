@@ -11,6 +11,7 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
+  FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -50,7 +51,8 @@ export function getExchangeIssuanceZeroExContractAddress(
 }
 
 /**
- * Returns an instance of an FlashMintZeroEx contract based on the chain.
+ * Returns an instance of an FlashMintZeroEx contract for Set Protocol (based on
+ * the chain).
  *
  * @param providerSigner  provider or signer
  * @param chainId         chain ID for the network (default Mainnet)
@@ -62,6 +64,36 @@ export const getFlashMintZeroExContract = (
   chainId: number = ChainId.Mainnet
 ): Contract => {
   const contractAddress = getExchangeIssuanceZeroExContractAddress(chainId)
+  return new Contract(
+    contractAddress,
+    EXCHANGE_ISSUANCE_ZERO_EX_ABI,
+    providerSigner
+  )
+}
+
+export function getIndexFlashMintZeroExContractAddress(
+  chainId: number
+): string {
+  switch (chainId) {
+    default:
+      return FlashMintZeroExMainnetAddress
+  }
+}
+
+/**
+ * Returns an instance of an FlashMintZeroEx contract for Index Protocol (based
+ * on the chain).
+ *
+ * @param providerSigner  A provider or signer
+ * @param chainId         The chain ID for the network (default Mainnet)
+ *
+ * @returns An instance of an FlashMintZeroEx contract
+ */
+export const getIndexFlashMintZeroExContract = (
+  providerSigner: Signer | Provider | undefined,
+  chainId: number = ChainId.Mainnet
+): Contract => {
+  const contractAddress = getIndexFlashMintZeroExContractAddress(chainId)
   return new Contract(
     contractAddress,
     EXCHANGE_ISSUANCE_ZERO_EX_ABI,
