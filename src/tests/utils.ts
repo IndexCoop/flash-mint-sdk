@@ -1,5 +1,6 @@
 import 'dotenv/config'
 
+import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
@@ -28,3 +29,21 @@ export const ZeroExApiSwapQuote = new ZeroExApi(
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
   '/mainnet/swap/v1/quote'
 )
+
+// ERC20
+export function createERC20Contract(
+  address: string,
+  providerOrSigner: JsonRpcProvider | Wallet
+): Contract {
+  const abi = [
+    // Read-Only Functions
+    'function allowance(address account, address spender) external view returns (uint)',
+    'function balanceOf(address owner) view returns (uint256)',
+    'function decimals() view returns (uint8)',
+    'function symbol() view returns (string)',
+    // Authenticated Functions
+    'function approve(address spender, uint rawAmount) external returns (bool)',
+    'function transfer(address to, uint amount) returns (bool)',
+  ]
+  return new Contract(address, abi, providerOrSigner)
+}

@@ -2,7 +2,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { MetaverseIndex, WETH } from 'constants/tokens'
 import { wei } from 'utils/numbers'
-import { LocalhostProvider, ZeroExApiSwapQuote } from 'utils/_test-utils'
+import {
+  AlchemyProvider,
+  LocalhostProvider,
+  SignerAccount0,
+  ZeroExApiSwapQuote,
+} from 'tests/utils'
 
 import { getFlashMintZeroExQuote } from '.'
 
