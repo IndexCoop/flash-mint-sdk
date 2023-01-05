@@ -1,9 +1,11 @@
 import 'dotenv/config'
 
+import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
+import { WETH } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 
 // Alchemy
@@ -43,8 +45,19 @@ export function createERC20Contract(
     'function symbol() view returns (string)',
     // Authenticated Functions
     'function approve(address spender, uint rawAmount) external returns (bool)',
-    'function deposit() public payable',
     'function transfer(address to, uint amount) returns (bool)',
   ]
   return new Contract(address, abi, providerOrSigner)
+}
+
+// WETH
+export async function wrapETH(amount: BigNumber, signer: Wallet) {
+  const abi = ['function deposit() public payable']
+  const WETH9 = WETH.address!
+  const contract = new Contract(WETH9, abi, signer)
+  const depositTokenInTx = await contract.deposit({
+    gasLimit: 50_000,
+    value: amount,
+  })
+  await depositTokenInTx.wait()
 }

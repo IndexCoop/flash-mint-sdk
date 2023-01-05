@@ -4,12 +4,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { WETH } from '../../constants/tokens'
 import { FlashMintZeroEx } from '../../flashMint/zeroEx'
 import { ZeroExApi } from '../../utils/0x'
-import {
-  getFlashMintZeroExContract,
-  getFlashMintZeroExContractForToken,
-  getIndexFlashMintZeroExContract,
-  getIndexFlashMintZeroExContractAddress,
-} from '../../utils/contracts'
+import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
 import { getIssuanceModule } from '../../utils/issuanceModules'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'
 import { getAddressForToken } from '../../utils/tokens'

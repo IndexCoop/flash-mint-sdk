@@ -15,6 +15,7 @@ import { getFlashMintZeroExContractForToken } from '../utils/contracts'
 import { getIssuanceModule } from '../utils/issuanceModules'
 
 import { swapExactInput } from './utils/uniswap'
+import { wrapETH } from './utils'
 
 describe('FlashMintZeroEx - wsETH2', () => {
   const chainId = 1
@@ -35,6 +36,9 @@ describe('FlashMintZeroEx - wsETH2', () => {
 
     const amountIn = wei(2)
     const amountOutMin = wei(1)
+
+    // Wrap ETH for buying some sETH2
+    await wrapETH(amountIn, signer)
 
     // Get some sETH2
     await swapExactInput(

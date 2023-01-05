@@ -42,13 +42,8 @@ export async function swapExactInput(
     signer
   )
 
-  // On UniswapV3 the input token (amount) has to be deposited and approved before swapping
+  // On UniswapV3 the input token amount has to be approved before swapping
   const erc20TokenIn = createERC20Contract(tokenIn, signer)
-  const depositTokenInTx = await erc20TokenIn.deposit({
-    gasLimit: 50_000,
-    value: amountIn,
-  })
-  await depositTokenInTx.wait()
   const approveTokenInTx = await erc20TokenIn.approve(uniswap.address, amountIn)
   await approveTokenInTx.wait()
 
