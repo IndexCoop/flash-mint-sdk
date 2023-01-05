@@ -79,14 +79,13 @@ describe('FlashMintZeroEx - wsETH2', () => {
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
     expect(quote.setTokenAmount).toEqual(setTokenAmount)
 
+    // Get FlashMintZeroEx contract instance and issuance module (debtV2)
     const contract = getFlashMintZeroExContractForToken(
       wsETH2.symbol,
       signer,
       chainId
     )
-    // TODO:
-    // // // const issuanceModule = getIssuanceModule(outputToken.symbol, chainId)
-    // // // console.log('issuancemodule///', issuanceModule.address)
+    const issuanceModule = getIssuanceModule(outputToken.symbol, chainId)
 
     // Approve the ERC20 input token (amount) w/ the FlashMintZeroEx contract as spender
     const erc20 = createERC20Contract(inputToken.address, signer)
@@ -103,12 +102,9 @@ describe('FlashMintZeroEx - wsETH2', () => {
       setTokenAmount,
       quote.inputOutputTokenAmount,
       quote.componentQuotes,
-      // FIXME:
-      // issuanceModule.address,
-      '0xa0a98eb7af028be00d04e46e1316808a62a8fd59',
-      true
+      issuanceModule.address,
+      issuanceModule.isDebtIssuance
     )
-    console.log(gasEstimate.toString())
 
     const flashMint = new FlashMintZeroEx(contract)
     const tx = await flashMint.mintExactSetFromToken(
@@ -117,8 +113,8 @@ describe('FlashMintZeroEx - wsETH2', () => {
       setTokenAmount,
       quote.inputOutputTokenAmount,
       quote.componentQuotes,
-      '0xa0a98eb7af028be00d04e46e1316808a62a8fd59',
-      true,
+      issuanceModule.address,
+      issuanceModule.isDebtIssuance,
       { gasLimit: gasEstimate }
     )
     if (!tx) fail()

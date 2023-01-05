@@ -4,7 +4,12 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { WETH } from '../../constants/tokens'
 import { FlashMintZeroEx } from '../../flashMint/zeroEx'
 import { ZeroExApi } from '../../utils/0x'
-import { getFlashMintZeroExContract } from '../../utils/contracts'
+import {
+  getFlashMintZeroExContract,
+  getFlashMintZeroExContractForToken,
+  getIndexFlashMintZeroExContract,
+  getIndexFlashMintZeroExContractAddress,
+} from '../../utils/contracts'
 import { getIssuanceModule } from '../../utils/issuanceModules'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'
 import { getAddressForToken } from '../../utils/tokens'
@@ -113,7 +118,11 @@ export async function getRequiredComponents(
   provider: JsonRpcProvider,
   chainId: number
 ) {
-  const contract = getFlashMintZeroExContract(provider, chainId)
+  const contract = getFlashMintZeroExContractForToken(
+    setTokenSymbol,
+    provider,
+    chainId
+  )
   const flashMint = new FlashMintZeroEx(contract)
   const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
 
