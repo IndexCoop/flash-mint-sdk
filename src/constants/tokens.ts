@@ -48,6 +48,11 @@ export const MATIC: Token = {
   addressPolygon: '0x0000000000000000000000000000000000001010',
 }
 
+export const sETH2: Token = {
+  symbol: 'sETH2',
+  address: '0xFe2e637202056d30016725477c5da089Ab0A043A',
+}
+
 export const stETH: Token = {
   symbol: 'stETH',
   address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
@@ -58,6 +63,11 @@ export const WETH: Token = {
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   addressOptimism: '0x4200000000000000000000000000000000000006',
   addressPolygon: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
+}
+
+export const wsETH2: Token = {
+  symbol: 'wsETH2',
+  address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
 }
 
 // Deprecated Indices

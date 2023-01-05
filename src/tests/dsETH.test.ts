@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MetaverseIndex, WETH } from 'constants/tokens'
+import { getFlashMintZeroExQuote } from 'quote/zeroEx'
 import { wei } from 'utils/numbers'
 import {
   AlchemyProvider,
@@ -8,8 +9,6 @@ import {
   SignerAccount0,
   ZeroExApiSwapQuote,
 } from 'tests/utils'
-
-import { getFlashMintZeroExQuote } from '.'
 
 describe('FlashMintZeroEx - Quotes for dsETH', () => {
   const chainId = 1

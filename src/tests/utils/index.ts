@@ -43,6 +43,7 @@ export function createERC20Contract(
     'function symbol() view returns (string)',
     // Authenticated Functions
     'function approve(address spender, uint rawAmount) external returns (bool)',
+    'function deposit() public payable',
     'function transfer(address to, uint amount) returns (bool)',
   ]
   return new Contract(address, abi, providerOrSigner)
