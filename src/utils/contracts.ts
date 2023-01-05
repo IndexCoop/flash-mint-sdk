@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
+import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
 import { ChainId } from '../constants/chains'
 import {
@@ -13,6 +14,7 @@ import {
   ExchangeIssuanceZeroExPolygonAddress,
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
+import { EthereumDiversifiedStakingIndex, wsETH2 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
   chainId: number = ChainId.Mainnet
@@ -23,13 +25,13 @@ export function getExchangeIssuanceLeveragedContractAddress(
 }
 
 /**
- * Returns an instance of an FlashMintLeveraged contract based on the chain.
+ * Returns an instance of a FlashMintLeveraged contract based on the chain.
  *
  * @param signerOrProvider  a signer or provider
  * @param chainId           chainId for contract (default Polygon since this where
  *                          the contract is mostly used)
  *
- * @returns an instance of an FlashMintLeveraged contract
+ * @returns an instance of a FlashMintLeveraged contract
  */
 export const getFlashMintLeveragedContract = (
   signerOrProvider: Signer | Provider | undefined,
@@ -51,13 +53,13 @@ export function getExchangeIssuanceZeroExContractAddress(
 }
 
 /**
- * Returns an instance of an FlashMintZeroEx contract for Set Protocol (based on
+ * Returns an instance of a FlashMintZeroEx contract for Set Protocol (based on
  * the chain).
  *
  * @param providerSigner  provider or signer
  * @param chainId         chain ID for the network (default Mainnet)
  *
- * @returns an instance of an FlashMintZeroEx contract
+ * @returns an instance of a FlashMintZeroEx contract
  */
 export const getFlashMintZeroExContract = (
   providerSigner: Signer | Provider | undefined,
@@ -69,6 +71,30 @@ export const getFlashMintZeroExContract = (
     EXCHANGE_ISSUANCE_ZERO_EX_ABI,
     providerSigner
   )
+}
+
+/**
+ * Returns the correct instance of a FlashMintZeroEx contract - depending on the
+ * token. It will be either Index Protocol (new) or (Set Protocol)
+ *
+ * @param token           the token to be minted/redeemed
+ * @param providerSigner  provider or signer
+ * @param chainId         chain ID for the network (default Mainnet)
+ *
+ * @returns an instance of a FlashMintZeroEx contract
+ */
+export const getFlashMintZeroExContractForToken = (
+  token: string,
+  providerSigner: Signer | Provider | undefined,
+  chainId: number = ChainId.Mainnet
+): Contract => {
+  switch (token) {
+    case EthereumDiversifiedStakingIndex.symbol:
+    case wsETH2.symbol:
+      return getIndexFlashMintZeroExContract(providerSigner, chainId)
+    default:
+      return getFlashMintZeroExContract(providerSigner, chainId)
+  }
 }
 
 export function getIndexFlashMintZeroExContractAddress(
@@ -87,16 +113,12 @@ export function getIndexFlashMintZeroExContractAddress(
  * @param providerSigner  A provider or signer
  * @param chainId         The chain ID for the network (default Mainnet)
  *
- * @returns An instance of an FlashMintZeroEx contract
+ * @returns An instance of a FlashMintZeroEx contract
  */
 export const getIndexFlashMintZeroExContract = (
   providerSigner: Signer | Provider | undefined,
   chainId: number = ChainId.Mainnet
 ): Contract => {
   const contractAddress = getIndexFlashMintZeroExContractAddress(chainId)
-  return new Contract(
-    contractAddress,
-    EXCHANGE_ISSUANCE_ZERO_EX_ABI,
-    providerSigner
-  )
+  return new Contract(contractAddress, FLASHMINT_ZEROEX_ABI, providerSigner)
 }

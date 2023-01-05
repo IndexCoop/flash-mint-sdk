@@ -11,7 +11,7 @@ import { wei } from 'utils/numbers'
 
 import { FlashMintZeroEx } from '../flashMint/zeroEx'
 import { getFlashMintZeroExQuote } from '../quote/zeroEx'
-import { getIndexFlashMintZeroExContract } from '../utils/contracts'
+import { getFlashMintZeroExContractForToken } from '../utils/contracts'
 import { getIssuanceModule } from '../utils/issuanceModules'
 
 import { swapExactInput } from './utils/uniswap'
@@ -79,7 +79,11 @@ describe('FlashMintZeroEx - wsETH2', () => {
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
     expect(quote.setTokenAmount).toEqual(setTokenAmount)
 
-    const contract = getIndexFlashMintZeroExContract(signer, chainId)
+    const contract = getFlashMintZeroExContractForToken(
+      wsETH2.symbol,
+      signer,
+      chainId
+    )
     // TODO:
     // // // const issuanceModule = getIssuanceModule(outputToken.symbol, chainId)
     // // // console.log('issuancemodule///', issuanceModule.address)
