@@ -1,3 +1,11 @@
+// Index Protocol
+export const FlashMintZeroExMainnetAddress =
+  '0x9d648E5564B794B918d99C84B0fbf4b0bf36ce45'
+
+export const IndexDebtIssuanceModuleV2Address =
+  '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
+
+// Set Protocol
 export const BasicIssuanceModuleAddress =
   '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'
 

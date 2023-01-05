@@ -164,11 +164,15 @@ const redeemTx = await flashMint.redeemExactSetForERC20(
 import {
   FlashMintZeroEx,
   getFlashMintZeroExContract,
+  getFlashMintZeroExContractForToken,
   getIssuanceModule,
 } from '@indexcoop/flash-mint-sdk'
 
 // For these functions you'll need a provider with a signer
 const contract = getFlashMintZeroExContract(provider.getSigner(), chainId)
+// To make sure you get the correct FlashMintZeroEx (there are now multiple deployments),
+// use this function which will get the correct contract based on the given index.
+const contract = getFlashMintZeroExContractForToken(setTokenSymbol, provider.getSigner(), chainId)
 // Pass the contract to the flash mint class
 const flashMint = new FlashMintZeroEx(contract)
 // Determine the correct issuance module (helper function)

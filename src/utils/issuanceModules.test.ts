@@ -5,17 +5,20 @@ import {
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
   DebtIssuanceModuleV2PolygonAddress,
+  IndexDebtIssuanceModuleV2Address,
 } from 'constants/contracts'
 import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndexPolygon,
+  EthereumDiversifiedStakingIndex,
   GMIIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
   JPGIndex,
   MATIC2xFlexibleLeverageIndex,
   MetaverseIndex,
+  wsETH2,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
@@ -50,6 +53,18 @@ describe('getIssuanceModule() - Mainnet', () => {
     const issuanceModule = getIssuanceModule(JPGIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedAddress)
     expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for Index Protocol tokens', async () => {
+    const expectedAddress = IndexDebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(
+      EthereumDiversifiedStakingIndex.symbol
+    )
+    expect(issuanceModule.address).toEqual(expectedAddress)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+    const issuanceModul2 = getIssuanceModule(wsETH2.symbol)
+    expect(issuanceModul2.address).toEqual(expectedAddress)
+    expect(issuanceModul2.isDebtIssuance).toBe(true)
   })
 })
 

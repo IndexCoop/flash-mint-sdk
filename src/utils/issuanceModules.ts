@@ -5,16 +5,19 @@ import {
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
   DebtIssuanceModuleV2PolygonAddress,
+  IndexDebtIssuanceModuleV2Address,
 } from '../constants/contracts'
 import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndexPolygon,
+  EthereumDiversifiedStakingIndex,
   GMIIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
   JPGIndex,
   MATIC2xFlexibleLeverageIndex,
+  wsETH2,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -22,8 +25,18 @@ export interface IssuanceModule {
   isDebtIssuance: boolean
 }
 
+function getIndexEthIssuanceModule(tokenSymbol: string): IssuanceModule {
+  switch (tokenSymbol) {
+    default:
+      return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
+  }
+}
+
 function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
+    case EthereumDiversifiedStakingIndex.symbol:
+    case wsETH2.symbol:
+      return getIndexEthIssuanceModule(tokenSymbol)
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
     case GMIIndex.symbol:
