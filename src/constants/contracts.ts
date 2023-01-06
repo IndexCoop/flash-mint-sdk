@@ -1,4 +1,7 @@
 // Index Protocol
+export const FlashMintLeveragedForCompoundAddress =
+  '0xeA716Ed94964Ed0126Fb2fA3b546eD7F209cC2b8'
+
 export const FlashMintZeroExMainnetAddress =
   '0x9d648E5564B794B918d99C84B0fbf4b0bf36ce45'
 

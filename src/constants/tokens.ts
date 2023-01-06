@@ -12,6 +12,7 @@ export const BanklessBEDIndex: Token = {
 }
 
 export const BTC2xFlexibleLeverageIndex: Token = {
+  address: '0x0B498ff89709d3838a063f1dFA463091F9801c2b',
   symbol: 'BTC2x-FLI',
 }
 
@@ -20,6 +21,7 @@ export const DefiPulseIndex: Token = {
 }
 
 export const ETH2xFlexibleLeverageIndex: Token = {
+  address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
   symbol: 'ETH2x-FLI',
 }
 
