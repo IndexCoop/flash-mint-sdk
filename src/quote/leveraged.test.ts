@@ -1,21 +1,22 @@
-import 'dotenv/config'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import {
   debtCollateralSwapData,
   inputSwapData,
   outputSwapData,
-} from '../constants/swapdata'
+} from 'constants/swapdata'
 import {
+  BTC2xFlexibleLeverageIndex,
   ETH,
+  ETH2xFlexibleLeverageIndex,
   GMIIndex,
   InverseETHFlexibleLeverageIndex,
   InterestCompoundingETHIndex,
   MATIC,
   stETH,
 } from 'constants/tokens'
-import { ZeroExApi } from 'utils/0x'
+import { LocalhostProvider, ZeroExApiSwapQuote } from 'tests/utils'
+import { wei } from 'utils/numbers'
 import { Exchange, SwapData } from 'utils/swapData'
 import {
   getFlashMintLeveragedQuote,
@@ -24,14 +25,8 @@ import {
   getSwapDataAndPaymentTokenAmount,
 } from './leveraged'
 
-const index0xApiBaseUrl = process.env.INDEX_0X_API
-const zeroExApi = new ZeroExApi(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/mainnet/swap/v1/quote'
-)
-const provider = new JsonRpcProvider(process.env.MAINNET_ALCHEMY_API, 1)
+const zeroExApi = ZeroExApiSwapQuote
+const provider = LocalhostProvider
 
 describe('getIncludedSources()', () => {
   test('returns Curve only for icETH', async () => {
@@ -139,6 +134,48 @@ describe('getFlashMintLeveragedQuote()', () => {
     expect(quote?.swapDataDebtCollateral).toStrictEqual(
       debtCollateralSwapData[setToken.symbol]
     )
+  })
+
+  test('returns a quote for BTC2xFLI', async () => {
+    const isMinting = true
+    const setToken = BTC2xFlexibleLeverageIndex
+    const setTokenAmount = wei('1')
+    const quote = await getFlashMintLeveragedQuote(
+      { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
+      { symbol: setToken.symbol, decimals: 18, address: setToken.address! },
+      setTokenAmount,
+      isMinting,
+      0.5,
+      zeroExApi,
+      provider,
+      1
+    )
+    expect(quote).toBeDefined()
+    expect(quote?.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote?.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote?.swapDataDebtCollateral).toBeDefined()
+    expect(quote?.swapDataPaymentToken).toBeDefined()
+  })
+
+  test('returns a quote for ETH2xFLI', async () => {
+    const isMinting = true
+    const setToken = ETH2xFlexibleLeverageIndex
+    const setTokenAmount = wei('1')
+    const quote = await getFlashMintLeveragedQuote(
+      { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
+      { symbol: setToken.symbol, decimals: 18, address: setToken.address! },
+      setTokenAmount,
+      isMinting,
+      0.5,
+      zeroExApi,
+      provider,
+      1
+    )
+    expect(quote).toBeDefined()
+    expect(quote?.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote?.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote?.swapDataDebtCollateral).toBeDefined()
+    expect(quote?.swapDataPaymentToken).toBeDefined()
   })
 })
 
