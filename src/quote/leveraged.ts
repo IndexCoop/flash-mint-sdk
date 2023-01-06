@@ -16,7 +16,7 @@ import {
 } from '../constants/tokens'
 import { FlashMintLeveraged, LeveragedTokenData } from '../flashMint/leveraged'
 import { ZeroExApi } from '../utils/0x'
-import { getFlashMintLeveragedContract } from '../utils/contracts'
+import { getFlashMintLeveragedContractForToken } from '../utils/contracts'
 import { slippageAdjustedTokenAmount } from '../utils/slippage'
 import {
   Exchange,
@@ -65,11 +65,16 @@ export function getIncludedSources(isIcEth: boolean): string {
 async function getLevTokenData(
   setTokenAddress: string,
   setTokenAmount: BigNumber,
+  setTokenSymbol: string,
   isIssuance: boolean,
   chainId: number,
   provider: JsonRpcProvider
 ): Promise<LeveragedTokenData | null> {
-  const contract = getFlashMintLeveragedContract(provider, chainId)
+  const contract = getFlashMintLeveragedContractForToken(
+    setTokenSymbol,
+    provider,
+    chainId
+  )
   const flashMint = new FlashMintLeveraged(contract)
   return await flashMint.getLeveragedTokenData(
     setTokenAddress,
@@ -206,6 +211,7 @@ export const getFlashMintLeveragedQuote = async (
   const leveragedTokenData = await getLevTokenData(
     setTokenAddress,
     setTokenAmount,
+    setTokenSymbol,
     isMinting,
     chainId,
     provider

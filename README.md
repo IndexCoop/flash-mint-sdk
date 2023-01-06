@@ -113,6 +113,10 @@ import {
 
 // For these functions you'll need a provider with a signer
 const contract = getFlashMintLeveragedContract(provider?.getSigner(), chainId)
+// To make sure you get the correct FlashMintLeveraged contract (there are now
+// multiple deployments), use this function which will get the correct contract
+// based on the given index.
+const contract = getFlashMintLeveragedContractForToken(tokenSymbol, provider.getSigner(), chainId)
 // Pass the contract to the flash mint class
 const flashMint = new FlashMintLeveraged(contract)
 
@@ -172,11 +176,11 @@ import {
 const contract = getFlashMintZeroExContract(provider.getSigner(), chainId)
 // To make sure you get the correct FlashMintZeroEx (there are now multiple deployments),
 // use this function which will get the correct contract based on the given index.
-const contract = getFlashMintZeroExContractForToken(setTokenSymbol, provider.getSigner(), chainId)
+const contract = getFlashMintZeroExContractForToken(tokenSymbol, provider.getSigner(), chainId)
 // Pass the contract to the flash mint class
 const flashMint = new FlashMintZeroEx(contract)
 // Determine the correct issuance module (helper function)
-const issuanceModule = getIssuanceModule(setTokenSymbol, chainId)
+const issuanceModule = getIssuanceModule(tokenSymbol, chainId)
 
 // To mint a Set token from ETH
 const mintTx = await flashMint.mintExactSetFromETH(
@@ -235,6 +239,8 @@ Currently the following values for `gasLimit` seem to work pretty good:
 
 - FlashMintLeveraged: `1800000`
 - FlashMintZeroEx: `5000000` (over double of what `estimateGas` usually predicts)
+
+Feel free to approach us for our implementation on the frontend.
 
 ## Contributing
 

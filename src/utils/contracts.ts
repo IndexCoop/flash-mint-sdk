@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
+import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
 import { ChainId } from '../constants/chains'
@@ -12,9 +13,15 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
+  FlashMintLeveragedForCompoundAddress,
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
-import { EthereumDiversifiedStakingIndex, wsETH2 } from '../constants/tokens'
+import {
+  BTC2xFlexibleLeverageIndex,
+  ETH2xFlexibleLeverageIndex,
+  EthereumDiversifiedStakingIndex,
+  wsETH2,
+} from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
   chainId: number = ChainId.Mainnet
@@ -43,6 +50,46 @@ export const getFlashMintLeveragedContract = (
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
     signerOrProvider
   )
+}
+
+/**
+ * Returns an instance of a FlashMintLeveragedForCompound contract (mainnet only).
+ * @param signerOrProvider  A signer or provider.
+ * @returns An instance of a FlashMintLeveragedForCompound contract.
+ */
+export const getFlashMintLeveragedForCompoundContract = (
+  signerOrProvider: Signer | Provider | undefined
+): Contract => {
+  return new Contract(
+    FlashMintLeveragedForCompoundAddress,
+    FLASHMINT_LEVERAGED_COMPOUND,
+    signerOrProvider
+  )
+}
+
+/**
+ * Returns an instance of a FlashMintLeveraged contract based on the token. This
+ * could be new contract on Index Protocol or old contracts on Set Protocol.
+ *
+ * @param token             a token to mint/redeem
+ * @param signerOrProvider  a signer or provider
+ * @param chainId           chainId for contract (default Polygon since this where
+ *                          the contract is mostly used)
+ *
+ * @returns an instance of a FlashMintLeveraged contract
+ */
+export const getFlashMintLeveragedContractForToken = (
+  token: string,
+  signerOrProvider: Signer | Provider | undefined,
+  chainId: number = ChainId.Polygon
+): Contract => {
+  switch (token) {
+    case BTC2xFlexibleLeverageIndex.symbol:
+    case ETH2xFlexibleLeverageIndex.symbol:
+      return getFlashMintLeveragedForCompoundContract(signerOrProvider)
+    default:
+      return getFlashMintLeveragedContract(signerOrProvider, chainId)
+  }
 }
 
 export function getExchangeIssuanceZeroExContractAddress(

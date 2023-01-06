@@ -20,5 +20,5 @@ export default {
   ],
   roots: ['src'],
   // Increased timeout due to long taking tests
-  testTimeout: 100000,
+  testTimeout: 1000000,
 }
