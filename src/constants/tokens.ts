@@ -8,6 +8,7 @@ export interface Token {
 // Indices by the Index Coop
 
 export const BanklessBEDIndex: Token = {
+  address: '0x2aF1dF3AB0ab157e1E2Ad8F88A7D04fbea0c7dc6',
   symbol: 'BED',
 }
 
@@ -17,6 +18,8 @@ export const BTC2xFlexibleLeverageIndex: Token = {
 }
 
 export const DefiPulseIndex: Token = {
+  address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+  addressPolygon: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',
   symbol: 'DPI',
 }
 
@@ -36,10 +39,13 @@ export const InterestCompoundingETHIndex: Token = {
 }
 
 export const JPGIndex: Token = {
+  address: '0x02e7ac540409d32c90bfb51114003a9e1ff0249c',
   symbol: 'JPG',
 }
 
 export const MetaverseIndex: Token = {
+  address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
+  addressPolygon: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
   symbol: 'MVI',
 }
 
