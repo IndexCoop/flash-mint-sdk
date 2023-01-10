@@ -7,7 +7,7 @@ import { wei } from '../utils/numbers'
  * @param tokenAmount     The token amount to be adjusted
  * @param tokenDecimals   The token's decimals
  * @param slippage        The slippage in percent: 0.1 - 100
- * @param isMinting      Whether minting or redeeming
+ * @param isMinting       Whether minting or redeeming
  */
 export function slippageAdjustedTokenAmount(
   tokenAmount: BigNumber,
