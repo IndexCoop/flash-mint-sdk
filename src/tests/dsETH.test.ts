@@ -72,13 +72,13 @@ describe('FlashMintZeroEx - WETH-dsETH', () => {
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 
-  // test('redeeming to WETH', async () => {
-  //   const inputToken = dsETH
-  //   const outputToken = WETH9
-  //   const indexTokenAmount = wei('1')
+  test('redeeming to WETH', async () => {
+    const inputToken = dsETH
+    const outputToken = WETH9
+    const indexTokenAmount = wei('1')
 
-  //   await redeem(inputToken, outputToken, indexTokenAmount)
-  // })
+    await redeemERC20(inputToken, outputToken, indexTokenAmount)
+  })
 })
 
 async function mint(
@@ -313,4 +313,98 @@ async function redeem(
   const balance: BigNumber = await indexTokenErc20.balanceOf(signer.address)
   console.log(balance.toString())
   expect(balance.lt(previousBalance)).toEqual(true)
+}
+
+async function redeemERC20(
+  inputToken: QuoteToken,
+  outputToken: QuoteToken,
+  indexTokenAmount: BigNumber,
+  slippage = 0.5
+) {
+  const chainId = 1
+  const signer = SignerAccount0
+  const zeroExApi = ZeroExApiSwapQuote
+
+  const indexToken = inputToken
+  const isMinting = false
+
+  const quote = await getFlashMintZeroExQuote(
+    inputToken,
+    outputToken,
+    indexTokenAmount,
+    isMinting,
+    slippage,
+    zeroExApi,
+    provider,
+    chainId
+  )
+  expect(quote).toBeDefined()
+  if (!quote) fail()
+  expect(quote?.componentQuotes.length).toBeGreaterThan(0)
+  expect(quote?.inputOutputTokenAmount).toBeDefined()
+  expect(quote?.inputOutputTokenAmount).not.toBe(BigNumber.from(0))
+  expect(quote?.setTokenAmount).toEqual(indexTokenAmount)
+
+  // Get FlashMintZeroEx contract instance and issuance module (debtV2)
+  const contract = getFlashMintZeroExContractForToken(
+    indexToken.symbol,
+    signer,
+    chainId
+  )
+  const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
+
+  console.log(contract.address, 'contract')
+  console.log(issuanceModule.address, issuanceModule.isDebtIssuance, 'issuance')
+
+  await approveErc20(
+    indexToken.address,
+    contract.address,
+    indexTokenAmount,
+    signer
+  )
+
+  const gasEstimate = await contract.estimateGas.redeemExactSetForToken(
+    indexToken.address,
+    outputToken.address,
+    indexTokenAmount,
+    quote.inputOutputTokenAmount,
+    quote.componentQuotes,
+    issuanceModule.address,
+    issuanceModule.isDebtIssuance
+  )
+  console.log(gasEstimate.toString())
+
+  const indexTokenErc20 = createERC20Contract(indexToken.address, signer)
+  const outputTokenErc20 = createERC20Contract(outputToken.address, signer)
+  const previousBalanceIndexToken: BigNumber = await indexTokenErc20.balanceOf(
+    signer.address
+  )
+  const previousBalanceOutputToken: BigNumber =
+    await outputTokenErc20.balanceOf(signer.address)
+  console.log(previousBalanceIndexToken.toString(), 'previous')
+  console.log(previousBalanceOutputToken.toString(), 'previous - output')
+  expect(previousBalanceIndexToken.gt(0)).toEqual(true)
+
+  const flashMint = new FlashMintZeroEx(contract)
+  const tx = await flashMint.redeemExactSetForToken(
+    indexToken.address,
+    outputToken.address,
+    indexTokenAmount,
+    quote.inputOutputTokenAmount,
+    quote.componentQuotes,
+    issuanceModule.address,
+    issuanceModule.isDebtIssuance,
+    { gasLimit: gasEstimate }
+  )
+  if (!tx) fail()
+  tx.wait()
+
+  const balance: BigNumber = await indexTokenErc20.balanceOf(signer.address)
+  const balanceOutputToken: BigNumber = await outputTokenErc20.balanceOf(
+    signer.address
+  )
+  console.log(balance.toString())
+  console.log(balanceOutputToken.toString(), 'output')
+  expect(balance.lt(previousBalanceIndexToken)).toEqual(true)
+  expect(balanceOutputToken.gt(previousBalanceOutputToken)).toEqual(true)
 }
