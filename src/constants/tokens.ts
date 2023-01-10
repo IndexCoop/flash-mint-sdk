@@ -71,6 +71,11 @@ export const stETH: Token = {
   address: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
 }
 
+export const USDC: Token = {
+  symbol: 'USDC',
+  address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+}
+
 export const WETH: Token = {
   symbol: 'WETH',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',

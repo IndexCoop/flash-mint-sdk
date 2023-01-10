@@ -1,7 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Wallet } from '@ethersproject/wallet'
 
-import { EthereumDiversifiedStakingIndex, WETH } from 'constants/tokens'
+import {
+  EthereumDiversifiedStakingIndex,
+  sETH2,
+  stETH,
+  USDC,
+  WETH,
+  wsETH2,
+} from 'constants/tokens'
 import { FlashMintZeroEx } from 'flashMint/zeroEx'
 import { QuoteToken } from 'quote/quoteToken'
 import { getFlashMintZeroExQuote } from 'quote/zeroEx'
@@ -10,12 +17,14 @@ import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
 import {
   approveErc20,
+  balanceOf,
   createERC20Contract,
   LocalhostProvider,
   SignerAccount0,
   wrapETH,
   ZeroExApiSwapQuote,
 } from 'tests/utils'
+import { swapExactInput } from './utils/uniswap'
 
 const provider = LocalhostProvider
 
@@ -24,18 +33,44 @@ const dsETH = {
   decimals: 18,
   symbol: EthereumDiversifiedStakingIndex.symbol,
 }
+
 const ETH = {
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   decimals: 18,
   symbol: 'ETH',
+}
+const RETH = {
+  address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+  decimals: 18,
+  symbol: 'rETH',
+}
+const SETH2 = {
+  address: sETH2.address!,
+  decimals: 18,
+  symbol: sETH2.symbol,
+}
+const STETH = {
+  address: stETH.address!,
+  decimals: 18,
+  symbol: stETH.symbol,
 }
 const WETH9 = {
   address: WETH.address!,
   decimals: 18,
   symbol: WETH.symbol,
 }
+const WSETH2 = {
+  address: wsETH2.address!,
+  decimals: 18,
+  symbol: wsETH2.symbol,
+}
+const WSTETH = {
+  address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+  decimals: 18,
+  symbol: 'wstETH',
+}
 
-describe('FlashMintZeroEx - ETH-dsETH', () => {
+describe('FlashMintZeroEx - dsETH', () => {
   beforeEach((): void => {
     jest.setTimeout(10000000)
   })
@@ -43,7 +78,7 @@ describe('FlashMintZeroEx - ETH-dsETH', () => {
   test('minting with ETH', async () => {
     const inputToken = ETH
     const outputToken = dsETH
-    const indexTokenAmount = wei('1')
+    const indexTokenAmount = wei('0.1')
 
     await mint(inputToken, outputToken, indexTokenAmount)
   })
@@ -51,15 +86,9 @@ describe('FlashMintZeroEx - ETH-dsETH', () => {
   test('redeeming to ETH', async () => {
     const inputToken = dsETH
     const outputToken = ETH
-    const indexTokenAmount = wei('1')
+    const indexTokenAmount = wei('0.1')
 
     await redeem(inputToken, outputToken, indexTokenAmount)
-  })
-})
-
-describe('FlashMintZeroEx - WETH-dsETH', () => {
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
   })
 
   test('minting with WETH', async () => {
@@ -76,6 +105,79 @@ describe('FlashMintZeroEx - WETH-dsETH', () => {
     const inputToken = dsETH
     const outputToken = WETH9
     const indexTokenAmount = wei('1')
+
+    await redeemERC20(inputToken, outputToken, indexTokenAmount)
+  })
+
+  test('redeeming to rETH', async () => {
+    // FIXME: remove later - for testing only, minting some dsETH
+    await mint(ETH, dsETH, wei('0.1'))
+
+    const inputToken = dsETH
+    const outputToken = RETH
+    const indexTokenAmount = wei('0.1')
+
+    await redeemERC20(inputToken, outputToken, indexTokenAmount)
+  })
+
+  test('redeeming to sETH2', async () => {
+    // FIXME: remove later - for testing only, minting some dsETH
+    await mint(ETH, dsETH, wei('0.1'))
+
+    const inputToken = dsETH
+    const outputToken = SETH2
+    const indexTokenAmount = wei('0.1')
+
+    await redeemERC20(inputToken, outputToken, indexTokenAmount)
+  })
+
+  test('redeeming to stETH', async () => {
+    // FIXME: remove later - for testing only, minting some dsETH
+    await mint(ETH, dsETH, wei('0.1'))
+
+    const inputToken = dsETH
+    const outputToken = STETH
+    const indexTokenAmount = wei('0.1')
+
+    await redeemERC20(inputToken, outputToken, indexTokenAmount)
+  })
+
+  test('redeeming to USDC', async () => {
+    // FIXME: remove later - for testing only, minting some dsETH
+    await mint(ETH, dsETH, wei('0.1'))
+
+    const inputToken = dsETH
+    const indexTokenAmount = wei('0.1')
+
+    await redeemERC20(
+      inputToken,
+      {
+        address: USDC.address!,
+        decimals: 6,
+        symbol: USDC.symbol,
+      },
+      indexTokenAmount
+    )
+  })
+
+  test('redeeming to wsETH2', async () => {
+    // FIXME: remove later - for testing only, minting some dsETH
+    await mint(ETH, dsETH, wei('0.1'))
+
+    const inputToken = dsETH
+    const outputToken = WSETH2
+    const indexTokenAmount = wei('0.1')
+
+    await redeemERC20(inputToken, outputToken, indexTokenAmount)
+  })
+
+  test('redeeming to wstETH', async () => {
+    // FIXME: remove later - for testing only, minting some dsETH
+    await mint(ETH, dsETH, wei('0.1'))
+
+    const inputToken = dsETH
+    const outputToken = WSTETH
+    const indexTokenAmount = wei('0.1')
 
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })

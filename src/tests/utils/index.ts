@@ -75,6 +75,14 @@ export async function approveErc20(
   await approveTx.wait()
 }
 
+export async function balanceOf(
+  signer: Wallet,
+  address: string
+): Promise<BigNumber> {
+  const contract = createERC20Contract(address, signer)
+  return await contract.balanceOf(signer.address)
+}
+
 // WETH
 export async function wrapETH(amount: BigNumber, signer: Wallet) {
   const abi = ['function deposit() public payable']
