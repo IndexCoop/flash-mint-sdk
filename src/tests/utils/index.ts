@@ -70,7 +70,7 @@ export async function approveErc20(
 ) {
   const contract = createERC20Contract(address, signer)
   const approveTx = await contract.approve(spender, amount, {
-    gasLimit: 50_000,
+    gasLimit: 100_000,
   })
   await approveTx.wait()
 }

@@ -63,7 +63,7 @@ export async function swapExactInput(
     sqrtPriceLimitX96: 0,
   }
   await uniswap.exactInputSingle(params, {
-    gasLimit: 500_000,
+    gasLimit: 1_000_000,
   })
 }
 

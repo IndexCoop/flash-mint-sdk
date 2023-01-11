@@ -88,6 +88,11 @@ export const wsETH2: Token = {
   address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
 }
 
+export const wstETH: Token = {
+  symbol: 'wstETH',
+  address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+}
+
 // Deprecated Indices
 // These indices are officially not supported any longer by the Index Coop.
 

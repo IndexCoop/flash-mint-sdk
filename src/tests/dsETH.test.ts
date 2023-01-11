@@ -8,6 +8,7 @@ import {
   USDC,
   WETH,
   wsETH2,
+  wstETH,
 } from 'constants/tokens'
 import { FlashMintZeroEx } from 'flashMint/zeroEx'
 import { QuoteToken } from 'quote/quoteToken'
@@ -15,6 +16,10 @@ import { getFlashMintZeroExQuote } from 'quote/zeroEx'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
+
+import { addLiquidityToLido, wrapStEth } from './utils/lido'
+import { depositIntoRocketPool } from './utils/rocket'
+import { swapExactInput } from './utils/uniswap'
 import {
   approveErc20,
   balanceOf,
@@ -23,8 +28,7 @@ import {
   SignerAccount0,
   wrapETH,
   ZeroExApiSwapQuote,
-} from 'tests/utils'
-import { swapExactInput } from './utils/uniswap'
+} from './utils'
 
 const provider = LocalhostProvider
 
@@ -65,9 +69,9 @@ const WSETH2 = {
   symbol: wsETH2.symbol,
 }
 const WSTETH = {
-  address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+  address: wstETH.address!,
   decimals: 18,
-  symbol: 'wstETH',
+  symbol: wstETH.symbol,
 }
 
 describe('FlashMintZeroEx - dsETH', () => {
@@ -80,7 +84,7 @@ describe('FlashMintZeroEx - dsETH', () => {
     const outputToken = dsETH
     const indexTokenAmount = wei('0.1')
 
-    await mint(inputToken, outputToken, indexTokenAmount)
+    await mint(outputToken, indexTokenAmount)
   })
 
   test('redeeming to ETH', async () => {
@@ -88,7 +92,7 @@ describe('FlashMintZeroEx - dsETH', () => {
     const outputToken = ETH
     const indexTokenAmount = wei('0.1')
 
-    await redeem(inputToken, outputToken, indexTokenAmount)
+    await redeem(inputToken, indexTokenAmount)
   })
 
   test('minting with WETH', async () => {
@@ -98,9 +102,9 @@ describe('FlashMintZeroEx - dsETH', () => {
 
     const signer = SignerAccount0
     await wrapETH(wei(2), signer)
+
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
-
   test('redeeming to WETH', async () => {
     const inputToken = dsETH
     const outputToken = WETH9
@@ -109,9 +113,20 @@ describe('FlashMintZeroEx - dsETH', () => {
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })
 
+  // FIXME: deposit into pool won't work because it reached max capacity
+  // test('minting with rETH', async () => {
+  //   const inputToken = RETH
+  //   const outputToken = dsETH
+  //   const indexTokenAmount = wei('0.1')
+
+  //   const signer = SignerAccount0
+  //   await depositIntoRocketPool(wei(2), signer)
+  //   await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  // })
+
   test('redeeming to rETH', async () => {
     // FIXME: remove later - for testing only, minting some dsETH
-    await mint(ETH, dsETH, wei('0.1'))
+    await mint(dsETH, wei('0.1'))
 
     const inputToken = dsETH
     const outputToken = RETH
@@ -120,10 +135,31 @@ describe('FlashMintZeroEx - dsETH', () => {
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })
 
-  test('redeeming to sETH2', async () => {
-    // FIXME: remove later - for testing only, minting some dsETH
-    await mint(ETH, dsETH, wei('0.1'))
+  test('minting with sETH2', async () => {
+    const inputToken = SETH2
+    const outputToken = dsETH
+    const indexTokenAmount = wei('1')
 
+    // ETH / sETH2
+    const signer = SignerAccount0
+    const pool = '0x7379e81228514a1d2a6cf7559203998e20598346'
+    await wrapETH(wei(2), signer)
+    await swapExactInput(
+      pool,
+      {
+        tokenIn: WETH9.address,
+        tokenOut: inputToken.address!,
+        amountIn: wei('2'),
+        amountOutMin: wei('1.5'),
+      },
+      provider,
+      signer
+    )
+
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  })
+
+  test('redeeming to sETH2', async () => {
     const inputToken = dsETH
     const outputToken = SETH2
     const indexTokenAmount = wei('0.1')
@@ -131,10 +167,18 @@ describe('FlashMintZeroEx - dsETH', () => {
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })
 
-  test('redeeming to stETH', async () => {
-    // FIXME: remove later - for testing only, minting some dsETH
-    await mint(ETH, dsETH, wei('0.1'))
+  test('minting with stETH', async () => {
+    const inputToken = STETH
+    const outputToken = dsETH
+    const indexTokenAmount = wei('0.1')
 
+    const signer = SignerAccount0
+    await addLiquidityToLido(wei('1'), signer)
+
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  })
+
+  test('redeeming to stETH', async () => {
     const inputToken = dsETH
     const outputToken = STETH
     const indexTokenAmount = wei('0.1')
@@ -142,10 +186,38 @@ describe('FlashMintZeroEx - dsETH', () => {
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })
 
-  test('redeeming to USDC', async () => {
-    // FIXME: remove later - for testing only, minting some dsETH
-    await mint(ETH, dsETH, wei('0.1'))
+  // FIXME: did work a few times already
+  // test('minting with USDC', async () => {
+  //   const inputToken = {
+  //     address: USDC.address!,
+  //     decimals: 6,
+  //     symbol: USDC.symbol,
+  //   }
+  //   const outputToken = dsETH
+  //   const indexTokenAmount = wei('0.1')
 
+  //   const signer = SignerAccount0
+  //   // ETH / USDC
+  //   const pool = '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'
+  //   await wrapETH(wei(2), signer)
+  //   await swapExactInput(
+  //     pool,
+  //     {
+  //       tokenIn: WETH9.address,
+  //       tokenOut: inputToken.address!,
+  //       amountIn: wei('2'),
+  //       amountOutMin: wei('2000', inputToken.decimals),
+  //     },
+  //     provider,
+  //     signer
+  //   )
+  //   const balanceUsdc = await balanceOf(signer, inputToken.address)
+  //   console.log(balanceUsdc.toString(), 'USDC')
+  //
+  //   await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  // })
+
+  test('redeeming to USDC', async () => {
     const inputToken = dsETH
     const indexTokenAmount = wei('0.1')
 
@@ -160,10 +232,18 @@ describe('FlashMintZeroEx - dsETH', () => {
     )
   })
 
-  test('redeeming to wsETH2', async () => {
-    // FIXME: remove later - for testing only, minting some dsETH
-    await mint(ETH, dsETH, wei('0.1'))
+  test('minting with wsETH2', async () => {
+    const inputToken = WSETH2
+    const outputToken = dsETH
+    const indexTokenAmount = wei('0.1')
 
+    const signer = SignerAccount0
+    await mint(WSETH2, wei(0.5), 0.5)
+
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  })
+
+  test('redeeming to wsETH2', async () => {
     const inputToken = dsETH
     const outputToken = WSETH2
     const indexTokenAmount = wei('0.1')
@@ -171,10 +251,22 @@ describe('FlashMintZeroEx - dsETH', () => {
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })
 
-  test('redeeming to wstETH', async () => {
-    // FIXME: remove later - for testing only, minting some dsETH
-    await mint(ETH, dsETH, wei('0.1'))
+  test('minting with wstETH', async () => {
+    const inputToken = WSTETH
+    const outputToken = dsETH
+    const indexTokenAmount = wei('0.1')
 
+    const signer = SignerAccount0
+    await addLiquidityToLido(wei('2'), signer)
+    const balance = await balanceOf(signer, STETH.address)
+    console.log(balance.toString(), 'stETH')
+    await wrapStEth(wei(1), signer)
+    const balancew = await balanceOf(signer, WSTETH.address)
+    console.log(balancew.toString(), 'wstETH')
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  })
+
+  test('redeeming to wstETH', async () => {
     const inputToken = dsETH
     const outputToken = WSTETH
     const indexTokenAmount = wei('0.1')
@@ -184,15 +276,15 @@ describe('FlashMintZeroEx - dsETH', () => {
 })
 
 async function mint(
-  inputToken: QuoteToken,
   outputToken: QuoteToken,
   indexTokenAmount: BigNumber,
-  slippage = 0.5
+  slippage = 0.5,
+  signer = SignerAccount0
 ) {
   const chainId = 1
-  const signer = SignerAccount0
   const zeroExApi = ZeroExApiSwapQuote
 
+  const inputToken = ETH
   const indexToken = outputToken
   const isMinting = true
 
@@ -336,7 +428,6 @@ async function mintERC20(
 
 async function redeem(
   inputToken: QuoteToken,
-  outputToken: QuoteToken,
   indexTokenAmount: BigNumber,
   slippage = 0.5
 ) {
@@ -345,6 +436,7 @@ async function redeem(
   const zeroExApi = ZeroExApiSwapQuote
 
   const indexToken = inputToken
+  const outputToken = ETH
   const isMinting = false
 
   const quote = await getFlashMintZeroExQuote(
