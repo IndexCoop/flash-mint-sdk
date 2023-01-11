@@ -11,7 +11,7 @@ import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndexPolygon,
-  EthereumDiversifiedStakingIndex,
+  DiversifiedStakedETHIndex,
   GMIIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
@@ -34,7 +34,7 @@ function getIndexEthIssuanceModule(tokenSymbol: string): IssuanceModule {
 
 function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
-    case EthereumDiversifiedStakingIndex.symbol:
+    case DiversifiedStakedETHIndex.symbol:
     case wsETH2.symbol:
       return getIndexEthIssuanceModule(tokenSymbol)
     case BTC2xFlexibleLeverageIndex.symbol:

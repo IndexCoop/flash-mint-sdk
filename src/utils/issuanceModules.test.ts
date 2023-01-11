@@ -11,7 +11,7 @@ import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndexPolygon,
-  EthereumDiversifiedStakingIndex,
+  DiversifiedStakedETHIndex,
   GMIIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
@@ -57,9 +57,7 @@ describe('getIssuanceModule() - Mainnet', () => {
 
   test('returns debt issuance module v2 for Index Protocol tokens', async () => {
     const expectedAddress = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(
-      EthereumDiversifiedStakingIndex.symbol
-    )
+    const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedAddress)
     expect(issuanceModule.isDebtIssuance).toBe(true)
     const issuanceModul2 = getIssuanceModule(wsETH2.symbol)

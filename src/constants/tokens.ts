@@ -23,14 +23,14 @@ export const DefiPulseIndex: Token = {
   symbol: 'DPI',
 }
 
+export const DiversifiedStakedETHIndex: Token = {
+  address: '0x683Bad7EB64cE3Ec13eCeC3bc7583FCBCB75A9F7',
+  symbol: 'dsETH',
+}
+
 export const ETH2xFlexibleLeverageIndex: Token = {
   address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
   symbol: 'ETH2x-FLI',
-}
-
-export const EthereumDiversifiedStakingIndex: Token = {
-  address: '0x683Bad7EB64cE3Ec13eCeC3bc7583FCBCB75A9F7',
-  symbol: 'dsETH',
 }
 
 export const InterestCompoundingETHIndex: Token = {

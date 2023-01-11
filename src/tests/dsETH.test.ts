@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Wallet } from '@ethersproject/wallet'
 
 import {
-  EthereumDiversifiedStakingIndex,
+  DiversifiedStakedETHIndex,
   sETH2,
   stETH,
   USDC,
@@ -33,9 +33,9 @@ import {
 const provider = LocalhostProvider
 
 const dsETH = {
-  address: EthereumDiversifiedStakingIndex.address!,
+  address: DiversifiedStakedETHIndex.address!,
   decimals: 18,
-  symbol: EthereumDiversifiedStakingIndex.symbol,
+  symbol: DiversifiedStakedETHIndex.symbol,
 }
 
 const ETH = {

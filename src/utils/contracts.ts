@@ -19,7 +19,7 @@ import {
 import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
-  EthereumDiversifiedStakingIndex,
+  DiversifiedStakedETHIndex,
   wsETH2,
 } from '../constants/tokens'
 
@@ -136,7 +136,7 @@ export const getFlashMintZeroExContractForToken = (
   chainId: number = ChainId.Mainnet
 ): Contract => {
   switch (token) {
-    case EthereumDiversifiedStakingIndex.symbol:
+    case DiversifiedStakedETHIndex.symbol:
     case wsETH2.symbol:
       return getIndexFlashMintZeroExContract(providerSigner, chainId)
     default:
