@@ -23,22 +23,24 @@ export const TenderlyProvider = new JsonRpcProvider(
 // Hardhat
 export const LocalHostProvider = new JsonRpcProvider('http://127.0.0.1:8545/')
 
+export const CHOSEN_PROVIDER = LocalHostProvider; // TODO: Change this based on network
+
 // Hardhat Account #0
 export const SignerAccount0 = new Wallet(
   '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-  TenderlyProvider
+  CHOSEN_PROVIDER
 )
 
 // Hardhat Account #1
 export const SignerAccount1 = new Wallet(
   '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
-  TenderlyProvider
+  CHOSEN_PROVIDER
 )
 
 // Hardhat Account #2
 export const SignerAccount2 = new Wallet(
   '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
-  TenderlyProvider
+  CHOSEN_PROVIDER
 )
 
 // ZeroExApi

@@ -8,13 +8,13 @@ import { wei } from 'utils/numbers'
 
 import {
   createERC20Contract,
-  TenderlyProvider,
+  CHOSEN_PROVIDER,
   SignerAccount1,
   ZeroExApiSwapQuote,
 } from './utils'
 
 const zeroExApi = ZeroExApiSwapQuote
-const provider = TenderlyProvider
+const provider = CHOSEN_PROVIDER
 
 describe('ETH2xFLI (mainnet)', () => {
   const chainId = 1

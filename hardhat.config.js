@@ -20,5 +20,6 @@ module.exports = {
   tenderly: {
     username: 'edward-index',
     project: 'fork/e2c69c29-fcf3-4724-9ac4-f5c3543736a2',
+    gas: 5000000
   },
 }
