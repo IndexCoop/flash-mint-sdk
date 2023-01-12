@@ -13,6 +13,6 @@ export function getAddressForToken(
     case ChainId.Polygon:
       return token.addressPolygon
     default:
-      return undefined
+      return token.address
   }
 }
