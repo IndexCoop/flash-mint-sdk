@@ -44,6 +44,7 @@ export const getFlashMintZeroExQuote = async (
 ): Promise<FlashMintZeroExQuote | null> => {
   const inputTokenAddress = inputToken.address
   const outputTokenAddress = outputToken.address
+  console.log('chain id', chainId)
   const wethAddress = getAddressForToken(WETH, chainId)
 
   if (wethAddress === undefined) {
