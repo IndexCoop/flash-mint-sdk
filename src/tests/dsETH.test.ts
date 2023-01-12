@@ -24,13 +24,13 @@ import {
   approveErc20,
   balanceOf,
   createERC20Contract,
-  LocalhostProvider,
+  TenderlyProvider,
   SignerAccount0,
   wrapETH,
   ZeroExApiSwapQuote,
 } from './utils'
 
-const provider = LocalhostProvider
+const provider = TenderlyProvider
 
 const dsETH = {
   address: DiversifiedStakedETHIndex.address!,

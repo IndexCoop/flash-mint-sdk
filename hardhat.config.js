@@ -11,9 +11,7 @@ module.exports = {
       },
     },
     tenderly: {
-      chainId: 3,
-      // url: `https://rpc.tenderly.co/fork/e2c69c29-fcf3-4724-9ac4-f5c3543736a2`,
-      url: process.env.TENDERLY_FORK_URL,
+      url: process.env.TENDERLY_FORK_RPC,
     },
     local: {
       url: 'http://127.0.0.1:8545'

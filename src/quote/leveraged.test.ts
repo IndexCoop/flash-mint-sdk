@@ -15,7 +15,7 @@ import {
   MATIC,
   stETH,
 } from 'constants/tokens'
-import { LocalhostProvider, ZeroExApiSwapQuote } from 'tests/utils'
+import { TenderlyProvider, ZeroExApiSwapQuote } from 'tests/utils'
 import { wei } from 'utils/numbers'
 import { Exchange, SwapData } from 'utils/swapData'
 import {
@@ -26,7 +26,7 @@ import {
 } from './leveraged'
 
 const zeroExApi = ZeroExApiSwapQuote
-const provider = LocalhostProvider
+const provider = TenderlyProvider
 
 describe('getIncludedSources()', () => {
   test('returns Curve only for icETH', async () => {

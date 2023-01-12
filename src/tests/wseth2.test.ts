@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { sETH2, WETH, wsETH2 } from 'constants/tokens'
 import {
-  LocalhostProvider,
+  TenderlyProvider,
   SignerAccount0,
   ZeroExApiSwapQuote,
   createERC20Contract,
@@ -27,7 +27,7 @@ describe('FlashMintZeroEx - wsETH2', () => {
 
   test('wsETH2 minting works using sETH2', async () => {
     const isMinting = true
-    const provider = LocalhostProvider
+    const provider = TenderlyProvider
     const signer = SignerAccount0
 
     const sETH2Address = sETH2.address!
