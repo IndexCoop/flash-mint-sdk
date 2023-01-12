@@ -80,7 +80,6 @@ describe('FlashMintZeroEx - dsETH', () => {
   })
 
   test('minting with ETH', async () => {
-    const inputToken = ETH
     const outputToken = dsETH
     const indexTokenAmount = wei('0.1')
 
@@ -89,7 +88,6 @@ describe('FlashMintZeroEx - dsETH', () => {
 
   test('redeeming to ETH', async () => {
     const inputToken = dsETH
-    const outputToken = ETH
     const indexTokenAmount = wei('0.1')
 
     await redeem(inputToken, indexTokenAmount)
