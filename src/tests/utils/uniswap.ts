@@ -62,9 +62,9 @@ export async function swapExactInput(
     amountOutMinimum: amountOutMin,
     sqrtPriceLimitX96: 0,
   }
-  await uniswap.exactInputSingle(params, {
-    gasLimit: 1_000_000,
-  })
+  // await uniswap.exactInputSingle(params, {
+  //   gasLimit: 1_000_000,
+  // })
 }
 
 async function getPoolState(poolContract: Contract) {

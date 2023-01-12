@@ -47,7 +47,7 @@ export const getFlashMintZeroExQuote = async (
   const wethAddress = getAddressForToken(WETH, chainId)
 
   if (wethAddress === undefined) {
-    console.error('Error - WETH address not defined')
+    console.error('Error - WETH address not defined', chainId)
     return null
   }
 
