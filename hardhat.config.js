@@ -1,5 +1,5 @@
 require('dotenv').config()
-require("@tenderly/hardhat-tenderly")
+require('@tenderly/hardhat-tenderly')
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -14,11 +14,11 @@ module.exports = {
       url: process.env.TENDERLY_FORK_RPC,
     },
     local: {
-      url: 'http://127.0.0.1:8545'
+      url: 'http://127.0.0.1:8545',
     },
   },
-	tenderly: {
-		username: "edward-index",
-		project: "fork/e2c69c29-fcf3-4724-9ac4-f5c3543736a2"
-	},
+  tenderly: {
+    username: 'edward-index',
+    project: 'fork/e2c69c29-fcf3-4724-9ac4-f5c3543736a2',
+  },
 }
