@@ -24,7 +24,7 @@ export const DefiPulseIndex: Token = {
 }
 
 export const DiversifiedStakedETHIndex: Token = {
-  address: '0xa81Ac6782f344AaC63E69996c5aFc96F0b9e1947',
+  address: '0x341c05c0E9b33C0E38d64de76516b2Ce970bB3BE',
   symbol: 'dsETH',
 }
 
