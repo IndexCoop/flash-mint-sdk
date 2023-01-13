@@ -53,7 +53,6 @@ describe('BTC2xFLI (mainnet)', () => {
       signer,
       1
     )
-    console.log(contract.address, 'contract')
 
     // Estimate gas
     const gasEstimate = await contract.estimateGas.issueExactSetFromETH(
@@ -63,7 +62,6 @@ describe('BTC2xFLI (mainnet)', () => {
       quote.swapDataPaymentToken,
       { value: quote.inputOutputTokenAmount }
     )
-    console.log(gasEstimate.toString(), 'gas')
 
     // Mint index
     const flashMint = new FlashMintLeveraged(contract)
@@ -75,14 +73,12 @@ describe('BTC2xFLI (mainnet)', () => {
       quote.inputOutputTokenAmount,
       { gasLimit: gasEstimate }
     )
-    console.log(tx)
     if (!tx) fail()
     tx.wait()
     const erc20OutputToken = createERC20Contract(setToken.address!, signer)
     const balanceOutputToken: BigNumber = await erc20OutputToken.balanceOf(
       signer.address
     )
-    console.log(balanceOutputToken.toString(), 'new balance')
     expect(balanceOutputToken.gt(0)).toEqual(true)
   })
 })

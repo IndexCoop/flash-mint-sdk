@@ -10,7 +10,7 @@ import {
 import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
-  EthereumDiversifiedStakingIndex,
+  DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
   wsETH2,
 } from 'constants/tokens'
@@ -203,7 +203,7 @@ describe('getFlashMintZeroExContractForToken()', () => {
   test('returns Index Protocol for dsETH and wsETH2', async () => {
     const expectedAddress = FlashMintZeroExMainnetAddress
     const contract = getFlashMintZeroExContractForToken(
-      EthereumDiversifiedStakingIndex.symbol,
+      DiversifiedStakedETHIndex.symbol,
       undefined,
       1
     )
