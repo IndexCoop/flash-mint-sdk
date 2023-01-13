@@ -37,8 +37,6 @@ import {
 const provider = LocalhostProvider
 const signer = SignerAccount0
 
-console.log(provider, LocalhostProvider, 'yo')
-
 describe('FlashMintZeroEx - dsETH', () => {
   const outputToken = dsETH
   const indexTokenAmount = wei('0.1')
@@ -69,8 +67,6 @@ describe('FlashMintZeroEx - dsETH', () => {
       inputToken.address,
       provider
     )
-    const balance = await balanceOf(signer, RETH.address)
-    console.log(balance.toString(), 'rETH')
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 
@@ -121,10 +117,7 @@ describe('FlashMintZeroEx - dsETH', () => {
     const inputToken = WSTETH
     await addLiquidityToLido(wei('2'), signer)
     const balance = await balanceOf(signer, STETH.address)
-    console.log(balance.toString(), 'stETH')
     await wrapStEth(balance, signer)
-    const balancew = await balanceOf(signer, WSTETH.address)
-    console.log(balancew.toString(), 'wstETH')
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 })
@@ -167,9 +160,6 @@ async function mintERC20(
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
 
-  console.log(contract.address, 'contract')
-  console.log(issuanceModule.address, issuanceModule.isDebtIssuance, 'issuance')
-
   await approveErc20(
     inputToken.address,
     contract.address,
@@ -186,7 +176,6 @@ async function mintERC20(
     issuanceModule.address,
     issuanceModule.isDebtIssuance
   )
-  console.log(gasEstimate.toString())
 
   const flashMint = new FlashMintZeroEx(contract)
   const tx = await flashMint.mintExactSetFromToken(
@@ -205,6 +194,5 @@ async function mintERC20(
   const balanceOutputToken: BigNumber = await indexTokenErc20.balanceOf(
     signer.address
   )
-  console.log(balanceOutputToken.toString())
   expect(balanceOutputToken.gt(0)).toEqual(true)
 }

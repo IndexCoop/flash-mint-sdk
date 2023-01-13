@@ -97,9 +97,6 @@ export async function mint(
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
 
-  console.log(contract.address, 'contract')
-  console.log(issuanceModule.address, issuanceModule.isDebtIssuance, 'issuance')
-
   const gasEstimate = await contract.estimateGas.issueExactSetFromETH(
     indexToken.address,
     indexTokenAmount,
@@ -108,7 +105,6 @@ export async function mint(
     issuanceModule.isDebtIssuance,
     { value: quote.inputOutputTokenAmount }
   )
-  console.log(gasEstimate.toString())
 
   const flashMint = new FlashMintZeroEx(contract)
   const tx = await flashMint.mintExactSetFromETH(
@@ -126,6 +122,5 @@ export async function mint(
   const balanceOutputToken: BigNumber = await indexTokenErc20.balanceOf(
     signer.address
   )
-  console.log(balanceOutputToken.toString())
   expect(balanceOutputToken.gt(0)).toEqual(true)
 }

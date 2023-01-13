@@ -56,8 +56,6 @@ export async function transferFromWhale(
   await provider.send('hardhat_impersonateAccount', [whale])
   const signer = await provider.getSigner(whale)
   const contract = createERC20Contract(erc20Address, signer)
-  const balanceUsdc = await contract.balanceOf(whale)
-  console.log(balanceUsdc.toString(), 'USDC', whale)
   const transferTx = await contract.transfer(to, amount, {
     gasLimit: 100_000,
   })

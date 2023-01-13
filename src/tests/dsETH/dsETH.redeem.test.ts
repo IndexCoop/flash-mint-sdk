@@ -124,9 +124,6 @@ async function redeem(
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
 
-  console.log(contract.address, 'contract')
-  console.log(issuanceModule.address, issuanceModule.isDebtIssuance, 'issuance')
-
   await approveErc20(
     indexToken.address,
     contract.address,
@@ -142,13 +139,11 @@ async function redeem(
     issuanceModule.address,
     issuanceModule.isDebtIssuance
   )
-  console.log(gasEstimate.toString())
 
   const indexTokenErc20 = createERC20Contract(indexToken.address, signer)
   const previousBalance: BigNumber = await indexTokenErc20.balanceOf(
     signer.address
   )
-  console.log(previousBalance.toString(), 'previous')
   expect(previousBalance.gt(0)).toEqual(true)
 
   const flashMint = new FlashMintZeroEx(contract)
@@ -165,7 +160,6 @@ async function redeem(
   tx.wait()
 
   const balance: BigNumber = await indexTokenErc20.balanceOf(signer.address)
-  console.log(balance.toString())
   expect(balance.lt(previousBalance)).toEqual(true)
 }
 
@@ -207,9 +201,6 @@ async function redeemERC20(
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
 
-  console.log(contract.address, 'contract')
-  console.log(issuanceModule.address, issuanceModule.isDebtIssuance, 'issuance')
-
   await approveErc20(
     indexToken.address,
     contract.address,
@@ -226,7 +217,6 @@ async function redeemERC20(
     issuanceModule.address,
     issuanceModule.isDebtIssuance
   )
-  console.log(gasEstimate.toString())
 
   const indexTokenErc20 = createERC20Contract(indexToken.address, signer)
   const outputTokenErc20 = createERC20Contract(outputToken.address, signer)
@@ -235,8 +225,6 @@ async function redeemERC20(
   )
   const previousBalanceOutputToken: BigNumber =
     await outputTokenErc20.balanceOf(signer.address)
-  console.log(previousBalanceIndexToken.toString(), 'previous')
-  console.log(previousBalanceOutputToken.toString(), 'previous - output')
   expect(previousBalanceIndexToken.gt(0)).toEqual(true)
 
   const flashMint = new FlashMintZeroEx(contract)
@@ -257,8 +245,6 @@ async function redeemERC20(
   const balanceOutputToken: BigNumber = await outputTokenErc20.balanceOf(
     signer.address
   )
-  console.log(balance.toString())
-  console.log(balanceOutputToken.toString(), 'output')
   expect(balance.lt(previousBalanceIndexToken)).toEqual(true)
   expect(balanceOutputToken.gt(previousBalanceOutputToken)).toEqual(true)
 }
