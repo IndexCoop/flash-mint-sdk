@@ -13,16 +13,21 @@ const wsthEthAddress = wstETH.address!
 
 export async function addLiquidityToLido(amount: BigNumber, signer: Wallet) {
   const contract = new Contract(LIDO, LIDO_ABI, signer)
-  await contract.submit('0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', {
-    gasLimit: 100_000,
-    value: amount,
-  })
+  const gasEstimate = await contract.estimateGas.submit(
+    '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+    { value: amount }
+  )
+  await contract.estimateGas.submit(
+    '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
+    { gasLimit: gasEstimate, value: amount }
+  )
 }
 
 export async function wrapStEth(amount: BigNumber, signer: Wallet) {
   await approveErc20(stEthAddress, wsthEthAddress, amount, signer)
   const contract = new Contract(wsthEthAddress, WSTETH_ABI, signer)
-  await contract.wrap(amount, { gasLimit: 120_000 })
+  const gasEstimate = await contract.estimateGas.wrap(amount)
+  await contract.wrap(amount, { gasLimit: gasEstimate })
 }
 
 const LIDO_ABI = [
