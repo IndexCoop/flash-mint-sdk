@@ -94,7 +94,7 @@ describe('FlashMintZeroEx - dsETH', () => {
 
   test('minting with stETH', async () => {
     const inputToken = STETH
-    await addLiquidityToLido(wei('1'), signer)
+    await addLiquidityToLido(wei('2'), signer)
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 
