@@ -1,14 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Wallet } from '@ethersproject/wallet'
 
-import {
-  DiversifiedStakedETHIndex,
-  sETH2,
-  stETH,
-  USDC,
-  WETH,
-  wstETH,
-} from 'constants/tokens'
+import { USDC } from 'constants/tokens'
 import { FlashMintZeroEx } from 'flashMint/zeroEx'
 import { QuoteToken } from 'quote/quoteToken'
 import { getFlashMintZeroExQuote } from 'quote/zeroEx'
@@ -25,6 +18,7 @@ import {
   createERC20Contract,
   LocalhostProvider,
   SignerAccount0,
+  transferFromWhale,
   wrapETH,
   ZeroExApiSwapQuote,
 } from '../utils'
@@ -42,6 +36,8 @@ import {
 
 const provider = LocalhostProvider
 const signer = SignerAccount0
+
+console.log(provider, LocalhostProvider, 'yo')
 
 describe('FlashMintZeroEx - dsETH', () => {
   const outputToken = dsETH
@@ -61,16 +57,22 @@ describe('FlashMintZeroEx - dsETH', () => {
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 
-  // FIXME: deposit into pool won't work because it reached max capacity
-  // test('minting with rETH', async () => {
-  //   const inputToken = RETH
-  //   const outputToken = dsETH
-  //   const indexTokenAmount = wei('0.1')
-
-  //   const signer = SignerAccount0
-  //   await depositIntoRocketPool(wei(2), signer)
-  //   await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  // })
+  test('minting with rETH', async () => {
+    const inputToken = RETH
+    // Does not work - due to the rocket pool being filled to max capacity
+    // await depositIntoRocketPool(wei(2), signer)
+    const whale = '0x7C5aaA2a20b01df027aD032f7A768aC015E77b86'
+    await transferFromWhale(
+      whale,
+      signer.address,
+      wei('10', inputToken.decimals),
+      inputToken.address,
+      provider
+    )
+    const balance = await balanceOf(signer, RETH.address)
+    console.log(balance.toString(), 'rETH')
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  })
 
   test('minting with sETH2', async () => {
     const inputToken = SETH2
@@ -98,36 +100,22 @@ describe('FlashMintZeroEx - dsETH', () => {
     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 
-  // FIXME: did work a few times already
-  // test('minting with USDC', async () => {
-  //   const inputToken = {
-  //     address: USDC.address!,
-  //     decimals: 6,
-  //     symbol: USDC.symbol,
-  //   }
-  //   const outputToken = dsETH
-  //   const indexTokenAmount = wei('0.1')
-
-  //   const signer = SignerAccount0
-  //   // ETH / USDC
-  //   const pool = '0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640'
-  //   await wrapETH(wei(2), signer)
-  //   await swapExactInput(
-  //     pool,
-  //     {
-  //       tokenIn: WETH9.address,
-  //       tokenOut: inputToken.address!,
-  //       amountIn: wei('2'),
-  //       amountOutMin: wei('2000', inputToken.decimals),
-  //     },
-  //     provider,
-  //     signer
-  //   )
-  //   const balanceUsdc = await balanceOf(signer, inputToken.address)
-  //   console.log(balanceUsdc.toString(), 'USDC')
-  //
-  //   await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  // })
+  test('minting with USDC', async () => {
+    const inputToken = {
+      address: USDC.address!,
+      decimals: 6,
+      symbol: USDC.symbol,
+    }
+    const whale = '0x77f33da6046a03ebb0e6d33a26cb49bd738774ff'
+    await transferFromWhale(
+      whale,
+      signer.address,
+      wei('10000', inputToken.decimals),
+      inputToken.address,
+      provider
+    )
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+  })
 
   test('minting with wstETH', async () => {
     const inputToken = WSTETH

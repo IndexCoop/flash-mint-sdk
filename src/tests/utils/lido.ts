@@ -17,10 +17,10 @@ export async function addLiquidityToLido(amount: BigNumber, signer: Wallet) {
     '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
     { value: amount }
   )
-  await contract.estimateGas.submit(
-    '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
-    { gasLimit: gasEstimate, value: amount }
-  )
+  await contract.submit('0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', {
+    gasLimit: gasEstimate,
+    value: amount,
+  })
 }
 
 export async function wrapStEth(amount: BigNumber, signer: Wallet) {
