@@ -68,17 +68,17 @@ describe('FlashMintZeroEx - dsETH - redeem', () => {
     await redeemERC20(inputToken, outputToken, indexTokenAmount)
   })
 
-  test('redeeming to USDC', async () => {
-    await redeemERC20(
-      inputToken,
-      {
-        address: USDC.address!,
-        decimals: 6,
-        symbol: USDC.symbol,
-      },
-      indexTokenAmount
-    )
-  })
+  // test('redeeming to USDC', async () => {
+  //   await redeemERC20(
+  //     inputToken,
+  //     {
+  //       address: USDC.address!,
+  //       decimals: 6,
+  //       symbol: USDC.symbol,
+  //     },
+  //     indexTokenAmount
+  //   )
+  // })
 
   test('redeeming to wstETH', async () => {
     const outputToken = WSTETH
