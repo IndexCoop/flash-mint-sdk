@@ -1,6 +1,6 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
-  "version": "1.0.0",
+  "version": "1.5.1",
   "description": "Helper functions for using Index's Flash Mint contracts.",
   "engines": {
     "node": ">=14"
