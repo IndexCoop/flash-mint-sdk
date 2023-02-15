@@ -1,12 +1,5 @@
+import { Exchange } from '../utils/swapData'
 import { ETH, InterestCompoundingETHIndex, stETH } from './tokens'
-
-enum Exchange {
-  None,
-  Quickswap,
-  Sushiswap,
-  UniV3,
-  Curve,
-}
 
 export const collateralDebtSwapData = {
   [InterestCompoundingETHIndex.symbol]: {
