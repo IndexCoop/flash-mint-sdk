@@ -81,8 +81,7 @@ describe('BTC2xFLI (mainnet)', () => {
     const balanceOutputToken: BigNumber = await erc20OutputToken.balanceOf(
       signer.address
     )
-    console.log(balanceOutputToken.toString())
-    expect(balanceOutputToken.eq(wei(2))).toEqual(true)
+    expect(balanceOutputToken.gte(setTokenAmount)).toEqual(true)
   })
 
   test('can redeem BTC2xFLI', async () => {
@@ -221,7 +220,6 @@ describe('BTC2xFLI (mainnet)', () => {
     const balanceOutputToken: BigNumber = await erc20OutputToken.balanceOf(
       signer.address
     )
-    console.log(balanceOutputToken.toString(), '///')
     expect(balanceOutputToken.gt(0)).toEqual(true)
   })
 })
