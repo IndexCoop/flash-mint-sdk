@@ -129,7 +129,7 @@ export function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
 
   let fees: number[] = []
   if (exchange === Exchange.UniV3) {
-    fees = fillData.uniswapPath ? extractPoolFees(fillData.uniswapPath) : [500]
+    fees = fillData.path ? extractPoolFees(fillData.path) : [500]
   }
 
   return {
