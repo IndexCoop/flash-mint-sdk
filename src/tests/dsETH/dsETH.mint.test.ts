@@ -1,26 +1,15 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { Wallet } from '@ethersproject/wallet'
-
 import { USDC } from 'constants/tokens'
-import { FlashMintZeroEx } from 'flashMint/zeroEx'
-import { QuoteToken } from 'quote/quoteToken'
-import { getFlashMintZeroExQuote } from 'quote/zeroEx'
-import { getFlashMintZeroExContractForToken } from 'utils/contracts'
-import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
 
 import { addLiquidityToLido, wrapStEth } from '../utils/lido'
 import { depositIntoRocketPool } from '../utils/rocket'
 import { swapExactInput } from '../utils/uniswap'
 import {
-  approveErc20,
   balanceOf,
-  createERC20Contract,
   LocalhostProvider,
   SignerAccount0,
   transferFromWhale,
   wrapETH,
-  ZeroExApiSwapQuote,
 } from '../utils'
 
 import {
@@ -32,6 +21,7 @@ import {
   STETH,
   WSTETH,
   mint,
+  mintERC20,
 } from './dsETH.helpers'
 
 const provider = LocalhostProvider
@@ -46,16 +36,15 @@ describe('FlashMintZeroEx - dsETH', () => {
   })
 
   test('minting with ETH', async () => {
-    // await mint(outputToken, indexTokenAmount)
-    expect(true).toBe(true)
+    await mint(outputToken, indexTokenAmount)
+  })
+
+  test('minting with WETH', async () => {
+    const inputToken = WETH9
+    await wrapETH(wei(2), signer)
+    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   })
 })
-
-//   test('minting with WETH', async () => {
-//     const inputToken = WETH9
-//     await wrapETH(wei(2), signer)
-//     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-//   })
 
 //   test('minting with rETH', async () => {
 //     const inputToken = RETH
@@ -123,78 +112,3 @@ describe('FlashMintZeroEx - dsETH', () => {
 //     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
 //   })
 // })
-
-async function mintERC20(
-  inputToken: QuoteToken,
-  outputToken: QuoteToken,
-  indexTokenAmount: BigNumber,
-  slippage = 0.5,
-  signer: Wallet = SignerAccount0
-) {
-  const chainId = 1
-  const zeroExApi = ZeroExApiSwapQuote
-
-  const indexToken = outputToken
-  const isMinting = true
-
-  const quote = await getFlashMintZeroExQuote(
-    inputToken,
-    outputToken,
-    indexTokenAmount,
-    isMinting,
-    slippage,
-    zeroExApi,
-    provider,
-    chainId
-  )
-  expect(quote).toBeDefined()
-  if (!quote) fail()
-  expect(quote?.componentQuotes.length).toBeGreaterThan(0)
-  expect(quote?.inputOutputTokenAmount).toBeDefined()
-  expect(quote?.inputOutputTokenAmount).not.toBe(BigNumber.from(0))
-  expect(quote?.setTokenAmount).toEqual(indexTokenAmount)
-
-  // Get FlashMintZeroEx contract instance and issuance module (debtV2)
-  const contract = getFlashMintZeroExContractForToken(
-    indexToken.symbol,
-    signer,
-    chainId
-  )
-  const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
-
-  await approveErc20(
-    inputToken.address,
-    contract.address,
-    quote.inputOutputTokenAmount,
-    signer
-  )
-
-  const gasEstimate = await contract.estimateGas.issueExactSetFromToken(
-    indexToken.address,
-    inputToken.address,
-    indexTokenAmount,
-    quote.inputOutputTokenAmount,
-    quote.componentQuotes,
-    issuanceModule.address,
-    issuanceModule.isDebtIssuance
-  )
-
-  const flashMint = new FlashMintZeroEx(contract)
-  const tx = await flashMint.mintExactSetFromToken(
-    indexToken.address,
-    inputToken.address,
-    indexTokenAmount,
-    quote.inputOutputTokenAmount,
-    quote.componentQuotes,
-    issuanceModule.address,
-    issuanceModule.isDebtIssuance,
-    { gasLimit: gasEstimate }
-  )
-  if (!tx) fail()
-  tx.wait()
-  const indexTokenErc20 = createERC20Contract(indexToken.address, signer)
-  const balanceOutputToken: BigNumber = await indexTokenErc20.balanceOf(
-    signer.address
-  )
-  expect(balanceOutputToken.gt(0)).toEqual(true)
-}

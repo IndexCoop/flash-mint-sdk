@@ -18,6 +18,7 @@ import {
   JPGIndex,
   MATIC2xFlexibleLeverageIndex,
   wsETH2,
+  GitcoinStakedETHIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -35,6 +36,7 @@ function getIndexEthIssuanceModule(tokenSymbol: string): IssuanceModule {
 function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
     case DiversifiedStakedETHIndex.symbol:
+    case GitcoinStakedETHIndex.symbol:
     case wsETH2.symbol:
       return getIndexEthIssuanceModule(tokenSymbol)
     case BTC2xFlexibleLeverageIndex.symbol:
