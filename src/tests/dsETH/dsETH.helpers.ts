@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { Wallet } from '@ethersproject/wallet'
 
 import {
   DiversifiedStakedETHIndex,
@@ -14,6 +15,7 @@ import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 
 import {
+  approveErc20,
   createERC20Contract,
   LocalhostProvider,
   SignerAccount0,
@@ -114,6 +116,81 @@ export async function mint(
     issuanceModule.address,
     issuanceModule.isDebtIssuance,
     quote.inputOutputTokenAmount,
+    { gasLimit: gasEstimate }
+  )
+  if (!tx) fail()
+  tx.wait()
+  const indexTokenErc20 = createERC20Contract(indexToken.address, signer)
+  const balanceOutputToken: BigNumber = await indexTokenErc20.balanceOf(
+    signer.address
+  )
+  expect(balanceOutputToken.gt(0)).toEqual(true)
+}
+
+export async function mintERC20(
+  inputToken: QuoteToken,
+  outputToken: QuoteToken,
+  indexTokenAmount: BigNumber,
+  slippage = 0.5,
+  signer: Wallet = SignerAccount0
+) {
+  const chainId = 1
+  const zeroExApi = ZeroExApiSwapQuote
+
+  const indexToken = outputToken
+  const isMinting = true
+
+  const quote = await getFlashMintZeroExQuote(
+    inputToken,
+    outputToken,
+    indexTokenAmount,
+    isMinting,
+    slippage,
+    zeroExApi,
+    provider,
+    chainId
+  )
+  expect(quote).toBeDefined()
+  if (!quote) fail()
+  expect(quote?.componentQuotes.length).toBeGreaterThan(0)
+  expect(quote?.inputOutputTokenAmount).toBeDefined()
+  expect(quote?.inputOutputTokenAmount).not.toBe(BigNumber.from(0))
+  expect(quote?.setTokenAmount).toEqual(indexTokenAmount)
+
+  // Get FlashMintZeroEx contract instance and issuance module (debtV2)
+  const contract = getFlashMintZeroExContractForToken(
+    indexToken.symbol,
+    signer,
+    chainId
+  )
+  const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
+
+  await approveErc20(
+    inputToken.address,
+    contract.address,
+    quote.inputOutputTokenAmount,
+    signer
+  )
+
+  const gasEstimate = await contract.estimateGas.issueExactSetFromToken(
+    indexToken.address,
+    inputToken.address,
+    indexTokenAmount,
+    quote.inputOutputTokenAmount,
+    quote.componentQuotes,
+    issuanceModule.address,
+    issuanceModule.isDebtIssuance
+  )
+
+  const flashMint = new FlashMintZeroEx(contract)
+  const tx = await flashMint.mintExactSetFromToken(
+    indexToken.address,
+    inputToken.address,
+    indexTokenAmount,
+    quote.inputOutputTokenAmount,
+    quote.componentQuotes,
+    issuanceModule.address,
+    issuanceModule.isDebtIssuance,
     { gasLimit: gasEstimate }
   )
   if (!tx) fail()

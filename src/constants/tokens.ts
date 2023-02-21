@@ -33,6 +33,11 @@ export const ETH2xFlexibleLeverageIndex: Token = {
   symbol: 'ETH2x-FLI',
 }
 
+export const GitcoinStakedETHIndex: Token = {
+  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
+  symbol: 'gtcETH',
+}
+
 export const InterestCompoundingETHIndex: Token = {
   symbol: 'icETH',
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',

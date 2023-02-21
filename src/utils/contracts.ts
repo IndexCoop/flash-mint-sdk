@@ -21,6 +21,7 @@ import {
   ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   wsETH2,
+  GitcoinStakedETHIndex,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -137,6 +138,7 @@ export const getFlashMintZeroExContractForToken = (
 ): Contract => {
   switch (token) {
     case DiversifiedStakedETHIndex.symbol:
+    case GitcoinStakedETHIndex.symbol:
     case wsETH2.symbol:
       return getIndexFlashMintZeroExContract(providerSigner, chainId)
     default:

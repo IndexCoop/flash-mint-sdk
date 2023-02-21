@@ -12,6 +12,7 @@ import {
   ETH2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndexPolygon,
   DiversifiedStakedETHIndex,
+  GitcoinStakedETHIndex,
   GMIIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
@@ -60,9 +61,12 @@ describe('getIssuanceModule() - Mainnet', () => {
     const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedAddress)
     expect(issuanceModule.isDebtIssuance).toBe(true)
-    const issuanceModul2 = getIssuanceModule(wsETH2.symbol)
-    expect(issuanceModul2.address).toEqual(expectedAddress)
-    expect(issuanceModul2.isDebtIssuance).toBe(true)
+    const gtcEthIssuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
+    expect(gtcEthIssuanceModule.address).toEqual(expectedAddress)
+    expect(gtcEthIssuanceModule.isDebtIssuance).toBe(true)
+    const wsEthIssuanceModule = getIssuanceModule(wsETH2.symbol)
+    expect(wsEthIssuanceModule.address).toEqual(expectedAddress)
+    expect(wsEthIssuanceModule.isDebtIssuance).toBe(true)
   })
 })
 
