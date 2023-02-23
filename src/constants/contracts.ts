@@ -25,7 +25,7 @@ export const DebtIssuanceModuleV2PolygonAddress =
   '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
 export const ExchangeIssuanceLeveragedMainnetAddress =
-  '0xB7cc88A13586D862B97a677990de14A122b74598'
+  '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1'
 
 export const ExchangeIssuanceLeveragedPolygonAddress =
   '0xE86636f23B502B8746A72A1Ed87d65F096E419Db'
