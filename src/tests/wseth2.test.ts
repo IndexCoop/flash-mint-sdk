@@ -3,7 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { sETH2, WETH, wsETH2 } from 'constants/tokens'
 import {
   LocalhostProvider,
-  SignerAccount0,
+  SignerAccount17,
   ZeroExApiSwapQuote,
   createERC20Contract,
 } from 'tests/utils'
@@ -28,7 +28,7 @@ describe('FlashMintZeroEx - wsETH2', () => {
   test('wsETH2 minting works using sETH2', async () => {
     const isMinting = true
     const provider = LocalhostProvider
-    const signer = SignerAccount0
+    const signer = SignerAccount17
 
     const sETH2Address = sETH2.address!
     const ethSETH2PoolAddress = '0x7379e81228514a1D2a6Cf7559203998E20598346'
