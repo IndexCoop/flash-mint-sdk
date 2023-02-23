@@ -35,6 +35,24 @@ export const SignerAccount2 = new Wallet(
   LocalhostProvider
 )
 
+// Hardhat Account #3
+export const SignerAccount3 = new Wallet(
+  '0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6',
+  LocalhostProvider
+)
+
+// Hardhat Account #4
+export const SignerAccount4 = new Wallet(
+  '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
+  LocalhostProvider
+)
+
+// Hardhat Account #17
+export const SignerAccount17 = new Wallet(
+  '0x689af8efa8c651a91ad287602527f3af2fe9f6501a7ac4b061667b5a93e037fd',
+  LocalhostProvider
+)
+
 // ZeroExApi
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 export const ZeroExApiSwapQuote = new ZeroExApi(

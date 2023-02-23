@@ -23,12 +23,12 @@ import {
   approveErc20,
   createERC20Contract,
   LocalhostProvider,
-  SignerAccount1,
+  SignerAccount3,
   ZeroExApiSwapQuote,
 } from '../utils'
-import exp from 'constants'
 
 const provider = LocalhostProvider
+const signer = SignerAccount3
 
 describe('FlashMintZeroEx - dsETH - redeem', () => {
   const inputToken = dsETH
@@ -36,7 +36,7 @@ describe('FlashMintZeroEx - dsETH - redeem', () => {
 
   beforeAll(async () => {
     // Use different signer than dsETH.mint tests to prevent side effects
-    const signer = SignerAccount1
+
     // Mint enought dsETH for all tests to run through
     await mint(dsETH, indexTokenAmount.mul(100), 0.5, signer)
   })
@@ -98,7 +98,6 @@ async function redeem(
   slippage = 0.5
 ) {
   const chainId = 1
-  const signer = SignerAccount1
   const zeroExApi = ZeroExApiSwapQuote
 
   const indexToken = inputToken

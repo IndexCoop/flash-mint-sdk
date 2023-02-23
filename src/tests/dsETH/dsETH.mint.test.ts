@@ -7,7 +7,7 @@ import { swapExactInput } from '../utils/uniswap'
 import {
   balanceOf,
   LocalhostProvider,
-  SignerAccount0,
+  SignerAccount3,
   transferFromWhale,
   wrapETH,
 } from '../utils'
@@ -25,7 +25,7 @@ import {
 } from './dsETH.helpers'
 
 const provider = LocalhostProvider
-const signer = SignerAccount0
+const signer = SignerAccount3
 
 describe('FlashMintZeroEx - dsETH', () => {
   const outputToken = dsETH
