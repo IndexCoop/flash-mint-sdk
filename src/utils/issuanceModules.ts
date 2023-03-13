@@ -13,6 +13,7 @@ import {
   ETH2xFlexibleLeverageIndexPolygon,
   DiversifiedStakedETHIndex,
   GMIIndex,
+  InterestCompoundingETHIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
   JPGIndex,
@@ -43,6 +44,7 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
     case ETH2xFlexibleLeverageIndex.symbol:
     case GMIIndex.symbol:
       return { address: DebtIssuanceModuleAddress, isDebtIssuance: true }
+    case InterestCompoundingETHIndex.symbol:
     case JPGIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
     default:
