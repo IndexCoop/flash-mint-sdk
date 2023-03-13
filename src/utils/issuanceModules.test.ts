@@ -8,12 +8,15 @@ import {
   IndexDebtIssuanceModuleV2Address,
 } from 'constants/contracts'
 import {
+  BanklessBEDIndex,
   BTC2xFlexibleLeverageIndex,
+  DefiPulseIndex,
   ETH2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndexPolygon,
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
   GMIIndex,
+  InterestCompoundingETHIndex,
   InverseETHFlexibleLeverageIndex,
   InverseMATICFlexibleLeverageIndex,
   JPGIndex,
@@ -24,29 +27,77 @@ import {
 
 import { getIssuanceModule } from './issuanceModules'
 
-describe('getIssuanceModule() - Mainnet', () => {
-  test('returns basic issuance module for any other index', async () => {
-    const expectedAddress = BasicIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(MetaverseIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedAddress)
+describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
+  test('returns debt issuance module v2 for dsETH', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for gtcETH', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for wsETH2', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(wsETH2.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+})
+
+describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
+  test('returns basic issuance module for BED', async () => {
+    const expectedModule = BasicIssuanceModuleAddress
+    const issuanceModule = getIssuanceModule(BanklessBEDIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(false)
   })
 
-  test('returns debt issuance module for relevant indexes', async () => {
-    const expectedAddress = DebtIssuanceModuleAddress
-    const issuanceModuleBtc2x = getIssuanceModule(
-      BTC2xFlexibleLeverageIndex.symbol
-    )
-    const issuanceModuleEth2x = getIssuanceModule(
-      ETH2xFlexibleLeverageIndex.symbol
-    )
-    const issuanceModuleGmi = getIssuanceModule(GMIIndex.symbol)
-    expect(issuanceModuleBtc2x.address).toEqual(expectedAddress)
-    expect(issuanceModuleBtc2x.isDebtIssuance).toBe(true)
-    expect(issuanceModuleEth2x.address).toEqual(expectedAddress)
-    expect(issuanceModuleEth2x.isDebtIssuance).toBe(true)
-    expect(issuanceModuleGmi.address).toEqual(expectedAddress)
-    expect(issuanceModuleGmi.isDebtIssuance).toBe(true)
+  test('returns basic issuance module for DPI', async () => {
+    const expectedModule = BasicIssuanceModuleAddress
+    const issuanceModule = getIssuanceModule(DefiPulseIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(false)
+  })
+
+  test('returns basic issuance module for MVI', async () => {
+    const expectedModule = BasicIssuanceModuleAddress
+    const issuanceModule = getIssuanceModule(MetaverseIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(false)
+  })
+
+  test('returns debt issuance module for BTC2XFLI', async () => {
+    const expectedModule = DebtIssuanceModuleAddress
+    const issuanceModule = getIssuanceModule(BTC2xFlexibleLeverageIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module for ETH2xFLI', async () => {
+    const expectedModule = DebtIssuanceModuleAddress
+    const issuanceModule = getIssuanceModule(ETH2xFlexibleLeverageIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module for GMI', async () => {
+    const expectedModule = DebtIssuanceModuleAddress
+    const issuanceModule = getIssuanceModule(GMIIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for icETH', async () => {
+    const expectedModule = DebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(InterestCompoundingETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
   })
 
   test('returns debt issuance module v2 for JPG', async () => {
@@ -54,19 +105,6 @@ describe('getIssuanceModule() - Mainnet', () => {
     const issuanceModule = getIssuanceModule(JPGIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedAddress)
     expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for Index Protocol tokens', async () => {
-    const expectedAddress = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedAddress)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-    const gtcEthIssuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
-    expect(gtcEthIssuanceModule.address).toEqual(expectedAddress)
-    expect(gtcEthIssuanceModule.isDebtIssuance).toBe(true)
-    const wsEthIssuanceModule = getIssuanceModule(wsETH2.symbol)
-    expect(wsEthIssuanceModule.address).toEqual(expectedAddress)
-    expect(wsEthIssuanceModule.isDebtIssuance).toBe(true)
   })
 })
 
