@@ -94,7 +94,7 @@ describe('icETH (mainnet)', () => {
     }
 
     // USDC whale
-    const whale = '0x77f33da6046a03ebb0e6d33a26cb49bd738774ff'
+    const whale = '0x92F9113121532671dD76eb4905b968954FA53930'
     await transferFromWhale(
       whale,
       signer.address,
@@ -185,7 +185,8 @@ describe('icETH (mainnet)', () => {
       1
     )
 
-    const minAmountOutput = quote.inputOutputTokenAmount // .mul(1001).div(1000)
+    // Add some slippage to make sure this redeems
+    const minAmountOutput = quote.inputOutputTokenAmount.mul(1000).div(1005)
 
     await approveErc20(
       setTokenAddress,
