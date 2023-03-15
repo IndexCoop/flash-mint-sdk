@@ -54,6 +54,12 @@ export const MetaverseIndex: Token = {
   symbol: 'MVI',
 }
 
+// FIXME: add address once deployed
+export const MoneyMarketIndex: Token = {
+  address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
+  symbol: 'MMI',
+}
+
 // Other
 
 export const ETH: Token = {

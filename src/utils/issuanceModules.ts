@@ -18,6 +18,7 @@ import {
   InverseMATICFlexibleLeverageIndex,
   JPGIndex,
   MATIC2xFlexibleLeverageIndex,
+  MoneyMarketIndex,
   wsETH2,
   GitcoinStakedETHIndex,
 } from '../constants/tokens'
@@ -38,6 +39,7 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
     case DiversifiedStakedETHIndex.symbol:
     case GitcoinStakedETHIndex.symbol:
+    case MoneyMarketIndex.symbol:
     case wsETH2.symbol:
       return getIndexEthIssuanceModule(tokenSymbol)
     case BTC2xFlexibleLeverageIndex.symbol:
