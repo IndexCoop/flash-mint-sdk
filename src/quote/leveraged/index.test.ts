@@ -23,7 +23,7 @@ import {
   getIncludedSources,
   getPaymentTokenAddress,
   getSwapDataAndPaymentTokenAmount,
-} from './leveraged'
+} from './'
 
 const zeroExApi = ZeroExApiSwapQuote
 const provider = LocalhostProvider
