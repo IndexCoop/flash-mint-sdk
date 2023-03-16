@@ -3,11 +3,10 @@ import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI, USDC, USDT, WETH } from '../constants/tokens'
-import { QuoteToken } from '../quote/quoteToken'
 
 import { getIssuanceModule } from './issuanceModules'
 import { Exchange, SwapData } from './swapData'
-import { IndexTokenMix } from './wrapData'
+import { getIndexTokenMix, IndexTokenMix } from './wrapData'
 
 export interface ComponentSwapData {
   underlyingERC20: string
@@ -48,9 +47,9 @@ export async function getIssuanceComponentSwapData(
     indexToken,
     indexTokenAmount
   )
-  // TODO:
-  const set_token_mix = IndexTokenMix.UNWRAPPED_ONLY
+  const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
   console.log(issuanceComponents, issuanceUnits)
+  console.log(indexTokenMix)
   // TODO: GET EXCHANGE RATES
   return [
     {
