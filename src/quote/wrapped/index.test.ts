@@ -15,7 +15,7 @@ const indexToken: QuoteToken = {
 }
 
 describe('WrappedQuoteProvider()', () => {
-  test('it works', async () => {
+  test('returns a quote for minting MMI', async () => {
     const inputToken: QuoteToken = {
       address: USDC.address!,
       decimals: 6,
@@ -30,6 +30,7 @@ describe('WrappedQuoteProvider()', () => {
     }
     const quoteProvider = new WrappedQuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
-    expect(quote).toBeNull()
+    if (!quote) fail()
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
   })
 })
