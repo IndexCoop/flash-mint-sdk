@@ -62,6 +62,11 @@ export const MoneyMarketIndex: Token = {
 
 // Other
 
+export const DAI: Token = {
+  symbol: 'DAI',
+  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+}
+
 export const ETH: Token = {
   symbol: 'ETH',
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
@@ -85,6 +90,11 @@ export const stETH: Token = {
 export const USDC: Token = {
   symbol: 'USDC',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+}
+
+export const USDT: Token = {
+  symbol: 'USDT',
+  address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 }
 
 export const WETH: Token = {
