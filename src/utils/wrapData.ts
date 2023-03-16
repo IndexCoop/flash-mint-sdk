@@ -1,3 +1,5 @@
+import { MoneyMarketIndex } from 'constants/tokens'
+
 export enum IndexTokenMix {
   UNWRAPPED_ONLY = 'UNWRAPPED_ONLY',
   WRAPPED_ONLY = 'WRAPPED_ONLY',
@@ -11,6 +13,13 @@ export interface ComponentWrapData {
 
 const compoundWrapAdapterIntegrationName: string = 'CompoundWrapV2Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
+
+export function getIndexTokenMix(tokenSymbol: string): IndexTokenMix {
+  if (tokenSymbol === MoneyMarketIndex.symbol) {
+    return IndexTokenMix.WRAPPED_ONLY
+  }
+  throw new Error('Token not defined')
+}
 
 export function getWrapData(tokenMix: IndexTokenMix): ComponentWrapData[] {
   switch (tokenMix) {
