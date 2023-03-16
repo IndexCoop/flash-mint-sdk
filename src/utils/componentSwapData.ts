@@ -19,6 +19,7 @@ export interface ComponentSwapData {
   // e.g. 300 cDAI needed for issuance of 1 Set token. exchange rate 1cDAI = 0.05 DAI. -> buyUnderlyingAmount = 0.05 DAI * 300 = 15 DAI
   buyUnderlyingAmount: BigNumber
 }
+
 const IssuanceAbi = [
   'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
 ]
@@ -29,27 +30,77 @@ const usdt = USDT.address!
 const weth = WETH.address!
 
 export async function getIssuanceComponentSwapData(
-  indexToken: QuoteToken,
+  indexTokenSymbol: string,
+  indexToken: string,
   inputToken: string,
   indexTokenAmount: BigNumber,
   provider: JsonRpcProvider
-) {
-  const issuanceModule = getIssuanceModule(indexToken.symbol)
+): Promise<ComponentSwapData[]> {
+  const issuanceModule = getIssuanceModule(indexTokenSymbol)
   console.log(issuanceModule)
   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
   console.log(issuance.functions)
-  // TODO: GET REQUIRED COMPONENTS
+  // TODO: check returns
   const [
     issuanceComponents, // cDAI, cUSDC and cUSDT, in that order
     issuanceUnits,
   ] = await issuance.getRequiredComponentIssuanceUnits(
-    indexToken.address,
+    indexToken,
     indexTokenAmount
   )
+  // TODO:
   const set_token_mix = IndexTokenMix.UNWRAPPED_ONLY
   console.log(issuanceComponents, issuanceUnits)
   // TODO: GET EXCHANGE RATES
-  // TODO: GET SWAP DATA
+  return [
+    {
+      underlyingERC20: dai,
+      // TODO:
+      buyUnderlyingAmount: BigNumber.from(0), // set_token_mix !== SetTokenMix.UNWRAPPED_ONLY
+      // ? requiredDAI
+      // : issuanceUnits[0],
+      dexData: getStaticIssuanceSwapData(inputToken, dai),
+    },
+    {
+      underlyingERC20: usdc,
+      // cUSDC is only used in test case WRAPPED_ONLY
+      buyUnderlyingAmount: BigNumber.from(0) /*
+        set_token_mix === SetTokenMix.WRAPPED_ONLY
+          ? requiredUSDC
+          : issuanceUnits[1], */,
+      dexData: getStaticIssuanceSwapData(inputToken, usdc),
+    },
+    {
+      underlyingERC20: usdt,
+      buyUnderlyingAmount: BigNumber.from(0) /*
+        set_token_mix !== SetTokenMix.UNWRAPPED_ONLY
+          ? requiredUSDT
+          : issuanceUnits[2], */,
+      dexData: getStaticIssuanceSwapData(inputToken, usdt),
+    },
+  ]
+}
+
+export function getRedemptionComponentSwapData(
+  outputToken: string
+): ComponentSwapData[] {
+  return [
+    {
+      underlyingERC20: dai,
+      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
+      dexData: getStaticRedemptionSwapData(dai, outputToken),
+    },
+    {
+      underlyingERC20: usdc,
+      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
+      dexData: getStaticRedemptionSwapData(usdc, outputToken),
+    },
+    {
+      underlyingERC20: usdt,
+      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
+      dexData: getStaticRedemptionSwapData(usdt, outputToken),
+    },
+  ]
 }
 
 function getStaticIssuanceSwapData(
@@ -80,26 +131,4 @@ function getStaticRedemptionSwapData(
     fees: outputTokenIsWeth ? [3000] : [3000, 3000],
     pool: '0x0000000000000000000000000000000000000000',
   }
-}
-
-export function getRedemptionComponentSwapData(
-  outputToken: string
-): ComponentSwapData[] {
-  return [
-    {
-      underlyingERC20: dai,
-      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
-      dexData: getStaticRedemptionSwapData(dai, outputToken),
-    },
-    {
-      underlyingERC20: usdc,
-      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
-      dexData: getStaticRedemptionSwapData(usdc, outputToken),
-    },
-    {
-      underlyingERC20: usdt,
-      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
-      dexData: getStaticRedemptionSwapData(usdt, outputToken),
-    },
-  ]
 }
