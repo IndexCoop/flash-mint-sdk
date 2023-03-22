@@ -31,8 +31,10 @@ describe('getIssuanceComponentSwapData()', () => {
     expect(componentSwapData[0].underlyingERC20).toBe(dai)
     expect(componentSwapData[1].underlyingERC20).toBe(usdc)
     expect(componentSwapData[2].underlyingERC20).toBe(usdt)
-    // TODO:
-    // expect(componentSwapData[0].buyUnderlyingAmount).toEqual()
+    expect(componentSwapData[0].buyUnderlyingAmount.gt(0)).toBe(true)
+    expect(componentSwapData[1].buyUnderlyingAmount.gt(0)).toBe(true)
+    // TODO: activate once testing with real MMI
+    // expect(componentSwapData[2].buyUnderlyingAmount).toBeGreaterThan(0)
     expect(componentSwapData[0].dexData.exchange).toBe(Exchange.UniV3)
     expect(componentSwapData[1].dexData.exchange).toBe(Exchange.UniV3)
     expect(componentSwapData[2].dexData.exchange).toBe(Exchange.UniV3)
