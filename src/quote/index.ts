@@ -6,6 +6,7 @@ import { FlashMintWrappedAddress } from '../constants/contracts'
 
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
+import { WrappedQuoteProvider } from './wrapped'
 
 export enum FlashMintContractType {
   leveraged,
@@ -53,17 +54,26 @@ export class FlashMintQuoteProvider
     const contractAddress = getContractAddress(contractType)
     const network = await provider.getNetwork()
     const chainId = network.chainId
-    return {
-      chainId,
-      contractType,
-      contract: contractAddress,
-      isMinting,
-      inputToken,
-      outputToken,
-      indexTokenAmount,
-      inputOutputAmount: BigNumber.from(0),
-      slippage,
-      tx: {},
+    switch (contractType) {
+      case FlashMintContractType.wrapped:
+        const wrappedQuoteProvider = new WrappedQuoteProvider(provider)
+        const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
+        if (!wrappedQuote) return null
+        // TODO: build tx using the returned wrapped quote's swap data
+        return {
+          chainId,
+          contractType,
+          contract: contractAddress,
+          isMinting,
+          inputToken,
+          outputToken,
+          indexTokenAmount,
+          inputOutputAmount: wrappedQuote.inputOutputTokenAmount,
+          slippage,
+          tx: {},
+        }
+      default:
+        return null
     }
   }
 }
