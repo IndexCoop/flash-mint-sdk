@@ -1,10 +1,13 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
+import { JsonRpcProvider } from '@ethersproject/providers'
+
+import { FlashMintWrappedAddress } from '../constants/contracts'
 
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
 
-enum FlashMintContractType {
+export enum FlashMintContractType {
   leveraged,
   wrapped,
   zeroEx,
@@ -34,16 +37,43 @@ export interface FlashMintQuote {
 export class FlashMintQuoteProvider
   implements QuoteProvider<FlashMintQuoteRequest, FlashMintQuote>
 {
+  constructor(private readonly provider: JsonRpcProvider) {}
+
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
-    const { inputToken, isMinting, outputToken } = request
+    const { provider } = this
+    const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
+      request
     const indexToken = isMinting ? outputToken : inputToken
     const contractType = getContractType(indexToken.symbol)
     if (contractType !== FlashMintContractType.wrapped) {
       throw new Error('Index token not supported')
     }
-    return null
+    const contractAddress = getContractAddress(contractType)
+    const network = await provider.getNetwork()
+    const chainId = network.chainId
+    return {
+      chainId,
+      contractType,
+      contract: contractAddress,
+      isMinting,
+      inputToken,
+      outputToken,
+      indexTokenAmount,
+      inputOutputAmount: BigNumber.from(0),
+      slippage,
+      tx: {},
+    }
+  }
+}
+
+function getContractAddress(contractType: FlashMintContractType): string {
+  switch (contractType) {
+    case FlashMintContractType.wrapped:
+      return FlashMintWrappedAddress
+    default:
+      return ''
   }
 }
 
