@@ -18,13 +18,33 @@ const indexToken: QuoteToken = {
   symbol: MoneyMarketIndex.symbol,
 }
 
+const usdc: QuoteToken = {
+  address: USDC.address!,
+  decimals: 6,
+  symbol: USDC.symbol,
+}
+
 describe('FlashMintQuoteProvider()', () => {
-  test('returns a quote for minting MMI', async () => {
-    const inputToken: QuoteToken = {
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
+  test('for now anything except MMI is unsupported', async () => {
+    const inputToken = usdc
+    const outputToken = {
+      address: '0x0',
+      decimals: 18,
+      symbol: 'DPI',
     }
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken,
+      outputToken,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider()
+    await expect(quoteProvider.getQuote(request)).rejects.toThrow()
+  })
+
+  test('returns a quote for minting MMI', async () => {
+    const inputToken = usdc
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken,

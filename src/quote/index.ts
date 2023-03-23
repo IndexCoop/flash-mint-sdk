@@ -37,6 +37,18 @@ export class FlashMintQuoteProvider
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
+    const { inputToken, isMinting, outputToken } = request
+    const indexToken = isMinting ? outputToken : inputToken
+    const contractType = getContractType(indexToken.symbol)
+    if (contractType !== FlashMintContractType.wrapped) {
+      throw new Error('Index token not supported')
+    }
     return null
   }
+}
+
+// Returns contract type for token or null if not supported
+function getContractType(token: string): FlashMintContractType | null {
+  if (token === 'MMI') return FlashMintContractType.wrapped
+  return null
 }
