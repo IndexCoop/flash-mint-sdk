@@ -72,11 +72,11 @@ export async function getIssuanceComponentSwapData(
 
   const requiredDai = issuanceUnits[0].mul(cDaiExchangeRate)
   const requiredUsdc = issuanceUnits[1].mul(cUsdcExchangeRate)
-  // const requiredUsdt = issuanceUnits[2].mul(cUsdtExchangeRate)
+  const requiredUsdt = issuanceUnits[2].mul(cUsdtExchangeRate)
 
   console.log(requiredDai.toString())
   console.log(requiredUsdc.toString())
-  // console.log(requiredUsdt.toString())
+  console.log(requiredUsdt.toString())
 
   const buyUnderlyingAmountDai =
     indexTokenMix !== IndexTokenMix.UNWRAPPED_ONLY
@@ -87,10 +87,10 @@ export async function getIssuanceComponentSwapData(
     indexTokenMix === IndexTokenMix.WRAPPED_ONLY
       ? requiredUsdc
       : issuanceUnits[1]
-  // const buyUnderlyingAmountUsdt =
-  //   indexTokenMix !== IndexTokenMix.UNWRAPPED_ONLY
-  //     ? requiredUsdt
-  //     : issuanceUnits[2]
+  const buyUnderlyingAmountUsdt =
+    indexTokenMix !== IndexTokenMix.UNWRAPPED_ONLY
+      ? requiredUsdt
+      : issuanceUnits[2]
 
   return [
     {
@@ -105,7 +105,7 @@ export async function getIssuanceComponentSwapData(
     },
     {
       underlyingERC20: usdt,
-      buyUnderlyingAmount: BigNumber.from(0),
+      buyUnderlyingAmount: buyUnderlyingAmountUsdt,
       dexData: getStaticIssuanceSwapData(inputToken, usdt),
     },
   ]

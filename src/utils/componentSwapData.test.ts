@@ -9,7 +9,6 @@ import {
 import { Exchange } from './swapData'
 
 const provider = LocalhostProvider
-// const zeroExApi = ZeroExApiSwapQuote
 
 const dai = DAI.address!
 const usdc = USDC.address!
@@ -33,8 +32,7 @@ describe('getIssuanceComponentSwapData()', () => {
     expect(componentSwapData[2].underlyingERC20).toBe(usdt)
     expect(componentSwapData[0].buyUnderlyingAmount.gt(0)).toBe(true)
     expect(componentSwapData[1].buyUnderlyingAmount.gt(0)).toBe(true)
-    // TODO: activate once testing with real MMI
-    // expect(componentSwapData[2].buyUnderlyingAmount).toBeGreaterThan(0)
+    expect(componentSwapData[2].buyUnderlyingAmount.gt(0)).toBe(true)
     expect(componentSwapData[0].dexData.exchange).toBe(Exchange.UniV3)
     expect(componentSwapData[1].dexData.exchange).toBe(Exchange.UniV3)
     expect(componentSwapData[2].dexData.exchange).toBe(Exchange.UniV3)
@@ -98,7 +96,6 @@ describe('getRedemptionComponentSwapData()', () => {
 
   test('returns correct swap data when output token is WETH', async () => {
     const outputToken = weth
-    const zeroAddress = '0x0000000000000000000000000000000000000000'
     const componentSwapData = getRedemptionComponentSwapData(outputToken)
     expect(componentSwapData.length).toBe(3)
     expect(componentSwapData[0].underlyingERC20).toBe(dai)
