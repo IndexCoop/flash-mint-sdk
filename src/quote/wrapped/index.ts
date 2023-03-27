@@ -1,11 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ZeroExApi } from '../../utils/0x'
 import {
   ComponentSwapData,
   getIssuanceComponentSwapData,
 } from '../../utils/componentSwapData'
+import { slippageAdjustedTokenAmount } from '../../utils/slippage'
 import {
   ComponentWrapData,
   getIndexTokenMix,
@@ -38,12 +38,10 @@ export class WrappedQuoteProvider
     request: FlashMintWrappedQuoteRequest
   ): Promise<FlashMintWrappedQuote | null> {
     const { provider } = this
-    const { inputToken, indexTokenAmount, outputToken } = request
+    const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
+      request
     const indexTokenAddress = outputToken.address
     const indexTokenSymbol = outputToken.symbol
-    // TODO: need this?
-    // const network = await provider.getNetwork()
-    // const chainId = network.chainId
     const componentSwapData = await getIssuanceComponentSwapData(
       indexTokenSymbol,
       indexTokenAddress,
@@ -53,13 +51,18 @@ export class WrappedQuoteProvider
     )
     const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
     const wrapData = getWrapData(indexTokenMix)
-    // TODO: get estimated input/output amount
-    const inputOutputTokenAmount = BigNumber.from(0)
+    const inputOutputTokenAmount = slippageAdjustedTokenAmount(
+      // TODO: get estimated input/output amount
+      BigNumber.from(0),
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      slippage,
+      isMinting
+    )
     // TODO: return quote object
     const quote: FlashMintWrappedQuote = {
-      componentSwapData: componentSwapData,
+      componentSwapData,
       componentWrapData: wrapData,
-      indexTokenAmount: indexTokenAmount,
+      indexTokenAmount,
       inputOutputTokenAmount,
     }
     return quote
