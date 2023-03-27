@@ -127,7 +127,7 @@ export async function getRedemptionComponentSwapData(
       const underlyingERC20 = getUnderlyingErc20(component)
       return {
         underlyingERC20,
-        buyUnderlyingAmount: BigNumber.from(0),
+        buyUnderlyingAmount: issuanceUnits[index],
         dexData: getStaticRedemptionSwapData(underlyingERC20, outputToken),
       }
     }

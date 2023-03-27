@@ -6,6 +6,7 @@ import {
   getIssuanceComponentSwapData,
   getRedemptionComponentSwapData,
 } from '../../utils/componentSwapData'
+import { getFlashMintWrappedContract } from '../../utils/contracts'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'
 import {
   ComponentWrapData,
@@ -41,32 +42,55 @@ export class WrappedQuoteProvider
     const { provider } = this
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
-    const indexTokenAddress = isMinting
-      ? outputToken.address
-      : inputToken.address
-    const indexTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
+    const indexToken = isMinting ? outputToken : inputToken
+    const indexTokenSymbol = indexToken.symbol
     const componentSwapData = isMinting
       ? await getIssuanceComponentSwapData(
           indexTokenSymbol,
-          indexTokenAddress,
+          indexToken.address,
           inputToken.address,
           indexTokenAmount,
           provider
         )
-      : await getRedemptionComponentSwapData(outputToken.address)
+      : await getRedemptionComponentSwapData(
+          indexTokenSymbol,
+          indexToken.address,
+          outputToken.address,
+          indexTokenAmount,
+          provider
+        )
     const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
-    const wrapData = getWrapData(indexTokenMix)
+    // FIXME:
+    const componentWrapData = getWrapData(indexTokenMix)
+    // FIXME: check wrap data length === component swap data length
+    let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
+    const contract = getFlashMintWrappedContract(provider)
+    if (isMinting) {
+      estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
+        indexToken.address,
+        inputToken.address,
+        indexTokenAmount,
+        componentSwapData
+      )
+    } else {
+      estimatedInputOutputAmount = await contract.callStatic.getRedeemExactSet(
+        indexToken.address,
+        outputToken.address,
+        indexTokenAmount,
+        componentSwapData
+      )
+    }
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
-      // TODO: get estimated input/output amount
-      BigNumber.from(0),
+      estimatedInputOutputAmount,
       isMinting ? inputToken.decimals : outputToken.decimals,
       slippage,
       isMinting
     )
-    // TODO: return quote object
+    console.log(estimatedInputOutputAmount.toString(), 'estimate')
+    console.log(inputOutputTokenAmount.toString(), 'slippage adjusted')
     const quote: FlashMintWrappedQuote = {
       componentSwapData,
-      componentWrapData: wrapData,
+      componentWrapData,
       indexTokenAmount,
       inputOutputTokenAmount,
     }
