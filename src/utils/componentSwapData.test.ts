@@ -18,11 +18,11 @@ const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 describe('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token (USDC)', async () => {
-    const inputTokenAddress = USDC.address!
+    const inputToken = USDC.address!
     const componentSwapData = await getIssuanceComponentSwapData(
       MoneyMarketIndex.symbol,
       MoneyMarketIndex.address!,
-      inputTokenAddress,
+      inputToken,
       wei(1),
       provider
     )
@@ -39,6 +39,12 @@ describe('getIssuanceComponentSwapData()', () => {
     expect(componentSwapData[0].dexData.fees).toEqual([3000, 3000])
     expect(componentSwapData[1].dexData.fees).toEqual([3000, 3000])
     expect(componentSwapData[2].dexData.fees).toEqual([3000, 3000])
+    expect(componentSwapData[0].dexData.path).toEqual([inputToken, weth, dai])
+    expect(componentSwapData[1].dexData.path).toEqual([inputToken, weth, usdc])
+    expect(componentSwapData[2].dexData.path).toEqual([inputToken, weth, usdt])
+    expect(componentSwapData[0].dexData.pool).toBe(zeroAddress)
+    expect(componentSwapData[1].dexData.pool).toBe(zeroAddress)
+    expect(componentSwapData[2].dexData.pool).toBe(zeroAddress)
   })
 
   test('returns correct swap data based when input token is WETH', async () => {
@@ -54,6 +60,9 @@ describe('getIssuanceComponentSwapData()', () => {
     expect(componentSwapData[0].underlyingERC20).toBe(dai)
     expect(componentSwapData[1].underlyingERC20).toBe(usdc)
     expect(componentSwapData[2].underlyingERC20).toBe(usdt)
+    expect(componentSwapData[0].buyUnderlyingAmount.gt(0)).toBe(true)
+    expect(componentSwapData[1].buyUnderlyingAmount.gt(0)).toBe(true)
+    expect(componentSwapData[2].buyUnderlyingAmount.gt(0)).toBe(true)
     expect(componentSwapData[0].dexData.exchange).toBe(Exchange.UniV3)
     expect(componentSwapData[1].dexData.exchange).toBe(Exchange.UniV3)
     expect(componentSwapData[2].dexData.exchange).toBe(Exchange.UniV3)
