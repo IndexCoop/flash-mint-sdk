@@ -4,6 +4,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import {
   ComponentSwapData,
   getIssuanceComponentSwapData,
+  getRedemptionComponentSwapData,
 } from '../../utils/componentSwapData'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'
 import {
@@ -40,15 +41,19 @@ export class WrappedQuoteProvider
     const { provider } = this
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
-    const indexTokenAddress = outputToken.address
-    const indexTokenSymbol = outputToken.symbol
-    const componentSwapData = await getIssuanceComponentSwapData(
-      indexTokenSymbol,
-      indexTokenAddress,
-      inputToken.address,
-      indexTokenAmount,
-      provider
-    )
+    const indexTokenAddress = isMinting
+      ? outputToken.address
+      : inputToken.address
+    const indexTokenSymbol = isMinting ? outputToken.symbol : inputToken.symbol
+    const componentSwapData = isMinting
+      ? await getIssuanceComponentSwapData(
+          indexTokenSymbol,
+          indexTokenAddress,
+          inputToken.address,
+          indexTokenAmount,
+          provider
+        )
+      : await getRedemptionComponentSwapData(outputToken.address)
     const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
     const wrapData = getWrapData(indexTokenMix)
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
