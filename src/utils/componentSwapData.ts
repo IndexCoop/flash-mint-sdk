@@ -23,6 +23,7 @@ const CErc20Abi = ['function exchangeRateCurrent() public returns (uint)']
 
 const IssuanceAbi = [
   'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
+  'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
 ]
 
 const dai = DAI.address!
@@ -107,26 +108,31 @@ export async function getIssuanceComponentSwapData(
   return swapData
 }
 
-export function getRedemptionComponentSwapData(
-  outputToken: string
-): ComponentSwapData[] {
-  return [
-    {
-      underlyingERC20: dai,
-      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
-      dexData: getStaticRedemptionSwapData(dai, outputToken),
-    },
-    {
-      underlyingERC20: usdc,
-      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
-      dexData: getStaticRedemptionSwapData(usdc, outputToken),
-    },
-    {
-      underlyingERC20: usdt,
-      buyUnderlyingAmount: BigNumber.from(0), // not used in redeem
-      dexData: getStaticRedemptionSwapData(usdt, outputToken),
-    },
-  ]
+export async function getRedemptionComponentSwapData(
+  indexTokenSymbol: string,
+  indexToken: string,
+  outputToken: string,
+  indexTokenAmount: BigNumber,
+  provider: JsonRpcProvider
+): Promise<ComponentSwapData[]> {
+  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
+  const [issuanceComponents, issuanceUnits] =
+    await issuance.getRequiredComponentRedemptionUnits(
+      indexToken,
+      indexTokenAmount
+    )
+  const swapData = issuanceComponents.map(
+    (component: string, index: number) => {
+      const underlyingERC20 = getUnderlyingErc20(component)
+      return {
+        underlyingERC20,
+        buyUnderlyingAmount: BigNumber.from(0),
+        dexData: getStaticRedemptionSwapData(underlyingERC20, outputToken),
+      }
+    }
+  )
+  return swapData
 }
 
 async function getExchangeRate(
