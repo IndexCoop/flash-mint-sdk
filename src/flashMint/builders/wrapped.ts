@@ -6,10 +6,12 @@ import { ComponentWrapData } from '../../utils/wrapData'
 import { TransactionBuilder } from './interface'
 
 export interface FlashMintWrappedBuildRequest {
-  componentSwapData: ComponentSwapData[]
-  componentWrapData: ComponentWrapData[]
+  indexToken: string
+  inputOutputToken: string
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
+  componentSwapData: ComponentSwapData[]
+  componentWrapData: ComponentWrapData[]
 }
 
 export class WrappedTransactionBuilder

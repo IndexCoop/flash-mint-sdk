@@ -29,10 +29,12 @@ describe('WrappedTransactionBuilder()', () => {
       symbol: USDC.symbol,
     }
     const buildRequest: FlashMintWrappedBuildRequest = {
-      componentSwapData: [],
-      componentWrapData: [],
+      indexToken: indexToken.address,
+      inputOutputToken: inputToken.address,
       indexTokenAmount: BigNumber.from(0),
       inputOutputTokenAmount: BigNumber.from(0),
+      componentSwapData: [],
+      componentWrapData: [],
     }
     const builder = new WrappedTransactionBuilder()
     const tx = await builder.build(buildRequest)
