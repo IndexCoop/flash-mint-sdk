@@ -88,7 +88,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  test('returns a tx for MMI', async () => {
+  test('returns a tx for minting MMI (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest()
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.issueExactSetFromERC20(
@@ -105,16 +105,36 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.to).toBe(FlashMintWrappedAddress)
     expect(tx.data).toEqual(refTx.data)
   })
+
+  test('returns a tx for redeeming MMI (ERC20)', async () => {
+    const buildRequest = getDefaultBuildRequest(false)
+    const contract = getFlashMintWrappedContract(provider)
+    const refTx = await contract.populateTransaction.redeemExactSetForERC20(
+      buildRequest.indexToken,
+      buildRequest.inputOutputToken,
+      buildRequest.indexTokenAmount,
+      buildRequest.inputOutputTokenAmount,
+      buildRequest.componentSwapData,
+      buildRequest.componentWrapData
+    )
+    const builder = new WrappedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintWrappedAddress)
+    expect(tx.data).toEqual(refTx.data)
+  })
 })
 
-function getDefaultBuildRequest(): FlashMintWrappedBuildRequest {
+function getDefaultBuildRequest(
+  isMinting: boolean = true
+): FlashMintWrappedBuildRequest {
   const inputToken = usdc
   const wrapData: ComponentWrapData = {
     integrationName: '',
     wrapData: ZERO_BYTES,
   }
   return {
-    isMinting: true,
+    isMinting,
     indexToken: indexToken.address,
     inputOutputToken: inputToken.address,
     indexTokenAmount: wei(1),

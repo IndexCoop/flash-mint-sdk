@@ -1,5 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
+import { PopulatedTransaction } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ComponentSwapData } from '../../utils/componentSwapData'
@@ -35,18 +36,29 @@ export class WrappedTransactionBuilder
       indexTokenAmount,
       inputOutputToken,
       inputOutputTokenAmount,
+      isMinting,
     } = request
     const contract = getFlashMintWrappedContract(this.provider)
-    const tx = await contract.populateTransaction.issueExactSetFromERC20(
-      indexToken,
-      inputOutputToken,
-      indexTokenAmount,
-      inputOutputTokenAmount,
-      componentSwapData,
-      componentWrapData
-    )
-    // TODO: add all four issue/redeem functions
-    // TODO: generate tx
+    let tx: PopulatedTransaction | null = null
+    if (isMinting) {
+      tx = await contract.populateTransaction.issueExactSetFromERC20(
+        indexToken,
+        inputOutputToken,
+        indexTokenAmount,
+        inputOutputTokenAmount, // _maxAmountInputToken
+        componentSwapData,
+        componentWrapData
+      )
+    } else {
+      tx = await contract.populateTransaction.redeemExactSetForERC20(
+        indexToken,
+        inputOutputToken,
+        indexTokenAmount,
+        inputOutputTokenAmount, // _minOutputReceive
+        componentSwapData,
+        componentWrapData
+      )
+    }
     return tx
   }
 
