@@ -35,6 +35,11 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
+    expect(quote.componentSwapData.length).toBeGreaterThan(0)
+    expect(quote.componentWrapData.length).toBeGreaterThan(0)
+    expect(quote.componentSwapData.length).toEqual(
+      quote.componentWrapData.length
+    )
   })
 
   test('returns a quote for redeeming MMI', async () => {
@@ -55,5 +60,10 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
+    expect(quote.componentSwapData.length).toBeGreaterThan(0)
+    expect(quote.componentWrapData.length).toBeGreaterThan(0)
+    expect(quote.componentSwapData.length).toEqual(
+      quote.componentWrapData.length
+    )
   })
 })

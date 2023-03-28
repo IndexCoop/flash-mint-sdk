@@ -11,41 +11,31 @@ describe('getIndexTokenMix()', () => {
 
   test('returns correct mix for MMI', async () => {
     const indexTokenMix = getIndexTokenMix(MoneyMarketIndex.symbol)
-    expect(indexTokenMix).toBe(IndexTokenMix.WRAPPED_ONLY)
+    expect(indexTokenMix).toBe(IndexTokenMix.UNWRAPPED_ONLY)
   })
 })
 
 describe('getWrapData()', () => {
   test('UNWRAPPED_ONLY', async () => {
     const wrapData = getWrapData(IndexTokenMix.UNWRAPPED_ONLY)
-    expect(wrapData.length).toBe(3)
-    expect(wrapData[0].integrationName).toBe('')
-    expect(wrapData[1].integrationName).toBe('')
-    expect(wrapData[2].integrationName).toBe('')
-    expect(wrapData[0].wrapData).toBe(ZERO_BYTES)
-    expect(wrapData[1].wrapData).toBe(ZERO_BYTES)
-    expect(wrapData[2].wrapData).toBe(ZERO_BYTES)
+    expect(wrapData.length).toBe(6)
+    wrapData.forEach((data) => {
+      expect(data.integrationName).toBe('')
+      expect(data.wrapData).toBe(ZERO_BYTES)
+    })
   })
 
   test('WRAPPED_ONLY', async () => {
     const wrapData = getWrapData(IndexTokenMix.WRAPPED_ONLY)
-    expect(wrapData.length).toBe(3)
-    expect(wrapData[0].integrationName).toBe(compoundWrapAdapterIntegrationName)
-    expect(wrapData[1].integrationName).toBe(compoundWrapAdapterIntegrationName)
-    expect(wrapData[2].integrationName).toBe(compoundWrapAdapterIntegrationName)
-    expect(wrapData[0].wrapData).toBe(ZERO_BYTES)
-    expect(wrapData[1].wrapData).toBe(ZERO_BYTES)
-    expect(wrapData[2].wrapData).toBe(ZERO_BYTES)
+    expect(wrapData.length).toBe(6)
+    wrapData.forEach((data) => {
+      expect(data.integrationName).toBe(compoundWrapAdapterIntegrationName)
+      expect(data.wrapData).toBe(ZERO_BYTES)
+    })
   })
 
   test('WRAPPED_UNWRAPPED_MIXED', async () => {
     const wrapData = getWrapData(IndexTokenMix.WRAPPED_UNWRAPPED_MIXED)
-    expect(wrapData.length).toBe(3)
-    expect(wrapData[0].integrationName).toBe(compoundWrapAdapterIntegrationName)
-    expect(wrapData[1].integrationName).toBe('')
-    expect(wrapData[2].integrationName).toBe(compoundWrapAdapterIntegrationName)
-    expect(wrapData[0].wrapData).toBe(ZERO_BYTES)
-    expect(wrapData[1].wrapData).toBe(ZERO_BYTES)
-    expect(wrapData[2].wrapData).toBe(ZERO_BYTES)
+    expect(wrapData.length).toBe(6)
   })
 })

@@ -7,6 +7,10 @@ import { FlashMintWrappedAddress } from '../constants/contracts'
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
 import { WrappedQuoteProvider } from './wrapped'
+import {
+  FlashMintWrappedBuildRequest,
+  WrappedTransactionBuilder,
+} from 'flashMint/builders/wrapped'
 
 export enum FlashMintContractType {
   leveraged,
@@ -47,6 +51,7 @@ export class FlashMintQuoteProvider
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
+    const inputOutputToken = isMinting ? inputToken : outputToken
     const contractType = getContractType(indexToken.symbol)
     if (contractType !== FlashMintContractType.wrapped) {
       throw new Error('Index token not supported')
@@ -59,7 +64,18 @@ export class FlashMintQuoteProvider
         const wrappedQuoteProvider = new WrappedQuoteProvider(provider)
         const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
         if (!wrappedQuote) return null
-        // TODO: build tx using the returned wrapped quote's swap data
+        const builder = new WrappedTransactionBuilder(provider)
+        const txRequest: FlashMintWrappedBuildRequest = {
+          isMinting,
+          indexToken: indexToken.address,
+          inputOutputToken: inputOutputToken.address,
+          indexTokenAmount,
+          inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
+          componentSwapData: wrappedQuote.componentSwapData,
+          componentWrapData: wrappedQuote.componentWrapData,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
         return {
           chainId,
           contractType,
@@ -70,7 +86,7 @@ export class FlashMintQuoteProvider
           indexTokenAmount,
           inputOutputAmount: wrappedQuote.inputOutputTokenAmount,
           slippage,
-          tx: {},
+          tx,
         }
       default:
         return null

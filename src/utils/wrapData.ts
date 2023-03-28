@@ -16,7 +16,7 @@ const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getIndexTokenMix(tokenSymbol: string): IndexTokenMix {
   if (tokenSymbol === MoneyMarketIndex.symbol) {
-    return IndexTokenMix.WRAPPED_ONLY
+    return IndexTokenMix.UNWRAPPED_ONLY
   }
   throw new Error('Token not defined')
 }
@@ -25,6 +25,18 @@ export function getWrapData(tokenMix: IndexTokenMix): ComponentWrapData[] {
   switch (tokenMix) {
     case IndexTokenMix.UNWRAPPED_ONLY:
       return [
+        {
+          integrationName: '',
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: '',
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: '',
+          wrapData: ZERO_BYTES,
+        },
         {
           integrationName: '',
           wrapData: ZERO_BYTES,
@@ -52,11 +64,35 @@ export function getWrapData(tokenMix: IndexTokenMix): ComponentWrapData[] {
           integrationName: compoundWrapAdapterIntegrationName,
           wrapData: ZERO_BYTES,
         },
+        {
+          integrationName: compoundWrapAdapterIntegrationName,
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: compoundWrapAdapterIntegrationName,
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: compoundWrapAdapterIntegrationName,
+          wrapData: ZERO_BYTES,
+        },
       ]
     case IndexTokenMix.WRAPPED_UNWRAPPED_MIXED:
       return [
         {
           integrationName: compoundWrapAdapterIntegrationName,
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: '',
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: '',
+          wrapData: ZERO_BYTES,
+        },
+        {
+          integrationName: '',
           wrapData: ZERO_BYTES,
         },
         {

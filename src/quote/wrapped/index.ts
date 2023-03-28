@@ -59,10 +59,10 @@ export class WrappedQuoteProvider
           indexTokenAmount,
           provider
         )
+    // FIXME: is this needed?
     const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
-    // FIXME:
     const componentWrapData = getWrapData(indexTokenMix)
-    // FIXME: check wrap data length === component swap data length
+    if (componentSwapData.length !== componentSwapData.length) return null
     let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     const contract = getFlashMintWrappedContract(provider)
     if (isMinting) {
