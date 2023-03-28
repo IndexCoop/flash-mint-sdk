@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintWrappedAddress } from 'constants/contracts'
-import { MoneyMarketIndex, USDC, WETH } from 'constants/tokens'
-import { QuoteToken } from 'quote/quoteToken'
+import { MoneyMarketIndex, USDC } from 'constants/tokens'
 import { LocalhostProvider } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
@@ -15,17 +14,9 @@ import {
 const provider = LocalhostProvider
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
-const indexToken: QuoteToken = {
-  address: MoneyMarketIndex.address!,
-  decimals: 18,
-  symbol: MoneyMarketIndex.symbol,
-}
-
-const usdc: QuoteToken = {
-  address: USDC.address!,
-  decimals: 6,
-  symbol: USDC.symbol,
-}
+const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+const indexToken = MoneyMarketIndex.address!
+const usdc = USDC.address!
 
 describe('WrappedTransactionBuilder()', () => {
   beforeEach((): void => {
@@ -106,6 +97,24 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
+  test('returns a tx for minting MMI (ETH)', async () => {
+    const buildRequest = getDefaultBuildRequest(true, eth)
+    const contract = getFlashMintWrappedContract(provider)
+    const refTx = await contract.populateTransaction.issueExactSetFromETH(
+      buildRequest.indexToken,
+      buildRequest.indexTokenAmount,
+      buildRequest.componentSwapData,
+      buildRequest.componentWrapData,
+      { value: buildRequest.inputOutputTokenAmount }
+    )
+    const builder = new WrappedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintWrappedAddress)
+    expect(tx.data).toEqual(refTx.data)
+    expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
+  })
+
   test('returns a tx for redeeming MMI (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest(false)
     const contract = getFlashMintWrappedContract(provider)
@@ -123,20 +132,37 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.to).toBe(FlashMintWrappedAddress)
     expect(tx.data).toEqual(refTx.data)
   })
+
+  test('returns a tx for redeeming MMI (ETH)', async () => {
+    const buildRequest = getDefaultBuildRequest(false, eth)
+    const contract = getFlashMintWrappedContract(provider)
+    const refTx = await contract.populateTransaction.redeemExactSetForETH(
+      buildRequest.indexToken,
+      buildRequest.indexTokenAmount,
+      buildRequest.inputOutputTokenAmount,
+      buildRequest.componentSwapData,
+      buildRequest.componentWrapData
+    )
+    const builder = new WrappedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintWrappedAddress)
+    expect(tx.data).toEqual(refTx.data)
+  })
 })
 
 function getDefaultBuildRequest(
-  isMinting: boolean = true
+  isMinting: boolean = true,
+  inputOutputToken: string = usdc
 ): FlashMintWrappedBuildRequest {
-  const inputToken = usdc
   const wrapData: ComponentWrapData = {
     integrationName: '',
     wrapData: ZERO_BYTES,
   }
   return {
     isMinting,
-    indexToken: indexToken.address,
-    inputOutputToken: inputToken.address,
+    indexToken: indexToken,
+    inputOutputToken,
     indexTokenAmount: wei(1),
     inputOutputTokenAmount: BigNumber.from('16583822409709138541'),
     componentSwapData: [

@@ -38,26 +38,48 @@ export class WrappedTransactionBuilder
       inputOutputTokenAmount,
       isMinting,
     } = request
+    const inputOutputTokenIsEth =
+      inputOutputToken === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
     const contract = getFlashMintWrappedContract(this.provider)
     let tx: PopulatedTransaction | null = null
     if (isMinting) {
-      tx = await contract.populateTransaction.issueExactSetFromERC20(
-        indexToken,
-        inputOutputToken,
-        indexTokenAmount,
-        inputOutputTokenAmount, // _maxAmountInputToken
-        componentSwapData,
-        componentWrapData
-      )
+      if (inputOutputTokenIsEth) {
+        tx = await contract.populateTransaction.issueExactSetFromETH(
+          indexToken,
+          indexTokenAmount,
+          componentSwapData,
+          componentWrapData,
+          { value: inputOutputTokenAmount }
+        )
+      } else {
+        tx = await contract.populateTransaction.issueExactSetFromERC20(
+          indexToken,
+          inputOutputToken,
+          indexTokenAmount,
+          inputOutputTokenAmount, // _maxAmountInputToken
+          componentSwapData,
+          componentWrapData
+        )
+      }
     } else {
-      tx = await contract.populateTransaction.redeemExactSetForERC20(
-        indexToken,
-        inputOutputToken,
-        indexTokenAmount,
-        inputOutputTokenAmount, // _minOutputReceive
-        componentSwapData,
-        componentWrapData
-      )
+      if (inputOutputTokenIsEth) {
+        tx = await contract.populateTransaction.redeemExactSetForETH(
+          indexToken,
+          indexTokenAmount,
+          inputOutputTokenAmount, // _minOutputReceive
+          componentSwapData,
+          componentWrapData
+        )
+      } else {
+        tx = await contract.populateTransaction.redeemExactSetForERC20(
+          indexToken,
+          inputOutputToken,
+          indexTokenAmount,
+          inputOutputTokenAmount, // _minOutputReceive
+          componentSwapData,
+          componentWrapData
+        )
+      }
     }
     return tx
   }
