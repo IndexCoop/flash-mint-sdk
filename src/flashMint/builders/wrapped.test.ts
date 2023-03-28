@@ -1,18 +1,17 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { FlashMintWrappedAddress } from 'constants/contracts'
 import { MoneyMarketIndex, USDC, WETH } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 import { LocalhostProvider } from 'tests/utils'
-import { ComponentSwapData } from 'utils/componentSwapData'
+import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { ComponentWrapData } from 'utils/wrapData'
 import {
   FlashMintWrappedBuildRequest,
   WrappedTransactionBuilder,
 } from './wrapped'
-import { Exchange } from 'utils/swapData'
 
-// TODO: does the builder need a provider?
 const provider = LocalhostProvider
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
@@ -34,99 +33,185 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (no index token)', async () => {
-    let buildRequest = getDummyBuildRequest()
+    let buildRequest = getDefaultBuildRequest()
     buildRequest.indexToken = ''
-    console.log(buildRequest)
-    const builder = new WrappedTransactionBuilder()
+    const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
   test('returns null for invalid request (no input/output token)', async () => {
-    let buildRequest = getDummyBuildRequest()
+    let buildRequest = getDefaultBuildRequest()
     buildRequest.inputOutputToken = ''
-    console.log(buildRequest)
-    const builder = new WrappedTransactionBuilder()
+    const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
   test('returns null for invalid request (indexTokenAmount = 0)', async () => {
-    let buildRequest = getDummyBuildRequest()
+    let buildRequest = getDefaultBuildRequest()
     buildRequest.indexTokenAmount = BigNumber.from(0)
-    console.log(buildRequest)
-    const builder = new WrappedTransactionBuilder()
+    const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
   test('returns null for invalid request (inputOutputTokenAmount = 0)', async () => {
-    let buildRequest = getDummyBuildRequest()
+    let buildRequest = getDefaultBuildRequest()
     buildRequest.inputOutputTokenAmount = BigNumber.from(0)
-    console.log(buildRequest)
-    const builder = new WrappedTransactionBuilder()
+    const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
   test('returns null for invalid request (no component swap data)', async () => {
-    let buildRequest = getDummyBuildRequest()
+    let buildRequest = getDefaultBuildRequest()
     buildRequest.componentSwapData = []
-    console.log(buildRequest)
-    const builder = new WrappedTransactionBuilder()
+    const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
   test('returns null for invalid request (no wrap data)', async () => {
-    let buildRequest = getDummyBuildRequest()
+    let buildRequest = getDefaultBuildRequest()
     buildRequest.componentWrapData = []
-    console.log(buildRequest)
-    const builder = new WrappedTransactionBuilder()
+    const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
-  // test('returns a tx for MMI', async () => {
-  //   const inputToken = usdc
-  //   const buildRequest: FlashMintWrappedBuildRequest = {
-  //     indexToken: indexToken.address,
-  //     inputOutputToken: inputToken.address,
-  //     indexTokenAmount: BigNumber.from(0),
-  //     inputOutputTokenAmount: BigNumber.from(0),
-  //     componentSwapData: [],
-  //     componentWrapData: [],
-  //   }
-  //   const builder = new WrappedTransactionBuilder()
-  //   const tx = await builder.build(buildRequest)
-  //   // if (!quote) fail()
-  //   expect(tx).toBeNull()
-  //   // TODO: decode tx. how?
-  // })
+  test('returns null for invalid request (wrap data and swap data length mismatch)', async () => {
+    let buildRequest = getDefaultBuildRequest()
+    buildRequest.componentWrapData = buildRequest.componentWrapData.slice(0, -1)
+    const builder = new WrappedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    expect(tx).toBeNull()
+  })
+
+  test('returns a tx for MMI', async () => {
+    const buildRequest = getDefaultBuildRequest()
+    const contract = getFlashMintWrappedContract(provider)
+    const refTx = await contract.populateTransaction.issueExactSetFromERC20(
+      buildRequest.indexToken,
+      buildRequest.inputOutputToken,
+      buildRequest.indexTokenAmount,
+      buildRequest.inputOutputTokenAmount,
+      buildRequest.componentSwapData,
+      buildRequest.componentWrapData
+    )
+    const builder = new WrappedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintWrappedAddress)
+    expect(tx.data).toEqual(refTx.data)
+  })
 })
 
-function getDummyBuildRequest(): FlashMintWrappedBuildRequest {
+function getDefaultBuildRequest(): FlashMintWrappedBuildRequest {
   const inputToken = usdc
-  const componentSwapData: ComponentSwapData = {
-    underlyingERC20: usdc.address,
-    buyUnderlyingAmount: BigNumber.from(100),
-    dexData: {
-      exchange: Exchange.UniV3,
-      path: [],
-      fees: [3000],
-      pool: ZERO_BYTES,
-    },
-  }
   const wrapData: ComponentWrapData = {
     integrationName: '',
     wrapData: ZERO_BYTES,
   }
   return {
+    isMinting: true,
     indexToken: indexToken.address,
     inputOutputToken: inputToken.address,
-    indexTokenAmount: BigNumber.from(100),
-    inputOutputTokenAmount: BigNumber.from(1000),
-    componentSwapData: [componentSwapData],
-    componentWrapData: [wrapData],
+    indexTokenAmount: wei(1),
+    inputOutputTokenAmount: BigNumber.from('16583822409709138541'),
+    componentSwapData: [
+      {
+        underlyingERC20: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        buyUnderlyingAmount: BigNumber.from('16666666666666666666'),
+        dexData: {
+          exchange: 3,
+          path: [
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          ],
+          fees: [3000, 3000],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      },
+      {
+        underlyingERC20: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        buyUnderlyingAmount: BigNumber.from('16666666666666666666'),
+        dexData: {
+          exchange: 3,
+          path: [
+            '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          ],
+          fees: [3000, 3000],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      },
+      {
+        underlyingERC20: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+        buyUnderlyingAmount: BigNumber.from('16666666666666666666'),
+        dexData: {
+          exchange: 3,
+          path: [
+            '0xdac17f958d2ee523a2206206994597c13d831ec7',
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          ],
+          fees: [3000, 3000],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      },
+      {
+        underlyingERC20: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        buyUnderlyingAmount: BigNumber.from('1666666666'),
+        dexData: {
+          exchange: 3,
+          path: [
+            '0x6b175474e89094c44da98b954eedeac495271d0f',
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          ],
+          fees: [3000, 3000],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      },
+      {
+        underlyingERC20: '0x6b175474e89094c44da98b954eedeac495271d0f',
+        buyUnderlyingAmount: BigNumber.from('1666666666'),
+        dexData: {
+          exchange: 3,
+          path: [
+            '0x6b175474e89094c44da98b954eedeac495271d0f',
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          ],
+          fees: [3000, 3000],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      },
+      {
+        underlyingERC20: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        buyUnderlyingAmount: BigNumber.from('1666666666'),
+        dexData: {
+          exchange: 3,
+          path: [
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          ],
+          fees: [3000, 3000],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      },
+    ],
+    componentWrapData: [
+      wrapData,
+      wrapData,
+      wrapData,
+      wrapData,
+      wrapData,
+      wrapData,
+    ],
   }
 }
