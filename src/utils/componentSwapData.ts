@@ -188,18 +188,18 @@ function getStaticRedemptionSwapData(
 export function getUnderlyingErc20(token: string): string {
   switch (token) {
     // wfDAI:1695168000 (Wrapped fDAI @ 1695168000)
-    case '0x278039398A5eb29b6c2FB43789a38A84C6085266':
     // wfDAI:1687392000 (Wrapped fDAI @ 1687392000)
+    case '0x278039398A5eb29b6c2FB43789a38A84C6085266':
     case '0xfa5d4F65a4c51906652d78140C266423111c6BFA':
       return dai
     // mcUSDC (Morpho-Compound USD Coin Supply Vault)
-    case '0xba9E3b3b684719F80657af1A19DEbc3C772494a0':
     // wfUSDC:1695168000 (Wrapped fUSDC @ 1695168000)
+    case '0xba9E3b3b684719F80657af1A19DEbc3C772494a0':
     case '0xe09B1968851478f20a43959d8a212051367dF01A':
       return usdc
     // maUSDT (Morpho-Aave Tether USD Supply Vault )
-    case '0xAFe7131a57E44f832cb2dE78ade38CaD644aaC2f':
     // mcUSDT (Morpho-Compound Tether USD Supply Vault)
+    case '0xAFe7131a57E44f832cb2dE78ade38CaD644aaC2f':
     case '0xC2A4fBA93d4120d304c94E4fd986e0f9D213eD8A':
       return usdt
     default:
