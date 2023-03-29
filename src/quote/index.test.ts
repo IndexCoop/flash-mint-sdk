@@ -56,7 +56,7 @@ describe('FlashMintQuoteProvider()', () => {
     const quoteProvider = new FlashMintQuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
-    // Only testing for values that have been provider (meta data)
+    // Only testing for values that have been provided (meta data)
     // or that are indirectly determined from the quote request
     const chainId = (await provider.getNetwork()).chainId
     expect(quote.chainId).toEqual(chainId)
@@ -91,8 +91,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    // TODO: test
-    // expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(FlashMintWrappedAddress)
