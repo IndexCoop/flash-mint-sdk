@@ -24,7 +24,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (no index token)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.indexToken = ''
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -32,7 +32,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (no input/output token)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.inputOutputToken = ''
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -40,7 +40,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (indexTokenAmount = 0)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.indexTokenAmount = BigNumber.from(0)
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -48,7 +48,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (inputOutputTokenAmount = 0)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.inputOutputTokenAmount = BigNumber.from(0)
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -56,7 +56,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (no component swap data)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.componentSwapData = []
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -64,7 +64,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (no wrap data)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.componentWrapData = []
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -72,7 +72,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns null for invalid request (wrap data and swap data length mismatch)', async () => {
-    let buildRequest = getDefaultBuildRequest()
+    const buildRequest = getDefaultBuildRequest()
     buildRequest.componentWrapData = buildRequest.componentWrapData.slice(0, -1)
     const builder = new WrappedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -152,7 +152,7 @@ describe('WrappedTransactionBuilder()', () => {
 })
 
 function getDefaultBuildRequest(
-  isMinting: boolean = true,
+  isMinting = true,
   inputOutputToken: string = usdc
 ): FlashMintWrappedBuildRequest {
   const wrapData: ComponentWrapData = {

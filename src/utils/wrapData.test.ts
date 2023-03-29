@@ -1,7 +1,7 @@
 import { MoneyMarketIndex } from 'constants/tokens'
 import { getIndexTokenMix, getWrapData, IndexTokenMix } from './wrapData'
 
-const compoundWrapAdapterIntegrationName: string = 'CompoundWrapV2Adapter'
+const compoundWrapAdapterIntegrationName = 'CompoundWrapV2Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 describe('getIndexTokenMix()', () => {

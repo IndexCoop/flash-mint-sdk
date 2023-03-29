@@ -11,7 +11,7 @@ export interface ComponentWrapData {
   wrapData: string // optional wrapData passed to the wrapAdapter
 }
 
-const compoundWrapAdapterIntegrationName: string = 'CompoundWrapV2Adapter'
+const compoundWrapAdapterIntegrationName = 'CompoundWrapV2Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getIndexTokenMix(tokenSymbol: string): IndexTokenMix {
