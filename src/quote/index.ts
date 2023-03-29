@@ -60,7 +60,7 @@ export class FlashMintQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
     switch (contractType) {
-      case FlashMintContractType.wrapped:
+      case FlashMintContractType.wrapped: {
         const wrappedQuoteProvider = new WrappedQuoteProvider(provider)
         const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
         if (!wrappedQuote) return null
@@ -88,6 +88,7 @@ export class FlashMintQuoteProvider
           slippage,
           tx,
         }
+      }
       default:
         return null
     }
