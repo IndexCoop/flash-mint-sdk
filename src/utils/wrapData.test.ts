@@ -1,7 +1,19 @@
-import { getWrapData, IndexTokenMix } from './wrapData'
+import { MoneyMarketIndex } from 'constants/tokens'
+import { getIndexTokenMix, getWrapData, IndexTokenMix } from './wrapData'
 
 const compoundWrapAdapterIntegrationName: string = 'CompoundWrapV2Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
+
+describe('getIndexTokenMix()', () => {
+  test('throws error when given undefined token', () => {
+    expect(() => getIndexTokenMix('')).toThrowError('Token not defined')
+  })
+
+  test('returns correct mix for MMI', async () => {
+    const indexTokenMix = getIndexTokenMix(MoneyMarketIndex.symbol)
+    expect(indexTokenMix).toBe(IndexTokenMix.WRAPPED_ONLY)
+  })
+})
 
 describe('getWrapData()', () => {
   test('UNWRAPPED_ONLY', async () => {

@@ -1,3 +1,3 @@
-export interface QuoteProvider {
-  getQuote<R, Q>(request: R): Promise<Q | null>
+export interface QuoteProvider<R, Q> {
+  getQuote(request: R): Promise<Q | null>
 }

@@ -56,11 +56,16 @@ export const MetaverseIndex: Token = {
 
 // FIXME: add address once deployed
 export const MoneyMarketIndex: Token = {
-  address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
+  address: '0x1AF0aa7e25524c57680699642605551817A99485',
   symbol: 'MMI',
 }
 
 // Other
+
+export const DAI: Token = {
+  symbol: 'DAI',
+  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+}
 
 export const ETH: Token = {
   symbol: 'ETH',
@@ -85,6 +90,11 @@ export const stETH: Token = {
 export const USDC: Token = {
   symbol: 'USDC',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+}
+
+export const USDT: Token = {
+  symbol: 'USDT',
+  address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
 }
 
 export const WETH: Token = {
