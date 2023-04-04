@@ -42,8 +42,7 @@ describe('FlashMintQuoteProvider()', () => {
     await expect(quoteProvider.getQuote(request)).rejects.toThrow()
   })
 
-  // FIXME: skip until issuance quote is fixed
-  test.skip('meta data is returned correctly', async () => {
+  test('meta data is returned correctly', async () => {
     const inputToken = usdc
     const outputToken = indexToken
     const request: FlashMintQuoteRequest = {
@@ -69,8 +68,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
   })
 
-  // FIXME: skip until issuance quote is fixed
-  test.skip('returns a quote for minting MMI', async () => {
+  test('returns a quote for minting MMI', async () => {
     const inputToken = usdc
     const outputToken = indexToken
     const request: FlashMintQuoteRequest = {
