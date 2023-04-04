@@ -96,9 +96,14 @@ export async function getRedemptionComponentSwapData(
   const swapData = issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
     const underlyingERC20 = wrappedToken.underlyingErc20
+    const buyUnderlyingAmount = fromWei(
+      issuanceUnits[index],
+      wrappedToken.decimals,
+      underlyingERC20.decimals
+    )
     return {
       underlyingERC20: underlyingERC20.address,
-      buyUnderlyingAmount: issuanceUnits[index],
+      buyUnderlyingAmount,
       dexData: getStaticRedemptionSwapData(
         underlyingERC20.address,
         outputToken

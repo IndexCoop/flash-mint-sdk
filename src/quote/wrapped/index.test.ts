@@ -83,7 +83,29 @@ describe('WrappedQuoteProvider()', () => {
     expect(quote.componentWrapData.length).toEqual(6)
   })
 
-  test.skip('returns a quote for redeeming MMI', async () => {
+  test('returns a quote for redeeming MMI for DAI', async () => {
+    const outputToken: QuoteToken = {
+      address: DAI.address!,
+      decimals: 18,
+      symbol: DAI.symbol,
+    }
+    const request: FlashMintWrappedQuoteRequest = {
+      isMinting: false,
+      inputToken: indexToken,
+      outputToken,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
+    expect(quote.componentSwapData.length).toEqual(6)
+    expect(quote.componentWrapData.length).toEqual(6)
+  })
+
+  test('returns a quote for redeeming MMI for USDC', async () => {
     const outputToken: QuoteToken = {
       address: USDC.address!,
       decimals: 6,
@@ -101,10 +123,29 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toBeGreaterThan(0)
-    expect(quote.componentWrapData.length).toBeGreaterThan(0)
-    expect(quote.componentSwapData.length).toEqual(
-      quote.componentWrapData.length
-    )
+    expect(quote.componentSwapData.length).toEqual(6)
+    expect(quote.componentWrapData.length).toEqual(6)
+  })
+
+  test('returns a quote for redeeming MMI for WETH', async () => {
+    const outputToken: QuoteToken = {
+      address: WETH.address!,
+      decimals: 18,
+      symbol: WETH.symbol,
+    }
+    const request: FlashMintWrappedQuoteRequest = {
+      isMinting: false,
+      inputToken: indexToken,
+      outputToken,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
+    expect(quote.componentSwapData.length).toEqual(6)
+    expect(quote.componentWrapData.length).toEqual(6)
   })
 })
