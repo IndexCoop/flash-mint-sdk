@@ -79,6 +79,7 @@ export class WrappedQuoteProvider
         provider
       )
     }
+
     // Temporarily disabled
     // const contract = getFlashMintWrappedContract(provider)
     // if (isMinting) {
@@ -193,11 +194,22 @@ async function getAmountIn2(
 ): Promise<BigNumber> {
   const { buyUnderlyingAmount, dexData } = componentSwapData
   const { fees, path } = dexData
+  const contract = new Contract(UniV3Quoter, UniV3QuoterAbi, provider)
+  if (path.length === 2) {
+    const estimate: BigNumber =
+      await contract.callStatic.quoteExactOutputSingle(
+        path[0],
+        path[1],
+        fees[0],
+        buyUnderlyingAmount,
+        0
+      )
+    return estimate
+  }
   // First check how much WETH we need to get the amountOut
   const path1 = { ...path.slice(1) }
   // Then check how much of the provided token is needed to swap for WETH
   const path2 = { ...path.slice(0, 2) }
-  const contract = new Contract(UniV3Quoter, UniV3QuoterAbi, provider)
   const estimateWETHAmountIn: BigNumber =
     await contract.callStatic.quoteExactOutputSingle(
       path1[0],
