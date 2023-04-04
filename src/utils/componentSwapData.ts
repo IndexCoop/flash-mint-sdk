@@ -65,6 +65,10 @@ export async function getIssuanceComponentSwapData(
       wrappedToken.decimals,
       underlyingERC20.decimals
     )
+      // FIXME: add slippage? Although right it seems to not work with slippage set
+      // in tests (0.5%)
+      .mul(101)
+      .div(100)
     return {
       underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount,
