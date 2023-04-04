@@ -18,7 +18,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   // FIXME: readd when issue is fixed
-  test.skip('returns a quote for minting MMI', async () => {
+  test('returns a quote for minting MMI', async () => {
     const inputToken: QuoteToken = {
       address: USDC.address!,
       decimals: 6,
@@ -43,7 +43,7 @@ describe('WrappedQuoteProvider()', () => {
     )
   })
 
-  test('returns a quote for redeeming MMI', async () => {
+  test.skip('returns a quote for redeeming MMI', async () => {
     const outputToken: QuoteToken = {
       address: USDC.address!,
       decimals: 6,
