@@ -1,7 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { utils } from 'ethers'
 
 import {
   ComponentSwapData,
