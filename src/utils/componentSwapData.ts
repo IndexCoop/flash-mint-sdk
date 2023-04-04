@@ -18,7 +18,15 @@ export interface ComponentSwapData {
   buyUnderlyingAmount: BigNumber
 }
 
-const CErc20Abi = ['function exchangeRateCurrent() public returns (uint)']
+interface WrappedToken {
+  address: string
+  decimals: number
+  underlyingErc20: {
+    address: string
+    decimals: number
+    symbol: string
+  }
+}
 
 const IssuanceAbi = [
   'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
@@ -38,23 +46,29 @@ export async function getIssuanceComponentSwapData(
   provider: JsonRpcProvider
 ): Promise<ComponentSwapData[]> {
   const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  console.log(issuanceModule)
   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
   const [issuanceComponents, issuanceUnits] =
     await issuance.getRequiredComponentIssuanceUnits(
       indexToken,
       indexTokenAmount
     )
-  const underlyingERC20sPromises: Promise<string>[] = issuanceComponents.map(
-    (component: string) => getUnderlyingErc20(component, provider)
-  )
-  const underlyingERC20s = await Promise.all(underlyingERC20sPromises)
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, provider)
+    )
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const swapData = issuanceComponents.map((_: string, index: number) => {
-    const underlyingERC20 = underlyingERC20s[index]
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    const buyUnderlyingAmount = fromWei(
+      issuanceUnits[index],
+      wrappedToken.decimals,
+      underlyingERC20.decimals
+    )
     return {
-      underlyingERC20,
-      buyUnderlyingAmount: issuanceUnits[index],
-      dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20),
+      underlyingERC20: underlyingERC20.address,
+      buyUnderlyingAmount,
+      dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
     }
   })
   return swapData
@@ -74,39 +88,30 @@ export async function getRedemptionComponentSwapData(
       indexToken,
       indexTokenAmount
     )
-  const underlyingERC20sPromises: Promise<string>[] = issuanceComponents.map(
-    (component: string) => getUnderlyingErc20(component, provider)
-  )
-  const underlyingERC20s = await Promise.all(underlyingERC20sPromises)
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, provider)
+    )
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const swapData = issuanceComponents.map((_: string, index: number) => {
-    const underlyingERC20 = underlyingERC20s[index]
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
     return {
-      underlyingERC20,
+      underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount: issuanceUnits[index],
-      dexData: getStaticRedemptionSwapData(underlyingERC20, outputToken),
+      dexData: getStaticRedemptionSwapData(
+        underlyingERC20.address,
+        outputToken
+      ),
     }
   })
   return swapData
 }
 
-async function getExchangeRate(
-  cErc20: string,
-  decimals: number,
-  provider: JsonRpcProvider
-): Promise<BigNumber> {
-  const contract = new Contract(cErc20, CErc20Abi, provider)
-  // Returns the current exchange rate as an unsigned integer, scaled by 1 * 10^(18 - 8 + Underlying Token Decimals).
-  // 8 because cTokens have 8 decimals.
-  // https://docs.compound.finance/v2/ctokens/#exchange-rate
-  const exchangeRate = await contract.callStatic.exchangeRateCurrent()
-  const scale = Math.pow(10, 18 - 8 + decimals)
-  const divByScale = Math.pow(10, decimals - 8)
-  console.log(scale, divByScale)
-  console.log(exchangeRate.toString(), '/////// exchange rate scaled')
-  const realExchangeRate =
-    scale > 1e18 ? exchangeRate.div(divByScale) : exchangeRate
-  console.log(realExchangeRate.toString(), '/////// exchange rate')
-  return realExchangeRate
+function fromWei(number: BigNumber, decimals: number, power: number = 18) {
+  return number
+    .mul(BigNumber.from(10).pow(power))
+    .div(BigNumber.from(10).pow(decimals))
 }
 
 function getStaticIssuanceSwapData(
@@ -142,18 +147,46 @@ function getStaticRedemptionSwapData(
 export async function getUnderlyingErc20(
   token: string,
   provider: JsonRpcProvider
-): Promise<string> {
-  const IERC4262_ABI = ['function asset() public view returns (address)']
+): Promise<WrappedToken | null> {
+  const IERC4262_ABI = [
+    'function asset() public view returns (address)',
+    'function decimals() public view returns (uint256)',
+  ]
   const contract = new Contract(token, IERC4262_ABI, provider)
   const underlyingERC20: string = await contract.asset()
+  const decimals: number = await contract.decimals()
   switch (underlyingERC20.toLowerCase()) {
     case dai.toLowerCase():
-      return dai
+      return {
+        address: token,
+        decimals,
+        underlyingErc20: {
+          address: dai,
+          decimals: 18,
+          symbol: DAI.symbol,
+        },
+      }
     case usdc.toLowerCase():
-      return usdc
+      return {
+        address: token,
+        decimals,
+        underlyingErc20: {
+          address: usdc,
+          decimals: 6,
+          symbol: USDC.symbol,
+        },
+      }
     case usdt.toLowerCase():
-      return usdt
+      return {
+        address: token,
+        decimals,
+        underlyingErc20: {
+          address: usdt,
+          decimals: 6,
+          symbol: USDT.symbol,
+        },
+      }
     default:
-      return ''
+      return null
   }
 }
