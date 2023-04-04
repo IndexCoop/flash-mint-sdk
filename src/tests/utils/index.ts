@@ -112,6 +112,15 @@ export async function approveErc20(
   await approveTx.wait()
 }
 
+export async function allowanceOf(
+  erc20Address: string,
+  spender: string,
+  signer: Wallet
+): Promise<BigNumber> {
+  const contract = createERC20Contract(erc20Address, signer)
+  return await contract.allowance(signer.address, spender)
+}
+
 export async function balanceOf(
   signer: Wallet,
   erc20Address: string
