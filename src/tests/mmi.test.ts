@@ -114,12 +114,7 @@ describe('MMI (mainnet)', () => {
     )
   })
 
-  test.skip('can redeem MMI for USDC', async () => {
-    const flashMintContract = getFlashMintWrappedContract(signer)
-    const approveSetTokenTX = await flashMintContract.approveSetToken(
-      mmi.address
-    )
-    await approveSetTokenTX.wait()
+  test('can redeem MMI for USDC', async () => {
     const indexTokenAmount = wei(1)
     const outputToken = usdc
 
@@ -147,6 +142,9 @@ describe('MMI (mainnet)', () => {
 
     const { contract, tx } = quote
 
+    const balanceMMI = await balanceOf(signer, mmi.address)
+    console.log(balanceMMI.toString(), 'balance MMI')
+
     // Approve spending MMI
     await approveErc20(mmi.address, contract, indexTokenAmount, signer)
 
@@ -154,7 +152,7 @@ describe('MMI (mainnet)', () => {
     const balanceBefore = await balanceOf(signer, outputToken.address)
     console.log(balanceBefore.toString(), 'balanceBefore')
 
-    // Estimate gas
+    // TODO: Estimate gas fails w/ `ERC20: transfer amount exceeds balance`
     const gasEstimate = await provider.estimateGas(tx)
     tx.gasLimit = gasEstimate.mul(120).div(100)
     console.log(gasEstimate.toString())
