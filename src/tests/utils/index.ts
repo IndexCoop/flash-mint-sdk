@@ -49,6 +49,12 @@ export const SignerAccount4 = new Wallet(
   LocalhostProvider
 )
 
+// Hardhat Account #5
+export const SignerAccount5 = new Wallet(
+  '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba',
+  LocalhostProvider
+)
+
 // Hardhat Account #17
 export const SignerAccount17 = new Wallet(
   '0x689af8efa8c651a91ad287602527f3af2fe9f6501a7ac4b061667b5a93e037fd',
