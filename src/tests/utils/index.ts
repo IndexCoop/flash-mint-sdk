@@ -8,6 +8,8 @@ import { Wallet } from '@ethersproject/wallet'
 import { WETH } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 
+export { QuoteTokens } from './quoteTokens'
+
 // Alchemy
 export const AlchemyProvider = new JsonRpcProvider(
   process.env.MAINNET_ALCHEMY_API,

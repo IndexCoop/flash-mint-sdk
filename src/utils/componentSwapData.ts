@@ -67,7 +67,7 @@ export async function getIssuanceComponentSwapData(
     )
       // FIXME: add slippage? Although right it seems to not work with slippage set
       // in tests (0.5%)
-      .mul(101)
+      .mul(103)
       .div(100)
     return {
       underlyingERC20: underlyingERC20.address,
@@ -100,11 +100,15 @@ export async function getRedemptionComponentSwapData(
   const swapData = issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
     const underlyingERC20 = wrappedToken.underlyingErc20
-    const buyUnderlyingAmount = fromWei(
+    let buyUnderlyingAmount = fromWei(
       issuanceUnits[index],
       wrappedToken.decimals,
       underlyingERC20.decimals
     )
+      // FIXME: add slippage? Although right it seems to not work with slippage set
+      // in tests (0.5%)
+      .mul(100)
+      .div(103)
     return {
       underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount,

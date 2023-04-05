@@ -1,5 +1,3 @@
-import { MoneyMarketIndex, USDC, WETH } from 'constants/tokens'
-import { QuoteToken } from 'quote/quoteToken'
 import { FlashMintQuoteProvider } from 'quote'
 import { WrappedQuoteProvider } from 'quote/wrapped'
 import { getFlashMintWrappedContract } from 'utils/contracts'
@@ -10,82 +8,50 @@ import {
   allowanceOf,
   balanceOf,
   LocalhostProvider,
+  QuoteTokens,
   SignerAccount2,
   transferFromWhale,
   wrapETH,
 } from './utils'
-
-const indexToken = MoneyMarketIndex
-const indexTokenAddress = indexToken.address!
+import { BigNumber } from '@ethersproject/bignumber'
+import { QuoteToken } from 'quote/quoteToken'
 
 const provider = LocalhostProvider
 const signer = SignerAccount2
 
-const mmi: QuoteToken = {
-  address: indexToken.address!,
-  decimals: 18,
-  symbol: indexToken.symbol,
-}
-
-const usdc: QuoteToken = {
-  address: USDC.address!,
-  decimals: 6,
-  symbol: USDC.symbol,
-}
-
-const weth: QuoteToken = {
-  address: WETH.address!,
-  decimals: 18,
-  symbol: WETH.symbol,
-}
+const { dai, mmi, usdc, weth } = QuoteTokens
 
 describe('MMI (mainnet)', () => {
-  beforeEach((): void => {
+  beforeAll(async () => {
+    const flashMintContract = getFlashMintWrappedContract(signer)
+    const approveSetTokenTX = await flashMintContract.approveSetToken(
+      mmi.address
+    )
+    await approveSetTokenTX.wait()
+  })
+
+  beforeEach(async () => {
     jest.setTimeout(10000000)
   })
 
   test('can mint MMI from WETH (convenience)', async () => {
-    // Get quote
-    const quoteRequest = {
-      isMinting: true,
-      inputToken: weth,
-      outputToken: mmi,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
-    const quote = await quoteProvider.getQuote(quoteRequest)
-    if (!quote) fail()
-    expect(quote).toBeDefined()
+    await mintMMI(wei(1))
+  })
 
-    const { contract, inputOutputAmount } = quote
-    console.log(quote.contract, 'contract')
+  test('can mint MMI from DAI', async () => {
+    await mintMMI_Erc20(
+      dai,
+      wei(1),
+      '0x8ce71ef87582b28de89d14970d00b2377f93f32b'
+    )
+  })
 
-    await wrapETH(inputOutputAmount, signer)
-    await approveErc20(weth.address, quote.contract, inputOutputAmount, signer)
-    const allo = await allowanceOf(weth.address, contract, signer)
-    console.log(allo.toString())
-
-    const balanceBefore = await balanceOf(signer, mmi.address)
-    console.log(balanceBefore.toString(), 'MMI balance before')
-
-    const { tx } = quote
-
-    // TODO: check fails with `ERC20: insufficient allowance`
-    // const gasLimit = await signer.estimateGas(tx)
-    // tx.gasLimit = gasLimit
-    // console.log(tx)
-
-    // TODO: Mint index fails w/ `Address: low-level call with value failed`
-    // if I just run with a default gas limit
-    tx.gasLimit = 1_500_000
-    const resp = await signer.sendTransaction(tx)
-    if (!resp) fail()
-    resp.wait()
-
-    const balanceAfter = await balanceOf(signer, mmi.address)
-    console.log(balanceAfter.toString(), 'MMI balance after')
-    expect(balanceAfter.gte(balanceBefore.add(inputOutputAmount))).toBe(true)
+  test('can mint MMI from USDC', async () => {
+    await mintMMI_Erc20(
+      usdc,
+      wei(1),
+      '0xE11f040179922e54f927D133A3663550568da77d'
+    )
   })
 
   test.skip('can mint MMI from WETH (direct)', async () => {
@@ -119,10 +85,9 @@ describe('MMI (mainnet)', () => {
     const balanceBefore = await balanceOf(signer, mmi.address)
     console.log(balanceBefore.toString(), 'MMI balance before')
 
-    // TODO: check fails with `ERC20: insufficient allowance`
     // Estimate gas
     const gasEstimate = await contract.estimateGas.issueExactSetFromERC20(
-      indexToken.address,
+      mmi.address,
       weth.address,
       quote.indexTokenAmount,
       quote.inputOutputTokenAmount, // _maxAmountInputToken
@@ -131,89 +96,36 @@ describe('MMI (mainnet)', () => {
     )
     console.log(gasEstimate.toString(), 'gasEstimate')
 
-    // TODO: Mint
-    // const tx = await contract.issueExactSetFromERC20(
-    //   indexToken.address,
-    //   weth.address,
-    //   quote.indexTokenAmount,
-    //   quote.inputOutputTokenAmount, // _maxAmountInputToken
-    //   quote.componentSwapData,
-    //   quote.componentWrapData,
-    //   { gasLimit: gasEstimate }
-    // )
-    // tx.wait()
+    const tx = await contract.issueExactSetFromERC20(
+      mmi.address,
+      weth.address,
+      quote.indexTokenAmount,
+      quote.inputOutputTokenAmount, // _maxAmountInputToken
+      quote.componentSwapData,
+      quote.componentWrapData,
+      { gasLimit: gasEstimate }
+    )
+    tx.wait()
 
     const balanceAfter = await balanceOf(signer, mmi.address)
     console.log(balanceAfter.toString(), 'MMI balance after')
-    expect(balanceBefore.gte(balanceAfter.add(inputOutputTokenAmount))).toBe(
+    expect(balanceAfter.gte(balanceBefore.add(inputOutputTokenAmount))).toBe(
       true
     )
   })
 
-  test.skip('can mint MMI from USDC', async () => {
-    const inputToken = usdc
-    // Get quote
-    const quoteRequest = {
-      isMinting: true,
-      inputToken,
-      outputToken: mmi,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
-    const quote = await quoteProvider.getQuote(quoteRequest)
-    if (!quote) fail()
-    expect(quote).toBeDefined()
-
-    const { contract, inputOutputAmount } = quote
-
-    console.log(quote.contract, 'contract addr')
-
-    const whale = '0xE11f040179922e54f927D133A3663550568da77d'
-    await transferFromWhale(
-      whale,
-      signer.address,
-      wei('1000', inputToken.decimals),
-      inputToken.address,
-      provider
-    )
-    const wethBalance = await balanceOf(signer, inputToken.address)
-    console.log(wethBalance.toString(), inputOutputAmount.toString())
-    await approveErc20(
-      inputToken.address,
-      contract,
-      inputOutputAmount.mul(2),
-      signer
-    )
-    const allo = await allowanceOf(inputToken.address, contract, signer)
-    console.log(allo.toString(), 'allowance')
-
-    const balanceBefore = await balanceOf(signer, mmi.address)
-    console.log(balanceBefore.toString(), 'MMI balance before')
-
-    const { tx } = quote
-    tx.gasLimit = 2_500_000
-    tx.from = signer.address
-    console.log(tx)
-
-    // Estimate gas
-    const gasEstimate = await provider.estimateGas(tx)
-    tx.gasLimit = gasEstimate
-
-    // Mint index
-    const resp = await signer.sendTransaction(tx)
-    if (!resp) fail()
-    resp.wait()
-
-    const balanceAfter = await balanceOf(signer, mmi.address)
-    console.log(balanceAfter.toString(), 'MMI balance after')
-    expect(balanceBefore.gte(balanceAfter.add(inputOutputAmount))).toBe(true)
-  })
-
-  // FIXME: run/test when we can mint MMI
   test.skip('can redeem MMI for USDC', async () => {
+    const flashMintContract = getFlashMintWrappedContract(signer)
+    const approveSetTokenTX = await flashMintContract.approveSetToken(
+      mmi.address
+    )
+    await approveSetTokenTX.wait()
     const indexTokenAmount = wei(1)
     const outputToken = usdc
+
+    // Mint MMI for having funds to redeem
+    await mintMMI(indexTokenAmount)
+
     // Get quote
     const quoteRequest = {
       isMinting: false,
@@ -231,19 +143,21 @@ describe('MMI (mainnet)', () => {
     expect(quote.slippage).toEqual(quoteRequest.slippage)
     expect(quote.tx).toBeDefined()
 
+    console.log(indexTokenAmount.toString(), quote.inputOutputAmount.toString())
+
+    const { contract, tx } = quote
+
     // Approve spending MMI
-    const contract = getFlashMintWrappedContract(signer)
-    await approveErc20(mmi.address, contract.address, indexTokenAmount, signer)
+    await approveErc20(mmi.address, contract, indexTokenAmount, signer)
 
     // Balance before
     const balanceBefore = await balanceOf(signer, outputToken.address)
     console.log(balanceBefore.toString(), 'balanceBefore')
 
-    const { tx } = quote
-
     // Estimate gas
     const gasEstimate = await provider.estimateGas(tx)
-    tx.gasLimit = gasEstimate
+    tx.gasLimit = gasEstimate.mul(120).div(100)
+    console.log(gasEstimate.toString())
 
     // Redeem index
     const resp = await signer.sendTransaction(tx)
@@ -253,6 +167,80 @@ describe('MMI (mainnet)', () => {
     // Balance after
     const balance = await balanceOf(signer, outputToken.address)
     console.log(balance.toString(), 'balance')
-    expect(balance.sub(balanceBefore).gt(quote.inputOutputAmount)).toBe(true)
+    expect(balance.sub(balanceBefore).gte(quote.inputOutputAmount)).toBe(true)
   })
 })
+
+async function getMintQuote(
+  inputToken: QuoteToken,
+  indexTokenAmount: BigNumber
+) {
+  const quoteRequest = {
+    isMinting: true,
+    inputToken,
+    outputToken: mmi,
+    indexTokenAmount,
+    slippage: 0.5,
+  }
+  const quoteProvider = new FlashMintQuoteProvider(provider)
+  const quote = await quoteProvider.getQuote(quoteRequest)
+  return quote
+}
+
+async function mintMMI_Erc20(
+  inputToken: QuoteToken,
+  amount: BigNumber,
+  whale: string
+) {
+  // Get quote
+  const quote = await getMintQuote(inputToken, amount)
+  if (!quote) fail()
+
+  const { contract, indexTokenAmount, inputOutputAmount, tx } = quote
+
+  await transferFromWhale(
+    whale,
+    signer.address,
+    wei(1000, inputToken.decimals),
+    inputToken.address,
+    provider
+  )
+  await approveErc20(inputToken.address, contract, inputOutputAmount, signer)
+  const balanceBefore = await balanceOf(signer, mmi.address)
+
+  // Estimate gas
+  const gasLimit = await signer.estimateGas(tx)
+  tx.gasLimit = gasLimit.mul(120).div(100)
+
+  // Mint index
+  const resp = await signer.sendTransaction(tx)
+  if (!resp) fail()
+  resp.wait()
+
+  const balanceAfter = await balanceOf(signer, mmi.address)
+  expect(balanceAfter.gte(balanceBefore.add(indexTokenAmount))).toBe(true)
+}
+
+async function mintMMI(amount: BigNumber) {
+  // Get quote
+  const quote = await getMintQuote(weth, wei(1))
+  if (!quote) fail()
+
+  const { contract, inputOutputAmount, tx } = quote
+  await wrapETH(inputOutputAmount, signer)
+  await approveErc20(weth.address, contract, inputOutputAmount, signer)
+  const balanceBefore = await balanceOf(signer, mmi.address)
+
+  // Estimate gas
+  const gasLimit = await signer.estimateGas(tx)
+  tx.gasLimit = gasLimit.mul(120).div(100)
+
+  // Mint index
+  const resp = await signer.sendTransaction(tx)
+  if (!resp) fail()
+  resp.wait()
+
+  const balanceAfter = await balanceOf(signer, mmi.address)
+  console.log(balanceAfter.toString(), 'MMI balance after')
+  expect(balanceAfter.gte(balanceBefore.add(inputOutputAmount))).toBe(true)
+}
