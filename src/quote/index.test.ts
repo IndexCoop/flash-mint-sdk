@@ -1,8 +1,7 @@
 import { FlashMintWrappedAddress } from 'constants/contracts'
-import { MoneyMarketIndex, USDC } from 'constants/tokens'
-import { QuoteToken } from 'quote/quoteToken'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { wei } from 'utils/numbers'
+
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
@@ -11,17 +10,7 @@ import {
 
 const provider = LocalhostProvider
 
-const indexToken: QuoteToken = {
-  address: MoneyMarketIndex.address!,
-  decimals: 18,
-  symbol: MoneyMarketIndex.symbol,
-}
-
-const usdc: QuoteToken = {
-  address: USDC.address!,
-  decimals: 6,
-  symbol: USDC.symbol,
-}
+const { mmi: indexToken, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('for now anything except MMI is unsupported', async () => {
