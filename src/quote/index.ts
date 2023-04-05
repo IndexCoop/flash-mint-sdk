@@ -69,6 +69,7 @@ export class FlashMintQuoteProvider
           isMinting,
           indexToken: indexToken.address,
           inputOutputToken: inputOutputToken.address,
+          inputOutputTokenSymbol: inputOutputToken.symbol,
           indexTokenAmount,
           inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
           componentSwapData: wrappedQuote.componentSwapData,

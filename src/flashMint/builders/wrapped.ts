@@ -12,6 +12,7 @@ export interface FlashMintWrappedBuildRequest {
   isMinting: boolean
   indexToken: string
   inputOutputToken: string
+  inputOutputTokenSymbol: string
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
   componentSwapData: ComponentSwapData[]
@@ -35,11 +36,11 @@ export class WrappedTransactionBuilder
       indexToken,
       indexTokenAmount,
       inputOutputToken,
+      inputOutputTokenSymbol,
       inputOutputTokenAmount,
       isMinting,
     } = request
-    const inputOutputTokenIsEth =
-      inputOutputToken === '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+    const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
     const contract = getFlashMintWrappedContract(this.provider)
     let tx: PopulatedTransaction | null = null
     if (isMinting) {
