@@ -92,16 +92,27 @@ const dai = DAI.address!
 const usdc = USDC.address!
 const usdt = USDT.address!
 const weth = WETH.address!
+const DEFAULT_SLIPPAGE = 0.0015
+
+const isFCASH = (address: string) =>
+  [
+    '0x278039398A5eb29b6c2FB43789a38A84C6085266',
+    '0xe09B1968851478f20a43959d8a212051367dF01A',
+  ].includes(address)
 
 const getAmountOfAssetToObtainShares = async (
   component: string,
   shares: BigNumber,
   provider: JsonRpcProvider,
-  slippage = 0.15 // 1 = 1%
+  slippage = DEFAULT_SLIPPAGE // 1 = 1%
 ) => {
   const componentContract = new Contract(component, erc4626Abi, provider)
   // Convert slippage to a BigNumber, do rounding to avoid weird JS precision loss
-  const slippageBigNumber = BigNumber.from(Math.round(slippage * 10000))
+  const defaultSlippageBN = BigNumber.from(Math.round(slippage * 10000))
+  // if FCASH, increase slippage x3
+  const slippageBigNumber = isFCASH(component)
+    ? defaultSlippageBN.mul(3)
+    : defaultSlippageBN
 
   // Calculate the multiplier (1 + slippage)
   const multiplier = BigNumber.from(10000).add(slippageBigNumber)
@@ -173,7 +184,7 @@ export async function getRedemptionComponentSwapData(
         component,
         issuanceUnits[index],
         provider,
-        -0.15
+        -DEFAULT_SLIPPAGE
       )
   )
   const buyAmounts = await Promise.all(buyAmountsPromises)
