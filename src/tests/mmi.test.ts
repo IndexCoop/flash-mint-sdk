@@ -118,7 +118,7 @@ async function mintMMI_Erc20(
 
 async function mintMMI(amount: BigNumber) {
   // Get quote
-  const quote = await getMintQuote(weth, wei(1))
+  const quote = await getMintQuote(weth, amount)
   if (!quote) fail()
 
   const { contract, inputOutputAmount, tx } = quote
