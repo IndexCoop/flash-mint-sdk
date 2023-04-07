@@ -98,7 +98,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns a tx for minting MMI (ETH)', async () => {
-    const buildRequest = getDefaultBuildRequest(true, eth)
+    const buildRequest = getDefaultBuildRequest(true, eth, 'ETH')
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.issueExactSetFromETH(
       buildRequest.indexToken,
@@ -134,7 +134,7 @@ describe('WrappedTransactionBuilder()', () => {
   })
 
   test('returns a tx for redeeming MMI (ETH)', async () => {
-    const buildRequest = getDefaultBuildRequest(false, eth)
+    const buildRequest = getDefaultBuildRequest(false, eth, 'ETH')
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.indexToken,
@@ -153,7 +153,8 @@ describe('WrappedTransactionBuilder()', () => {
 
 function getDefaultBuildRequest(
   isMinting = true,
-  inputOutputToken: string = usdc
+  inputOutputToken: string = usdc,
+  inputOutputTokenSymbol = 'USDC'
 ): FlashMintWrappedBuildRequest {
   const wrapData: ComponentWrapData = {
     integrationName: '',
@@ -165,6 +166,7 @@ function getDefaultBuildRequest(
     inputOutputToken,
     indexTokenAmount: wei(1),
     inputOutputTokenAmount: BigNumber.from('16583822409709138541'),
+    inputOutputTokenSymbol,
     componentSwapData: [
       {
         underlyingERC20: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
