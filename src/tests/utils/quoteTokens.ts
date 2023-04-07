@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { DAI, MoneyMarketIndex, USDC, USDT, WETH } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 

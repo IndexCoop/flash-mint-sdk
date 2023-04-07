@@ -1,16 +1,10 @@
-import { DAI, MoneyMarketIndex, USDC, WETH } from 'constants/tokens'
-import { QuoteToken } from 'quote/quoteToken'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { wei } from 'utils/numbers'
 import { FlashMintWrappedQuoteRequest, WrappedQuoteProvider } from '.'
 
+const { dai, mmi, usdc, weth } = QuoteTokens
+const indexToken = mmi
 const provider = LocalhostProvider
-
-const indexToken: QuoteToken = {
-  address: MoneyMarketIndex.address!,
-  decimals: 18,
-  symbol: MoneyMarketIndex.symbol,
-}
 
 describe('WrappedQuoteProvider()', () => {
   beforeEach((): void => {
@@ -18,11 +12,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   test('returns a quote for minting MMI w/ DAI', async () => {
-    const inputToken: QuoteToken = {
-      address: DAI.address!,
-      decimals: 18,
-      symbol: DAI.symbol,
-    }
+    const inputToken = dai
     const request: FlashMintWrappedQuoteRequest = {
       isMinting: true,
       inputToken,
@@ -40,11 +30,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   test('returns a quote for minting MMI w/ USDC', async () => {
-    const inputToken: QuoteToken = {
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
-    }
+    const inputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       isMinting: true,
       inputToken,
@@ -62,11 +48,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   test('returns a quote for minting MMI w/ WETH', async () => {
-    const inputToken: QuoteToken = {
-      address: WETH.address!,
-      decimals: 18,
-      symbol: WETH.symbol,
-    }
+    const inputToken = weth
     const request: FlashMintWrappedQuoteRequest = {
       isMinting: true,
       inputToken,
@@ -84,11 +66,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming MMI for DAI', async () => {
-    const outputToken: QuoteToken = {
-      address: DAI.address!,
-      decimals: 18,
-      symbol: DAI.symbol,
-    }
+    const outputToken = dai
     const request: FlashMintWrappedQuoteRequest = {
       isMinting: false,
       inputToken: indexToken,
@@ -106,11 +84,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming MMI for USDC', async () => {
-    const outputToken: QuoteToken = {
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
-    }
+    const outputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       isMinting: false,
       inputToken: indexToken,
@@ -128,11 +102,7 @@ describe('WrappedQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming MMI for WETH', async () => {
-    const outputToken: QuoteToken = {
-      address: WETH.address!,
-      decimals: 18,
-      symbol: WETH.symbol,
-    }
+    const outputToken = weth
     const request: FlashMintWrappedQuoteRequest = {
       isMinting: false,
       inputToken: indexToken,
