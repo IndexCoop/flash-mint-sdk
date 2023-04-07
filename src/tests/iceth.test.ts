@@ -94,7 +94,7 @@ describe('icETH (mainnet)', () => {
     }
 
     // USDC whale
-    const whale = '0x92F9113121532671dD76eb4905b968954FA53930'
+    const whale = '0xE11f040179922e54f927D133A3663550568da77d'
     await transferFromWhale(
       whale,
       signer.address,
