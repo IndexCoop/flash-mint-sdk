@@ -1,4 +1,4 @@
-import { DAI, MoneyMarketIndex, USDC, WETH } from 'constants/tokens'
+import { DAI, MoneyMarketIndex, USDC, USDT, WETH } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 
 const dai: QuoteToken = {
@@ -19,6 +19,12 @@ const usdc: QuoteToken = {
   symbol: USDC.symbol,
 }
 
+const usdt: QuoteToken = {
+  address: USDT.address!,
+  decimals: 6,
+  symbol: USDT.symbol,
+}
+
 const weth: QuoteToken = {
   address: WETH.address!,
   decimals: 18,
@@ -29,5 +35,6 @@ export const QuoteTokens = {
   dai,
   mmi,
   usdc,
+  usdt,
   weth,
 }

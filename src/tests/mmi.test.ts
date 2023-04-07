@@ -18,7 +18,7 @@ import {
 const provider = LocalhostProvider
 const signer = SignerAccount5
 
-const { dai, mmi, usdc, weth } = QuoteTokens
+const { dai, mmi, usdc, usdt, weth } = QuoteTokens
 
 describe('MMI (mainnet)', () => {
   beforeAll(async () => {
@@ -49,6 +49,14 @@ describe('MMI (mainnet)', () => {
     )
   })
 
+  test('can mint MMI from USDT', async () => {
+    await mintMMI_Erc20(
+      usdt,
+      wei(1),
+      '0x06d3a30cBb00660B85a30988D197B1c282c6dCB6'
+    )
+  })
+
   test('can mint MMI from WETH', async () => {
     await mintMMI(wei(1))
   })
@@ -59,6 +67,10 @@ describe('MMI (mainnet)', () => {
 
   test('can redeem MMI for USDC', async () => {
     await redeemMMI(wei(1), usdc)
+  })
+
+  test('can redeem MMI for USDT', async () => {
+    await redeemMMI(wei(1), usdt)
   })
 
   test('can redeem MMI for WETH', async () => {
