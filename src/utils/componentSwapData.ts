@@ -6,7 +6,6 @@ import { DAI, USDC, USDT, WETH } from '../constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
 import { Exchange, SwapData } from './swapData'
-import { getIndexTokenMix, IndexTokenMix } from './wrapData'
 
 export interface ComponentSwapData {
   underlyingERC20: string
@@ -19,17 +18,109 @@ export interface ComponentSwapData {
   buyUnderlyingAmount: BigNumber
 }
 
-const CErc20Abi = ['function exchangeRateCurrent() public returns (uint)']
+interface WrappedToken {
+  address: string
+  decimals: number
+  underlyingErc20: {
+    address: string
+    decimals: number
+    symbol: string
+  }
+}
 
 const IssuanceAbi = [
   'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
   'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
 ]
 
+const erc4626Abi = [
+  'constructor(address _morpho, address _morphoToken, address _lens, address _recipient)',
+  'error ZeroAddress()',
+  'event Accrued(address indexed user, uint256 index, uint256 unclaimed)',
+  'event Approval(address indexed owner, address indexed spender, uint256 value)',
+  'event Claimed(address indexed user, uint256 claimed)',
+  'event Deposit(address indexed caller, address indexed owner, uint256 assets, uint256 shares)',
+  'event Initialized(uint8 version)',
+  'event OwnershipTransferred(address indexed previousOwner, address indexed newOwner)',
+  'event RewardsTransferred(address recipient, uint256 amount)',
+  'event Transfer(address indexed from, address indexed to, uint256 value)',
+  'event Withdraw(address indexed caller, address indexed receiver, address indexed owner, uint256 assets, uint256 shares)',
+  'function allowance(address owner, address spender) view returns (uint256)',
+  'function approve(address spender, uint256 amount) returns (bool)',
+  'function asset() view returns (address)',
+  'function balanceOf(address account) view returns (uint256)',
+  'function claimRewards(address _user) returns (uint256 rewardsAmount)',
+  'function comp() view returns (address)',
+  'function convertToAssets(uint256 shares) view returns (uint256 assets)',
+  'function convertToShares(uint256 assets) view returns (uint256 shares)',
+  'function decimals() view returns (uint8)',
+  'function decreaseAllowance(address spender, uint256 subtractedValue) returns (bool)',
+  'function deposit(uint256 assets, address receiver) returns (uint256)',
+  'function increaseAllowance(address spender, uint256 addedValue) returns (bool)',
+  'function initialize(address _poolToken, string _name, string _symbol, uint256 _initialDeposit)',
+  'function lens() view returns (address)',
+  'function maxDeposit(address) view returns (uint256)',
+  'function maxMint(address) view returns (uint256)',
+  'function maxRedeem(address owner) view returns (uint256)',
+  'function maxWithdraw(address owner) view returns (uint256)',
+  'function mint(uint256 shares, address receiver) returns (uint256)',
+  'function morpho() view returns (address)',
+  'function morphoToken() view returns (address)',
+  'function name() view returns (string)',
+  'function owner() view returns (address)',
+  'function poolToken() view returns (address)',
+  'function previewDeposit(uint256 assets) view returns (uint256)',
+  'function previewMint(uint256 shares) view returns (uint256)',
+  'function previewRedeem(uint256 shares) view returns (uint256)',
+  'function previewWithdraw(uint256 assets) view returns (uint256)',
+  'function recipient() view returns (address)',
+  'function redeem(uint256 shares, address receiver, address owner) returns (uint256)',
+  'function renounceOwnership()',
+  'function rewardsIndex() view returns (uint256)',
+  'function symbol() view returns (string)',
+  'function totalAssets() view returns (uint256)',
+  'function totalSupply() view returns (uint256)',
+  'function transfer(address to, uint256 amount) returns (bool)',
+  'function transferFrom(address from, address to, uint256 amount) returns (bool)',
+  'function transferOwnership(address newOwner)',
+  'function transferRewards()',
+  'function userRewards(address) view returns (uint128 index, uint128 unclaimed)',
+  'function wEth() view returns (address)',
+  'function withdraw(uint256 assets, address receiver, address owner) returns (uint256)',
+]
 const dai = DAI.address!
 const usdc = USDC.address!
 const usdt = USDT.address!
 const weth = WETH.address!
+const DEFAULT_SLIPPAGE = 0.0015
+
+const isFCASH = (address: string) =>
+  [
+    '0x278039398A5eb29b6c2FB43789a38A84C6085266',
+    '0xe09B1968851478f20a43959d8a212051367dF01A',
+  ].includes(address)
+
+const getAmountOfAssetToObtainShares = async (
+  component: string,
+  shares: BigNumber,
+  provider: JsonRpcProvider,
+  slippage = DEFAULT_SLIPPAGE // 1 = 1%
+) => {
+  const componentContract = new Contract(component, erc4626Abi, provider)
+  // Convert slippage to a BigNumber, do rounding to avoid weird JS precision loss
+  const defaultSlippageBN = BigNumber.from(Math.round(slippage * 10000))
+  // if FCASH, increase slippage x3
+  const slippageBigNumber = isFCASH(component)
+    ? defaultSlippageBN.mul(3)
+    : defaultSlippageBN
+
+  // Calculate the multiplier (1 + slippage)
+  const multiplier = BigNumber.from(10000).add(slippageBigNumber)
+
+  const buyUnderlyingAmount: BigNumber =
+    await componentContract.convertToAssets(shares)
+  return buyUnderlyingAmount.mul(multiplier).div(10000)
+}
 
 export async function getIssuanceComponentSwapData(
   indexTokenSymbol: string,
@@ -39,72 +130,32 @@ export async function getIssuanceComponentSwapData(
   provider: JsonRpcProvider
 ): Promise<ComponentSwapData[]> {
   const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  console.log(issuanceModule)
   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
-  // TODO: check returns
-  const [
-    issuanceComponents, // cDAI, cUSDC and cUSDT, in that order
-    issuanceUnits,
-  ] = await issuance.getRequiredComponentIssuanceUnits(
-    indexToken,
-    indexTokenAmount
+  const [issuanceComponents, issuanceUnits] =
+    await issuance.getRequiredComponentIssuanceUnits(
+      indexToken,
+      indexTokenAmount
+    )
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, provider)
+    )
+  const buyAmountsPromises = issuanceComponents.map(
+    (component: string, index: number) =>
+      getAmountOfAssetToObtainShares(component, issuanceUnits[index], provider)
   )
-
-  const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
-  console.log(indexTokenMix)
-  console.log(
-    issuanceComponents,
-    issuanceUnits.map((unit: BigNumber) => unit.toString())
-  )
-
-  // const cDaiExchangeRate = await getExchangeRate(
-  //   '0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643',
-  //   18,
-  //   provider
-  // )
-  // const cUsdcExchangeRate = await getExchangeRate(
-  //   '0x39AA39c021dfbaE8faC545936693aC917d5E7563',
-  //   6,
-  //   provider
-  // )
-  // const cUsdtExchangeRate = await getExchangeRate(
-  //   '0xf650C3d88D12dB855b8bf7D11Be6C55A4e07dCC9',
-  //   6,
-  //   provider
-  // )
-
-  // const requiredDai = issuanceUnits[0].mul(cDaiExchangeRate)
-  // const requiredUsdc = issuanceUnits[1].mul(cUsdcExchangeRate)
-  // const requiredUsdt = issuanceUnits[2].mul(cUsdtExchangeRate)
-
-  // console.log(requiredDai.toString())
-  // console.log(requiredUsdc.toString())
-  // console.log(requiredUsdt.toString())
-
-  // const buyUnderlyingAmountDai =
-  //   indexTokenMix !== IndexTokenMix.UNWRAPPED_ONLY
-  //     ? requiredDai
-  //     : issuanceUnits[0]
-  // // cUSDC is only used in test case WRAPPED_ONLY
-  // const buyUnderlyingAmountUsdc =
-  //   indexTokenMix === IndexTokenMix.WRAPPED_ONLY
-  //     ? requiredUsdc
-  //     : issuanceUnits[1]
-  // const buyUnderlyingAmountUsdt =
-  //   indexTokenMix !== IndexTokenMix.UNWRAPPED_ONLY
-  //     ? requiredUsdt
-  //     : issuanceUnits[2]
-
-  const swapData = issuanceComponents.map(
-    (component: string, index: number) => {
-      const underlyingERC20 = getUnderlyingErc20(component)
-      return {
-        underlyingERC20,
-        buyUnderlyingAmount: issuanceUnits[index],
-        dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20),
-      }
+  const buyAmounts = await Promise.all(buyAmountsPromises)
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  const swapData = issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    const buyUnderlyingAmount = buyAmounts[index]
+    return {
+      underlyingERC20: underlyingERC20.address,
+      buyUnderlyingAmount,
+      dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
     }
-  )
+  })
   return swapData
 }
 
@@ -122,37 +173,35 @@ export async function getRedemptionComponentSwapData(
       indexToken,
       indexTokenAmount
     )
-  const swapData = issuanceComponents.map(
-    (component: string, index: number) => {
-      const underlyingERC20 = getUnderlyingErc20(component)
-      return {
-        underlyingERC20,
-        buyUnderlyingAmount: issuanceUnits[index],
-        dexData: getStaticRedemptionSwapData(underlyingERC20, outputToken),
-      }
-    }
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, provider)
+    )
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  const buyAmountsPromises = issuanceComponents.map(
+    (component: string, index: number) =>
+      getAmountOfAssetToObtainShares(
+        component,
+        issuanceUnits[index],
+        provider,
+        -DEFAULT_SLIPPAGE
+      )
   )
+  const buyAmounts = await Promise.all(buyAmountsPromises)
+  const swapData = issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    const buyUnderlyingAmount = buyAmounts[index]
+    return {
+      underlyingERC20: underlyingERC20.address,
+      buyUnderlyingAmount,
+      dexData: getStaticRedemptionSwapData(
+        underlyingERC20.address,
+        outputToken
+      ),
+    }
+  })
   return swapData
-}
-
-async function getExchangeRate(
-  cErc20: string,
-  decimals: number,
-  provider: JsonRpcProvider
-): Promise<BigNumber> {
-  const contract = new Contract(cErc20, CErc20Abi, provider)
-  // Returns the current exchange rate as an unsigned integer, scaled by 1 * 10^(18 - 8 + Underlying Token Decimals).
-  // 8 because cTokens have 8 decimals.
-  // https://docs.compound.finance/v2/ctokens/#exchange-rate
-  const exchangeRate = await contract.callStatic.exchangeRateCurrent()
-  const scale = Math.pow(10, 18 - 8 + decimals)
-  const divByScale = Math.pow(10, decimals - 8)
-  console.log(scale, divByScale)
-  console.log(exchangeRate.toString(), '/////// exchange rate scaled')
-  const realExchangeRate =
-    scale > 1e18 ? exchangeRate.div(divByScale) : exchangeRate
-  console.log(realExchangeRate.toString(), '/////// exchange rate')
-  return realExchangeRate
 }
 
 function getStaticIssuanceSwapData(
@@ -185,24 +234,49 @@ function getStaticRedemptionSwapData(
   }
 }
 
-export function getUnderlyingErc20(token: string): string {
-  switch (token) {
-    // wfDAI:1695168000 (Wrapped fDAI @ 1695168000)
-    case '0x278039398A5eb29b6c2FB43789a38A84C6085266':
-    // wfDAI:1687392000 (Wrapped fDAI @ 1687392000)
-    case '0xfa5d4F65a4c51906652d78140C266423111c6BFA':
-      return dai
-    // mcUSDC (Morpho-Compound USD Coin Supply Vault)
-    case '0xba9E3b3b684719F80657af1A19DEbc3C772494a0':
-    // wfUSDC:1695168000 (Wrapped fUSDC @ 1695168000)
-    case '0xe09B1968851478f20a43959d8a212051367dF01A':
-      return usdc
-    // maUSDT (Morpho-Aave Tether USD Supply Vault )
-    case '0xAFe7131a57E44f832cb2dE78ade38CaD644aaC2f':
-    // mcUSDT (Morpho-Compound Tether USD Supply Vault)
-    case '0xC2A4fBA93d4120d304c94E4fd986e0f9D213eD8A':
-      return usdt
+async function getUnderlyingErc20(
+  token: string,
+  provider: JsonRpcProvider
+): Promise<WrappedToken | null> {
+  const IERC4262_ABI = [
+    'function asset() public view returns (address)',
+    'function decimals() public view returns (uint256)',
+  ]
+  const contract = new Contract(token, IERC4262_ABI, provider)
+  const underlyingERC20: string = await contract.asset()
+  const decimals: number = await contract.decimals()
+  switch (underlyingERC20.toLowerCase()) {
+    case dai.toLowerCase():
+      return {
+        address: token,
+        decimals,
+        underlyingErc20: {
+          address: dai,
+          decimals: 18,
+          symbol: DAI.symbol,
+        },
+      }
+    case usdc.toLowerCase():
+      return {
+        address: token,
+        decimals,
+        underlyingErc20: {
+          address: usdc,
+          decimals: 6,
+          symbol: USDC.symbol,
+        },
+      }
+    case usdt.toLowerCase():
+      return {
+        address: token,
+        decimals,
+        underlyingErc20: {
+          address: usdt,
+          decimals: 6,
+          symbol: USDT.symbol,
+        },
+      }
     default:
-      return ''
+      return null
   }
 }

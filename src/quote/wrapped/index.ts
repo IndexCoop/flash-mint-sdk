@@ -8,11 +8,7 @@ import {
 } from '../../utils/componentSwapData'
 import { getFlashMintWrappedContract } from '../../utils/contracts'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'
-import {
-  ComponentWrapData,
-  getIndexTokenMix,
-  getWrapData,
-} from '../../utils/wrapData'
+import { ComponentWrapData, getWrapData } from '../../utils/wrapData'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 
@@ -59,10 +55,8 @@ export class WrappedQuoteProvider
           indexTokenAmount,
           provider
         )
-    const indexTokenMix = getIndexTokenMix(indexTokenSymbol)
-    // FIXME:
-    const componentWrapData = getWrapData(indexTokenMix)
-    // FIXME: check wrap data length === component swap data length
+    const componentWrapData = getWrapData(indexToken.symbol)
+    if (componentSwapData.length !== componentSwapData.length) return null
     let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     const contract = getFlashMintWrappedContract(provider)
     if (isMinting) {

@@ -8,6 +8,8 @@ import { Wallet } from '@ethersproject/wallet'
 import { WETH } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 
+export { QuoteTokens } from './quoteTokens'
+
 // Alchemy
 export const AlchemyProvider = new JsonRpcProvider(
   process.env.MAINNET_ALCHEMY_API,
@@ -44,6 +46,12 @@ export const SignerAccount3 = new Wallet(
 // Hardhat Account #4
 export const SignerAccount4 = new Wallet(
   '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
+  LocalhostProvider
+)
+
+// Hardhat Account #5
+export const SignerAccount5 = new Wallet(
+  '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba',
   LocalhostProvider
 )
 
@@ -110,6 +118,15 @@ export async function approveErc20(
     gasLimit: 100_000,
   })
   await approveTx.wait()
+}
+
+export async function allowanceOf(
+  erc20Address: string,
+  spender: string,
+  signer: Wallet
+): Promise<BigNumber> {
+  const contract = createERC20Contract(erc20Address, signer)
+  return await contract.allowance(signer.address, spender)
 }
 
 export async function balanceOf(
