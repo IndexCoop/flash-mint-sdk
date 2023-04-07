@@ -204,12 +204,6 @@ export async function getRedemptionComponentSwapData(
   return swapData
 }
 
-function fromWei(number: BigNumber, decimals: number, power: number = 18) {
-  return number
-    .mul(BigNumber.from(10).pow(power))
-    .div(BigNumber.from(10).pow(decimals))
-}
-
 function getStaticIssuanceSwapData(
   inputToken: string,
   outputToken: string
@@ -240,7 +234,7 @@ function getStaticRedemptionSwapData(
   }
 }
 
-export async function getUnderlyingErc20(
+async function getUnderlyingErc20(
   token: string,
   provider: JsonRpcProvider
 ): Promise<WrappedToken | null> {
