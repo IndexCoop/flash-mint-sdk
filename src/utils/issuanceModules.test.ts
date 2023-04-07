@@ -22,6 +22,7 @@ import {
   JPGIndex,
   MATIC2xFlexibleLeverageIndex,
   MetaverseIndex,
+  MoneyMarketIndex,
   wsETH2,
 } from 'constants/tokens'
 
@@ -38,6 +39,13 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for gtcETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address
     const issuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for MMI', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(MoneyMarketIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
