@@ -7,6 +7,7 @@ import { ComponentSwapData } from '../../utils/componentSwapData'
 import { getFlashMintWrappedContract } from '../../utils/contracts'
 import { ComponentWrapData } from '../../utils/wrapData'
 import { TransactionBuilder } from './interface'
+import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintWrappedBuildRequest {
   isMinting: boolean
@@ -85,14 +86,6 @@ export class WrappedTransactionBuilder
     return tx
   }
 
-  private isEmptyString(data: string): boolean {
-    return typeof data === 'string' && data.trim().length == 0
-  }
-
-  private isInvalidAmount(amount: BigNumber): boolean {
-    return amount.isZero() || amount.isNegative()
-  }
-
   private isValidRequest(request: FlashMintWrappedBuildRequest): boolean {
     const {
       componentSwapData,
@@ -102,10 +95,10 @@ export class WrappedTransactionBuilder
       inputOutputToken,
       inputOutputTokenAmount,
     } = request
-    if (this.isEmptyString(indexToken)) return false
-    if (this.isEmptyString(inputOutputToken)) return false
-    if (this.isInvalidAmount(indexTokenAmount)) return false
-    if (this.isInvalidAmount(inputOutputTokenAmount)) return false
+    if (isEmptyString(indexToken)) return false
+    if (isEmptyString(inputOutputToken)) return false
+    if (isInvalidAmount(indexTokenAmount)) return false
+    if (isInvalidAmount(inputOutputTokenAmount)) return false
     if (componentSwapData.length === 0) return false
     if (componentWrapData.length === 0) return false
     if (componentSwapData.length !== componentWrapData.length) return false
