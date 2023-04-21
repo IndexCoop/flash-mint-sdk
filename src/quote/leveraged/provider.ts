@@ -207,8 +207,6 @@ function getPaymentTokenAddress(
   }
 
   if (paymentTokenSymbol === InterestCompoundingETHIndex.symbol && !isMinting) {
-    // TODO: should this always be the collateralToken?
-    // paymentTokenAddress = leveragedTokenData.collateralToken
     return stETH.address!
   }
 
