@@ -138,8 +138,6 @@ export class LeveragedQuoteProvider
       slippage,
       isMinting
     )
-    console.log(estimatedInputOutputAmount.toString(), 'estimate')
-    console.log(inputOutputTokenAmount.toString(), 'slippage adjusted')
     return {
       indexTokenAmount,
       inputOutputTokenAmount,
