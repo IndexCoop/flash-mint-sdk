@@ -15,7 +15,7 @@ const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const indexToken = DiversifiedStakedETHIndex
 const usdc = USDC.address!
 
-describe('WrappedTransactionBuilder()', () => {
+describe('ZeroExTransactionBuilder()', () => {
   const contract = getFlashMintZeroExContractForToken(
     indexToken.symbol!,
     provider,
