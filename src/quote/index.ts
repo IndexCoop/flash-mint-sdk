@@ -3,6 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { FlashMintWrappedAddress } from '../constants/contracts'
+import { MoneyMarketIndexToken } from '../constants/tokens'
 
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
@@ -107,6 +108,7 @@ function getContractAddress(contractType: FlashMintContractType): string {
 
 // Returns contract type for token or null if not supported
 function getContractType(token: string): FlashMintContractType | null {
-  if (token === 'MMI') return FlashMintContractType.wrapped
+  if (token === MoneyMarketIndexToken.symbol)
+    return FlashMintContractType.wrapped
   return null
 }

@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintWrappedAddress } from 'constants/contracts'
-import { MoneyMarketIndex, USDC } from 'constants/tokens'
+import { MoneyMarketIndexToken, USDC } from 'constants/tokens'
 import { LocalhostProvider } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
@@ -15,7 +15,7 @@ const provider = LocalhostProvider
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = MoneyMarketIndex.address!
+const indexToken = MoneyMarketIndexToken.address!
 const usdc = USDC.address!
 
 describe('WrappedTransactionBuilder()', () => {
