@@ -1,5 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { DAI, MoneyMarketIndex, USDC, USDT, WETH } from 'constants/tokens'
+import { DAI, MoneyMarketIndexToken, USDC, USDT, WETH } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 
 const dai: QuoteToken = {
@@ -9,9 +9,9 @@ const dai: QuoteToken = {
 }
 
 const mmi: QuoteToken = {
-  address: MoneyMarketIndex.address!,
+  address: MoneyMarketIndexToken.address!,
   decimals: 18,
-  symbol: MoneyMarketIndex.symbol,
+  symbol: MoneyMarketIndexToken.symbol,
 }
 
 const usdc: QuoteToken = {

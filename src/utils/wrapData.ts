@@ -1,4 +1,4 @@
-import { MoneyMarketIndex } from 'constants/tokens'
+import { MoneyMarketIndexToken } from 'constants/tokens'
 
 export interface ComponentWrapData {
   integrationName: string // wrap adapter integration name as listed in the IntegrationRegistry for the wrapModule
@@ -10,7 +10,7 @@ const erc4626WrapV2AdapterName = 'ERC4626WrapV2Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
-  if (tokenSymbol !== MoneyMarketIndex.symbol) return []
+  if (tokenSymbol !== MoneyMarketIndexToken.symbol) return []
   return [
     {
       integrationName: erc4626WrapV2AdapterName,

@@ -1,5 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { DAI, MoneyMarketIndex, USDC, USDT, WETH } from 'constants/tokens'
+import { DAI, MoneyMarketIndexToken, USDC, USDT, WETH } from 'constants/tokens'
 import { LocalhostProvider } from 'tests/utils'
 import { wei } from 'utils/numbers'
 
@@ -21,8 +21,8 @@ describe('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token (USDC)', async () => {
     const inputToken = USDC.address!
     const componentSwapData = await getIssuanceComponentSwapData(
-      MoneyMarketIndex.symbol,
-      MoneyMarketIndex.address!,
+      MoneyMarketIndexToken.symbol,
+      MoneyMarketIndexToken.address!,
       inputToken,
       wei(1),
       provider
@@ -51,8 +51,8 @@ describe('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based when input token is WETH', async () => {
     const inputToken = WETH.address!
     const componentSwapData = await getIssuanceComponentSwapData(
-      MoneyMarketIndex.symbol,
-      MoneyMarketIndex.address!,
+      MoneyMarketIndexToken.symbol,
+      MoneyMarketIndexToken.address!,
       inputToken,
       wei(1),
       provider
@@ -83,8 +83,8 @@ describe('getRedemptionComponentSwapData()', () => {
   test('returns correct swap data based on output token (USDC)', async () => {
     const outputToken = usdc
     const componentSwapData = await getRedemptionComponentSwapData(
-      MoneyMarketIndex.symbol,
-      MoneyMarketIndex.address!,
+      MoneyMarketIndexToken.symbol,
+      MoneyMarketIndexToken.address!,
       outputToken,
       wei(1),
       provider
@@ -113,8 +113,8 @@ describe('getRedemptionComponentSwapData()', () => {
   test('returns correct swap data when output token is WETH', async () => {
     const outputToken = weth
     const componentSwapData = await getRedemptionComponentSwapData(
-      MoneyMarketIndex.symbol,
-      MoneyMarketIndex.address!,
+      MoneyMarketIndexToken.symbol,
+      MoneyMarketIndexToken.address!,
       outputToken,
       wei(1),
       provider

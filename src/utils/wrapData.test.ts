@@ -1,4 +1,4 @@
-import { MoneyMarketIndex } from 'constants/tokens'
+import { MoneyMarketIndexToken } from 'constants/tokens'
 import { getWrapData } from './wrapData'
 
 const erc4626WrapV2AdapterName = 'ERC4626WrapV2Adapter'
@@ -11,7 +11,7 @@ describe('getWrapData()', () => {
   })
 
   test('returns correct wrap data for MMI', async () => {
-    const wrapData = getWrapData(MoneyMarketIndex.symbol)
+    const wrapData = getWrapData(MoneyMarketIndexToken.symbol)
     expect(wrapData.length).toBe(6)
     wrapData.forEach((data) => {
       expect(data.integrationName).toBe(erc4626WrapV2AdapterName)
