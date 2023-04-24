@@ -1,95 +1,101 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { PopulatedTransaction } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ComponentSwapData } from '../../utils/componentSwapData'
-import { getFlashMintWrappedContract } from '../../utils/contracts'
-import { ComponentWrapData } from '../../utils/wrapData'
+import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
+import { getIssuanceModule } from '../../utils/issuanceModules'
 import { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
-export interface FlashMintWrappedBuildRequest {
+export interface FlashMintZeroExBuildRequest {
   isMinting: boolean
   indexToken: string
+  indexTokenSymbol: string
   inputOutputToken: string
   inputOutputTokenSymbol: string
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
-  componentSwapData: ComponentSwapData[]
-  componentWrapData: ComponentWrapData[]
+  componentQuotes: string[]
 }
 
-export class WrappedTransactionBuilder
+export class ZeroExTransactionBuilder
   implements
-    TransactionBuilder<FlashMintWrappedBuildRequest, TransactionRequest>
+    TransactionBuilder<FlashMintZeroExBuildRequest, TransactionRequest>
 {
   constructor(private readonly provider: JsonRpcProvider) {}
 
   async build(
-    request: FlashMintWrappedBuildRequest
+    request: FlashMintZeroExBuildRequest
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
     const {
-      componentSwapData,
-      componentWrapData,
+      componentQuotes,
       indexToken,
+      indexTokenSymbol,
       indexTokenAmount,
       inputOutputToken,
       inputOutputTokenSymbol,
       inputOutputTokenAmount,
       isMinting,
     } = request
+    const network = await this.provider.getNetwork()
+    const chainId = network.chainId
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
-    const contract = getFlashMintWrappedContract(this.provider)
-    let tx: PopulatedTransaction | null = null
+    const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
+    const contract = getFlashMintZeroExContractForToken(
+      indexTokenSymbol,
+      this.provider,
+      chainId
+    )
     if (isMinting) {
       if (inputOutputTokenIsEth) {
-        tx = await contract.populateTransaction.issueExactSetFromETH(
+        return await contract.populateTransaction.issueExactSetFromETH(
           indexToken,
           indexTokenAmount,
-          componentSwapData,
-          componentWrapData,
+          componentQuotes,
+          issuanceModule.address,
+          issuanceModule.isDebtIssuance,
           { value: inputOutputTokenAmount }
         )
       } else {
-        tx = await contract.populateTransaction.issueExactSetFromERC20(
+        return await contract.populateTransaction.issueExactSetFromToken(
           indexToken,
           inputOutputToken,
           indexTokenAmount,
           inputOutputTokenAmount, // _maxAmountInputToken
-          componentSwapData,
-          componentWrapData
+          componentQuotes,
+          issuanceModule.address,
+          issuanceModule.isDebtIssuance
         )
       }
     } else {
       if (inputOutputTokenIsEth) {
-        tx = await contract.populateTransaction.redeemExactSetForETH(
+        return await contract.populateTransaction.redeemExactSetForETH(
           indexToken,
           indexTokenAmount,
-          inputOutputTokenAmount, // _minOutputReceive
-          componentSwapData,
-          componentWrapData
+          inputOutputTokenAmount, // _minEthReceive
+          componentQuotes,
+          issuanceModule.address,
+          issuanceModule.isDebtIssuance
         )
       } else {
-        tx = await contract.populateTransaction.redeemExactSetForERC20(
+        return await contract.populateTransaction.redeemExactSetForToken(
           indexToken,
           inputOutputToken,
           indexTokenAmount,
           inputOutputTokenAmount, // _minOutputReceive
-          componentSwapData,
-          componentWrapData
+          componentQuotes,
+          issuanceModule.address,
+          issuanceModule.isDebtIssuance
         )
       }
     }
-    return tx
   }
 
-  private isValidRequest(request: FlashMintWrappedBuildRequest): boolean {
+  private isValidRequest(request: FlashMintZeroExBuildRequest): boolean {
     const {
-      componentSwapData,
-      componentWrapData,
+      componentQuotes,
       indexToken,
       indexTokenAmount,
       inputOutputToken,
@@ -99,9 +105,7 @@ export class WrappedTransactionBuilder
     if (isEmptyString(inputOutputToken)) return false
     if (isInvalidAmount(indexTokenAmount)) return false
     if (isInvalidAmount(inputOutputTokenAmount)) return false
-    if (componentSwapData.length === 0) return false
-    if (componentWrapData.length === 0) return false
-    if (componentSwapData.length !== componentWrapData.length) return false
+    if (componentQuotes.length === 0) return false
     return true
   }
 }

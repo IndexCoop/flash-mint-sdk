@@ -23,7 +23,7 @@ import {
   getIncludedSources,
   getPaymentTokenAddress,
   getSwapDataAndPaymentTokenAmount,
-} from './'
+} from './function'
 
 const zeroExApi = ZeroExApiSwapQuote
 const provider = LocalhostProvider
