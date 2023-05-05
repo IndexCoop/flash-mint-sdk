@@ -12,8 +12,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    types:
-      - opened
+    types: [opened, reopened, synchronize]
 
 jobs:
   build:
@@ -30,6 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
+      - run: npm run lint
       - run: npm run build --if-present
       - run: npm run hardhat & npm test
 
