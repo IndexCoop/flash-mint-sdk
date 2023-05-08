@@ -7,6 +7,10 @@ import { DAI, USDC, USDT, WETH } from '../constants/tokens'
 import { getIssuanceModule } from './issuanceModules'
 import { Exchange, SwapData } from './swapData'
 
+export type erc4626SwapData = {
+  dexData: SwapData
+}
+
 export interface ComponentSwapData {
   underlyingERC20: string
   dexData: SwapData
@@ -154,6 +158,67 @@ export async function getIssuanceComponentSwapData(
       underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount,
       dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
+    }
+  })
+  return swapData
+}
+
+export async function getIssuanceERC4626SwapData(
+  indexTokenSymbol: string,
+  indexToken: string,
+  inputToken: string,
+  indexTokenAmount: BigNumber,
+  provider: JsonRpcProvider
+): Promise<ComponentSwapData[]> {
+  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
+  const [issuanceComponents] = await issuance.getRequiredComponentIssuanceUnits(
+    indexToken,
+    indexTokenAmount
+  )
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, provider)
+    )
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  const swapData = issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    return {
+      dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
+    }
+  })
+  return swapData
+}
+
+export async function getRedemptionERC4626SwapData(
+  indexTokenSymbol: string,
+  indexToken: string,
+  outputToken: string,
+  indexTokenAmount: BigNumber,
+  provider: JsonRpcProvider
+): Promise<ComponentSwapData[]> {
+  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
+  const [issuanceComponents] =
+    await issuance.getRequiredComponentRedemptionUnits(
+      indexToken,
+      indexTokenAmount
+    )
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, provider)
+    )
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+
+  const swapData = issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    return {
+      dexData: getStaticRedemptionSwapData(
+        underlyingERC20.address,
+        outputToken
+      ),
     }
   })
   return swapData

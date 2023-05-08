@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintQuoteProvider } from 'quote'
 import { QuoteToken } from 'quote/quoteToken'
-import { getFlashMintWrappedContract } from 'utils/contracts'
+import { getFlashMint4626Contract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 
 import {
@@ -22,7 +22,7 @@ const { dai, mmi, usdc, usdt, weth } = QuoteTokens
 
 describe('MMI (mainnet)', () => {
   beforeAll(async () => {
-    const flashMintContract = getFlashMintWrappedContract(signer)
+    const flashMintContract = getFlashMint4626Contract(signer)
     const approveSetTokenTX = await flashMintContract.approveSetToken(
       mmi.address
     )

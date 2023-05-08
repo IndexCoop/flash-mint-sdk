@@ -5,6 +5,8 @@ export const FlashMintLeveragedForCompoundAddress =
 export const FlashMintWrappedAddress =
   '0x5C0D0a9a0c3A0a5B591496fF894686893b69FaA2'
 
+export const FlashMint4626Address = '0xe483701d4f8c3b9b7b662fee2543503d6d127f53'
+
 export const FlashMintZeroExMainnetAddress =
   '0x9d648E5564B794B918d99C84B0fbf4b0bf36ce45'
 
