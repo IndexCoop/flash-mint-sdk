@@ -9,7 +9,6 @@ import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 import FLASHMINT_4626_ABI from '../constants/abis/FlashMint4626.json'
 
-
 import { ChainId } from '../constants/chains'
 import {
   ExchangeIssuanceLeveragedMainnetAddress,
