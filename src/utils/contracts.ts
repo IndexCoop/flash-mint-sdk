@@ -4,10 +4,10 @@ import { Contract } from '@ethersproject/contracts'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
+import FLASHMINT_4626_ABI from '../constants/abis/FlashMint4626.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
-import FLASHMINT_4626_ABI from '../constants/abis/FlashMint4626.json'
 
 import { ChainId } from '../constants/chains'
 import {
