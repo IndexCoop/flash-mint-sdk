@@ -149,6 +149,6 @@ function getContractAddress(contractType: FlashMintContractType): string {
 // Returns contract type for token or null if not supported
 function getContractType(token: string): FlashMintContractType | null {
   if (token === MoneyMarketIndexToken.symbol)
-    return FlashMintContractType.wrapped
+    return FlashMintContractType.erc4626
   return null
 }
