@@ -2,20 +2,26 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { FlashMintWrappedAddress } from '../constants/contracts'
+import {
+  FlashMint4626Address,
+  FlashMintWrappedAddress,
+} from '../constants/contracts'
 import { MoneyMarketIndexToken } from '../constants/tokens'
 
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
-import { WrappedQuoteProvider } from './wrapped'
+import { ERC4626QuoteProvider, WrappedQuoteProvider } from './wrapped'
 import {
   FlashMintWrappedBuildRequest,
+  FlashMintERC4626BuildRequest,
   WrappedTransactionBuilder,
+  ERC4626TransactionBuilder,
 } from 'flashMint/builders/wrapped'
 
 export enum FlashMintContractType {
   leveraged,
   wrapped,
+  erc4626,
   zeroEx,
 }
 
@@ -54,7 +60,10 @@ export class FlashMintQuoteProvider
     const indexToken = isMinting ? outputToken : inputToken
     const inputOutputToken = isMinting ? inputToken : outputToken
     const contractType = getContractType(indexToken.symbol)
-    if (contractType !== FlashMintContractType.wrapped) {
+    if (
+      contractType !== FlashMintContractType.wrapped &&
+      contractType !== FlashMintContractType.erc4626
+    ) {
       throw new Error('Index token not supported')
     }
     const contractAddress = getContractAddress(contractType)
@@ -91,6 +100,35 @@ export class FlashMintQuoteProvider
           tx,
         }
       }
+      case FlashMintContractType.erc4626: {
+        const wrappedQuoteProvider = new ERC4626QuoteProvider(provider)
+        const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
+        if (!wrappedQuote) return null
+        const builder = new ERC4626TransactionBuilder(provider)
+        const txRequest: FlashMintERC4626BuildRequest = {
+          isMinting,
+          indexToken: indexToken.address,
+          inputOutputToken: inputOutputToken.address,
+          inputOutputTokenSymbol: inputOutputToken.symbol,
+          indexTokenAmount,
+          inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
+          componentSwapData: wrappedQuote.componentSwapData,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return {
+          chainId,
+          contractType,
+          contract: contractAddress,
+          isMinting,
+          inputToken,
+          outputToken,
+          indexTokenAmount,
+          inputOutputAmount: wrappedQuote.inputOutputTokenAmount,
+          slippage,
+          tx,
+        }
+      }
       default:
         return null
     }
@@ -101,6 +139,8 @@ function getContractAddress(contractType: FlashMintContractType): string {
   switch (contractType) {
     case FlashMintContractType.wrapped:
       return FlashMintWrappedAddress
+    case FlashMintContractType.erc4626:
+      return FlashMint4626Address
     default:
       return ''
   }
@@ -109,6 +149,6 @@ function getContractAddress(contractType: FlashMintContractType): string {
 // Returns contract type for token or null if not supported
 function getContractType(token: string): FlashMintContractType | null {
   if (token === MoneyMarketIndexToken.symbol)
-    return FlashMintContractType.wrapped
+    return FlashMintContractType.erc4626
   return null
 }

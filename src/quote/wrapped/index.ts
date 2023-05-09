@@ -3,10 +3,16 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import {
   ComponentSwapData,
+  erc4626SwapData,
   getIssuanceComponentSwapData,
   getRedemptionComponentSwapData,
+  getRedemptionERC4626SwapData,
+  getIssuanceERC4626SwapData,
 } from '../../utils/componentSwapData'
-import { getFlashMintWrappedContract } from '../../utils/contracts'
+import {
+  getFlashMint4626Contract,
+  getFlashMintWrappedContract,
+} from '../../utils/contracts'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'
 import { ComponentWrapData, getWrapData } from '../../utils/wrapData'
 import { QuoteProvider } from '../quoteProvider'
@@ -23,6 +29,11 @@ export interface FlashMintWrappedQuoteRequest {
 export interface FlashMintWrappedQuote {
   componentSwapData: ComponentSwapData[]
   componentWrapData: ComponentWrapData[]
+  indexTokenAmount: BigNumber
+  inputOutputTokenAmount: BigNumber
+}
+export interface ERC4626WrappedQuote {
+  componentSwapData: erc4626SwapData[]
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
 }
@@ -85,6 +96,67 @@ export class WrappedQuoteProvider
     const quote: FlashMintWrappedQuote = {
       componentSwapData,
       componentWrapData,
+      indexTokenAmount,
+      inputOutputTokenAmount,
+    }
+    return quote
+  }
+}
+export class ERC4626QuoteProvider
+  implements QuoteProvider<FlashMintWrappedQuoteRequest, ERC4626WrappedQuote>
+{
+  constructor(private readonly provider: JsonRpcProvider) {}
+
+  async getQuote(
+    request: FlashMintWrappedQuoteRequest
+  ): Promise<ERC4626WrappedQuote | null> {
+    const { provider } = this
+    const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
+      request
+    const indexToken = isMinting ? outputToken : inputToken
+    const indexTokenSymbol = indexToken.symbol
+    const componentSwapData = isMinting
+      ? await getIssuanceERC4626SwapData(
+          indexTokenSymbol,
+          indexToken.address,
+          inputToken.address,
+          indexTokenAmount,
+          provider
+        )
+      : await getRedemptionERC4626SwapData(
+          indexTokenSymbol,
+          indexToken.address,
+          outputToken.address,
+          indexTokenAmount,
+          provider
+        )
+    let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
+    const contract = getFlashMint4626Contract(provider)
+    if (isMinting) {
+      estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
+        indexToken.address,
+        inputToken.address,
+        indexTokenAmount,
+        componentSwapData
+      )
+    } else {
+      estimatedInputOutputAmount = await contract.callStatic.getRedeemExactSet(
+        indexToken.address,
+        outputToken.address,
+        indexTokenAmount,
+        componentSwapData
+      )
+    }
+    const inputOutputTokenAmount = slippageAdjustedTokenAmount(
+      estimatedInputOutputAmount,
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      slippage,
+      isMinting
+    )
+    console.log(estimatedInputOutputAmount.toString(), 'estimate')
+    console.log(inputOutputTokenAmount.toString(), 'slippage adjusted')
+    const quote: ERC4626WrappedQuote = {
+      componentSwapData,
       indexTokenAmount,
       inputOutputTokenAmount,
     }

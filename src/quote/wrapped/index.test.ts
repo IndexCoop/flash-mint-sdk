@@ -1,6 +1,6 @@
 import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { wei } from 'utils/numbers'
-import { FlashMintWrappedQuoteRequest, WrappedQuoteProvider } from '.'
+import { ERC4626QuoteProvider, FlashMintWrappedQuoteRequest } from '.'
 
 const { dai, mmi, usdc, weth } = QuoteTokens
 const indexToken = mmi
@@ -20,13 +20,12 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
     expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(6)
   })
 
   test('returns a quote for minting MMI w/ USDC', async () => {
@@ -38,13 +37,12 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
     expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(6)
   })
 
   test('returns a quote for minting MMI w/ WETH', async () => {
@@ -56,13 +54,12 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
     expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(6)
   })
 
   test('returns a quote for redeeming MMI for DAI', async () => {
@@ -74,13 +71,12 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
     expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(6)
   })
 
   test('returns a quote for redeeming MMI for USDC', async () => {
@@ -92,13 +88,12 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
     expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(6)
   })
 
   test('returns a quote for redeeming MMI for WETH', async () => {
@@ -110,12 +105,11 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new WrappedQuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
     expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(6)
   })
 })
