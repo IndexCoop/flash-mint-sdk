@@ -1,5 +1,5 @@
 // Index Protocol
-export const FlashMint4626Address = '0xe483701d4f8c3b9b7b662fee2543503d6d127f53'
+export const FlashMint4626Address = '0xF5cF956018c111BE7d5CE4240960C1164179aCA9'
 
 export const FlashMintLeveragedForCompoundAddress =
   '0xeA716Ed94964Ed0126Fb2fA3b546eD7F209cC2b8'
