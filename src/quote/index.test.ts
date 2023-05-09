@@ -1,4 +1,4 @@
-import { FlashMintWrappedAddress } from 'constants/contracts'
+import { FlashMint4626Address } from 'constants/contracts'
 import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { wei } from 'utils/numbers'
 
@@ -48,8 +48,8 @@ describe('FlashMintQuoteProvider()', () => {
     // or that are indirectly determined from the quote request
     const chainId = (await provider.getNetwork()).chainId
     expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.wrapped)
-    expect(quote.contract).toEqual(FlashMintWrappedAddress)
+    expect(quote.contractType).toEqual(FlashMintContractType.erc4626)
+    expect(quote.contract).toEqual(FlashMint4626Address)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -72,8 +72,8 @@ describe('FlashMintQuoteProvider()', () => {
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
     expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.wrapped)
-    expect(quote.contract).toEqual(FlashMintWrappedAddress)
+    expect(quote.contractType).toEqual(FlashMintContractType.erc4626)
+    expect(quote.contract).toEqual(FlashMint4626Address)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -81,7 +81,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMintWrappedAddress)
+    expect(quote.tx.to).toBe(FlashMint4626Address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
@@ -100,8 +100,8 @@ describe('FlashMintQuoteProvider()', () => {
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
     expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.wrapped)
-    expect(quote.contract).toEqual(FlashMintWrappedAddress)
+    expect(quote.contractType).toEqual(FlashMintContractType.erc4626)
+    expect(quote.contract).toEqual(FlashMint4626Address)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -109,7 +109,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMintWrappedAddress)
+    expect(quote.tx.to).toBe(FlashMint4626Address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 })
