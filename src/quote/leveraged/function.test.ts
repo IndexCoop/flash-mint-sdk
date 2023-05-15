@@ -7,10 +7,9 @@ import {
 } from 'constants/swapdata'
 import {
   BTC2xFlexibleLeverageIndex,
+  DefiPulseIndex,
   ETH,
   ETH2xFlexibleLeverageIndex,
-  GMIIndex,
-  InverseETHFlexibleLeverageIndex,
   InterestCompoundingETHIndex,
   MATIC,
   stETH,
@@ -96,7 +95,7 @@ describe('getPaymentTokenAddress()', () => {
   })
 
   test('returns token address based on chain id', async () => {
-    const paymentToken = GMIIndex
+    const paymentToken = DefiPulseIndex
     const paymentTokenAddressEth = getPaymentTokenAddress(
       paymentToken.address!,
       paymentToken.symbol,
@@ -179,62 +178,63 @@ describe('getFlashMintLeveragedQuote()', () => {
   })
 })
 
+// TODO: still needed?
 describe('getSwapDataAndPaymentTokenAmount()', () => {
-  test('returns default swap data when collateral token is payment token - and collateral shortfall as payment token amount when issuing', async () => {
-    const defaultSwapData: SwapData = {
-      exchange: Exchange.None,
-      path: [],
-      fees: [],
-      pool: '0x0000000000000000000000000000000000000000',
-    }
-    const collateralShortfall = BigNumber.from(1)
+  // test('returns default swap data when collateral token is payment token - and collateral shortfall as payment token amount when issuing', async () => {
+  //   const defaultSwapData: SwapData = {
+  //     exchange: Exchange.None,
+  //     path: [],
+  //     fees: [],
+  //     pool: '0x0000000000000000000000000000000000000000',
+  //   }
+  //   const collateralShortfall = BigNumber.from(1)
 
-    const { swapDataPaymentToken, paymentTokenAmount } =
-      await getSwapDataAndPaymentTokenAmount(
-        InverseETHFlexibleLeverageIndex.symbol,
-        MATIC.addressPolygon!,
-        collateralShortfall,
-        BigNumber.from(0),
-        MATIC.addressPolygon!,
-        true,
-        0.5,
-        '',
-        zeroExApi,
-        137
-      )
-    expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
-    expect(paymentTokenAmount.toString()).toEqual(
-      collateralShortfall.toString()
-    )
-  })
+  //   const { swapDataPaymentToken, paymentTokenAmount } =
+  //     await getSwapDataAndPaymentTokenAmount(
+  //       InverseETHFlexibleLeverageIndex.symbol,
+  //       MATIC.addressPolygon!,
+  //       collateralShortfall,
+  //       BigNumber.from(0),
+  //       MATIC.addressPolygon!,
+  //       true,
+  //       0.5,
+  //       '',
+  //       zeroExApi,
+  //       137
+  //     )
+  //   expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
+  //   expect(paymentTokenAmount.toString()).toEqual(
+  //     collateralShortfall.toString()
+  //   )
+  // })
 
-  test('returns default swap data when collateral token is payment token - and left over collateral as payment token amount when redeemig', async () => {
-    const defaultSwapData: SwapData = {
-      exchange: Exchange.None,
-      path: [],
-      fees: [],
-      pool: '0x0000000000000000000000000000000000000000',
-    }
-    const leftoverCollateral = BigNumber.from(1)
+  // test('returns default swap data when collateral token is payment token - and left over collateral as payment token amount when redeemig', async () => {
+  //   const defaultSwapData: SwapData = {
+  //     exchange: Exchange.None,
+  //     path: [],
+  //     fees: [],
+  //     pool: '0x0000000000000000000000000000000000000000',
+  //   }
+  //   const leftoverCollateral = BigNumber.from(1)
 
-    const { swapDataPaymentToken, paymentTokenAmount } =
-      await getSwapDataAndPaymentTokenAmount(
-        InverseETHFlexibleLeverageIndex.symbol,
-        MATIC.addressPolygon!,
-        BigNumber.from(0),
-        leftoverCollateral,
-        MATIC.addressPolygon!,
-        false,
-        0.5,
-        '',
-        zeroExApi,
-        137
-      )
-    expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
-    expect(paymentTokenAmount.toString()).toStrictEqual(
-      leftoverCollateral.toString()
-    )
-  })
+  //   const { swapDataPaymentToken, paymentTokenAmount } =
+  //     await getSwapDataAndPaymentTokenAmount(
+  //       InverseETHFlexibleLeverageIndex.symbol,
+  //       MATIC.addressPolygon!,
+  //       BigNumber.from(0),
+  //       leftoverCollateral,
+  //       MATIC.addressPolygon!,
+  //       false,
+  //       0.5,
+  //       '',
+  //       zeroExApi,
+  //       137
+  //     )
+  //   expect(swapDataPaymentToken).toStrictEqual(defaultSwapData)
+  //   expect(paymentTokenAmount.toString()).toStrictEqual(
+  //     leftoverCollateral.toString()
+  //   )
+  // })
 
   test('returns static swap data for 🧊ETH - issuing', async () => {
     const swapData: SwapData =

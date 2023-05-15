@@ -10,14 +10,8 @@ import {
 import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndexPolygon,
   DiversifiedStakedETHIndex,
-  GMIIndex,
   InterestCompoundingETHIndex,
-  InverseETHFlexibleLeverageIndex,
-  InverseMATICFlexibleLeverageIndex,
-  JPGIndex,
-  MATIC2xFlexibleLeverageIndex,
   MoneyMarketIndexToken,
   wsETH2,
   GitcoinStakedETHIndex,
@@ -44,10 +38,8 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
       return getIndexEthIssuanceModule(tokenSymbol)
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
-    case GMIIndex.symbol:
       return { address: DebtIssuanceModuleAddress, isDebtIssuance: true }
     case InterestCompoundingETHIndex.symbol:
-    case JPGIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
     default:
       return { address: BasicIssuanceModuleAddress, isDebtIssuance: false }
@@ -56,15 +48,6 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
 
 function getPolygonIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
-    case ETH2xFlexibleLeverageIndexPolygon.symbol:
-    case GMIIndex.symbol:
-    case InverseETHFlexibleLeverageIndex.symbol:
-    case InverseMATICFlexibleLeverageIndex.symbol:
-    case MATIC2xFlexibleLeverageIndex.symbol:
-      return {
-        address: DebtIssuanceModuleV2PolygonAddress,
-        isDebtIssuance: true,
-      }
     default:
       return {
         address: BasicIssuanceModulePolygonAddress,
