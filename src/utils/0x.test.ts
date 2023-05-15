@@ -2,6 +2,12 @@ import 'dotenv/config'
 
 import { ZeroExApi } from 'utils/0x'
 
+const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
+const ONE = '1000000000000000000'
+
+const header = {
+  'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY!,
+}
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 
 describe('ZeroExApi', () => {
@@ -14,7 +20,7 @@ describe('ZeroExApi', () => {
       buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi()
+    const zeroExApi = new ZeroExApi(null, null, header)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -28,7 +34,7 @@ describe('ZeroExApi', () => {
       buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi()
+    const zeroExApi = new ZeroExApi(null, null, header)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -38,11 +44,11 @@ describe('ZeroExApi', () => {
       'https://polygon.api.0x.org/swap/v1/quote?buyAmount=1000000000000000000&buyToken=0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b&sellToken=ETH'
     const chainId = 137
     const query = new URLSearchParams({
-      buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyAmount: ONE,
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi()
+    const zeroExApi = new ZeroExApi(null, null, header)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -53,11 +59,11 @@ describe('ZeroExApi', () => {
     const baseUrl = 'https://api.index.com'
     const chainId = 10
     const query = new URLSearchParams({
-      buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyAmount: ONE,
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(baseUrl)
+    const zeroExApi = new ZeroExApi(baseUrl, null, header)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -69,11 +75,11 @@ describe('ZeroExApi', () => {
     const baseUrl = 'https://api.index.com'
     const chainId = 10
     const query = new URLSearchParams({
-      buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyAmount: ONE,
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress)
+    const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress, header)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -81,11 +87,11 @@ describe('ZeroExApi', () => {
   test('getting a swap quote', async () => {
     const chainId = 1
     const params = {
-      buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyAmount: ONE,
+      buyToken: DPI,
       sellToken: 'ETH',
     }
-    const zeroExApi = new ZeroExApi()
+    const zeroExApi = new ZeroExApi(null, null, header)
     const quote = await zeroExApi.getSwapQuote(params, chainId)
     expect(quote).not.toBeNull()
     expect(quote.sellAmount).not.toBeNull()
@@ -94,14 +100,14 @@ describe('ZeroExApi', () => {
   test('getting a swap quote - when overriding the swap path', async () => {
     const chainId = 1
     const params = {
-      buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyAmount: ONE,
+      buyToken: DPI,
       sellToken: 'ETH',
     }
     const zeroExApi = new ZeroExApi(
       index0xApiBaseUrl,
       '',
-      { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+      header,
       '/mainnet/swap/v1/quote'
     )
     const quote = await zeroExApi.getSwapQuote(params, chainId)
@@ -112,8 +118,8 @@ describe('ZeroExApi', () => {
   test('getting a swap quote fails for wrong base url', async () => {
     const chainId = 1
     const params = {
-      buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyAmount: ONE,
+      buyToken: DPI,
       sellToken: 'ETH',
     }
     const zeroExApi = new ZeroExApi('https://')
