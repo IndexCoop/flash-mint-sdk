@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { WETH } from '../../constants/tokens'
-import { FlashMintZeroEx } from '../../flashMint/zeroEx'
+import { FlashMintZeroEx } from '../../flashmint/zeroEx'
 import { ZeroExApi } from '../../utils/0x'
 import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
 import { getIssuanceModule } from '../../utils/issuanceModules'

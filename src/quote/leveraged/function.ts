@@ -17,7 +17,7 @@ import {
 import {
   FlashMintLeveraged,
   LeveragedTokenData,
-} from '../../flashMint/leveraged'
+} from '../../flashmint/leveraged'
 import { ZeroExApi } from '../../utils/0x'
 import { getFlashMintLeveragedContractForToken } from '../../utils/contracts'
 import { slippageAdjustedTokenAmount } from '../../utils/slippage'

@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ETH, ETH2xFlexibleLeverageIndex } from 'constants/tokens'
-import { FlashMintLeveraged } from 'flashMint/leveraged'
+import { FlashMintLeveraged } from 'flashmint/leveraged'
 import { getFlashMintLeveragedQuote } from 'quote/leveraged'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'

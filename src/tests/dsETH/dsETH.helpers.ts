@@ -8,7 +8,7 @@ import {
   WETH,
   wstETH,
 } from 'constants/tokens'
-import { FlashMintZeroEx } from 'flashMint/zeroEx'
+import { FlashMintZeroEx } from 'flashmint/zeroEx'
 import { QuoteToken } from 'quote/quoteToken'
 import { getFlashMintZeroExQuote } from 'quote/zeroEx'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'

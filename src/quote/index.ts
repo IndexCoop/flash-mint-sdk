@@ -16,7 +16,7 @@ import {
   FlashMintERC4626BuildRequest,
   WrappedTransactionBuilder,
   ERC4626TransactionBuilder,
-} from 'flashMint/builders/wrapped'
+} from 'flashmint/builders/wrapped'
 
 export enum FlashMintContractType {
   leveraged,

@@ -9,7 +9,7 @@ import {
 } from 'tests/utils'
 import { wei } from 'utils/numbers'
 
-import { FlashMintZeroEx } from '../flashMint/zeroEx'
+import { FlashMintZeroEx } from '../flashmint/zeroEx'
 import { getFlashMintZeroExQuote } from '../quote/zeroEx'
 import { getFlashMintZeroExContractForToken } from '../utils/contracts'
 import { getIssuanceModule } from '../utils/issuanceModules'

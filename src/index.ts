@@ -1,7 +1,7 @@
 export type { ComponentQuotesResult } from './quote/zeroEx/componentsQuoteProvider'
 export type { QuoteToken } from './quote/quoteToken'
 export * from './constants'
-export * from './flashMint'
+export * from './flashmint'
 export * from './quote'
 export * from './quote/wrapped'
 export * from './quote/leveraged'

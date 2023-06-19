@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { LeveragedTokenData } from '../flashMint/leveraged'
+import { LeveragedTokenData } from '../flashmint/leveraged'
 import { ZeroExApi } from './0x'
 import { extractPoolFees } from './UniswapPath'
 
