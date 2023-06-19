@@ -4,7 +4,6 @@ import {
   BasicIssuanceModulePolygonAddress,
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
-  DebtIssuanceModuleV2PolygonAddress,
   IndexDebtIssuanceModuleV2Address,
 } from '../constants/contracts'
 import {
