@@ -3,7 +3,7 @@
   "version": "1.5.1",
   "description": "Helper functions for using Index's Flash Mint contracts.",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "files": [
     "dist"
