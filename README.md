@@ -244,15 +244,7 @@ Feel free to approach us for our implementation on the frontend.
 
 ## Contributing
 
-We will encourage contributing and open dialog how to improve the SDK. How though is still TBD. 🚧
-
-```
-
-$ npm run commit
-
-```
-
-REQUIRED: Due to the use of [semantic-release](https://www.npmjs.com/package/semantic-release-cli) for deploying to npm's registry, we require commits to be formatted in a specific way. This is made easy by the above npm script. If your commit doesn't use the above command for styling, it won't be picked up by semantic-release for publishing.
+We will encourage contributing and open dialog how to improve the SDK. How though is still TBD. 🚧 In the meantime just open an issue.
 
 ### .env vars
 
