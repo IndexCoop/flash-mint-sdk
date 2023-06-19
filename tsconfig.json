@@ -4,20 +4,18 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "declaration": true,
-    "declarationDir": "build",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "esnext",
+    "module": "Node16",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
-    "outDir": "build",
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES2019"
+    "target": "es2022"
   },
   "exclude": ["node_modules"],
   "include": ["src"]
