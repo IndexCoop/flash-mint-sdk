@@ -1,33 +1,30 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ChainId } from '../../constants/chains'
+import { ChainId } from 'constants/chains'
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
   inputSwapData,
   outputSwapData,
-} from '../../constants/swapdata'
+} from 'constants/swapdata'
 import {
   ETH,
   InterestCompoundingETHIndex,
   MATIC,
   stETH,
-} from '../../constants/tokens'
-import {
-  FlashMintLeveraged,
-  LeveragedTokenData,
-} from '../../flashmint/leveraged'
-import { ZeroExApi } from '../../utils/0x'
-import { getFlashMintLeveragedContractForToken } from '../../utils/contracts'
-import { slippageAdjustedTokenAmount } from '../../utils/slippage'
+} from 'constants/tokens'
+import { FlashMintLeveraged, LeveragedTokenData } from 'flashmint/leveraged'
+import { ZeroExApi } from 'utils/0x'
+import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
   Exchange,
   getSwapDataCollateralDebt,
   getSwapDataDebtCollateral,
   getSwapData,
   SwapData,
-} from '../../utils/swapData'
+} from 'utils/swapData'
 import { QuoteToken } from '../quoteToken'
 
 export interface FlashMintLeveragedQuote {

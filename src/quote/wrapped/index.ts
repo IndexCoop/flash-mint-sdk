@@ -8,13 +8,13 @@ import {
   getRedemptionComponentSwapData,
   getRedemptionERC4626SwapData,
   getIssuanceERC4626SwapData,
-} from '../../utils/componentSwapData'
+} from 'utils/componentSwapData'
 import {
   getFlashMint4626Contract,
   getFlashMintWrappedContract,
-} from '../../utils/contracts'
-import { slippageAdjustedTokenAmount } from '../../utils/slippage'
-import { ComponentWrapData, getWrapData } from '../../utils/wrapData'
+} from 'utils/contracts'
+import { slippageAdjustedTokenAmount } from 'utils/slippage'
+import { ComponentWrapData, getWrapData } from 'utils/wrapData'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 

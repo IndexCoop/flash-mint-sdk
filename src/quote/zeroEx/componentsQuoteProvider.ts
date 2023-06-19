@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZeroExApi } from '../../utils/0x'
+import { ZeroExApi } from 'utils/0x'
 import { QuoteToken } from '../quoteToken'
 
 export type ComponentQuotesResult = {
