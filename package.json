@@ -24,8 +24,6 @@
     "hardhat": "npx hardhat node",
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
     "test": "jest",
     "test:watch": "jest --watch"
   },
