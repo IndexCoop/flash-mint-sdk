@@ -1,5 +1,13 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { DAI, MoneyMarketIndexToken, USDC, USDT, WETH } from 'constants/tokens'
+import {
+  DAI,
+  DiversifiedStakedETHIndex,
+  MetaverseIndex,
+  MoneyMarketIndexToken,
+  USDC,
+  USDT,
+  WETH,
+} from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 
 const dai: QuoteToken = {
@@ -8,10 +16,22 @@ const dai: QuoteToken = {
   symbol: DAI.symbol,
 }
 
+const dseth: QuoteToken = {
+  address: DiversifiedStakedETHIndex.address!,
+  decimals: 18,
+  symbol: DiversifiedStakedETHIndex.symbol,
+}
+
 const mmi: QuoteToken = {
   address: MoneyMarketIndexToken.address!,
   decimals: 18,
   symbol: MoneyMarketIndexToken.symbol,
+}
+
+const mvi: QuoteToken = {
+  address: MetaverseIndex.address!,
+  decimals: 18,
+  symbol: MetaverseIndex.symbol,
 }
 
 const usdc: QuoteToken = {
@@ -34,7 +54,9 @@ const weth: QuoteToken = {
 
 export const QuoteTokens = {
   dai,
+  dseth,
   mmi,
+  mvi,
   usdc,
   usdt,
   weth,
