@@ -6,6 +6,7 @@ const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
 const ONE = '1000000000000000000'
 
 const header = {
+  /* eslint-disable  @typescript-eslint/no-non-null-assertion */
   'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY!,
 }
 const index0xApiBaseUrl = process.env.INDEX_0X_API

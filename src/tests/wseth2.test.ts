@@ -1,18 +1,17 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { sETH2, WETH, wsETH2 } from 'constants/tokens'
+import { FlashMintZeroEx } from 'flashmint/zeroEx'
+import { ZeroExQuoteProvider } from 'quote'
 import {
   LocalhostProvider,
   SignerAccount17,
   ZeroExApiSwapQuote,
   createERC20Contract,
 } from 'tests/utils'
+import { getFlashMintZeroExContractForToken } from 'utils/contracts'
+import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
-
-import { FlashMintZeroEx } from '../flashmint/zeroEx'
-import { getFlashMintZeroExQuote } from '../quote/zeroEx'
-import { getFlashMintZeroExContractForToken } from '../utils/contracts'
-import { getIssuanceModule } from '../utils/issuanceModules'
 
 import { swapExactInput } from './utils/uniswap'
 import { wrapETH } from './utils'
@@ -64,24 +63,21 @@ describe('FlashMintZeroEx - wsETH2', () => {
       decimals: 18,
       symbol: wsETH2.symbol,
     }
-    const setTokenAmount = wei('1')
-    const quote = await getFlashMintZeroExQuote(
+    const indexTokenAmount = wei('1')
+    const quoteProvider = new ZeroExQuoteProvider(provider, zeroExApi)
+    const quote = await quoteProvider.getQuote({
       inputToken,
       outputToken,
-      setTokenAmount,
+      indexTokenAmount,
       isMinting,
-      0.5,
-      zeroExApi,
-      provider,
-      chainId
-    )
-
+      slippage: 0.5,
+    })
     expect(quote).toBeDefined()
     if (!quote) fail()
     expect(quote.componentQuotes.length).toBeGreaterThan(0)
     expect(quote.inputOutputTokenAmount).toBeDefined()
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
 
     // Get FlashMintZeroEx contract instance and issuance module (debtV2)
     const contract = getFlashMintZeroExContractForToken(
@@ -103,7 +99,7 @@ describe('FlashMintZeroEx - wsETH2', () => {
     const gasEstimate = await contract.estimateGas.issueExactSetFromToken(
       outputToken.address,
       inputToken.address,
-      setTokenAmount,
+      indexTokenAmount,
       quote.inputOutputTokenAmount,
       quote.componentQuotes,
       issuanceModule.address,
@@ -114,7 +110,7 @@ describe('FlashMintZeroEx - wsETH2', () => {
     const tx = await flashMint.mintExactSetFromToken(
       outputToken.address,
       inputToken.address,
-      setTokenAmount,
+      indexTokenAmount,
       quote.inputOutputTokenAmount,
       quote.componentQuotes,
       issuanceModule.address,
