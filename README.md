@@ -1,8 +1,6 @@
 # Flash Mint SDK
 
-The SDK provides helper functions for using Index's Flash Mint contracts from your app.
-
-:warning: Disclaimer: the SDK should be treated as **beta**.<br />
+The SDK provides helper functions for using Index's FlashMint contracts from your app.
 
 ## The Contracts
 

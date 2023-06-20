@@ -1,7 +1,7 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
   "version": "1.5.1",
-  "description": "Helper functions for using Index's Flash Mint contracts.",
+  "description": "The FlashMintSDK of the Index Coop.",
   "engines": {
     "node": ">=18"
   },
@@ -29,7 +29,12 @@
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "flashmint",
+    "sdk",
+    "index",
+    "coop"
+  ],
   "homepage": "https://github.com/IndexCoop/flash-mint-sdk",
   "repository": {
     "type": "git",
@@ -38,11 +43,7 @@
   "bugs": {
     "url": "https://github.com/IndexCoop/flash-mint-sdk/issues"
   },
-  "author": {
-    "name": "0xModene",
-    "email": "modene@indexcoop.com",
-    "url": "https://indexcoop.com"
-  },
+  "author": "Index Coop",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.18.2",
