@@ -204,6 +204,7 @@ function getPaymentTokenAddress(
   }
 
   if (paymentTokenSymbol === InterestCompoundingETHIndex.symbol && !isMinting) {
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     return stETH.address!
   }
 
