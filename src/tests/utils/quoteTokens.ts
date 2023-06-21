@@ -2,6 +2,7 @@
 import {
   BTC2xFlexibleLeverageIndex,
   DAI,
+  DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
   ETH2xFlexibleLeverageIndex,
@@ -24,6 +25,12 @@ const dai: QuoteToken = {
   address: DAI.address!,
   decimals: 18,
   symbol: DAI.symbol,
+}
+
+const dpi: QuoteToken = {
+  address: DefiPulseIndex.address!,
+  decimals: 18,
+  symbol: DefiPulseIndex.symbol,
 }
 
 const dseth: QuoteToken = {
@@ -83,6 +90,7 @@ const weth: QuoteToken = {
 export const QuoteTokens = {
   btc2xfli,
   dai,
+  dpi,
   dseth,
   eth,
   eth2xfli,
