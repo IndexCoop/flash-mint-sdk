@@ -1,22 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { USDC } from 'constants/tokens'
 import { FlashMintZeroEx } from 'flashmint/zeroEx'
 import { QuoteToken, ZeroExQuoteProvider } from 'quote'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
-import { wei } from 'utils/numbers'
+import { wei } from 'utils'
 
-import {
-  dsETH,
-  ETH,
-  WETH9,
-  RETH,
-  SETH2,
-  STETH,
-  WSTETH,
-  mint,
-} from './dsETH.helpers'
+import { QuoteTokens } from '../utils'
+import { mint } from './dsETH.helpers'
 
 import {
   approveErc20,
@@ -30,29 +21,24 @@ import {
 const provider = LocalhostProvider
 const signer = SignerAccount3
 
+const { dseth, eth } = QuoteTokens
+
 describe('FlashMintZeroEx - dsETH - redeem', () => {
-  const inputToken = dsETH
+  const inputToken = dseth
   const indexTokenAmount = wei('0.1')
 
   beforeAll(async () => {
-    // Use different signer than dsETH.mint tests to prevent side effects
-
     // Mint enought dsETH for all tests to run through
-    await mint(dsETH, indexTokenAmount.mul(100), 0.5, signer)
+    await mint(dseth, indexTokenAmount.mul(100), 0.5, signer)
   })
 
   beforeEach(async () => {
     jest.setTimeout(10000000)
   })
 
-  // FIXME: remove
-  test('test', async () => {
-    expect(true).toBe(true)
+  test('redeeming to ETH', async () => {
+    await redeem(inputToken, indexTokenAmount)
   })
-
-  // test('redeeming to ETH', async () => {
-  //   await redeem(inputToken, indexTokenAmount)
-  // })
 
   // test('redeeming to WETH', async () => {
   //   const outputToken = WETH9
@@ -101,7 +87,7 @@ async function redeem(
   const zeroExApi = ZeroExApiSwapQuote
 
   const indexToken = inputToken
-  const outputToken = ETH
+  const outputToken = eth
   const isMinting = false
 
   const quoteProvider = new ZeroExQuoteProvider(provider, zeroExApi)
