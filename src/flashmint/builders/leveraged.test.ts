@@ -7,8 +7,7 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import { InterestCompoundingETHIndex, USDC } from 'constants/tokens'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import {
@@ -19,13 +18,15 @@ import {
 const chainId = 1
 const provider = LocalhostProvider
 
+const { iceth, usdc } = QuoteTokens
+
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = InterestCompoundingETHIndex
-const usdc = USDC.address!
+const indexToken = iceth
+const usdcAddress = usdc.address
 
 describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
-    indexToken.symbol!,
+    indexToken.symbol,
     provider,
     chainId
   )
@@ -202,12 +203,12 @@ describe('LeveragedTransactionBuilder()', () => {
 
 function createBuildRequest(
   isMinting = true,
-  inputOutputToken: string = usdc,
+  inputOutputToken: string = usdcAddress,
   inputOutputTokenSymbol = 'USDC'
 ): FlashMintLeveragedBuildRequest {
   return {
     isMinting,
-    indexToken: indexToken.address!,
+    indexToken: indexToken.address,
     indexTokenSymbol: indexToken.symbol,
     inputOutputToken,
     inputOutputTokenSymbol,

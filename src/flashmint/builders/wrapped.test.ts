@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintWrappedAddress } from 'constants/contracts'
-import { MoneyMarketIndexToken, USDC } from 'constants/tokens'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { ComponentWrapData } from 'utils/wrapData'
@@ -14,9 +13,11 @@ import {
 const provider = LocalhostProvider
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
+const { mmi, usdc } = QuoteTokens
+
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = MoneyMarketIndexToken.address!
-const usdc = USDC.address!
+const indexToken = mmi.address
+const usdcAddress = usdc.address
 
 describe('WrappedTransactionBuilder()', () => {
   beforeEach((): void => {
@@ -153,7 +154,7 @@ describe('WrappedTransactionBuilder()', () => {
 
 function getDefaultBuildRequest(
   isMinting = true,
-  inputOutputToken: string = usdc,
+  inputOutputToken: string = usdcAddress,
   inputOutputTokenSymbol = 'USDC'
 ): FlashMintWrappedBuildRequest {
   const wrapData: ComponentWrapData = {

@@ -115,6 +115,7 @@ describe('swapDataFrom0xQuote()', () => {
   })
 })
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const zeroExQuoteMock: any = {
   chainId: '1',
   data: '',
