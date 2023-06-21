@@ -1,24 +1,23 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ETH, ETH2xFlexibleLeverageIndex } from 'constants/tokens'
-import { FlashMintLeveraged } from 'flashmint/leveraged'
-import { getFlashMintLeveragedQuote } from 'quote/leveraged'
-import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { LeveragedTransactionBuilder } from 'flashmint/builders'
+import { LeveragedQuoteProvider } from 'quote/leveraged'
 import { wei } from 'utils/numbers'
 
 import {
   createERC20Contract,
   LocalhostProvider,
+  QuoteTokens,
   SignerAccount1,
   ZeroExApiSwapQuote,
 } from './utils'
 
-const zeroExApi = ZeroExApiSwapQuote
 const provider = LocalhostProvider
+const zeroExApi = ZeroExApiSwapQuote
+
+const { eth, eth2xfli } = QuoteTokens
 
 describe('ETH2xFLI (mainnet)', () => {
-  const chainId = 1
-
   beforeEach((): void => {
     jest.setTimeout(10000000)
   })
@@ -26,59 +25,49 @@ describe('ETH2xFLI (mainnet)', () => {
   test('can mint ETH2xFLI', async () => {
     const signer = SignerAccount1
     const isMinting = true
-    const setToken = ETH2xFlexibleLeverageIndex
-    const setTokenAmount = wei('1')
+    const indexTokenAmount = wei('1')
     const slippage = 1
     // Get quote
-    const quote = await getFlashMintLeveragedQuote(
-      { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
-      { symbol: setToken.symbol, decimals: 18, address: setToken.address! },
-      setTokenAmount,
+    const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+    const quote = await quoteProvider.getQuote({
+      inputToken: eth,
+      outputToken: eth2xfli,
+      indexTokenAmount,
       isMinting,
       slippage,
-      zeroExApi,
-      provider,
-      chainId
-    )
+    })
     if (!quote) fail()
     expect(quote).toBeDefined()
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.swapDataDebtCollateral).toBeDefined()
     expect(quote.swapDataPaymentToken).toBeDefined()
 
-    // Get correct FlashMintLeveraged contract
-    const contract = getFlashMintLeveragedContractForToken(
-      setToken.symbol,
-      signer,
-      1
-    )
-
-    // Estimate gas
-    const gasEstimate = await contract.estimateGas.issueExactSetFromETH(
-      setToken.address!,
-      setTokenAmount,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      { value: quote.inputOutputTokenAmount }
-    )
-
-    // Mint index
-    const flashMint = new FlashMintLeveraged(contract)
-    const tx = await flashMint.mintExactSetFromETH(
-      setToken.address!,
-      setTokenAmount,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      quote.inputOutputTokenAmount,
-      { gasLimit: gasEstimate }
-    )
-    if (!tx) fail()
-    tx.wait()
-    const erc20OutputToken = createERC20Contract(setToken.address!, signer)
-    const balanceOutputToken: BigNumber = await erc20OutputToken.balanceOf(
+    const erc20OutputToken = createERC20Contract(eth2xfli.address, signer)
+    const balanceBefore: BigNumber = await erc20OutputToken.balanceOf(
       signer.address
     )
-    expect(balanceOutputToken.gt(0)).toEqual(true)
+
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build({
+      isMinting,
+      indexToken: eth2xfli.address,
+      indexTokenSymbol: eth2xfli.symbol,
+      inputOutputToken: eth.address,
+      inputOutputTokenSymbol: eth.symbol,
+      indexTokenAmount,
+      inputOutputTokenAmount: quote.inputOutputTokenAmount,
+      swapDataDebtCollateral: quote.swapDataDebtCollateral,
+      swapDataPaymentToken: quote.swapDataPaymentToken,
+    })
+    if (!tx) fail()
+    const gasEstimate = await provider.estimateGas(tx)
+    tx.gasLimit = gasEstimate
+    const res = await signer.sendTransaction(tx)
+    res.wait()
+    const balanceAfter: BigNumber = await erc20OutputToken.balanceOf(
+      signer.address
+    )
+    expect(balanceAfter.gte(balanceBefore.add(indexTokenAmount))).toBe(true)
   })
 })
