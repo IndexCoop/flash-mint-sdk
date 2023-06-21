@@ -18,6 +18,12 @@ import {
   MoneyMarketIndexToken,
 } from 'constants/tokens'
 import {
+  FlashMintLeveragedBuildRequest,
+  FlashMintZeroExBuildRequest,
+  LeveragedTransactionBuilder,
+  ZeroExTransactionBuilder,
+} from 'flashmint'
+import {
   FlashMintWrappedBuildRequest,
   FlashMintERC4626BuildRequest,
   WrappedTransactionBuilder,
@@ -25,14 +31,11 @@ import {
 } from 'flashmint/builders/wrapped'
 import { ZeroExApi } from 'utils'
 
+import { LeveragedQuoteProvider } from './leveraged'
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
 import { ERC4626QuoteProvider, WrappedQuoteProvider } from './wrapped'
 import { ZeroExQuoteProvider } from './zeroEx'
-import {
-  FlashMintZeroExBuildRequest,
-  ZeroExTransactionBuilder,
-} from 'flashmint'
 
 export enum FlashMintContractType {
   leveraged,
@@ -87,7 +90,6 @@ export class FlashMintQuoteProvider
         throw new Error('Contract type requires ZeroExApiV1 to be defined')
       }
     }
-    // TODO:
     const contractAddress = getContractAddress(contractType)
     const network = await provider.getNetwork()
     const chainId = network.chainId
@@ -147,6 +149,44 @@ export class FlashMintQuoteProvider
           outputToken,
           indexTokenAmount,
           inputOutputAmount: wrappedQuote.inputOutputTokenAmount,
+          slippage,
+          tx,
+        }
+      }
+      case FlashMintContractType.leveraged: {
+        if (!zeroExApiV1) {
+          throw new Error('Contract type requires ZeroExApiV1 to be defined')
+        }
+        const leveragedQuoteProvider = new LeveragedQuoteProvider(
+          provider,
+          zeroExApiV1
+        )
+        const leveragedQuote = await leveragedQuoteProvider.getQuote(request)
+        if (!leveragedQuote) return null
+        const builder = new LeveragedTransactionBuilder(provider)
+        const txRequest: FlashMintLeveragedBuildRequest = {
+          isMinting,
+          indexToken: indexToken.address,
+          indexTokenSymbol: indexToken.symbol,
+          indexTokenAmount,
+          inputOutputToken: inputOutputToken.address,
+          inputOutputTokenSymbol: inputOutputToken.symbol,
+          inputOutputTokenAmount: leveragedQuote.inputOutputTokenAmount,
+          swapDataDebtCollateral: leveragedQuote.swapDataDebtCollateral,
+          swapDataPaymentToken: leveragedQuote.swapDataPaymentToken,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return {
+          chainId,
+          contractType,
+          /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+          contract: tx.to!,
+          isMinting,
+          inputToken,
+          outputToken,
+          indexTokenAmount,
+          inputOutputAmount: leveragedQuote.inputOutputTokenAmount,
           slippage,
           tx,
         }
@@ -227,6 +267,7 @@ function getContractType(token: string): FlashMintContractType | null {
 }
 
 function requiresZeroExV1(contractType: FlashMintContractType): boolean {
+  if (contractType === FlashMintContractType.leveraged) return true
   if (contractType === FlashMintContractType.zeroEx) return true
   return false
 }
