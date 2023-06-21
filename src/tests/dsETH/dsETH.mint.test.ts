@@ -1,4 +1,3 @@
-import { USDC } from 'constants/tokens'
 import { wei } from 'utils/numbers'
 
 import { addLiquidityToLido, wrapStEth } from '../utils/lido'
@@ -7,6 +6,7 @@ import { swapExactInput } from '../utils/uniswap'
 import {
   balanceOf,
   LocalhostProvider,
+  QuoteTokens,
   SignerAccount3,
   transferFromWhale,
   wrapETH,
@@ -26,6 +26,8 @@ import {
 
 const provider = LocalhostProvider
 const signer = SignerAccount3
+
+const { usdc } = QuoteTokens
 
 describe('FlashMintZeroEx - dsETH', () => {
   const outputToken = dsETH
@@ -88,11 +90,7 @@ describe('FlashMintZeroEx - dsETH', () => {
   //   })
 
   test('minting with USDC', async () => {
-    const inputToken = {
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
-    }
+    const inputToken = usdc
     const whale = '0xE11f040179922e54f927D133A3663550568da77d'
     await transferFromWhale(
       whale,
