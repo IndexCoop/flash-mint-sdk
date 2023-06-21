@@ -106,6 +106,32 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
+  test('returns null for invalid request (invalid path - exchange type none)', async () => {
+    const buildRequest = createBuildRequest()
+    buildRequest.swapDataPaymentToken = {
+      exchange: 0,
+      path: [],
+      fees: [500],
+      pool: '0x00000000000000000000000000000000000000',
+    }
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    expect(tx).toBeNull()
+  })
+
+  test('returns tx for correct swap data with exchange type none', async () => {
+    const buildRequest = createBuildRequest()
+    buildRequest.swapDataPaymentToken = {
+      exchange: 0,
+      path: [],
+      fees: [500],
+      pool: '0x0000000000000000000000000000000000000000',
+    }
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    expect(tx).not.toBeNull()
+  })
+
   test('returns a tx for minting icETH (ERC20)', async () => {
     const buildRequest = createBuildRequest()
     const refTx = await contract.populateTransaction.issueExactSetFromERC20(
