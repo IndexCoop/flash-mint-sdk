@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { LeveragedTokenData } from '../flashmint/leveraged'
 import { ZeroExApi } from './0x'
-import { extractPoolFees } from './UniswapPath'
+import { decodePool, extractPoolFees } from './UniswapPath'
 
 export enum Exchange {
   None,
@@ -132,9 +132,11 @@ export function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
     fees = fillData.path ? extractPoolFees(fillData.path) : [500]
   }
 
+  const path = fillData.tokenAddressPath ?? decodePool(fillData.path).tokens
+
   return {
     exchange,
-    path: fillData.tokenAddressPath,
+    path,
     fees,
     pool: '0x0000000000000000000000000000000000000000',
   }

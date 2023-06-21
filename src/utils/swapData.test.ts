@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZeroExApi } from '../utils/0x'
+import { ZeroExApiSwapQuote } from 'tests/utils'
 import {
   Exchange,
   getEchangeFrom0xKey,
@@ -8,13 +8,7 @@ import {
   swapDataFrom0xQuote,
 } from './swapData'
 
-const index0xApiBaseUrl = process.env.INDEX_0X_API
-const zeroExApi = new ZeroExApi(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/mainnet/swap/v1/quote'
-)
+const zeroExApi = ZeroExApiSwapQuote
 
 describe('getEchangeFrom0xKey()', () => {
   test('returns null if 0x key undefined', async () => {
