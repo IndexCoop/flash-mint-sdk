@@ -14,7 +14,6 @@ import {
   MATIC,
   stETH,
 } from 'constants/tokens'
-import { FlashMintLeveraged, LeveragedTokenData } from 'flashmint/leveraged'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
@@ -41,6 +40,14 @@ export interface FlashMintLeveragedQuote {
   inputOutputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
+}
+
+export interface LeveragedTokenData {
+  collateralAToken: string
+  collateralToken: string
+  debtToken: string
+  collateralAmount: BigNumber
+  debtAmount: BigNumber
 }
 
 export class LeveragedQuoteProvider
@@ -180,17 +187,22 @@ async function getLevTokenData(
   chainId: number,
   provider: JsonRpcProvider
 ): Promise<LeveragedTokenData | null> {
-  const contract = getFlashMintLeveragedContractForToken(
-    setTokenSymbol,
-    provider,
-    chainId
-  )
-  const flashMint = new FlashMintLeveraged(contract)
-  return await flashMint.getLeveragedTokenData(
-    setTokenAddress,
-    setTokenAmount,
-    isIssuance
-  )
+  try {
+    const contract = getFlashMintLeveragedContractForToken(
+      setTokenSymbol,
+      provider,
+      chainId
+    )
+    return await contract.getLeveragedTokenData(
+      setTokenAddress,
+      setTokenAmount,
+      isIssuance
+    )
+  } catch (error) {
+    // TODO: should this just always fail cause it means there is something wrongly configured?
+    console.error('Error getting leveraged token data', error)
+    return null
+  }
 }
 
 function getPaymentTokenAddress(

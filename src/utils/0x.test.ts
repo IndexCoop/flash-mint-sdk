@@ -94,6 +94,7 @@ describe('ZeroExApi', () => {
     }
     const zeroExApi = new ZeroExApi(null, null, header)
     const quote = await zeroExApi.getSwapQuote(params, chainId)
+    if (!quote) fail()
     expect(quote).not.toBeNull()
     expect(quote.sellAmount).not.toBeNull()
   })
@@ -112,6 +113,7 @@ describe('ZeroExApi', () => {
       '/mainnet/swap/v1/quote'
     )
     const quote = await zeroExApi.getSwapQuote(params, chainId)
+    if (!quote) fail()
     expect(quote).not.toBeNull()
     expect(quote.sellAmount).not.toBeNull()
   })

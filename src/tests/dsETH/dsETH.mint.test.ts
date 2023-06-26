@@ -1,8 +1,8 @@
 import { wei } from 'utils/numbers'
 
-import { addLiquidityToLido, wrapStEth } from '../utils/lido'
-import { depositIntoRocketPool } from '../utils/rocket'
-import { swapExactInput } from '../utils/uniswap'
+// import { addLiquidityToLido, wrapStEth } from '../utils/lido'
+// import { depositIntoRocketPool } from '../utils/rocket'
+// import { swapExactInput } from '../utils/uniswap'
 import {
   LocalhostProvider,
   QuoteTokens,

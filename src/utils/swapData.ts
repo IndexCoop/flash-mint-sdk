@@ -1,7 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { LeveragedTokenData } from '../flashmint/leveraged'
-import { ZeroExApi } from './0x'
+import { LeveragedTokenData } from '../quote/leveraged'
+import {
+  ZeroExApi,
+  ZeroExApiSwapResponse,
+  ZeroExApiSwapResponseOrder,
+} from './0x'
 import { decodePool, extractPoolFees } from './UniswapPath'
 
 export enum Exchange {
@@ -39,7 +43,7 @@ export const getSwapDataCollateralDebt = async (
     chainId,
     zeroExApi
   )
-  if (!result) return null
+  if (!result || !result.zeroExQuote) return null
   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
   const collateralSold = BigNumber.from(zeroExQuote.sellAmount)
   return { swapDataDebtCollateral, collateralObtainedOrSold: collateralSold }
@@ -65,7 +69,7 @@ export const getSwapDataDebtCollateral = async (
     chainId,
     zeroExApi
   )
-  if (!result) return null
+  if (!result || !result.zeroExQuote) return null
   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
   const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
   return {
@@ -74,8 +78,16 @@ export const getSwapDataDebtCollateral = async (
   }
 }
 
+interface SwapDataParams {
+  buyToken: string
+  buyAmount?: string
+  sellAmount?: string
+  sellToken: string
+  includedSources: string
+}
+
 export const getSwapData = async (
-  params: any,
+  params: SwapDataParams,
   slippage: number,
   chainId: number,
   zeroExApi: ZeroExApi
@@ -88,6 +100,7 @@ export const getSwapData = async (
     },
     chainId
   )
+  if (!zeroExQuote) return null
   const swapData = swapDataFrom0xQuote(zeroExQuote)
   if (swapData) return { swapData, zeroExQuote }
   return null
@@ -108,7 +121,9 @@ export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
   }
 }
 
-export function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
+export function swapDataFrom0xQuote(
+  zeroExQuote: ZeroExApiSwapResponse
+): SwapData | null {
   if (
     zeroExQuote === undefined ||
     zeroExQuote === null ||
@@ -132,7 +147,9 @@ export function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
     fees = fillData.path ? extractPoolFees(fillData.path) : [500]
   }
 
-  const path = fillData.tokenAddressPath ?? decodePool(fillData.path).tokens
+  const path =
+    fillData.tokenAddressPath ??
+    (fillData.path ? decodePool(fillData.path).tokens : [])
 
   return {
     exchange,
@@ -142,9 +159,10 @@ export function swapDataFrom0xQuote(zeroExQuote: any): SwapData | null {
   }
 }
 
-function swapDataFromCurve(order: any): SwapData | null {
+function swapDataFromCurve(order: ZeroExApiSwapResponseOrder): SwapData | null {
   const fillData = order.fillData
   if (!fillData) return null
+  if (!fillData.pool) return null
   return {
     exchange: Exchange.Curve,
     path: fillData.pool.tokens,

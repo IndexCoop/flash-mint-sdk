@@ -13,7 +13,7 @@ import {
   ZeroExApiSwapQuote,
 } from './utils'
 
-const { eth, iceth, usdc } = QuoteTokens
+const { eth, iceth } = QuoteTokens
 
 const setToken = iceth
 const setTokenAddress = iceth.address
