@@ -1,6 +1,6 @@
-# Flash Mint SDK
+# Flash Mint SDK v2
 
-The FlashtMint SDK provides easy to use functions to integrate flashminting for
+The Flash Mint SDK provides easy to use functions to integrate flashminting for
 Index's products.
 
 ## The Contracts
@@ -106,7 +106,7 @@ const quote = await quoteProvider.getQuote({
 ```
 
 The quote providers for the individual FlashMint contracts will return not just
-the inputOutputAmount but also the swap data/component quotes.
+the `inputOutputAmount` but also the `swap data/component quotes`.
 
 ```typescript
 interface FlashMintZeroExQuote {
@@ -135,6 +135,8 @@ console.log(res.hash)
 Alternatively, you can use the swap data returned by the individual providers to
 construct the tx yourself which then has to be executed on the correct FlashMint
 contract for that specific Index token.
+Use the [utility](./src/utils/contracts.ts) functions for easily obtaining
+the correct addresses and contracts.
 
 ## Develoment
 
