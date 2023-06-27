@@ -1,34 +1,24 @@
-import { USDC } from 'constants/tokens'
 import { wei } from 'utils/numbers'
 
-import { addLiquidityToLido, wrapStEth } from '../utils/lido'
-import { depositIntoRocketPool } from '../utils/rocket'
-import { swapExactInput } from '../utils/uniswap'
+// import { addLiquidityToLido, wrapStEth } from '../utils/lido'
+// import { depositIntoRocketPool } from '../utils/rocket'
+// import { swapExactInput } from '../utils/uniswap'
 import {
-  balanceOf,
   LocalhostProvider,
+  QuoteTokens,
   SignerAccount3,
   transferFromWhale,
-  wrapETH,
 } from '../utils'
 
-import {
-  dsETH,
-  ETH,
-  WETH9,
-  RETH,
-  SETH2,
-  STETH,
-  WSTETH,
-  mint,
-  mintERC20,
-} from './dsETH.helpers'
+import { mint, mintERC20 } from './dsETH.helpers'
 
 const provider = LocalhostProvider
 const signer = SignerAccount3
 
+const { dseth, usdc } = QuoteTokens
+
 describe('FlashMintZeroEx - dsETH', () => {
-  const outputToken = dsETH
+  const outputToken = dseth
   const indexTokenAmount = wei('0.1')
 
   beforeEach((): void => {
@@ -36,8 +26,7 @@ describe('FlashMintZeroEx - dsETH', () => {
   })
 
   test('minting with ETH', async () => {
-    // await mint(outputToken, indexTokenAmount)
-    expect(true).toBe(true)
+    await mint(outputToken, indexTokenAmount)
   })
 
   // test('minting with WETH', async () => {
@@ -88,11 +77,7 @@ describe('FlashMintZeroEx - dsETH', () => {
   //   })
 
   test('minting with USDC', async () => {
-    const inputToken = {
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
-    }
+    const inputToken = usdc
     const whale = '0xE11f040179922e54f927D133A3663550568da77d'
     await transferFromWhale(
       whale,

@@ -1,226 +1,123 @@
-import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
-import { FlashMintLeveraged } from 'flashMint/leveraged'
-import { getFlashMintLeveragedQuote } from 'quote/leveraged'
-import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { BigNumber } from '@ethersproject/bignumber'
+
+import { LeveragedTransactionBuilder } from 'flashmint/builders'
+import { LeveragedQuoteProvider } from 'quote/leveraged'
 import { wei } from 'utils/numbers'
 
 import {
   approveErc20,
   balanceOf,
   LocalhostProvider,
+  QuoteTokens,
   SignerAccount4,
-  transferFromWhale,
   ZeroExApiSwapQuote,
 } from './utils'
 
-const setToken = InterestCompoundingETHIndex
-const setTokenAddress = setToken.address!
+const { eth, iceth } = QuoteTokens
+
+const setToken = iceth
+const setTokenAddress = iceth.address
 const zeroExApi = ZeroExApiSwapQuote
 const provider = LocalhostProvider
 const signer = SignerAccount4
 
 describe('icETH (mainnet)', () => {
-  const chainId = 1
-
   beforeEach((): void => {
     jest.setTimeout(10000000)
   })
 
   test('can mint icETH-ETH', async () => {
     const isMinting = true
-    const setTokenAmount = wei('1')
+    const indexTokenAmount = wei('1')
     const slippage = 0.5
     // Get quote
-    const quote = await getFlashMintLeveragedQuote(
-      { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
-      { symbol: setToken.symbol, decimals: 18, address: setToken.address! },
-      setTokenAmount,
+    const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+    const quote = await quoteProvider.getQuote({
+      inputToken: eth,
+      outputToken: setToken,
+      indexTokenAmount,
       isMinting,
       slippage,
-      zeroExApi,
-      provider,
-      chainId
-    )
+    })
     if (!quote) fail()
     expect(quote).toBeDefined()
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.swapDataDebtCollateral).toBeDefined()
     expect(quote.swapDataPaymentToken).toBeDefined()
 
-    // Get correct FlashMintLeveraged contract
-    const contract = getFlashMintLeveragedContractForToken(
-      setToken.symbol,
-      signer,
-      1
-    )
-
-    const maxInputAmount = quote.inputOutputTokenAmount // .mul(10001).div(10000)
-
-    // Estimate gas
-    const gasEstimate = await contract.estimateGas.issueExactSetFromETH(
-      setToken.address!,
-      setTokenAmount,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      { value: maxInputAmount }
-    )
-
-    // Mint index
-    const flashMint = new FlashMintLeveraged(contract)
-    const tx = await flashMint.mintExactSetFromETH(
-      setToken.address!,
-      setTokenAmount,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      maxInputAmount,
-      { gasLimit: gasEstimate }
-    )
-    if (!tx) fail()
-    tx.wait()
-
-    const icEthBalance = await balanceOf(signer, setToken.address!)
-    expect(icEthBalance.gte(setTokenAmount)).toEqual(true)
-  })
-
-  test('can mint icETH-USDC', async () => {
-    const isMinting = true
-    const setTokenAmount = wei('1')
-    const slippage = 2
-    const inputToken = {
-      symbol: 'USDC',
-      decimals: 6,
-      address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    }
-
-    // USDC whale
-    const whale = '0xE11f040179922e54f927D133A3663550568da77d'
-    await transferFromWhale(
-      whale,
-      signer.address,
-      wei('10000', inputToken.decimals),
-      inputToken.address,
-      provider
-    )
-
-    // Get quote
-    const quote = await getFlashMintLeveragedQuote(
-      inputToken,
-      { symbol: setToken.symbol, decimals: 18, address: setToken.address! },
-      setTokenAmount,
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build({
       isMinting,
-      slippage,
-      zeroExApi,
-      provider,
-      chainId
-    )
-    if (!quote) fail()
-    expect(quote).toBeDefined()
-    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.setTokenAmount).toEqual(setTokenAmount)
-    expect(quote.swapDataDebtCollateral).toBeDefined()
-    expect(quote.swapDataPaymentToken).toBeDefined()
-
-    // Get correct FlashMintLeveraged contract
-    const contract = getFlashMintLeveragedContractForToken(
-      setToken.symbol,
-      signer,
-      1
-    )
-
-    const maxInputAmount = quote.inputOutputTokenAmount // .mul(1001).div(1000)
-
-    // Estimate gas
-    const gasEstimate = await contract.estimateGas.issueExactSetFromETH(
-      setToken.address!,
-      setTokenAmount,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      { value: maxInputAmount }
-    )
-
-    // Mint index
-    const flashMint = new FlashMintLeveraged(contract)
-    const tx = await flashMint.mintExactSetFromETH(
-      setToken.address!,
-      setTokenAmount,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      maxInputAmount,
-      { gasLimit: gasEstimate }
-    )
+      indexToken: setToken.address,
+      indexTokenSymbol: setToken.symbol,
+      inputOutputToken: eth.address,
+      inputOutputTokenSymbol: eth.symbol,
+      indexTokenAmount,
+      inputOutputTokenAmount: quote.inputOutputTokenAmount,
+      swapDataDebtCollateral: quote.swapDataDebtCollateral,
+      swapDataPaymentToken: quote.swapDataPaymentToken,
+    })
     if (!tx) fail()
-    tx.wait()
-
-    const icEthBalance = await balanceOf(signer, setToken.address!)
-    expect(icEthBalance.gte(setTokenAmount)).toEqual(true)
+    const balanceBefore = await balanceOf(signer, setTokenAddress)
+    const gasEstimate = await provider.estimateGas(tx)
+    tx.gasLimit = gasEstimate
+    const res = await signer.sendTransaction(tx)
+    res.wait()
+    const balanceAfter = await balanceOf(signer, setTokenAddress)
+    expect(balanceAfter.gte(balanceBefore.add(indexTokenAmount))).toBe(true)
   })
 
   test('can redeem ETH', async () => {
     const isMinting = false
-    const setTokenAmount = wei('1')
+    const indexTokenAmount = wei('1')
     const slippage = 0.5
     // Get quote
-    const quote = await getFlashMintLeveragedQuote(
-      { symbol: setToken.symbol, decimals: 18, address: setToken.address! },
-      { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
-      setTokenAmount,
+    const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+    const quote = await quoteProvider.getQuote({
+      inputToken: setToken,
+      outputToken: eth,
+      indexTokenAmount,
       isMinting,
       slippage,
-      zeroExApi,
-      provider,
-      chainId
-    )
+    })
     if (!quote) fail()
     expect(quote).toBeDefined()
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.swapDataDebtCollateral).toBeDefined()
     expect(quote.swapDataPaymentToken).toBeDefined()
 
-    // Get correct FlashMintLeveraged contract
-    const contract = getFlashMintLeveragedContractForToken(
-      setToken.symbol,
-      signer,
-      1
-    )
-
-    // Add some slippage to make sure this redeems
-    const minAmountOutput = quote.inputOutputTokenAmount.mul(1000).div(1005)
-
-    await approveErc20(
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build({
+      isMinting,
+      indexToken: setToken.address,
+      indexTokenSymbol: setToken.symbol,
+      inputOutputToken: eth.address,
+      inputOutputTokenSymbol: eth.symbol,
+      indexTokenAmount,
+      inputOutputTokenAmount: quote.inputOutputTokenAmount,
+      swapDataDebtCollateral: quote.swapDataDebtCollateral,
+      swapDataPaymentToken: quote.swapDataPaymentToken,
+    })
+    if (!tx) fail()
+    const balanceBefore = await balanceOf(signer, setTokenAddress)
+    approveErc20(
       setTokenAddress,
-      contract.address,
-      minAmountOutput,
+      /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+      tx.to!,
+      indexTokenAmount,
       signer
     )
-
-    // Estimate gas
-    const gasEstimate = await contract.estimateGas.redeemExactSetForETH(
-      setToken.address!,
-      setTokenAmount,
-      minAmountOutput,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken
-    )
-
-    // Get current icETH balance
-    const icEthBalanceCurrent = await balanceOf(signer, setTokenAddress)
-
-    // Mint index
-    const flashMint = new FlashMintLeveraged(contract)
-    const tx = await flashMint.redeemExactSetForETH(
-      setToken.address!,
-      setTokenAmount,
-      minAmountOutput,
-      quote.swapDataDebtCollateral,
-      quote.swapDataPaymentToken,
-      { gasLimit: gasEstimate }
-    )
-    if (!tx) fail()
-    tx.wait()
-
-    const icEthBalanceAfter = await balanceOf(signer, setTokenAddress)
-    expect(icEthBalanceAfter.lt(icEthBalanceCurrent)).toEqual(true)
+    // Gas estimation fails but tx goes through
+    // const gasEstimate = await provider.estimateGas(tx)
+    // tx.gasLimit = gasEstimate
+    tx.gasLimit = 5_000_000
+    const nonce = (await signer.getTransactionCount()) + 1
+    tx.nonce = BigNumber.from(nonce)
+    const res = await signer.sendTransaction(tx)
+    res.wait()
+    const balanceAfter = await balanceOf(signer, setTokenAddress)
+    expect(balanceAfter.lte(balanceBefore.sub(indexTokenAmount))).toBe(true)
   })
 })

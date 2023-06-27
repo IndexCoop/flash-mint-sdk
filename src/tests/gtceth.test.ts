@@ -6,6 +6,7 @@ import { SignerAccount0, wrapETH } from './utils'
 
 const signer = SignerAccount0
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 export const gtcETH = {
   address: GitcoinStakedETHIndex.address!,
   decimals: 18,
@@ -17,6 +18,7 @@ export const WETH9 = {
   decimals: 18,
   symbol: WETH.symbol,
 }
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
 
 describe('FlashMintZeroEx - gtcETH', () => {
   const outputToken = gtcETH

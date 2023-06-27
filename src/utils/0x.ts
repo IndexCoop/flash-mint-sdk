@@ -11,9 +11,23 @@ export type ZeroExApiSwapRequest = {
   slippagePercentage?: number
 }
 
+export type ZeroExApiSwapResponseOrder = {
+  fillData: {
+    path?: string
+    pool?: {
+      tokens: string[]
+      poolAddress: string
+    }
+    tokenAddressPath?: string[]
+  }
+  source?: string
+}
+
 export type ZeroExApiSwapResponse = {
   buyAmount: string
   buyTokenAddress: string
+  data: string
+  orders?: ZeroExApiSwapResponseOrder[]
   sellAmount: string
   sellTokenAddress: string
 }
@@ -53,7 +67,12 @@ export class ZeroExApi {
    * @param params          Parameters for the swap request
    * @param chainId         ID of the network
    */
-  public async getSwapQuote(params: any, chainId: number): Promise<any | null> {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  public async getSwapQuote(
+    params: any,
+    chainId: number
+  ): Promise<ZeroExApiSwapResponse | null> {
+    /* eslint-enable @typescript-eslint/no-explicit-any */
     const path = this.swapPathOverride ?? '/swap/v1/quote'
     const query = new URLSearchParams(params).toString()
     let config = {}
@@ -67,7 +86,7 @@ export class ZeroExApi {
       const response = await axios.get(url, config)
       const res: ZeroExApiSwapResponse = response.data
       return res
-    } catch (err: any) {
+    } catch (err: unknown) {
       return null
     }
   }

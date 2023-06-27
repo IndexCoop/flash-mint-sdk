@@ -43,11 +43,6 @@ export const InterestCompoundingETHIndex: Token = {
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
 }
 
-export const JPGIndex: Token = {
-  address: '0x02e7ac540409d32c90bfb51114003a9e1ff0249c',
-  symbol: 'JPG',
-}
-
 export const MetaverseIndex: Token = {
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
   addressPolygon: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
@@ -111,41 +106,4 @@ export const wsETH2: Token = {
 export const wstETH: Token = {
   symbol: 'wstETH',
   address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
-}
-
-// Deprecated Indices
-// These indices are officially not supported any longer by the Index Coop.
-
-export const BTC2xFlexibleLeverageIndexPolygon: Token = {
-  symbol: 'BTC2x-FLI-P',
-}
-
-export const ETH2xFlexibleLeverageIndexPolygon: Token = {
-  symbol: 'ETH2X-FLI-P',
-}
-
-export const GMIIndex: Token = {
-  symbol: 'GMI',
-  address: '0x47110d43175f7f2C2425E7d15792acC5817EB44f',
-  addressPolygon: '0x7fb27ee135db455de5ab1ccec66a24cbc82e712d',
-}
-
-export const InverseBTCFlexibleLeverageIndex: Token = {
-  symbol: 'iBTC-FLI-P',
-}
-
-export const InverseETHFlexibleLeverageIndex: Token = {
-  symbol: 'iETH-FLI-P',
-}
-
-export const InverseMATICFlexibleLeverageIndex: Token = {
-  symbol: 'iMATIC-FLI-P',
-}
-
-export const MATIC2xFlexibleLeverageIndex: Token = {
-  symbol: 'MATIC2x-FLI-P',
-}
-
-export const Web3DataEconomyIndex: Token = {
-  symbol: 'DATA',
 }

@@ -92,10 +92,13 @@ const erc4626Abi = [
   'function wEth() view returns (address)',
   'function withdraw(uint256 assets, address receiver, address owner) returns (uint256)',
 ]
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 const dai = DAI.address!
 const usdc = USDC.address!
 const usdt = USDT.address!
 const weth = WETH.address!
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
 const DEFAULT_SLIPPAGE = 0.0015
 
 const isFCASH = (address: string) =>

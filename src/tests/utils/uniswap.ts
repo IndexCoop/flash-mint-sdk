@@ -48,10 +48,9 @@ export async function swapExactInput(
   await approveTokenInTx.wait()
 
   const block = await provider.getBlock('latest')
-  console.log('BLOCK', block)
 
   const feeTier = 3000
-  const priceLimit = state.sqrtPriceX96.toString()
+  // const priceLimit = state.sqrtPriceX96.toString()
   const params = {
     tokenIn: tokenIn,
     tokenOut: tokenOut,

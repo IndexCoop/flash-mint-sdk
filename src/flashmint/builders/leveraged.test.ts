@@ -7,8 +7,7 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import { InterestCompoundingETHIndex, USDC } from 'constants/tokens'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import {
@@ -19,13 +18,15 @@ import {
 const chainId = 1
 const provider = LocalhostProvider
 
+const { iceth, usdc } = QuoteTokens
+
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = InterestCompoundingETHIndex
-const usdc = USDC.address!
+const indexToken = iceth
+const usdcAddress = usdc.address
 
 describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
-    indexToken.symbol!,
+    indexToken.symbol,
     provider,
     chainId
   )
@@ -106,6 +107,32 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
+  test('returns null for invalid request (invalid path - exchange type none)', async () => {
+    const buildRequest = createBuildRequest()
+    buildRequest.swapDataPaymentToken = {
+      exchange: 0,
+      path: [],
+      fees: [500],
+      pool: '0x00000000000000000000000000000000000000',
+    }
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    expect(tx).toBeNull()
+  })
+
+  test('returns tx for correct swap data with exchange type none', async () => {
+    const buildRequest = createBuildRequest()
+    buildRequest.swapDataPaymentToken = {
+      exchange: 0,
+      path: [],
+      fees: [500],
+      pool: '0x0000000000000000000000000000000000000000',
+    }
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    expect(tx).not.toBeNull()
+  })
+
   test('returns a tx for minting icETH (ERC20)', async () => {
     const buildRequest = createBuildRequest()
     const refTx = await contract.populateTransaction.issueExactSetFromERC20(
@@ -176,12 +203,12 @@ describe('LeveragedTransactionBuilder()', () => {
 
 function createBuildRequest(
   isMinting = true,
-  inputOutputToken: string = usdc,
+  inputOutputToken: string = usdcAddress,
   inputOutputTokenSymbol = 'USDC'
 ): FlashMintLeveragedBuildRequest {
   return {
     isMinting,
-    indexToken: indexToken.address!,
+    indexToken: indexToken.address,
     indexTokenSymbol: indexToken.symbol,
     inputOutputToken,
     inputOutputTokenSymbol,

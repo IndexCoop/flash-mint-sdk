@@ -1,8 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
-import { DiversifiedStakedETHIndex, USDC } from 'constants/tokens'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens } from 'tests/utils'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
@@ -11,13 +10,15 @@ import { FlashMintZeroExBuildRequest, ZeroExTransactionBuilder } from './zeroex'
 const chainId = 1
 const provider = LocalhostProvider
 
+const { dseth, usdc } = QuoteTokens
+
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = DiversifiedStakedETHIndex
-const usdc = USDC.address!
+const indexToken = dseth
+const usdcAddress = usdc.address
 
 describe('ZeroExTransactionBuilder()', () => {
   const contract = getFlashMintZeroExContractForToken(
-    indexToken.symbol!,
+    indexToken.symbol,
     provider,
     chainId
   )
@@ -141,12 +142,12 @@ describe('ZeroExTransactionBuilder()', () => {
 
 function createBuildRequest(
   isMinting = true,
-  inputOutputToken: string = usdc,
+  inputOutputToken: string = usdcAddress,
   inputOutputTokenSymbol = 'USDC'
 ): FlashMintZeroExBuildRequest {
   return {
     isMinting,
-    indexToken: indexToken.address!,
+    indexToken: indexToken.address,
     indexTokenSymbol: indexToken.symbol,
     inputOutputToken,
     inputOutputTokenSymbol,

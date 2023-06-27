@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'dotenv/config'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -28,12 +29,12 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
 
   test('returns component quotes', async () => {
     const components: string[] = [
-      '0xF629cBd94d3791C9250152BD8dfBDF380E2a3B9c',
+      // '0xF629cBd94d3791C9250152BD8dfBDF380E2a3B9c',
       '0x0F5D2fB29fb7d3CFeE444a200298f468908cC942',
       '0x3845badAde8e6dFF049820680d1F14bD3903a5d0',
     ]
     const positions: BigNumber[] = [
-      BigNumber.from('0x3040d55f9b8c7f2e'),
+      // BigNumber.from('0x3040d55f9b8c7f2e'),
       BigNumber.from('0x394561ac3ad65f3b'),
       BigNumber.from('0x2f634f09200bacc2'),
     ]

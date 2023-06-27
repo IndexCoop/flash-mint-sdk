@@ -91,6 +91,10 @@ export class LeveragedTransactionBuilder
   }
 
   private isValidSwapData(swapData: SwapData): boolean {
+    if (swapData.exchange === Exchange.None) {
+      if (swapData.pool.length !== 42) return false
+      return true
+    }
     if (
       swapData.exchange === Exchange.UniV3 &&
       swapData.fees.length !== swapData.path.length - 1

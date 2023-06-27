@@ -1,14 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { WETH } from '../../constants/tokens'
+import { WETH } from 'constants/tokens'
 import {
   getAddressForToken,
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
   slippageAdjustedTokenAmount,
   ZeroExApi,
-} from '../../utils'
+} from 'utils'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'

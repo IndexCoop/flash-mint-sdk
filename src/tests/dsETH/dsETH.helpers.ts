@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { BigNumber } from '@ethersproject/bignumber'
 import { Wallet } from '@ethersproject/wallet'
 
@@ -8,9 +9,7 @@ import {
   WETH,
   wstETH,
 } from 'constants/tokens'
-import { FlashMintZeroEx } from 'flashMint/zeroEx'
-import { QuoteToken } from 'quote/quoteToken'
-import { getFlashMintZeroExQuote } from 'quote/zeroEx'
+import { QuoteToken, ZeroExQuoteProvider } from 'quote'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 
@@ -74,22 +73,20 @@ export async function mint(
   const indexToken = outputToken
   const isMinting = true
 
-  const quote = await getFlashMintZeroExQuote(
+  const quoteProvider = new ZeroExQuoteProvider(provider, zeroExApi)
+  const quote = await quoteProvider.getQuote({
     inputToken,
     outputToken,
     indexTokenAmount,
     isMinting,
     slippage,
-    zeroExApi,
-    provider,
-    chainId
-  )
+  })
   expect(quote).toBeDefined()
   if (!quote) fail()
   expect(quote?.componentQuotes.length).toBeGreaterThan(0)
   expect(quote?.inputOutputTokenAmount).toBeDefined()
   expect(quote?.inputOutputTokenAmount).not.toBe(BigNumber.from(0))
-  expect(quote?.setTokenAmount).toEqual(indexTokenAmount)
+  expect(quote?.indexTokenAmount).toEqual(indexTokenAmount)
 
   // Get FlashMintZeroEx contract instance and issuance module (debtV2)
   const contract = getFlashMintZeroExContractForToken(
@@ -108,15 +105,13 @@ export async function mint(
     { value: quote.inputOutputTokenAmount }
   )
 
-  const flashMint = new FlashMintZeroEx(contract)
-  const tx = await flashMint.mintExactSetFromETH(
+  const tx = await contract.issueExactSetFromETH(
     indexToken.address,
     indexTokenAmount,
     quote.componentQuotes,
     issuanceModule.address,
     issuanceModule.isDebtIssuance,
-    quote.inputOutputTokenAmount,
-    { gasLimit: gasEstimate }
+    { gasLimit: gasEstimate, value: quote.inputOutputTokenAmount }
   )
   if (!tx) fail()
   tx.wait()
@@ -140,22 +135,20 @@ export async function mintERC20(
   const indexToken = outputToken
   const isMinting = true
 
-  const quote = await getFlashMintZeroExQuote(
+  const quoteProvider = new ZeroExQuoteProvider(provider, zeroExApi)
+  const quote = await quoteProvider.getQuote({
     inputToken,
     outputToken,
     indexTokenAmount,
     isMinting,
     slippage,
-    zeroExApi,
-    provider,
-    chainId
-  )
+  })
   expect(quote).toBeDefined()
   if (!quote) fail()
   expect(quote?.componentQuotes.length).toBeGreaterThan(0)
   expect(quote?.inputOutputTokenAmount).toBeDefined()
   expect(quote?.inputOutputTokenAmount).not.toBe(BigNumber.from(0))
-  expect(quote?.setTokenAmount).toEqual(indexTokenAmount)
+  expect(quote?.indexTokenAmount).toEqual(indexTokenAmount)
 
   // Get FlashMintZeroEx contract instance and issuance module (debtV2)
   const contract = getFlashMintZeroExContractForToken(
@@ -182,8 +175,7 @@ export async function mintERC20(
     issuanceModule.isDebtIssuance
   )
 
-  const flashMint = new FlashMintZeroEx(contract)
-  const tx = await flashMint.mintExactSetFromToken(
+  const tx = await contract.issueExactSetFromToken(
     indexToken.address,
     inputToken.address,
     indexTokenAmount,

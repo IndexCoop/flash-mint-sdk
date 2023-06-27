@@ -1,32 +1,28 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ChainId } from '../../constants/chains'
+import { ChainId } from 'constants/chains'
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
   inputSwapData,
   outputSwapData,
-} from '../../constants/swapdata'
+} from 'constants/swapdata'
 import {
   ETH,
   InterestCompoundingETHIndex,
   MATIC,
   stETH,
-} from '../../constants/tokens'
-import {
-  FlashMintLeveraged,
-  LeveragedTokenData,
-} from '../../flashMint/leveraged'
-import { getFlashMintLeveragedContractForToken } from '../../utils/contracts'
-import { slippageAdjustedTokenAmount } from '../../utils/slippage'
+} from 'constants/tokens'
+import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
   Exchange,
   getSwapDataCollateralDebt,
   getSwapDataDebtCollateral,
   getSwapData,
   SwapData,
-} from '../../utils/swapData'
+} from 'utils/swapData'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 import { ZeroExApi } from 'utils/0x'
@@ -44,6 +40,14 @@ export interface FlashMintLeveragedQuote {
   inputOutputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
+}
+
+export interface LeveragedTokenData {
+  collateralAToken: string
+  collateralToken: string
+  debtToken: string
+  collateralAmount: BigNumber
+  debtAmount: BigNumber
 }
 
 export class LeveragedQuoteProvider
@@ -183,17 +187,22 @@ async function getLevTokenData(
   chainId: number,
   provider: JsonRpcProvider
 ): Promise<LeveragedTokenData | null> {
-  const contract = getFlashMintLeveragedContractForToken(
-    setTokenSymbol,
-    provider,
-    chainId
-  )
-  const flashMint = new FlashMintLeveraged(contract)
-  return await flashMint.getLeveragedTokenData(
-    setTokenAddress,
-    setTokenAmount,
-    isIssuance
-  )
+  try {
+    const contract = getFlashMintLeveragedContractForToken(
+      setTokenSymbol,
+      provider,
+      chainId
+    )
+    return await contract.getLeveragedTokenData(
+      setTokenAddress,
+      setTokenAmount,
+      isIssuance
+    )
+  } catch (error) {
+    // TODO: should this just always fail cause it means there is something wrongly configured?
+    console.error('Error getting leveraged token data', error)
+    return null
+  }
 }
 
 function getPaymentTokenAddress(
@@ -207,6 +216,7 @@ function getPaymentTokenAddress(
   }
 
   if (paymentTokenSymbol === InterestCompoundingETHIndex.symbol && !isMinting) {
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     return stETH.address!
   }
 

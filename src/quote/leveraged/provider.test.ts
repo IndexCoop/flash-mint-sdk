@@ -1,29 +1,27 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
   inputSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import {
-  BTC2xFlexibleLeverageIndex,
-  ETH,
-  ETH2xFlexibleLeverageIndex,
-  InterestCompoundingETHIndex,
-} from 'constants/tokens'
 import { wei } from 'utils/numbers'
-import { LocalhostProvider, ZeroExApiSwapQuote } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens, ZeroExApiSwapQuote } from 'tests/utils'
+
 import { LeveragedQuoteProvider } from './provider'
 
-const zeroExApi = ZeroExApiSwapQuote
 const provider = LocalhostProvider
+const zeroExApi = ZeroExApiSwapQuote
 
-describe('getFlashMintLeveragedQuote()', () => {
+const { btc2xfli, eth, eth2xfli, iceth } = QuoteTokens
+
+describe('LeveragedQuoteProvider()', () => {
   test('returns static swap data for 🧊ETH - minting', async () => {
-    const indexToken = InterestCompoundingETHIndex
+    const indexToken = iceth
     const indexTokenAmount = wei(1)
     const request = {
       isMinting: true,
-      inputToken: { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
+      inputToken: eth,
       outputToken: {
         symbol: indexToken.symbol,
         decimals: 18,
@@ -46,7 +44,7 @@ describe('getFlashMintLeveragedQuote()', () => {
   })
 
   test('returns static swap data for 🧊ETH - redeeming', async () => {
-    const indexToken = InterestCompoundingETHIndex
+    const indexToken = iceth
     const indexTokenAmount = wei(1)
     const request = {
       isMinting: false,
@@ -55,7 +53,7 @@ describe('getFlashMintLeveragedQuote()', () => {
         decimals: 18,
         address: indexToken.address!,
       },
-      outputToken: { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
+      outputToken: eth,
       indexTokenAmount,
       slippage: 0.5,
     }
@@ -73,11 +71,11 @@ describe('getFlashMintLeveragedQuote()', () => {
   })
 
   test('returns a quote for BTC2xFLI', async () => {
-    const indexToken = BTC2xFlexibleLeverageIndex
+    const indexToken = btc2xfli
     const indexTokenAmount = wei('1')
     const request = {
       isMinting: true,
-      inputToken: { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
+      inputToken: eth,
       outputToken: {
         symbol: indexToken.symbol,
         decimals: 18,
@@ -92,15 +90,17 @@ describe('getFlashMintLeveragedQuote()', () => {
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
     expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataDebtCollateral.path.length).toBeGreaterThan(0)
     expect(quote.swapDataPaymentToken).toBeDefined()
+    expect(quote.swapDataPaymentToken.path.length).toBeGreaterThan(0)
   })
 
   test('returns a quote for ETH2xFLI', async () => {
-    const indexToken = ETH2xFlexibleLeverageIndex
+    const indexToken = eth2xfli
     const indexTokenAmount = wei('1')
     const request = {
       isMinting: true,
-      inputToken: { symbol: ETH.symbol, decimals: 18, address: ETH.address! },
+      inputToken: eth,
       outputToken: {
         symbol: indexToken.symbol,
         decimals: 18,
@@ -115,6 +115,13 @@ describe('getFlashMintLeveragedQuote()', () => {
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
     expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataDebtCollateral.path.length).toBeGreaterThan(0)
     expect(quote.swapDataPaymentToken).toBeDefined()
+    expect(quote.swapDataPaymentToken.exchange).toEqual(0)
+    expect(quote.swapDataPaymentToken.fees.length).toEqual(0)
+    expect(quote.swapDataPaymentToken.path.length).toEqual(0)
+    expect(quote.swapDataPaymentToken.pool).toEqual(
+      '0x0000000000000000000000000000000000000000'
+    )
   })
 })

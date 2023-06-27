@@ -1,9 +1,9 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
   "version": "1.5.1",
-  "description": "Helper functions for using Index's Flash Mint contracts.",
+  "description": "The FlashMintSDK of the Index Coop.",
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "files": [
     "dist"
@@ -24,15 +24,15 @@
     "hardhat": "npx hardhat node",
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
-    "prepare": "npm run build",
-    "prepublishOnly": "npm test && npm run lint",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "commit": "git-cz",
-    "semantic-release": "semantic-release --branches main",
-    "acp": "git add . && npm run commit && git push"
+    "test:watch": "jest --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "flashmint",
+    "sdk",
+    "index",
+    "coop"
+  ],
   "homepage": "https://github.com/IndexCoop/flash-mint-sdk",
   "repository": {
     "type": "git",
@@ -41,11 +41,7 @@
   "bugs": {
     "url": "https://github.com/IndexCoop/flash-mint-sdk/issues"
   },
-  "author": {
-    "name": "0xModene",
-    "email": "modene@indexcoop.com",
-    "url": "https://indexcoop.com"
-  },
+  "author": "Index Coop",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.18.2",
@@ -63,15 +59,9 @@
     "hardhat": "^2.12.4",
     "jest": "^28.1.1",
     "prettier": "^2.6.2",
-    "semantic-release": "^18.0.1",
     "ts-node": "^10.8.1",
-    "tsup": "^6.6.3",
+    "tsup": "^7.0.0",
     "typescript": "^4.7.3"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   },
   "publishConfig": {
     "access": "public",

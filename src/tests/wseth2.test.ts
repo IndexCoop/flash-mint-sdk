@@ -1,26 +1,25 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { sETH2, WETH, wsETH2 } from 'constants/tokens'
+import { ZeroExTransactionBuilder } from 'flashmint'
+import { ZeroExQuoteProvider } from 'quote'
 import {
   LocalhostProvider,
   SignerAccount17,
   ZeroExApiSwapQuote,
+  approveErc20,
+  balanceOf,
   createERC20Contract,
 } from 'tests/utils'
 import { wei } from 'utils/numbers'
 
-import { FlashMintZeroEx } from '../flashMint/zeroEx'
-import { getFlashMintZeroExQuote } from '../quote/zeroEx'
-import { getFlashMintZeroExContractForToken } from '../utils/contracts'
-import { getIssuanceModule } from '../utils/issuanceModules'
-
 import { swapExactInput } from './utils/uniswap'
 import { wrapETH } from './utils'
 
-describe('FlashMintZeroEx - wsETH2', () => {
-  const chainId = 1
-  const zeroExApi = ZeroExApiSwapQuote
+const zeroExApi = ZeroExApiSwapQuote
 
+describe('FlashMintZeroEx - wsETH2', () => {
   beforeEach((): void => {
     jest.setTimeout(10000000)
   })
@@ -64,69 +63,53 @@ describe('FlashMintZeroEx - wsETH2', () => {
       decimals: 18,
       symbol: wsETH2.symbol,
     }
-    const setTokenAmount = wei('1')
-    const quote = await getFlashMintZeroExQuote(
+    const indexTokenAmount = wei('1')
+    const quoteProvider = new ZeroExQuoteProvider(provider, zeroExApi)
+    const quote = await quoteProvider.getQuote({
       inputToken,
       outputToken,
-      setTokenAmount,
+      indexTokenAmount,
       isMinting,
-      0.5,
-      zeroExApi,
-      provider,
-      chainId
-    )
-
+      slippage: 0.5,
+    })
     expect(quote).toBeDefined()
     if (!quote) fail()
     expect(quote.componentQuotes.length).toBeGreaterThan(0)
     expect(quote.inputOutputTokenAmount).toBeDefined()
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.setTokenAmount).toEqual(setTokenAmount)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
 
-    // Get FlashMintZeroEx contract instance and issuance module (debtV2)
-    const contract = getFlashMintZeroExContractForToken(
-      wsETH2.symbol,
-      signer,
-      chainId
-    )
-    const issuanceModule = getIssuanceModule(outputToken.symbol, chainId)
+    const builder = new ZeroExTransactionBuilder(provider)
+    const tx = await builder.build({
+      isMinting,
+      indexToken: outputToken.address,
+      indexTokenSymbol: outputToken.symbol,
+      inputOutputToken: inputToken.address,
+      inputOutputTokenSymbol: inputToken.symbol,
+      indexTokenAmount,
+      inputOutputTokenAmount: quote.inputOutputTokenAmount,
+      componentQuotes: quote.componentQuotes,
+    })
 
-    // Approve the ERC20 input token (amount) w/ the FlashMintZeroEx contract as spender
-    const erc20 = createERC20Contract(inputToken.address, signer)
-    const txApprove = await erc20.approve(
-      contract.address,
-      quote.inputOutputTokenAmount.mul(2)
-    )
-    await txApprove.wait()
-
-    // Get a gas estimate
-    const gasEstimate = await contract.estimateGas.issueExactSetFromToken(
-      outputToken.address,
-      inputToken.address,
-      setTokenAmount,
-      quote.inputOutputTokenAmount,
-      quote.componentQuotes,
-      issuanceModule.address,
-      issuanceModule.isDebtIssuance
-    )
-
-    const flashMint = new FlashMintZeroEx(contract)
-    const tx = await flashMint.mintExactSetFromToken(
-      outputToken.address,
-      inputToken.address,
-      setTokenAmount,
-      quote.inputOutputTokenAmount,
-      quote.componentQuotes,
-      issuanceModule.address,
-      issuanceModule.isDebtIssuance,
-      { gasLimit: gasEstimate }
-    )
     if (!tx) fail()
-    tx?.wait()
-    const erc20OutputToken = createERC20Contract(outputToken.address, signer)
-    const balanceOutputToken: BigNumber = await erc20OutputToken.balanceOf(
-      signer.address
+
+    await approveErc20(
+      inputToken.address,
+      tx.to!,
+      quote.inputOutputTokenAmount,
+      signer
     )
-    expect(balanceOutputToken.gt(0)).toEqual(true)
+
+    const balanceBefore = await balanceOf(signer, outputToken.address)
+    // const gasEstimate = await provider.estimateGas(tx)
+    // tx.gasLimit = gasEstimate
+    tx.gasLimit = 5_000_000
+
+    const res = await signer.sendTransaction(tx)
+    if (!res) fail()
+    res.wait()
+
+    const balanceAfter = await balanceOf(signer, outputToken.address)
+    expect(balanceAfter.gte(balanceBefore.add(indexTokenAmount))).toEqual(true)
   })
 })

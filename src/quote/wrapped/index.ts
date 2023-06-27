@@ -8,13 +8,13 @@ import {
   getRedemptionComponentSwapData,
   getRedemptionERC4626SwapData,
   getIssuanceERC4626SwapData,
-} from '../../utils/componentSwapData'
+} from 'utils/componentSwapData'
 import {
   getFlashMint4626Contract,
   getFlashMintWrappedContract,
-} from '../../utils/contracts'
-import { slippageAdjustedTokenAmount } from '../../utils/slippage'
-import { ComponentWrapData, getWrapData } from '../../utils/wrapData'
+} from 'utils/contracts'
+import { slippageAdjustedTokenAmount } from 'utils/slippage'
+import { ComponentWrapData, getWrapData } from 'utils/wrapData'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 
@@ -91,8 +91,6 @@ export class WrappedQuoteProvider
       slippage,
       isMinting
     )
-    console.log(estimatedInputOutputAmount.toString(), 'estimate')
-    console.log(inputOutputTokenAmount.toString(), 'slippage adjusted')
     const quote: FlashMintWrappedQuote = {
       componentSwapData,
       componentWrapData,
@@ -153,8 +151,6 @@ export class ERC4626QuoteProvider
       slippage,
       isMinting
     )
-    console.log(estimatedInputOutputAmount.toString(), 'estimate')
-    console.log(inputOutputTokenAmount.toString(), 'slippage adjusted')
     const quote: ERC4626WrappedQuote = {
       componentSwapData,
       indexTokenAmount,
