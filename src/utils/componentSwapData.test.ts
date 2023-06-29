@@ -56,7 +56,7 @@ describe('getIssuanceComponentSwapData()', () => {
     })
   })
 
-  test.skip('returns correct swap data based when input token is WETH', async () => {
+  test('returns correct swap data based when input token is WETH', async () => {
     const inputToken = weth
     const componentSwapData = await getIssuanceComponentSwapData(
       MoneyMarketIndexToken.symbol,
@@ -126,7 +126,7 @@ describe('getRedemptionComponentSwapData()', () => {
     })
   })
 
-  test.skip('returns correct swap data when output token is WETH', async () => {
+  test('returns correct swap data when output token is WETH', async () => {
     const outputToken = weth
     const componentSwapData = await getRedemptionComponentSwapData(
       MoneyMarketIndexToken.symbol,
