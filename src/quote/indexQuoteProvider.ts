@@ -2,10 +2,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import {
-  FlashMint4626Address,
-  FlashMintWrappedAddress,
-} from 'constants/contracts'
+import { FlashMint4626Address } from 'constants/contracts'
 import {
   BanklessBEDIndex,
   BTC2xFlexibleLeverageIndex,
@@ -24,9 +21,7 @@ import {
   ZeroExTransactionBuilder,
 } from 'flashmint'
 import {
-  FlashMintWrappedBuildRequest,
   FlashMintERC4626BuildRequest,
-  WrappedTransactionBuilder,
   ERC4626TransactionBuilder,
 } from 'flashmint/builders/wrapped'
 import { ZeroExApi } from 'utils'
@@ -34,12 +29,11 @@ import { ZeroExApi } from 'utils'
 import { LeveragedQuoteProvider } from './leveraged'
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
-import { ERC4626QuoteProvider, WrappedQuoteProvider } from './wrapped'
+import { ERC4626QuoteProvider } from './wrapped'
 import { ZeroExQuoteProvider } from './zeroEx'
 
 export enum FlashMintContractType {
   leveraged,
-  wrapped,
   erc4626,
   zeroEx,
 }
@@ -94,38 +88,14 @@ export class FlashMintQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
     switch (contractType) {
-      case FlashMintContractType.wrapped: {
-        const wrappedQuoteProvider = new WrappedQuoteProvider(provider)
-        const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
-        if (!wrappedQuote) return null
-        const builder = new WrappedTransactionBuilder(provider)
-        const txRequest: FlashMintWrappedBuildRequest = {
-          isMinting,
-          indexToken: indexToken.address,
-          inputOutputToken: inputOutputToken.address,
-          inputOutputTokenSymbol: inputOutputToken.symbol,
-          indexTokenAmount,
-          inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
-          componentSwapData: wrappedQuote.componentSwapData,
-          componentWrapData: wrappedQuote.componentWrapData,
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return {
-          chainId,
-          contractType,
-          contract: contractAddress,
-          isMinting,
-          inputToken,
-          outputToken,
-          indexTokenAmount,
-          inputOutputAmount: wrappedQuote.inputOutputTokenAmount,
-          slippage,
-          tx,
-        }
-      }
       case FlashMintContractType.erc4626: {
-        const wrappedQuoteProvider = new ERC4626QuoteProvider(provider)
+        if (!zeroExApiV1) {
+          throw new Error('Contract type requires ZeroExApiV1 to be defined')
+        }
+        const wrappedQuoteProvider = new ERC4626QuoteProvider(
+          provider,
+          zeroExApiV1
+        )
         const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
         if (!wrappedQuote) return null
         const builder = new ERC4626TransactionBuilder(provider)
@@ -238,8 +208,6 @@ function getContractAddress(contractType: FlashMintContractType): string {
   switch (contractType) {
     case FlashMintContractType.erc4626:
       return FlashMint4626Address
-    case FlashMintContractType.wrapped:
-      return FlashMintWrappedAddress
     default:
       return ''
   }
@@ -267,6 +235,7 @@ function getContractType(token: string): FlashMintContractType | null {
 }
 
 function requiresZeroExV1(contractType: FlashMintContractType): boolean {
+  if (contractType === FlashMintContractType.erc4626) return true
   if (contractType === FlashMintContractType.leveraged) return true
   if (contractType === FlashMintContractType.zeroEx) return true
   return false

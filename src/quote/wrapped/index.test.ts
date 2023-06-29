@@ -1,10 +1,11 @@
-import { LocalhostProvider, QuoteTokens } from 'tests/utils'
+import { LocalhostProvider, QuoteTokens, ZeroExApiSwapQuote } from 'tests/utils'
 import { wei } from 'utils/numbers'
 import { ERC4626QuoteProvider, FlashMintWrappedQuoteRequest } from '.'
 
 const { dai, mmi, usdc, weth } = QuoteTokens
 const indexToken = mmi
 const provider = LocalhostProvider
+const zeroExApi = ZeroExApiSwapQuote
 
 describe('WrappedQuoteProvider()', () => {
   beforeEach((): void => {
@@ -20,7 +21,7 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ERC4626QuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider, zeroExApi)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -37,7 +38,7 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ERC4626QuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider, zeroExApi)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -54,7 +55,7 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ERC4626QuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider, zeroExApi)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -71,7 +72,7 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ERC4626QuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider, zeroExApi)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -88,7 +89,7 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ERC4626QuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider, zeroExApi)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -105,7 +106,7 @@ describe('WrappedQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ERC4626QuoteProvider(provider)
+    const quoteProvider = new ERC4626QuoteProvider(provider, zeroExApi)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)

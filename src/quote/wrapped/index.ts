@@ -3,18 +3,16 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import {
   ComponentSwapData,
+  ComponentWrapData,
   erc4626SwapData,
-  getIssuanceComponentSwapData,
-  getRedemptionComponentSwapData,
-  getRedemptionERC4626SwapData,
-  getIssuanceERC4626SwapData,
-} from 'utils/componentSwapData'
-import {
   getFlashMint4626Contract,
   getFlashMintWrappedContract,
-} from 'utils/contracts'
-import { slippageAdjustedTokenAmount } from 'utils/slippage'
-import { ComponentWrapData, getWrapData } from 'utils/wrapData'
+  getIssuanceComponentSwapData,
+  getRedemptionComponentSwapData,
+  getWrapData,
+  slippageAdjustedTokenAmount,
+  ZeroExApi,
+} from 'utils'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 
@@ -41,12 +39,15 @@ export interface ERC4626WrappedQuote {
 export class WrappedQuoteProvider
   implements QuoteProvider<FlashMintWrappedQuoteRequest, FlashMintWrappedQuote>
 {
-  constructor(private readonly provider: JsonRpcProvider) {}
+  constructor(
+    private readonly provider: JsonRpcProvider,
+    private readonly zeroExApi: ZeroExApi
+  ) {}
 
   async getQuote(
     request: FlashMintWrappedQuoteRequest
   ): Promise<FlashMintWrappedQuote | null> {
-    const { provider } = this
+    const { provider, zeroExApi } = this
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -57,14 +58,16 @@ export class WrappedQuoteProvider
           indexToken.address,
           inputToken.address,
           indexTokenAmount,
-          provider
+          provider,
+          zeroExApi
         )
       : await getRedemptionComponentSwapData(
           indexTokenSymbol,
           indexToken.address,
           outputToken.address,
           indexTokenAmount,
-          provider
+          provider,
+          zeroExApi
         )
     const componentWrapData = getWrapData(indexToken.symbol)
     if (componentSwapData.length !== componentSwapData.length) return null
@@ -103,30 +106,36 @@ export class WrappedQuoteProvider
 export class ERC4626QuoteProvider
   implements QuoteProvider<FlashMintWrappedQuoteRequest, ERC4626WrappedQuote>
 {
-  constructor(private readonly provider: JsonRpcProvider) {}
+  constructor(
+    private readonly provider: JsonRpcProvider,
+    private readonly zeroExApi: ZeroExApi
+  ) {}
 
   async getQuote(
     request: FlashMintWrappedQuoteRequest
   ): Promise<ERC4626WrappedQuote | null> {
-    const { provider } = this
+    const { provider, zeroExApi } = this
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
     const componentSwapData = isMinting
-      ? await getIssuanceERC4626SwapData(
+      ? // TODO: test replacing w/ dynamic swap data
+        await getIssuanceComponentSwapData(
           indexTokenSymbol,
           indexToken.address,
           inputToken.address,
           indexTokenAmount,
-          provider
+          provider,
+          zeroExApi
         )
-      : await getRedemptionERC4626SwapData(
+      : await getRedemptionComponentSwapData(
           indexTokenSymbol,
           indexToken.address,
           outputToken.address,
           indexTokenAmount,
-          provider
+          provider,
+          zeroExApi
         )
     let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     const contract = getFlashMint4626Contract(provider)
