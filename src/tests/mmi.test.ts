@@ -13,10 +13,12 @@ import {
   SignerAccount5,
   transferFromWhale,
   wrapETH,
+  ZeroExApiSwapQuote,
 } from './utils'
 
 const provider = LocalhostProvider
 const signer = SignerAccount5
+const zeroExApi = ZeroExApiSwapQuote
 
 const { dai, mmi, usdc, usdt, weth } = QuoteTokens
 
@@ -89,7 +91,7 @@ async function getMintQuote(
     indexTokenAmount,
     slippage: 0.5,
   }
-  const quoteProvider = new FlashMintQuoteProvider(provider)
+  const quoteProvider = new FlashMintQuoteProvider(provider, zeroExApi)
   const quote = await quoteProvider.getQuote(quoteRequest)
   return quote
 }
@@ -162,7 +164,7 @@ async function redeemMMI(indexTokenAmount: BigNumber, outputToken: QuoteToken) {
     indexTokenAmount,
     slippage: 0.5,
   }
-  const quoteProvider = new FlashMintQuoteProvider(provider)
+  const quoteProvider = new FlashMintQuoteProvider(provider, zeroExApi)
   const quote = await quoteProvider.getQuote(quoteRequest)
   if (!quote) fail()
 

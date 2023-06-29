@@ -1,16 +1,15 @@
 import { FlashMint4626Address } from 'constants/contracts'
 import { LocalhostProvider, QuoteTokens, ZeroExApiSwapQuote } from 'tests/utils'
-import { wei } from 'utils/numbers'
-
+import {
+  getFlashMintLeveragedContractForToken,
+  getFlashMintZeroExContractForToken,
+  wei,
+} from 'utils'
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
   FlashMintQuoteRequest,
 } from '.'
-import {
-  getFlashMintLeveragedContractForToken,
-  getFlashMintZeroExContractForToken,
-} from 'utils'
 
 const provider = LocalhostProvider
 const zeroEx = ZeroExApiSwapQuote
@@ -48,7 +47,7 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     // Only testing for values that have been provided (meta data)
@@ -74,7 +73,7 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
@@ -102,7 +101,7 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
