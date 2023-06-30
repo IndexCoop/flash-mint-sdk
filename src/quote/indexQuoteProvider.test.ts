@@ -210,6 +210,22 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
+  test('should fail if zeroExApiV1 is undefined for contract type erc4626', async () => {
+    const inputToken = usdc
+    const outputToken = mmi
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken,
+      outputToken,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(provider)
+    await expect(quoteProvider.getQuote(request)).rejects.toThrow(
+      'Contract type requires ZeroExApiV1 to be defined'
+    )
+  })
+
   test('should fail if zeroExApiV1 is undefined for contract type leveraged', async () => {
     const inputToken = usdc
     const outputToken = iceth
