@@ -14,7 +14,7 @@ import {
 const provider = LocalhostProvider
 const zeroEx = ZeroExApiSwapQuote
 
-const { dseth, eth, iceth, mmi: indexToken, mvi, usdc } = QuoteTokens
+const { dseth, eth, iceth, mmi, mvi, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -38,12 +38,10 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('meta data is returned correctly', async () => {
-    const inputToken = usdc
-    const outputToken = indexToken
     const request: FlashMintQuoteRequest = {
       isMinting: true,
-      inputToken,
-      outputToken,
+      inputToken: usdc,
+      outputToken: mmi,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
@@ -64,12 +62,10 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for minting MMI', async () => {
-    const inputToken = usdc
-    const outputToken = indexToken
     const request: FlashMintQuoteRequest = {
       isMinting: true,
-      inputToken,
-      outputToken,
+      inputToken: usdc,
+      outputToken: mmi,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
@@ -92,12 +88,10 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming MMI', async () => {
-    const inputToken = indexToken
-    const outputToken = usdc
     const request: FlashMintQuoteRequest = {
       isMinting: false,
-      inputToken,
-      outputToken,
+      inputToken: mmi,
+      outputToken: usdc,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
