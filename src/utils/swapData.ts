@@ -84,7 +84,7 @@ interface SwapDataParams {
   buyAmount?: string
   sellAmount?: string
   sellToken: string
-  includedSources: string
+  includedSources?: string
 }
 
 export const getSwapData = async (
