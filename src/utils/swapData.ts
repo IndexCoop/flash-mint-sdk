@@ -5,6 +5,7 @@ import {
   ZeroExApi,
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
+  ZeroExApiSwapResponseOrderBalancer,
 } from './0x'
 import { decodePool, extractPoolFees } from './UniswapPath'
 
@@ -135,11 +136,17 @@ export function swapDataFrom0xQuote(
   )
     return null
 
-  const order = zeroExQuote.orders[0]
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const order: any = zeroExQuote.orders[0]
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   const fillData = order.fillData
   const exchange = getEchangeFrom0xKey(order.source)
 
   if (!fillData || !exchange) return null
+
+  if (exchange === Exchange.BalancerV2) {
+    return swapDataFromBalancer(order)
+  }
 
   if (exchange === Exchange.Curve) {
     return swapDataFromCurve(order)
@@ -159,6 +166,20 @@ export function swapDataFrom0xQuote(
     path,
     fees,
     pool: '0x0000000000000000000000000000000000000000',
+  }
+}
+
+function swapDataFromBalancer(
+  order: ZeroExApiSwapResponseOrderBalancer
+): SwapData | null {
+  const fillData = order.fillData
+  if (!fillData) return null
+  return {
+    exchange: Exchange.BalancerV2,
+    path: fillData.assets,
+    fees: [],
+    // FIXME: check
+    pool: fillData.vault,
   }
 }
 

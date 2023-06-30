@@ -23,11 +23,20 @@ export type ZeroExApiSwapResponseOrder = {
   source?: string
 }
 
+export type ZeroExApiSwapResponseOrderBalancer = {
+  source: string
+  fillData: {
+    assets: string[]
+    chainId: number
+    vault: string
+  }
+}
+
 export type ZeroExApiSwapResponse = {
   buyAmount: string
   buyTokenAddress: string
   data: string
-  orders?: ZeroExApiSwapResponseOrder[]
+  orders?: ZeroExApiSwapResponseOrder[] | ZeroExApiSwapResponseOrderBalancer[]
   sellAmount: string
   sellTokenAddress: string
 }
