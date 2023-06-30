@@ -17,10 +17,15 @@ describe('getEchangeFrom0xKey()', () => {
   })
 
   test('returns correct exchanges for 0x keys', async () => {
+    const balancer = getEchangeFrom0xKey('Balancer_V2')
     const curve = getEchangeFrom0xKey('Curve')
     const quickswap = getEchangeFrom0xKey('QuickSwap')
     const sushi = getEchangeFrom0xKey('SushiSwap')
     const uniswap = getEchangeFrom0xKey('Uniswap_V3')
+    expect(
+      Object.keys(Exchange).filter((key) => isNaN(Number(key))).length
+    ).toEqual(6)
+    expect(balancer).toEqual(Exchange.BalancerV2)
     expect(curve).toEqual(Exchange.Curve)
     expect(quickswap).toEqual(Exchange.Quickswap)
     expect(sushi).toEqual(Exchange.Sushiswap)

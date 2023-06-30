@@ -10,6 +10,7 @@ import { decodePool, extractPoolFees } from './UniswapPath'
 
 export enum Exchange {
   None,
+  BalancerV2,
   Quickswap,
   Sushiswap,
   UniV3,
@@ -108,6 +109,8 @@ export const getSwapData = async (
 
 export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
   switch (key) {
+    case 'Balancer_V2':
+      return Exchange.BalancerV2
     case 'Curve':
       return Exchange.Curve
     case 'QuickSwap':
