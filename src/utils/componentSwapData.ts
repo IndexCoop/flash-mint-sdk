@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { DAI, USDC, USDT, WETH } from '../constants/tokens'
+import { DAI, USDC, USDT } from '../constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
 import { Exchange, SwapData, getSwapData } from './swapData'
