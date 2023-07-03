@@ -28,6 +28,9 @@ export type ZeroExApiSwapResponseOrderBalancer = {
   fillData: {
     assets: string[]
     chainId: number
+    swapSteps: {
+      poolId: string
+    }
     vault: string
   }
 }

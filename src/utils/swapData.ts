@@ -181,7 +181,7 @@ function swapDataFromBalancer(
     path: fillData.assets,
     fees: [],
     // FIXME: check
-    pool: fillData.vault,
+    pool: fillData.swapSteps.poolId,
   }
 }
 
