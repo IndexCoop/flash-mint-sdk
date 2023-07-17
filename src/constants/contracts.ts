@@ -1,6 +1,9 @@
 // Index Protocol
 export const FlashMint4626Address = '0xF5cF956018c111BE7d5CE4240960C1164179aCA9'
 
+// FIXME: add address
+export const FlashMintLeveragedAddress = ''
+
 export const FlashMintLeveragedForCompoundAddress =
   '0xeA716Ed94964Ed0126Fb2fA3b546eD7F209cC2b8'
 
