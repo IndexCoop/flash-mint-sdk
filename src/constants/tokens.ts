@@ -43,6 +43,11 @@ export const InterestCompoundingETHIndex: Token = {
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
 }
 
+export const LeveragedrEthStakingYield: Token = {
+  symbol: 'icRETH',
+  address: '0xe8888Cdbc0A5958C29e7D91DAE44897c7e64F9BC',
+}
+
 export const MetaverseIndex: Token = {
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
   addressPolygon: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
