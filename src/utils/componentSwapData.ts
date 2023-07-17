@@ -103,7 +103,10 @@ const DEFAULT_SLIPPAGE = 0.0015
 
 const emptySwapData: SwapData = {
   exchange: Exchange.None,
-  path: [],
+  path: [
+    '0x0000000000000000000000000000000000000000',
+    '0x0000000000000000000000000000000000000000',
+  ],
   fees: [],
   pool: '0x0000000000000000000000000000000000000000',
 }
