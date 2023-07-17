@@ -76,6 +76,11 @@ export const MATIC: Token = {
   addressPolygon: '0x0000000000000000000000000000000000001010',
 }
 
+export const RETH: Token = {
+  symbol: 'rETH',
+  address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
+}
+
 export const sETH2: Token = {
   symbol: 'sETH2',
   address: '0xFe2e637202056d30016725477c5da089Ab0A043A',
