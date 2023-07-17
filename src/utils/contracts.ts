@@ -16,6 +16,7 @@ import {
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
   FlashMint4626Address,
+  FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
   FlashMintWrappedAddress,
   FlashMintZeroExMainnetAddress,
@@ -26,6 +27,7 @@ import {
   DiversifiedStakedETHIndex,
   wsETH2,
   GitcoinStakedETHIndex,
+  LeveragedrEthStakingYield,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -52,6 +54,36 @@ export const getFlashMintLeveragedContract = (
   const contractAddress = getExchangeIssuanceLeveragedContractAddress(chainId)
   return new Contract(
     contractAddress,
+    EXCHANGE_ISSUANCE_LEVERAGED_ABI,
+    signerOrProvider
+  )
+}
+
+export const getIndexFlashMintLeveragedContractAddress = (
+  chainId = ChainId.Mainnet
+) => {
+  switch (chainId) {
+    default:
+      return FlashMintLeveragedAddress
+  }
+}
+
+/**
+ * Returns an instance of the Index FlashMintLeveraged contract (mainnet)
+ *
+ * @param signerOrProvider  a signer or provider
+ * @param chainId           chainId for contract (default mainnet)
+ *
+ * @returns an instance of a FlashMintLeveraged contract
+ */
+export const getIndexFlashMintLeveragedContract = (
+  signerOrProvider: Signer | Provider | undefined,
+  chainId: number = ChainId.Mainnet
+): Contract => {
+  const contractAddress = getIndexFlashMintLeveragedContractAddress(chainId)
+  return new Contract(
+    contractAddress,
+    // FIXME: add ABI
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
     signerOrProvider
   )
@@ -122,6 +154,8 @@ export const getFlashMintLeveragedContractForToken = (
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
       return getFlashMintLeveragedForCompoundContract(signerOrProvider)
+    case LeveragedrEthStakingYield.symbol:
+      return getIndexFlashMintLeveragedContract(signerOrProvider, chainId)
     default:
       return getFlashMintLeveragedContract(signerOrProvider, chainId)
   }

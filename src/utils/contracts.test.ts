@@ -3,6 +3,7 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
+  FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
   FlashMintWrappedAddress,
   FlashMintZeroExMainnetAddress,
@@ -15,6 +16,7 @@ import {
   InterestCompoundingETHIndex,
   wsETH2,
   GitcoinStakedETHIndex,
+  LeveragedrEthStakingYield,
 } from 'constants/tokens'
 
 import {
@@ -121,7 +123,23 @@ describe('getFlashMintLeveragedContractForToken()', () => {
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
 
-  test('returns the regular FlashMintLeveraged contract by default (mainnet)', async () => {
+  // FIXME: activate once contract address is available
+  test.skip('returns FlashMintLeveraged contract for icRETH (mainnet)', async () => {
+    const expectedAddress = FlashMintLeveragedAddress
+    const contract = getFlashMintLeveragedContractForToken(
+      LeveragedrEthStakingYield.symbol,
+      undefined,
+      1
+    )
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+  })
+
+  test('returns the old FlashMintLeveraged contract (mainnet)', async () => {
     const expectedAddress = ExchangeIssuanceLeveragedMainnetAddress
     const contract = getFlashMintLeveragedContractForToken(
       InterestCompoundingETHIndex.symbol,
