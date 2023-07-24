@@ -1,6 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ExchangeIssuanceLeveragedMainnetAddress } from 'constants/contracts'
+import {
+  ExchangeIssuanceLeveragedMainnetAddress,
+  FlashMintLeveragedAddress,
+} from 'constants/contracts'
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
@@ -18,7 +21,7 @@ import {
 const chainId = 1
 const provider = LocalhostProvider
 
-const { iceth, usdc } = QuoteTokens
+const { iceth, reth, usdc } = QuoteTokens
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const indexToken = iceth
@@ -163,6 +166,24 @@ describe('LeveragedTransactionBuilder()', () => {
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(ExchangeIssuanceLeveragedMainnetAddress)
+    expect(tx.data).toEqual(refTx.data)
+    expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
+  })
+
+  test('returns a tx for minting icRETH (rETH)', async () => {
+    // FIXME: use custom swap data and custom build request
+    const buildRequest = createBuildRequest(true, reth.address, 'rETH')
+    const refTx = await contract.populateTransaction.issueExactSetFromETH(
+      buildRequest.indexToken,
+      buildRequest.indexTokenAmount,
+      buildRequest.swapDataDebtCollateral,
+      buildRequest.swapDataPaymentToken,
+      { value: buildRequest.inputOutputTokenAmount }
+    )
+    const builder = new LeveragedTransactionBuilder(provider)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintLeveragedAddress)
     expect(tx.data).toEqual(refTx.data)
     expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
   })

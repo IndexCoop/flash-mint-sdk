@@ -83,7 +83,7 @@ export const getIndexFlashMintLeveragedContract = (
   const contractAddress = getIndexFlashMintLeveragedContractAddress(chainId)
   return new Contract(
     contractAddress,
-    // FIXME: add ABI
+    // FIXME: add new ABI? might be the same?
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
     signerOrProvider
   )
