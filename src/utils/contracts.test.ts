@@ -123,8 +123,7 @@ describe('getFlashMintLeveragedContractForToken()', () => {
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
 
-  // FIXME: activate once contract address is available
-  test.skip('returns FlashMintLeveraged contract for icRETH (mainnet)', async () => {
+  test('returns FlashMintLeveraged contract for icRETH (mainnet)', async () => {
     const expectedAddress = FlashMintLeveragedAddress
     const contract = getFlashMintLeveragedContractForToken(
       LeveragedrEthStakingYield.symbol,
