@@ -21,7 +21,7 @@ import {
 const chainId = 1
 const provider = LocalhostProvider
 
-const { iceth, reth, usdc } = QuoteTokens
+const { iceth, icreth, reth, usdc } = QuoteTokens
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const indexToken = iceth
@@ -171,21 +171,35 @@ describe('LeveragedTransactionBuilder()', () => {
   })
 
   test('returns a tx for minting icRETH (rETH)', async () => {
-    // FIXME: use custom swap data and custom build request
-    const buildRequest = createBuildRequest(true, reth.address, 'rETH')
-    const refTx = await contract.populateTransaction.issueExactSetFromETH(
+    const isMinting = true
+    const buildRequest = {
+      isMinting,
+      indexToken: icreth.address,
+      indexTokenSymbol: icreth.symbol,
+      inputOutputToken: reth.address,
+      inputOutputTokenSymbol: reth.symbol,
+      indexTokenAmount: wei(1),
+      inputOutputTokenAmount: BigNumber.from(194235680),
+      swapDataDebtCollateral: isMinting
+        ? collateralDebtSwapData['icETH']
+        : debtCollateralSwapData['icETH'],
+      swapDataPaymentToken: isMinting
+        ? inputSwapData[indexToken.symbol]['ETH']
+        : outputSwapData[indexToken.symbol]['ETH'],
+    }
+    const refTx = await contract.populateTransaction.issueExactSetFromERC20(
       buildRequest.indexToken,
       buildRequest.indexTokenAmount,
+      buildRequest.inputOutputToken,
+      buildRequest.inputOutputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataPaymentToken,
-      { value: buildRequest.inputOutputTokenAmount }
+      buildRequest.swapDataPaymentToken
     )
     const builder = new LeveragedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedAddress)
     expect(tx.data).toEqual(refTx.data)
-    expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
   })
 
   test('returns a tx for redeeming dsETH (ERC20)', async () => {
