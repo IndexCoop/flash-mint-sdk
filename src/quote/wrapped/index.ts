@@ -120,8 +120,7 @@ export class ERC4626QuoteProvider
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
     const componentSwapData = isMinting
-      ? // TODO: test replacing w/ dynamic swap data
-        await getIssuanceComponentSwapData(
+      ? await getIssuanceComponentSwapData(
           indexTokenSymbol,
           indexToken.address,
           inputToken.address,

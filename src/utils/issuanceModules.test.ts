@@ -17,6 +17,7 @@ import {
   MetaverseIndex,
   MoneyMarketIndexToken,
   wsETH2,
+  LeveragedrEthStakingYield,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
@@ -32,6 +33,13 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for gtcETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address
     const issuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for icRETH', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address
+    const issuanceModule = getIssuanceModule(LeveragedrEthStakingYield.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

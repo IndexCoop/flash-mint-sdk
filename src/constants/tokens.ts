@@ -43,6 +43,11 @@ export const InterestCompoundingETHIndex: Token = {
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
 }
 
+export const LeveragedrEthStakingYield: Token = {
+  symbol: 'icRETH',
+  address: '0xe8888Cdbc0A5958C29e7D91DAE44897c7e64F9BC',
+}
+
 export const MetaverseIndex: Token = {
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
   addressPolygon: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
@@ -69,6 +74,11 @@ export const ETH: Token = {
 export const MATIC: Token = {
   symbol: 'MATIC',
   addressPolygon: '0x0000000000000000000000000000000000001010',
+}
+
+export const RETH: Token = {
+  symbol: 'rETH',
+  address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
 }
 
 export const sETH2: Token = {
