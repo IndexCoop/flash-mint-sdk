@@ -226,13 +226,13 @@ export async function getRedemptionComponentSwapData(
     const wrappedToken = wrappedTokens[index]
     const underlyingERC20 = wrappedToken.underlyingErc20
     const buyUnderlyingAmount = buyAmounts[index]
-    const mintParams = {
+    const redeemParams = {
       buyToken: outputToken,
       sellAmount: buyUnderlyingAmount,
       sellToken: underlyingERC20.address,
       includedSources: 'Uniswap_V3',
     }
-    return getSwapData(mintParams, 0.1, 1, zeroExApi)
+    return getSwapData(redeemParams, 0.1, 1, zeroExApi)
   })
   const swapDataResults = await Promise.all(swaps)
   const swapData = issuanceComponents.map((_: string, index: number) => {
@@ -244,10 +244,6 @@ export async function getRedemptionComponentSwapData(
       underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount,
       dexData,
-      // dexData: getStaticRedemptionSwapData(
-      //   underlyingERC20.address,
-      //   outputToken
-      // ),
     }
   })
   return swapData
