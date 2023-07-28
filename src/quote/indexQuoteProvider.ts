@@ -11,6 +11,7 @@ import {
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
+  LeveragedrEthStakingYield,
   MetaverseIndex,
   MoneyMarketIndexToken,
 } from 'constants/tokens'
@@ -187,7 +188,7 @@ export class FlashMintQuoteProvider
         return {
           chainId,
           contractType,
-          /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+          /* eslint-disable @typescript-eslint/no-non-null-assertion */
           contract: tx.to!,
           isMinting,
           inputToken,
@@ -226,7 +227,8 @@ function getContractType(token: string): FlashMintContractType | null {
   if (
     token === BTC2xFlexibleLeverageIndex.symbol ||
     token === ETH2xFlexibleLeverageIndex.symbol ||
-    token === InterestCompoundingETHIndex.symbol
+    token === InterestCompoundingETHIndex.symbol ||
+    token === LeveragedrEthStakingYield.symbol
   )
     return FlashMintContractType.leveraged
   if (token === MoneyMarketIndexToken.symbol)

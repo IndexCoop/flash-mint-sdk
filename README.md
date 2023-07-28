@@ -150,6 +150,7 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 1. add a test for determining the correct contract [here](./src/utils/contracts.test.ts)
 2. if there is a new FlashMint contract, add it as described [below](#adding-a-new-contract)
 3. additionally, add a test in [tests](./src/tests/)
+4. add symbol to `function getContractType(token: string)` in `FlashMintQuoteProvider`
 
 ### Adding a new contract
 
