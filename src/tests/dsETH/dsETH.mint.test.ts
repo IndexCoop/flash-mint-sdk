@@ -78,7 +78,7 @@ describe('FlashMintZeroEx - dsETH', () => {
 
   test('minting with USDC', async () => {
     const inputToken = usdc
-    const whale = '0xE11f040179922e54f927D133A3663550568da77d'
+    const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
     await transferFromWhale(
       whale,
       signer.address,
