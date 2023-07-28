@@ -176,13 +176,6 @@ export async function getIssuanceComponentSwapData(
         includedSources: 'Uniswap_V3',
       }
       return getSwapData(mintParams, 0.1, 1, zeroExApi)
-      // return {
-      //   underlyingERC20: underlyingERC20.address,
-      //   buyUnderlyingAmount,
-      //   // TODO: get swap data dynamically using 0x (restricted to Uni v3)
-      //   // TODO: construct swap data request from input/output token and buy amount
-      //   dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
-      // }
     })
   const swapDataResults = await Promise.all(swaps)
   const swapData = issuanceComponents.map((_: string, index: number) => {
@@ -240,13 +233,6 @@ export async function getRedemptionComponentSwapData(
       includedSources: 'Uniswap_V3',
     }
     return getSwapData(mintParams, 0.1, 1, zeroExApi)
-    // return {
-    //   underlyingERC20: underlyingERC20.address,
-    //   buyUnderlyingAmount,
-    //   // TODO: get swap data dynamically using 0x (restricted to Uni v3)
-    //   // TODO: construct swap data request from input/output token and buy amount
-    //   dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
-    // }
   })
   const swapDataResults = await Promise.all(swaps)
   const swapData = issuanceComponents.map((_: string, index: number) => {
