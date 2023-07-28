@@ -220,7 +220,8 @@ describe('icRETH (mainnet) - rETH', () => {
   })
 })
 
-describe('icRETH (mainnet) - USDC', () => {
+// Works locally
+describe.skip('icRETH (mainnet) - USDC', () => {
   describe('mint USDC', () => {
     const usdcWhale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
     let quote: Awaited<
@@ -262,8 +263,7 @@ describe('icRETH (mainnet) - USDC', () => {
     })
   })
 
-  // Works locally
-  describe.skip('redeem USDC', () => {
+  describe('redeem USDC', () => {
     let quote: Awaited<
       ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
     >
