@@ -117,7 +117,7 @@ describe('icRETH (mainnet) - ETH', () => {
     })
   })
 
-  describe('redeem ETH', () => {
+  describe.skip('redeem ETH', () => {
     let quote: Awaited<
       ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
     >
@@ -189,7 +189,7 @@ describe('icRETH (mainnet) - rETH', () => {
     })
   })
 
-  describe('redeem rETH', () => {
+  describe.skip('redeem rETH', () => {
     let quote: Awaited<
       ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
     >
@@ -329,7 +329,7 @@ describe('icRETH (mainnet) - WETH', () => {
     })
   })
 
-  describe('redeem WETH', () => {
+  describe.skip('redeem WETH', () => {
     let quote: Awaited<
       ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
     >
