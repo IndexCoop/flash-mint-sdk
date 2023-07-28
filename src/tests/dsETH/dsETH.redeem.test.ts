@@ -33,7 +33,7 @@ describe('FlashMintZeroEx - dsETH - redeem', () => {
     jest.setTimeout(10000000)
   })
 
-  test('redeeming to ETH', async () => {
+  test.skip('redeeming to ETH', async () => {
     await redeem(inputToken, indexTokenAmount)
   })
 

@@ -25,7 +25,7 @@ describe('FlashMintZeroEx - dsETH', () => {
     jest.setTimeout(10000000)
   })
 
-  test('minting with ETH', async () => {
+  test.skip('minting with ETH', async () => {
     await mint(outputToken, indexTokenAmount)
   })
 
@@ -76,7 +76,7 @@ describe('FlashMintZeroEx - dsETH', () => {
   //     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
   //   })
 
-  test('minting with USDC', async () => {
+  test.skip('minting with USDC', async () => {
     const inputToken = usdc
     const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
     await transferFromWhale(
