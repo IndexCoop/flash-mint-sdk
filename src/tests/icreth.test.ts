@@ -25,7 +25,6 @@ const provider = LocalhostProvider
 const signer = SignerAccount2
 const zeroExApi = ZeroExApiSwapQuote
 
-// FIXME: add tests for all tokens (mint + redeem)
 const { eth, icreth, reth, usdc, weth } = QuoteTokens
 const indexToken = icreth
 
@@ -56,6 +55,35 @@ async function mint(
   await res.wait()
   const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
   expect(balanceAfter.gte(balanceBefore.add(indexTokenAmount))).toBe(true)
+}
+
+async function redeem(
+  outputToken: QuoteToken,
+  indexTokenAmount: BigNumber,
+  quote: FlashMintLeveragedQuote
+) {
+  const balanceBefore: BigNumber = await balanceOf(signer, indexToken.address)
+  const builder = new LeveragedTransactionBuilder(provider)
+  if (!quote) throw new Error('No quote provided')
+  const tx = await builder.build({
+    isMinting: false,
+    indexToken: indexToken.address,
+    indexTokenSymbol: indexToken.symbol,
+    inputOutputToken: outputToken.address,
+    inputOutputTokenSymbol: outputToken.symbol,
+    indexTokenAmount,
+    inputOutputTokenAmount: quote.inputOutputTokenAmount,
+    swapDataDebtCollateral: quote.swapDataDebtCollateral,
+    swapDataPaymentToken: quote.swapDataPaymentToken,
+  })
+  if (!tx || !tx.to) fail()
+  await approveErc20(indexToken.address, tx.to, indexTokenAmount, signer)
+  const gasEstimate = await signer.estimateGas(tx)
+  tx.gasLimit = gasEstimate
+  const res = await signer.sendTransaction(tx)
+  await res.wait()
+  const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
+  expect(balanceAfter.lte(balanceBefore.sub(indexTokenAmount))).toBe(true)
 }
 
 describe('icRETH (mainnet) - ETH', () => {
@@ -200,5 +228,125 @@ describe('icRETH (mainnet) - WETH', () => {
     expect(quote.swapDataDebtCollateral).toBeDefined()
     expect(quote.swapDataPaymentToken).toBeDefined()
     await mint(inputToken, indexTokenAmount, quote)
+  })
+})
+
+describe('icRETH (mainnet) - redeem ETH', () => {
+  let quote: Awaited<
+    ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
+  >
+  const outputToken = eth
+  const isMinting = false
+  const indexTokenAmount = wei('1')
+  const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+  beforeEach(async () => {
+    // Get quote
+    quote = await quoteProvider.getQuote({
+      inputToken: indexToken,
+      outputToken,
+      indexTokenAmount,
+      isMinting,
+      slippage,
+    })
+  })
+
+  test('can redeem icRETH for ETH', async () => {
+    if (!quote) throw new Error('No quote provided')
+    expect(quote).toBeDefined()
+    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
+    expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataPaymentToken).toBeDefined()
+    await redeem(outputToken, indexTokenAmount, quote)
+  })
+})
+
+describe('icRETH (mainnet) - redeem rETH', () => {
+  let quote: Awaited<
+    ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
+  >
+  const outputToken = reth
+  const isMinting = false
+  const indexTokenAmount = wei('1')
+  const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+  beforeEach(async () => {
+    // Get quote
+    quote = await quoteProvider.getQuote({
+      inputToken: indexToken,
+      outputToken,
+      indexTokenAmount,
+      isMinting,
+      slippage,
+    })
+  })
+
+  test('can redeem icRETH for rETH', async () => {
+    if (!quote) throw new Error('No quote provided')
+    expect(quote).toBeDefined()
+    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
+    expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataPaymentToken).toBeDefined()
+    await redeem(outputToken, indexTokenAmount, quote)
+  })
+})
+
+describe('icRETH (mainnet) - redeem USDC', () => {
+  let quote: Awaited<
+    ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
+  >
+  const outputToken = usdc
+  const isMinting = false
+  const indexTokenAmount = wei('1')
+  const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+  beforeEach(async () => {
+    // Get quote
+    quote = await quoteProvider.getQuote({
+      inputToken: indexToken,
+      outputToken,
+      indexTokenAmount,
+      isMinting,
+      slippage,
+    })
+  })
+
+  test('can redeem icRETH for USDC', async () => {
+    if (!quote) throw new Error('No quote provided')
+    expect(quote).toBeDefined()
+    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
+    expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataPaymentToken).toBeDefined()
+    await redeem(outputToken, indexTokenAmount, quote)
+  })
+})
+
+describe('icRETH (mainnet) - redeem WETH', () => {
+  let quote: Awaited<
+    ReturnType<typeof LeveragedQuoteProvider.prototype.getQuote>
+  >
+  const outputToken = weth
+  const isMinting = false
+  const indexTokenAmount = wei('1')
+  const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+  beforeEach(async () => {
+    // Get quote
+    quote = await quoteProvider.getQuote({
+      inputToken: indexToken,
+      outputToken,
+      indexTokenAmount,
+      isMinting,
+      slippage,
+    })
+  })
+
+  test('can redeem icRETH for WETH', async () => {
+    if (!quote) throw new Error('No quote provided')
+    expect(quote).toBeDefined()
+    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
+    expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataPaymentToken).toBeDefined()
+    await redeem(outputToken, indexTokenAmount, quote)
   })
 })
