@@ -5,15 +5,19 @@ import {
   ZeroExApi,
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
+  ZeroExApiSwapResponseOrderBalancer,
 } from './0x'
 import { decodePool, extractPoolFees } from './UniswapPath'
 
+// The order here has to be exactly the same as in the `DEXAdapter``
+// https://github.com/IndexCoop/index-coop-smart-contracts/blob/317dfb677e9738fc990cf69d198358065e8cb595/contracts/exchangeIssuance/DEXAdapter.sol#L53
 export enum Exchange {
   None,
   Quickswap,
   Sushiswap,
   UniV3,
   Curve,
+  BalancerV2,
 }
 
 export interface SwapData {
@@ -83,7 +87,7 @@ interface SwapDataParams {
   buyAmount?: string
   sellAmount?: string
   sellToken: string
-  includedSources: string
+  includedSources?: string
 }
 
 export const getSwapData = async (
@@ -108,6 +112,8 @@ export const getSwapData = async (
 
 export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
   switch (key) {
+    case 'Balancer_V2':
+      return Exchange.BalancerV2
     case 'Curve':
       return Exchange.Curve
     case 'QuickSwap':
@@ -132,11 +138,17 @@ export function swapDataFrom0xQuote(
   )
     return null
 
-  const order = zeroExQuote.orders[0]
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  const order: any = zeroExQuote.orders[0]
+  /* eslint-enable @typescript-eslint/no-explicit-any */
   const fillData = order.fillData
   const exchange = getEchangeFrom0xKey(order.source)
 
   if (!fillData || !exchange) return null
+
+  if (exchange === Exchange.BalancerV2) {
+    return swapDataFromBalancer(order)
+  }
 
   if (exchange === Exchange.Curve) {
     return swapDataFromCurve(order)
@@ -156,6 +168,20 @@ export function swapDataFrom0xQuote(
     path,
     fees,
     pool: '0x0000000000000000000000000000000000000000',
+  }
+}
+
+function swapDataFromBalancer(
+  order: ZeroExApiSwapResponseOrderBalancer
+): SwapData | null {
+  const fillData = order.fillData
+  if (!fillData) return null
+  return {
+    exchange: Exchange.BalancerV2,
+    path: fillData.assets,
+    fees: [],
+    // FIXME: check
+    pool: fillData.swapSteps.poolId,
   }
 }
 

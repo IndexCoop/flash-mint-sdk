@@ -2,10 +2,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { DAI, USDC, USDT, WETH } from '../constants/tokens'
+import { DAI, USDC, USDT } from '../constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
-import { Exchange, SwapData } from './swapData'
+import { Exchange, SwapData, getSwapData } from './swapData'
+import { ZeroExApi } from './0x'
 
 export type erc4626SwapData = {
   dexData: SwapData
@@ -97,9 +98,18 @@ const erc4626Abi = [
 const dai = DAI.address!
 const usdc = USDC.address!
 const usdt = USDT.address!
-const weth = WETH.address!
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
 const DEFAULT_SLIPPAGE = 0.0015
+
+const emptySwapData: SwapData = {
+  exchange: Exchange.None,
+  path: [
+    '0x0000000000000000000000000000000000000000',
+    '0x0000000000000000000000000000000000000000',
+  ],
+  fees: [],
+  pool: '0x0000000000000000000000000000000000000000',
+}
 
 const isFCASH = (address: string) =>
   [
@@ -134,7 +144,8 @@ export async function getIssuanceComponentSwapData(
   indexToken: string,
   inputToken: string,
   indexTokenAmount: BigNumber,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
+  zeroExApi: ZeroExApi
 ): Promise<ComponentSwapData[]> {
   const issuanceModule = getIssuanceModule(indexTokenSymbol)
   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
@@ -153,75 +164,29 @@ export async function getIssuanceComponentSwapData(
   )
   const buyAmounts = await Promise.all(buyAmountsPromises)
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  const swaps: Promise<{ swapData: SwapData } | null>[] =
+    issuanceComponents.map((_: string, index: number) => {
+      const wrappedToken = wrappedTokens[index]
+      const underlyingERC20 = wrappedToken.underlyingErc20
+      const buyUnderlyingAmount = buyAmounts[index]
+      const mintParams = {
+        buyToken: underlyingERC20.address,
+        buyAmount: buyUnderlyingAmount,
+        sellToken: inputToken,
+        includedSources: 'Uniswap_V3',
+      }
+      return getSwapData(mintParams, 0.1, 1, zeroExApi)
+    })
+  const swapDataResults = await Promise.all(swaps)
   const swapData = issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
     const underlyingERC20 = wrappedToken.underlyingErc20
     const buyUnderlyingAmount = buyAmounts[index]
+    const dexData = swapDataResults[index]?.swapData ?? emptySwapData
     return {
       underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount,
-      dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
-    }
-  })
-  return swapData
-}
-
-export async function getIssuanceERC4626SwapData(
-  indexTokenSymbol: string,
-  indexToken: string,
-  inputToken: string,
-  indexTokenAmount: BigNumber,
-  provider: JsonRpcProvider
-): Promise<ComponentSwapData[]> {
-  const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
-  const [issuanceComponents] = await issuance.getRequiredComponentIssuanceUnits(
-    indexToken,
-    indexTokenAmount
-  )
-  const underlyingERC20sPromises: Promise<WrappedToken>[] =
-    issuanceComponents.map((component: string) =>
-      getUnderlyingErc20(component, provider)
-    )
-  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
-  const swapData = issuanceComponents.map((_: string, index: number) => {
-    const wrappedToken = wrappedTokens[index]
-    const underlyingERC20 = wrappedToken.underlyingErc20
-    return {
-      dexData: getStaticIssuanceSwapData(inputToken, underlyingERC20.address),
-    }
-  })
-  return swapData
-}
-
-export async function getRedemptionERC4626SwapData(
-  indexTokenSymbol: string,
-  indexToken: string,
-  outputToken: string,
-  indexTokenAmount: BigNumber,
-  provider: JsonRpcProvider
-): Promise<ComponentSwapData[]> {
-  const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
-  const [issuanceComponents] =
-    await issuance.getRequiredComponentRedemptionUnits(
-      indexToken,
-      indexTokenAmount
-    )
-  const underlyingERC20sPromises: Promise<WrappedToken>[] =
-    issuanceComponents.map((component: string) =>
-      getUnderlyingErc20(component, provider)
-    )
-  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
-
-  const swapData = issuanceComponents.map((_: string, index: number) => {
-    const wrappedToken = wrappedTokens[index]
-    const underlyingERC20 = wrappedToken.underlyingErc20
-    return {
-      dexData: getStaticRedemptionSwapData(
-        underlyingERC20.address,
-        outputToken
-      ),
+      dexData,
     }
   })
   return swapData
@@ -232,7 +197,8 @@ export async function getRedemptionComponentSwapData(
   indexToken: string,
   outputToken: string,
   indexTokenAmount: BigNumber,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
+  zeroExApi: ZeroExApi
 ): Promise<ComponentSwapData[]> {
   const issuanceModule = getIssuanceModule(indexTokenSymbol)
   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
@@ -256,50 +222,31 @@ export async function getRedemptionComponentSwapData(
       )
   )
   const buyAmounts = await Promise.all(buyAmountsPromises)
+  const swaps = issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    const buyUnderlyingAmount = buyAmounts[index]
+    const redeemParams = {
+      buyToken: outputToken,
+      sellAmount: buyUnderlyingAmount,
+      sellToken: underlyingERC20.address,
+      includedSources: 'Uniswap_V3',
+    }
+    return getSwapData(redeemParams, 0.1, 1, zeroExApi)
+  })
+  const swapDataResults = await Promise.all(swaps)
   const swapData = issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
     const underlyingERC20 = wrappedToken.underlyingErc20
     const buyUnderlyingAmount = buyAmounts[index]
+    const dexData = swapDataResults[index]?.swapData ?? emptySwapData
     return {
       underlyingERC20: underlyingERC20.address,
       buyUnderlyingAmount,
-      dexData: getStaticRedemptionSwapData(
-        underlyingERC20.address,
-        outputToken
-      ),
+      dexData,
     }
   })
   return swapData
-}
-
-function getStaticIssuanceSwapData(
-  inputToken: string,
-  outputToken: string
-): SwapData {
-  const inputTokenIsWeth = inputToken === weth
-  return {
-    exchange: Exchange.UniV3,
-    path: inputTokenIsWeth
-      ? [inputToken, outputToken]
-      : [inputToken, weth, outputToken],
-    fees: inputTokenIsWeth ? [3000] : [3000, 3000],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
-}
-
-function getStaticRedemptionSwapData(
-  inputToken: string,
-  outputToken: string
-): SwapData {
-  const outputTokenIsWeth = outputToken === weth
-  return {
-    exchange: Exchange.UniV3,
-    path: outputTokenIsWeth
-      ? [inputToken, outputToken]
-      : [inputToken, weth, outputToken],
-    fees: outputTokenIsWeth ? [3000] : [3000, 3000],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
 }
 
 async function getUnderlyingErc20(

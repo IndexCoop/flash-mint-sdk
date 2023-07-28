@@ -5,8 +5,12 @@ import { ZeroExApi } from 'utils/0x'
 const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
 const ONE = '1000000000000000000'
 
-const header = {
-  /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+const default0xHeader = {
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
+  '0x-api-key': process.env.ZEROEX_API_KEY!,
+}
+const indexApiHeader = {
+  /* eslint-disable @typescript-eslint/no-non-null-assertion */
   'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY!,
 }
 const index0xApiBaseUrl = process.env.INDEX_0X_API
@@ -21,7 +25,7 @@ describe('ZeroExApi', () => {
       buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(null, null, header)
+    const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -35,7 +39,7 @@ describe('ZeroExApi', () => {
       buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(null, null, header)
+    const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -49,7 +53,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(null, null, header)
+    const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -64,7 +68,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(baseUrl, null, header)
+    const zeroExApi = new ZeroExApi(baseUrl, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -80,7 +84,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress, header)
+    const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -92,7 +96,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }
-    const zeroExApi = new ZeroExApi(null, null, header)
+    const zeroExApi = new ZeroExApi(null, null, default0xHeader)
     const quote = await zeroExApi.getSwapQuote(params, chainId)
     if (!quote) fail()
     expect(quote).not.toBeNull()
@@ -109,7 +113,7 @@ describe('ZeroExApi', () => {
     const zeroExApi = new ZeroExApi(
       index0xApiBaseUrl,
       '',
-      header,
+      indexApiHeader,
       '/mainnet/swap/v1/quote'
     )
     const quote = await zeroExApi.getSwapQuote(params, chainId)

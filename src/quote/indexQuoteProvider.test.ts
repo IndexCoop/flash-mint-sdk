@@ -1,21 +1,20 @@
 import { FlashMint4626Address } from 'constants/contracts'
 import { LocalhostProvider, QuoteTokens, ZeroExApiSwapQuote } from 'tests/utils'
-import { wei } from 'utils/numbers'
-
+import {
+  getFlashMintLeveragedContractForToken,
+  getFlashMintZeroExContractForToken,
+  wei,
+} from 'utils'
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
   FlashMintQuoteRequest,
 } from '.'
-import {
-  getFlashMintLeveragedContractForToken,
-  getFlashMintZeroExContractForToken,
-} from 'utils'
 
 const provider = LocalhostProvider
 const zeroEx = ZeroExApiSwapQuote
 
-const { dseth, eth, iceth, mmi: indexToken, mvi, usdc } = QuoteTokens
+const { dseth, eth, iceth, mmi, mvi, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -39,16 +38,14 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('meta data is returned correctly', async () => {
-    const inputToken = usdc
-    const outputToken = indexToken
     const request: FlashMintQuoteRequest = {
       isMinting: true,
-      inputToken,
-      outputToken,
+      inputToken: usdc,
+      outputToken: mmi,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     // Only testing for values that have been provided (meta data)
@@ -65,16 +62,14 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for minting MMI', async () => {
-    const inputToken = usdc
-    const outputToken = indexToken
     const request: FlashMintQuoteRequest = {
       isMinting: true,
-      inputToken,
-      outputToken,
+      inputToken: usdc,
+      outputToken: mmi,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
@@ -93,16 +88,14 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming MMI', async () => {
-    const inputToken = indexToken
-    const outputToken = usdc
     const request: FlashMintQuoteRequest = {
       isMinting: false,
-      inputToken,
-      outputToken,
+      inputToken: mmi,
+      outputToken: usdc,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
@@ -215,6 +208,22 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(contract.address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
+  })
+
+  test('should fail if zeroExApiV1 is undefined for contract type erc4626', async () => {
+    const inputToken = usdc
+    const outputToken = mmi
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken,
+      outputToken,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(provider)
+    await expect(quoteProvider.getQuote(request)).rejects.toThrow(
+      'Contract type requires ZeroExApiV1 to be defined'
+    )
   })
 
   test('should fail if zeroExApiV1 is undefined for contract type leveraged', async () => {

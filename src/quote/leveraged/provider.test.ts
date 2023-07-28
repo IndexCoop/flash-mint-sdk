@@ -13,7 +13,7 @@ import { LeveragedQuoteProvider } from './provider'
 const provider = LocalhostProvider
 const zeroExApi = ZeroExApiSwapQuote
 
-const { btc2xfli, eth, eth2xfli, iceth } = QuoteTokens
+const { btc2xfli, eth, eth2xfli, iceth, icreth } = QuoteTokens
 
 describe('LeveragedQuoteProvider()', () => {
   test('returns static swap data for 🧊ETH - minting', async () => {
@@ -120,6 +120,36 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.swapDataPaymentToken.exchange).toEqual(0)
     expect(quote.swapDataPaymentToken.fees.length).toEqual(0)
     expect(quote.swapDataPaymentToken.path.length).toEqual(0)
+    expect(quote.swapDataPaymentToken.pool).toEqual(
+      '0x0000000000000000000000000000000000000000'
+    )
+  })
+
+  test('returns a quote for icRETH', async () => {
+    const indexToken = icreth
+    const indexTokenAmount = wei('1')
+    const request = {
+      isMinting: true,
+      inputToken: eth,
+      outputToken: {
+        symbol: indexToken.symbol,
+        decimals: 18,
+        address: indexToken.address!,
+      },
+      indexTokenAmount,
+      slippage: 0.1,
+    }
+    const quoteProvider = new LeveragedQuoteProvider(provider, zeroExApi)
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
+    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    expect(quote.swapDataDebtCollateral).toBeDefined()
+    expect(quote.swapDataDebtCollateral.path.length).toBeGreaterThan(0)
+    expect(quote.swapDataPaymentToken).toBeDefined()
+    expect(quote.swapDataPaymentToken.exchange).toEqual(3)
+    expect(quote.swapDataPaymentToken.fees.length).toEqual(1)
+    expect(quote.swapDataPaymentToken.path.length).toEqual(2)
     expect(quote.swapDataPaymentToken.pool).toEqual(
       '0x0000000000000000000000000000000000000000'
     )

@@ -14,6 +14,7 @@ import {
   MoneyMarketIndexToken,
   wsETH2,
   GitcoinStakedETHIndex,
+  LeveragedrEthStakingYield,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -32,6 +33,7 @@ function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
     case DiversifiedStakedETHIndex.symbol:
     case GitcoinStakedETHIndex.symbol:
+    case LeveragedrEthStakingYield.symbol:
     case MoneyMarketIndexToken.symbol:
     case wsETH2.symbol:
       return getIndexEthIssuanceModule(tokenSymbol)

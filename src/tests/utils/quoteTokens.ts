@@ -7,8 +7,10 @@ import {
   ETH,
   ETH2xFlexibleLeverageIndex,
   InterestCompoundingETHIndex,
+  LeveragedrEthStakingYield,
   MetaverseIndex,
   MoneyMarketIndexToken,
+  RETH,
   USDC,
   USDT,
   WETH,
@@ -57,6 +59,12 @@ const iceth: QuoteToken = {
   address: InterestCompoundingETHIndex.address!,
 }
 
+const icreth: QuoteToken = {
+  symbol: LeveragedrEthStakingYield.symbol,
+  decimals: 18,
+  address: LeveragedrEthStakingYield.address!,
+}
+
 const mmi: QuoteToken = {
   address: MoneyMarketIndexToken.address!,
   decimals: 18,
@@ -67,6 +75,12 @@ const mvi: QuoteToken = {
   address: MetaverseIndex.address!,
   decimals: 18,
   symbol: MetaverseIndex.symbol,
+}
+
+const reth: QuoteToken = {
+  address: RETH.address!,
+  decimals: 18,
+  symbol: RETH.symbol,
 }
 
 const usdc: QuoteToken = {
@@ -95,8 +109,10 @@ export const QuoteTokens = {
   eth,
   eth2xfli,
   iceth,
+  icreth,
   mmi,
   mvi,
+  reth,
   usdc,
   usdt,
   weth,
