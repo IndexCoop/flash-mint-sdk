@@ -80,9 +80,15 @@ export async function transferFromWhale(
   erc20Address: string,
   provider: JsonRpcProvider
 ) {
-  await provider.send('hardhat_impersonateAccount', [whale])
   const signer = await provider.getSigner(whale)
   const contract = createERC20Contract(erc20Address, signer)
+  const balance = await contract.balanceOf(whale)
+  if (balance.lt(amount)) {
+    throw new Error(
+      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}`
+    )
+  }
+  await provider.send('hardhat_impersonateAccount', [whale])
   const transferTx = await contract.transfer(to, amount, {
     gasLimit: 100_000,
   })
