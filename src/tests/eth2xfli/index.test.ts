@@ -5,6 +5,7 @@ import {
   SignerAccount1,
   wei,
   ZeroExApiSwapQuote,
+  resetHardhat,
 } from '../utils'
 import { swapQuote01, swapQuote02 } from './quotes'
 
@@ -19,11 +20,13 @@ zeroExMock
     return swapQuote02
   })
 
-describe('ETH2xFLI (mainnet)2', () => {
+describe('ETH2xFLI (mainnet)', () => {
   let factory: TestFactory
-  beforeEach(() => {
+  beforeEach(async () => {
+    const blockNumber = 17826737
     const provider = LocalhostProvider
     const signer = SignerAccount1
+    await resetHardhat(provider, blockNumber)
     factory = new TestFactory(provider, signer, zeroExApi)
   })
 

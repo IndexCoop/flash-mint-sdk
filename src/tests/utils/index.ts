@@ -64,6 +64,20 @@ export const SignerAccount17 = new Wallet(
   LocalhostProvider
 )
 
+export async function resetHardhat(
+  provider: JsonRpcProvider,
+  blockNumber: number
+) {
+  await provider.send('hardhat_reset', [
+    {
+      forking: {
+        jsonRpcUrl: process.env.MAINNET_ALCHEMY_API!,
+        blockNumber,
+      },
+    },
+  ])
+}
+
 // ZeroExApi
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 export const ZeroExApiSwapQuote = new ZeroExApi(
