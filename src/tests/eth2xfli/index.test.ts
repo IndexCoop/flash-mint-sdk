@@ -1,15 +1,24 @@
 import { wei } from 'utils/numbers'
 
-import { TestFactory } from './factories'
+import { TestFactory } from '../factories'
 import {
   LocalhostProvider,
   QuoteTokens,
   SignerAccount1,
   ZeroExApiSwapQuote,
-} from './utils'
+} from '../utils'
+import { swapQuote01, swapQuote02 } from './quotes'
 
 const { eth, eth2xfli } = QuoteTokens
 const zeroExApi = ZeroExApiSwapQuote
+const zeroExMock = jest.spyOn(zeroExApi, 'getSwapQuote')
+zeroExMock
+  .mockImplementationOnce(async () => {
+    return swapQuote01
+  })
+  .mockImplementationOnce(async () => {
+    return swapQuote02
+  })
 
 describe('ETH2xFLI (mainnet)2', () => {
   let factory: TestFactory
