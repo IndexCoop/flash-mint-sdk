@@ -9,6 +9,8 @@ import { Wallet } from '@ethersproject/wallet'
 import { WETH } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 
+export { wei } from 'utils/numbers'
+export * from './factories'
 export { QuoteTokens } from './quoteTokens'
 
 // Alchemy

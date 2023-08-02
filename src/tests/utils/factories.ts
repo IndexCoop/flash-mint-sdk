@@ -5,7 +5,7 @@ import { Wallet } from '@ethersproject/wallet'
 import { FlashMintQuote, FlashMintQuoteProvider, QuoteToken } from 'quote'
 
 import { ZeroExApi } from 'utils'
-import { balanceOf } from './utils'
+import { balanceOf } from './'
 
 class TxTestFactory {
   constructor(

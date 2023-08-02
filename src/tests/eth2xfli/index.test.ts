@@ -1,10 +1,9 @@
-import { wei } from 'utils/numbers'
-
-import { TestFactory } from '../factories'
 import {
   LocalhostProvider,
   QuoteTokens,
+  TestFactory,
   SignerAccount1,
+  wei,
   ZeroExApiSwapQuote,
 } from '../utils'
 import { swapQuote01, swapQuote02 } from './quotes'
