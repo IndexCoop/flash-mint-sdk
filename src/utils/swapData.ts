@@ -6,6 +6,7 @@ import {
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
   ZeroExApiSwapResponseOrderBalancer,
+  ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 import { decodePool, extractPoolFees } from './UniswapPath'
 
@@ -154,6 +155,10 @@ export function swapDataFrom0xQuote(
     return swapDataFromCurve(order)
   }
 
+  if (exchange === Exchange.Sushiswap) {
+    return swapDataFromSushi(order)
+  }
+
   let fees: number[] = []
   if (exchange === Exchange.UniV3) {
     fees = fillData.path ? extractPoolFees(fillData.path) : [500]
@@ -194,5 +199,18 @@ function swapDataFromCurve(order: ZeroExApiSwapResponseOrder): SwapData | null {
     path: fillData.pool.tokens,
     fees: [],
     pool: fillData.pool.poolAddress,
+  }
+}
+
+function swapDataFromSushi(
+  order: ZeroExApiSwapResponseOrderSushi
+): SwapData | null {
+  const fillData = order.fillData
+  if (!fillData) return null
+  return {
+    exchange: Exchange.Sushiswap,
+    path: fillData.tokenAddressPath,
+    fees: [],
+    pool: fillData.router,
   }
 }
