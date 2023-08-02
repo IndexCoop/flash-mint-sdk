@@ -21,7 +21,7 @@ zeroExMock
 
 describe('ETH2xFLI (mainnet)2', () => {
   let factory: TestFactory
-  beforeAll(() => {
+  beforeEach(() => {
     const provider = LocalhostProvider
     const signer = SignerAccount1
     factory = new TestFactory(provider, signer, zeroExApi)
