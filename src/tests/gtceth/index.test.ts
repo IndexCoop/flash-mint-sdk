@@ -32,7 +32,7 @@ describe('gtcETH (mainnet)', () => {
   })
 
   test('minting with WETH', async () => {
-    const quote = await factory.fetchQuote({
+    await factory.fetchQuote({
       isMinting: true,
       inputToken: weth,
       outputToken: gtcETH,
