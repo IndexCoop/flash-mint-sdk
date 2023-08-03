@@ -102,7 +102,7 @@ export async function transferFromWhale(
   const balance = await contract.balanceOf(whale)
   if (balance.lt(amount)) {
     throw new Error(
-      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}`
+      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}: ${balance}`
     )
   }
   await provider.send('hardhat_impersonateAccount', [whale])
