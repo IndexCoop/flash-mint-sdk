@@ -8,10 +8,7 @@ import { ZeroExApi } from 'utils'
 import { approveErc20, balanceOf } from './'
 
 class TxTestFactory {
-  constructor(
-    private readonly provider: JsonRpcProvider,
-    private readonly signer: Wallet
-  ) {}
+  constructor(readonly provider: JsonRpcProvider, readonly signer: Wallet) {}
 
   /**
    * Tests minting a given flash mint quote.
@@ -20,9 +17,9 @@ class TxTestFactory {
   async testMinting(quote: FlashMintQuote) {
     const { signer } = this
     const indexToken = quote.outputToken
-    const balanceBefore: BigNumber = await balanceOf(signer, indexToken.address)
     const tx = quote.tx
     if (!tx) fail()
+    const balanceBefore: BigNumber = await balanceOf(signer, indexToken.address)
     const gasEstimate = await this.provider.estimateGas(tx)
     tx.gasLimit = gasEstimate
     const res = await signer.sendTransaction(tx)
@@ -79,7 +76,7 @@ export class TestFactory {
     indexTokenAmount: BigNumber
     isMinting: boolean
     slippage: number
-  }) {
+  }): Promise<FlashMintQuote> {
     const quote = await this.quoteProvider.getQuote(config)
     expect(quote).toBeDefined()
     if (!quote) fail()
@@ -87,6 +84,15 @@ export class TestFactory {
     expect(quote.indexTokenAmount).toEqual(config.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     this.quote = quote
+    return quote
+  }
+
+  getProvider(): JsonRpcProvider {
+    return this.txFactory.provider
+  }
+
+  getSigner(): Wallet {
+    return this.txFactory.signer
   }
 
   async executeTx(gasLimit?: BigNumber) {
