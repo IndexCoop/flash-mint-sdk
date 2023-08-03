@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { sETH2, WETH, wsETH2 } from 'constants/tokens'
 import {
   LocalhostProvider,
