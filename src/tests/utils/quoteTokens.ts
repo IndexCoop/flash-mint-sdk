@@ -6,6 +6,7 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   ETH2xFlexibleLeverageIndex,
+  GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
@@ -51,6 +52,12 @@ const eth2xfli: QuoteToken = {
   symbol: ETH2xFlexibleLeverageIndex.symbol,
   decimals: 18,
   address: ETH2xFlexibleLeverageIndex.address!,
+}
+
+const gtcETH = {
+  address: GitcoinStakedETHIndex.address!,
+  decimals: 18,
+  symbol: GitcoinStakedETHIndex.symbol,
 }
 
 const iceth: QuoteToken = {
@@ -108,6 +115,7 @@ export const QuoteTokens = {
   dseth,
   eth,
   eth2xfli,
+  gtcETH,
   iceth,
   icreth,
   mmi,

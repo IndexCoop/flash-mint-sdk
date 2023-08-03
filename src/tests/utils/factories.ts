@@ -20,6 +20,14 @@ class TxTestFactory {
     const tx = quote.tx
     if (!tx) fail()
     const balanceBefore: BigNumber = await balanceOf(signer, indexToken.address)
+    if (quote.inputToken.symbol !== 'ETH') {
+      await approveErc20(
+        quote.inputToken.address,
+        quote.contract,
+        quote.inputOutputAmount,
+        signer
+      )
+    }
     const gasEstimate = await this.provider.estimateGas(tx)
     tx.gasLimit = gasEstimate
     const res = await signer.sendTransaction(tx)
@@ -101,7 +109,6 @@ export class TestFactory {
       await this.txFactory.testMinting(this.quote)
       return
     }
-    console.log('RDEEMQUOTE', this.quote)
     await this.txFactory.testRedeeming(this.quote, gasLimit)
   }
 }
