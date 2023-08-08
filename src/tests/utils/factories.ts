@@ -28,6 +28,9 @@ class TxTestFactory {
         signer
       )
     }
+    // Automatically, adding from as it seems like estimateGas won't recognize
+    // the impersonated balance if `from` is not set.
+    tx.from = this.signer.address
     const gasEstimate = await this.provider.estimateGas(tx)
     tx.gasLimit = gasEstimate
     const res = await signer.sendTransaction(tx)
@@ -78,6 +81,15 @@ export class TestFactory {
     this.txFactory = new TxTestFactory(provider, signer)
   }
 
+  async executeTx(gasLimit?: BigNumber) {
+    if (!this.quote) fail()
+    if (this.quote.isMinting) {
+      await this.txFactory.testMinting(this.quote)
+      return
+    }
+    await this.txFactory.testRedeeming(this.quote, gasLimit)
+  }
+
   async fetchQuote(config: {
     inputToken: QuoteToken
     outputToken: QuoteToken
@@ -101,14 +113,5 @@ export class TestFactory {
 
   getSigner(): Wallet {
     return this.txFactory.signer
-  }
-
-  async executeTx(gasLimit?: BigNumber) {
-    if (!this.quote) fail()
-    if (this.quote.isMinting) {
-      await this.txFactory.testMinting(this.quote)
-      return
-    }
-    await this.txFactory.testRedeeming(this.quote, gasLimit)
   }
 }
