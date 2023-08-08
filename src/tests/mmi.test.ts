@@ -1,5 +1,4 @@
 import {
-  balanceOf,
   LocalhostProvider,
   QuoteTokens,
   SignerAccount5,
@@ -33,6 +32,18 @@ describe('MMI (mainnet)', () => {
     await factory.executeTx()
   })
 
+  test('can redeem MMI to ETH', async () => {
+    const outputToken = eth
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: mmi,
+      outputToken,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
+
   test('can mint MMI from DAI', async () => {
     const inputToken = dai
     const quote = await factory.fetchQuote({
@@ -49,6 +60,18 @@ describe('MMI (mainnet)', () => {
       inputToken.address,
       factory.getProvider()
     )
+    await factory.executeTx()
+  })
+
+  test('can redeem MMI to DAI', async () => {
+    const outputToken = dai
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: mmi,
+      outputToken,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
     await factory.executeTx()
   })
 
@@ -71,6 +94,18 @@ describe('MMI (mainnet)', () => {
     await factory.executeTx()
   })
 
+  test('can redeem MMI to USDC', async () => {
+    const outputToken = usdc
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: mmi,
+      outputToken,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
+
   test('can mint MMI from USDT', async () => {
     const inputToken = usdt
     const quote = await factory.fetchQuote({
@@ -87,7 +122,18 @@ describe('MMI (mainnet)', () => {
       inputToken.address,
       factory.getProvider()
     )
-    const balance = await balanceOf(factory.getSigner(), inputToken.address)
+    await factory.executeTx()
+  })
+
+  test('can redeem MMI to USDT', async () => {
+    const outputToken = usdt
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: mmi,
+      outputToken,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
     await factory.executeTx()
   })
 
@@ -101,6 +147,18 @@ describe('MMI (mainnet)', () => {
       slippage: 0.5,
     })
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
+    await factory.executeTx()
+  })
+
+  test('can redeem MMI to WETH', async () => {
+    const outputToken = weth
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: mmi,
+      outputToken,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
     await factory.executeTx()
   })
 })
