@@ -57,8 +57,11 @@ class TxTestFactory {
       signer
     )
     const tx = quote.tx
-    tx.gasLimit = gasLimit
     if (!tx) fail()
+    // Automatically, adding from as it seems like estimateGas won't recognize
+    // the impersonated balance if `from` is not set.
+    tx.from = this.signer.address
+    tx.gasLimit = gasLimit
     if (!gasLimit) {
       const gasEstimate = await this.provider.estimateGas(tx)
       tx.gasLimit = gasEstimate
