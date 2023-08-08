@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import {
-  balanceOf,
   LocalhostProvider,
   QuoteTokens,
   resetHardhat,
@@ -40,20 +39,18 @@ describe('icRETH (mainnet) - ETH', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: icreth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 1,
     })
     await factory.executeTx()
   })
 
   test.skip('can redeem icRETH for ETH', async () => {
-    const balance = await balanceOf(signer, icreth.address)
-    console.log('BAL2', balance.toString())
     await factory.fetchQuote({
       isMinting: false,
       inputToken: icreth,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 1,
     })
     await factory.executeTx(BigNumber.from(5_000_000))
@@ -63,11 +60,7 @@ describe('icRETH (mainnet) - ETH', () => {
 describe.skip('icRETH (mainnet) - rETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
-    // const blockNumber = 17828035
     const provider = LocalhostProvider
-    // const blockNUm = await provider.getBlockNumber()
-    // console.log(blockNUm)
-    // await resetHardhat(provider, blockNumber)
     factory = new TestFactory(provider, signer, zeroExApi)
   })
 
@@ -77,7 +70,7 @@ describe.skip('icRETH (mainnet) - rETH', () => {
       isMinting: true,
       inputToken: reth,
       outputToken: icreth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 0.1,
     })
     await transferFromWhale(
@@ -89,9 +82,20 @@ describe.skip('icRETH (mainnet) - rETH', () => {
     )
     await factory.executeTx()
   })
+
+  test.skip('can redeem icRETH for ETH', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: icreth,
+      outputToken: reth,
+      indexTokenAmount: wei('0.1'),
+      slippage: 1,
+    })
+    await factory.executeTx(BigNumber.from(5_000_000))
+  })
 })
 
-describe.skip('icRETH (mainnet) - USDC', () => {
+describe('icRETH (mainnet) - USDC', () => {
   let factory: TestFactory
   beforeAll(async () => {
     // Pin block for whale to have enough funds
@@ -102,29 +106,14 @@ describe.skip('icRETH (mainnet) - USDC', () => {
   })
 
   test('can mint icRETH', async () => {
-    await factory.fetchQuote({
-      isMinting: true,
-      inputToken: eth,
-      outputToken: icreth,
-      indexTokenAmount: wei('1'),
-      slippage: 1,
-    })
-    await factory.executeTx()
-  })
-
-  test.skip('can mint icRETH', async () => {
     const usdcWhale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
       outputToken: icreth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 0.1,
     })
-    console.log(
-      quote.indexTokenAmount.toString(),
-      quote.inputOutputAmount.toString()
-    )
     await transferFromWhale(
       usdcWhale,
       signer.address,
@@ -135,14 +124,12 @@ describe.skip('icRETH (mainnet) - USDC', () => {
     await factory.executeTx()
   })
 
-  test('can redeem icRETH for USDC', async () => {
-    const balance = await balanceOf(signer, icreth.address)
-    console.log('BAL2 - USDC', balance.toString())
+  test.skip('can redeem icRETH for USDC', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: icreth,
       outputToken: usdc,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 0.1,
     })
     await factory.executeTx()
@@ -152,32 +139,28 @@ describe.skip('icRETH (mainnet) - USDC', () => {
 describe.skip('icRETH (mainnet) - WETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
-    // const blockNumber = 17828035
     const provider = LocalhostProvider
-    // await resetHardhat(provider, blockNumber)
     factory = new TestFactory(provider, signer, zeroExApi)
   })
 
   test('can mint icRETH', async () => {
-    await factory.fetchQuote({
+    const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: weth,
       outputToken: icreth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 0.1,
     })
-    await wrapETH(wei(2), factory.getSigner())
+    await wrapETH(quote.inputOutputAmount, factory.getSigner())
     await factory.executeTx()
   })
 
   test.skip('can redeem icRETH for ETH', async () => {
-    const balance = await balanceOf(signer, icreth.address)
-    console.log('BAL2', balance.toString())
     await factory.fetchQuote({
       isMinting: false,
       inputToken: icreth,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('0.1'),
       slippage: 1,
     })
     await factory.executeTx(BigNumber.from(5_000_000))
