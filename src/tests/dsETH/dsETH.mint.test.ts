@@ -7,93 +7,64 @@ import {
   LocalhostProvider,
   QuoteTokens,
   SignerAccount3,
+  TestFactory,
   transferFromWhale,
+  wrapETH,
+  ZeroExApiSwapQuote,
 } from '../utils'
 
-import { mint, mintERC20 } from './dsETH.helpers'
+const { dseth, eth, reth, usdc, weth } = QuoteTokens
+const zeroExApi = ZeroExApiSwapQuote
 
-const provider = LocalhostProvider
-const signer = SignerAccount3
-
-const { dseth, usdc } = QuoteTokens
-
-describe('FlashMintZeroEx - dsETH', () => {
-  const outputToken = dseth
-  const indexTokenAmount = wei('0.1')
-
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
+describe('dsETH (mainnet)', () => {
+  let factory: TestFactory
+  beforeEach(async () => {
+    const provider = LocalhostProvider
+    const signer = SignerAccount3
+    factory = new TestFactory(provider, signer, zeroExApi)
   })
 
-  test.skip('minting with ETH', async () => {
-    await mint(outputToken, indexTokenAmount)
+  test('minting with ETH', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: eth,
+      outputToken: dseth,
+      indexTokenAmount: wei('0.1'),
+      slippage: 1,
+    })
+    console.log(quote)
+    await factory.executeTx()
   })
 
-  // test('minting with WETH', async () => {
-  //   const inputToken = WETH9
-  //   await wrapETH(wei(2), signer)
-  //   await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  // })
+  test('minting with WETH', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: weth,
+      outputToken: dseth,
+      indexTokenAmount: wei('0.1'),
+      slippage: 1,
+    })
+    console.log(quote)
+    await wrapETH(quote.inputOutputAmount, factory.getSigner())
+    await factory.executeTx()
+  })
 
-  //   test('minting with rETH', async () => {
-  //     const inputToken = RETH
-  //     // Does not work - due to the rocket pool being filled to max capacity
-  //     // await depositIntoRocketPool(wei(2), signer)
-  //     const whale = '0x7C5aaA2a20b01df027aD032f7A768aC015E77b86'
-  //     await transferFromWhale(
-  //       whale,
-  //       signer.address,
-  //       wei('10', inputToken.decimals),
-  //       inputToken.address,
-  //       provider
-  //     )
-  //     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  //   })
-
-  //   test('minting with sETH2', async () => {
-  //     const inputToken = SETH2
-  //     // ETH / sETH2
-  //     const pool = '0x7379e81228514a1d2a6cf7559203998e20598346'
-  //     await wrapETH(wei(2), signer)
-  //     await swapExactInput(
-  //       pool,
-  //       {
-  //         tokenIn: WETH9.address,
-  //         tokenOut: inputToken.address!,
-  //         amountIn: wei('2'),
-  //         amountOutMin: wei('1.5'),
-  //       },
-  //       provider,
-  //       signer
-  //     )
-
-  //     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  //   })
-
-  //   test('minting with stETH', async () => {
-  //     const inputToken = STETH
-  //     await addLiquidityToLido(wei('2'), signer)
-  //     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  //   })
-
-  test.skip('minting with USDC', async () => {
-    const inputToken = usdc
-    const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
+  test.skip('minting with rETH', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: reth,
+      outputToken: dseth,
+      indexTokenAmount: wei('0.1'),
+      slippage: 1,
+    })
+    const rethWhale = '0x7d6149aD9A573A6E2Ca6eBf7D4897c1B766841B4'
     await transferFromWhale(
-      whale,
-      signer.address,
-      wei('10000', inputToken.decimals),
-      inputToken.address,
-      provider
+      rethWhale,
+      factory.getSigner().address,
+      quote.inputOutputAmount,
+      quote.inputToken.address,
+      factory.getProvider()
     )
-    await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
+    await factory.executeTx()
   })
-
-  //   test('minting with wstETH', async () => {
-  //     const inputToken = WSTETH
-  //     await addLiquidityToLido(wei('2'), signer)
-  //     const balance = await balanceOf(signer, STETH.address)
-  //     await wrapStEth(balance, signer)
-  //     await mintERC20(inputToken, outputToken, indexTokenAmount, 0.5, signer)
-  //   })
 })
