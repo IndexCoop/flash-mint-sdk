@@ -179,14 +179,14 @@ export function swapDataFrom0xQuote(
 function swapDataFromBalancer(
   order: ZeroExApiSwapResponseOrderBalancer
 ): SwapData | null {
+  console.log(order, 'BALANACER')
   const fillData = order.fillData
   if (!fillData) return null
   return {
     exchange: Exchange.BalancerV2,
     path: fillData.assets,
     fees: [],
-    // FIXME: check
-    pool: fillData.swapSteps.poolId,
+    pool: fillData.vault,
   }
 }
 
