@@ -28,7 +28,7 @@ class TxTestFactory {
         signer
       )
     }
-    // Automatically, adding from as it seems like estimateGas won't recognize
+    // Automatically adding from as it seems like estimateGas won't recognize
     // the impersonated balance if `from` is not set.
     tx.from = this.signer.address
     const gasEstimate = await this.provider.estimateGas(tx)
