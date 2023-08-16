@@ -168,10 +168,7 @@ describe('swapDataFrom0xQuote()', () => {
     expect(swapData?.exchange).toEqual(Exchange.BalancerV2)
     expect(swapData?.fees).toEqual([])
     expect(swapData?.path).toEqual(zeroExQuote.orders[0].fillData.assets)
-    // TODO:
-    expect(swapData?.pool).toEqual(
-      zeroExQuote.orders[0].fillData.swapSteps.poolId
-    )
+    expect(swapData?.pool).toEqual(zeroExQuote.orders[0].fillData.vault)
   })
 })
 
