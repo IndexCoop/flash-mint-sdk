@@ -30,7 +30,7 @@ export type ZeroExApiSwapResponseOrderBalancer = {
     chainId: number
     swapSteps: {
       poolId: string
-    }
+    }[]
     vault: string
   }
 }
