@@ -12,6 +12,7 @@ import { ZeroExApi } from 'utils/0x'
 export { wei } from 'utils/numbers'
 export * from './factories'
 export { QuoteTokens } from './quoteTokens'
+export * from './lido'
 export * from './uniswap'
 
 // Alchemy

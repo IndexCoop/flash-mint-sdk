@@ -15,6 +15,9 @@ import {
   USDC,
   USDT,
   WETH,
+  sETH2,
+  stETH,
+  wsETH2,
 } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 
@@ -89,6 +92,17 @@ const reth: QuoteToken = {
   decimals: 18,
   symbol: RETH.symbol,
 }
+const seth2: QuoteToken = {
+  address: sETH2.address!,
+  decimals: 18,
+  symbol: sETH2.symbol,
+}
+
+const steth: QuoteToken = {
+  address: stETH.address!,
+  decimals: 18,
+  symbol: stETH.symbol,
+}
 
 const usdc: QuoteToken = {
   address: USDC.address!,
@@ -108,6 +122,12 @@ const weth: QuoteToken = {
   symbol: WETH.symbol,
 }
 
+const wseth: QuoteToken = {
+  address: wsETH2.address!,
+  decimals: 18,
+  symbol: wsETH2.symbol,
+}
+
 export const QuoteTokens = {
   btc2xfli,
   dai,
@@ -121,7 +141,10 @@ export const QuoteTokens = {
   mmi,
   mvi,
   reth,
+  seth2,
+  steth,
   usdc,
   usdt,
   weth,
+  wseth,
 }
