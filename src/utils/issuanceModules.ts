@@ -5,6 +5,7 @@ import {
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
+  IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
 import {
   BTC2xFlexibleLeverageIndex,
@@ -24,6 +25,11 @@ export interface IssuanceModule {
 
 function getIndexEthIssuanceModule(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
+    case LeveragedrEthStakingYield.symbol:
+      return {
+        address: IndexDebtIssuanceModuleV2Address_v2,
+        isDebtIssuance: true,
+      }
     default:
       return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
   }
