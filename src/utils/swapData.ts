@@ -147,9 +147,10 @@ export function swapDataFrom0xQuote(
 
   if (!fillData || !exchange) return null
 
-  if (exchange === Exchange.BalancerV2) {
-    return swapDataFromBalancer(order)
-  }
+  // Avoid using Balancer for now - as the contracts don't support it
+  // if (exchange === Exchange.BalancerV2) {
+  //   return swapDataFromBalancer(order)
+  // }
 
   if (exchange === Exchange.Curve) {
     return swapDataFromCurve(order)
@@ -179,7 +180,6 @@ export function swapDataFrom0xQuote(
 function swapDataFromBalancer(
   order: ZeroExApiSwapResponseOrderBalancer
 ): SwapData | null {
-  console.log(order, 'BALANACER')
   const fillData = order.fillData
   if (!fillData) return null
   return {

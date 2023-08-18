@@ -126,7 +126,8 @@ describe('swapDataFrom0xQuote()', () => {
     expect(swapData?.fees).toEqual([500])
   })
 
-  test('shoud return correct swap data for BalancerV2', () => {
+  // TODO: reactivate once balancer should be supported
+  test.skip('shoud return correct swap data for BalancerV2', () => {
     const zeroExQuote = zeroExQuoteMock
     zeroExQuote.orders = [
       {
