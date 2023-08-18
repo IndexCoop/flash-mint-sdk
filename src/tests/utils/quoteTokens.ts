@@ -6,6 +6,7 @@ import {
   DiversifiedStakedETHIndex,
   ETH,
   ETH2xFlexibleLeverageIndex,
+  GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
@@ -14,6 +15,9 @@ import {
   USDC,
   USDT,
   WETH,
+  sETH2,
+  stETH,
+  wsETH2,
 } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
 
@@ -53,6 +57,12 @@ const eth2xfli: QuoteToken = {
   address: ETH2xFlexibleLeverageIndex.address!,
 }
 
+const gtcETH = {
+  address: GitcoinStakedETHIndex.address!,
+  decimals: 18,
+  symbol: GitcoinStakedETHIndex.symbol,
+}
+
 const iceth: QuoteToken = {
   symbol: InterestCompoundingETHIndex.symbol,
   decimals: 18,
@@ -82,6 +92,17 @@ const reth: QuoteToken = {
   decimals: 18,
   symbol: RETH.symbol,
 }
+const seth2: QuoteToken = {
+  address: sETH2.address!,
+  decimals: 18,
+  symbol: sETH2.symbol,
+}
+
+const steth: QuoteToken = {
+  address: stETH.address!,
+  decimals: 18,
+  symbol: stETH.symbol,
+}
 
 const usdc: QuoteToken = {
   address: USDC.address!,
@@ -101,6 +122,12 @@ const weth: QuoteToken = {
   symbol: WETH.symbol,
 }
 
+const wseth: QuoteToken = {
+  address: wsETH2.address!,
+  decimals: 18,
+  symbol: wsETH2.symbol,
+}
+
 export const QuoteTokens = {
   btc2xfli,
   dai,
@@ -108,12 +135,16 @@ export const QuoteTokens = {
   dseth,
   eth,
   eth2xfli,
+  gtcETH,
   iceth,
   icreth,
   mmi,
   mvi,
   reth,
+  seth2,
+  steth,
   usdc,
   usdt,
   weth,
+  wseth,
 }

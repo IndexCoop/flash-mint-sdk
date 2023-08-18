@@ -3,6 +3,9 @@
 /.pnp
 .pnp.js
 
+#hardhat
+/cache
+
 # testing
 /coverage
 

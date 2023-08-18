@@ -6,6 +6,7 @@ import {
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
   ZeroExApiSwapResponseOrderBalancer,
+  ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 import { decodePool, extractPoolFees } from './UniswapPath'
 
@@ -146,12 +147,17 @@ export function swapDataFrom0xQuote(
 
   if (!fillData || !exchange) return null
 
-  if (exchange === Exchange.BalancerV2) {
-    return swapDataFromBalancer(order)
-  }
+  // Avoid using Balancer for now - as the contracts don't support it
+  // if (exchange === Exchange.BalancerV2) {
+  //   return swapDataFromBalancer(order)
+  // }
 
   if (exchange === Exchange.Curve) {
     return swapDataFromCurve(order)
+  }
+
+  if (exchange === Exchange.Sushiswap) {
+    return swapDataFromSushi(order)
   }
 
   let fees: number[] = []
@@ -180,8 +186,7 @@ function swapDataFromBalancer(
     exchange: Exchange.BalancerV2,
     path: fillData.assets,
     fees: [],
-    // FIXME: check
-    pool: fillData.swapSteps.poolId,
+    pool: fillData.vault,
   }
 }
 
@@ -194,5 +199,18 @@ function swapDataFromCurve(order: ZeroExApiSwapResponseOrder): SwapData | null {
     path: fillData.pool.tokens,
     fees: [],
     pool: fillData.pool.poolAddress,
+  }
+}
+
+function swapDataFromSushi(
+  order: ZeroExApiSwapResponseOrderSushi
+): SwapData | null {
+  const fillData = order.fillData
+  if (!fillData) return null
+  return {
+    exchange: Exchange.Sushiswap,
+    path: fillData.tokenAddressPath,
+    fees: [],
+    pool: fillData.router,
   }
 }

@@ -12,6 +12,7 @@ export type ZeroExApiSwapRequest = {
 }
 
 export type ZeroExApiSwapResponseOrder = {
+  source: string
   fillData: {
     path?: string
     pool?: {
@@ -20,7 +21,6 @@ export type ZeroExApiSwapResponseOrder = {
     }
     tokenAddressPath?: string[]
   }
-  source?: string
 }
 
 export type ZeroExApiSwapResponseOrderBalancer = {
@@ -30,8 +30,26 @@ export type ZeroExApiSwapResponseOrderBalancer = {
     chainId: number
     swapSteps: {
       poolId: string
-    }
+    }[]
     vault: string
+  }
+}
+
+export type ZeroExApiSwapResponseOrderSushi = {
+  source: string
+  makerToken: string
+  takerToken: string
+  makerAmount: string
+  takerAmount: string
+  fillData: {
+    tokenAddressPath: string[]
+    router: string
+  }
+  fill: {
+    input: string
+    output: string
+    adjustedOutput: string
+    gas: number
   }
 }
 
@@ -39,7 +57,10 @@ export type ZeroExApiSwapResponse = {
   buyAmount: string
   buyTokenAddress: string
   data: string
-  orders?: ZeroExApiSwapResponseOrder[] | ZeroExApiSwapResponseOrderBalancer[]
+  orders?:
+    | ZeroExApiSwapResponseOrder[]
+    | ZeroExApiSwapResponseOrderBalancer[]
+    | ZeroExApiSwapResponseOrderSushi[]
   sellAmount: string
   sellTokenAddress: string
 }

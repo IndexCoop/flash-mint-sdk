@@ -126,7 +126,8 @@ describe('swapDataFrom0xQuote()', () => {
     expect(swapData?.fees).toEqual([500])
   })
 
-  test('shoud return correct swap data for BalancerV2', () => {
+  // TODO: reactivate once balancer should be supported
+  test.skip('shoud return correct swap data for BalancerV2', () => {
     const zeroExQuote = zeroExQuoteMock
     zeroExQuote.orders = [
       {
@@ -168,10 +169,7 @@ describe('swapDataFrom0xQuote()', () => {
     expect(swapData?.exchange).toEqual(Exchange.BalancerV2)
     expect(swapData?.fees).toEqual([])
     expect(swapData?.path).toEqual(zeroExQuote.orders[0].fillData.assets)
-    // TODO:
-    expect(swapData?.pool).toEqual(
-      zeroExQuote.orders[0].fillData.swapSteps.poolId
-    )
+    expect(swapData?.pool).toEqual(zeroExQuote.orders[0].fillData.vault)
   })
 })
 

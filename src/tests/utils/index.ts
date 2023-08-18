@@ -9,7 +9,11 @@ import { Wallet } from '@ethersproject/wallet'
 import { WETH } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 
+export { wei } from 'utils/numbers'
+export * from './factories'
 export { QuoteTokens } from './quoteTokens'
+export * from './lido'
+export * from './uniswap'
 
 // Alchemy
 export const AlchemyProvider = new JsonRpcProvider(
@@ -62,6 +66,20 @@ export const SignerAccount17 = new Wallet(
   LocalhostProvider
 )
 
+export async function resetHardhat(
+  provider: JsonRpcProvider,
+  blockNumber: number
+) {
+  await provider.send('hardhat_reset', [
+    {
+      forking: {
+        jsonRpcUrl: process.env.MAINNET_ALCHEMY_API!,
+        blockNumber,
+      },
+    },
+  ])
+}
+
 // ZeroExApi
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 export const ZeroExApiSwapQuote = new ZeroExApi(
@@ -85,7 +103,7 @@ export async function transferFromWhale(
   const balance = await contract.balanceOf(whale)
   if (balance.lt(amount)) {
     throw new Error(
-      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}`
+      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}: ${balance}`
     )
   }
   await provider.send('hardhat_impersonateAccount', [whale])
