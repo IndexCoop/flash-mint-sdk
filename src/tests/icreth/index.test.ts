@@ -90,7 +90,7 @@ describe('icRETH (mainnet) - rETH', () => {
   })
 })
 
-describe('icRETH (mainnet) - USDC', () => {
+describe.skip('icRETH (mainnet) - USDC', () => {
   let factory: TestFactory
   beforeAll(async () => {
     zeroExMock

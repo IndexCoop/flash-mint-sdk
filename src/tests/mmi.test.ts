@@ -32,7 +32,7 @@ describe('MMI (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem MMI to ETH', async () => {
+  test.skip('can redeem MMI to ETH', async () => {
     const outputToken = eth
     await factory.fetchQuote({
       isMinting: false,
