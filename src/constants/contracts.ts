@@ -16,6 +16,10 @@ export const FlashMintZeroExMainnetAddress =
 export const IndexDebtIssuanceModuleV2Address =
   '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
 
+// Used by icRETH only at the moment
+export const IndexDebtIssuanceModuleV2Address_v2 =
+  '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+
 // Set Protocol
 export const BasicIssuanceModuleAddress =
   '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'
