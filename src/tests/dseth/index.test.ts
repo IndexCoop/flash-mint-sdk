@@ -25,7 +25,7 @@ describe('dsETH (mainnet)', () => {
   })
 
   test('minting with ETH', async () => {
-    const quote = await factory.fetchQuote({
+    await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
       outputToken: dseth,
@@ -115,7 +115,7 @@ describe('dsETH (mainnet)', () => {
       pool,
       {
         tokenIn: weth.address,
-        tokenOut: quote.inputToken.address!,
+        tokenOut: quote.inputToken.address,
         amountIn: wei('2'),
         amountOutMin: wei('1.5'),
       },
