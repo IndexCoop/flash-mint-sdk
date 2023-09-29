@@ -119,7 +119,7 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.swapDataPaymentToken).toBeDefined()
     expect(quote.swapDataPaymentToken.exchange).toEqual(0)
     expect(quote.swapDataPaymentToken.fees.length).toEqual(0)
-    expect(quote.swapDataPaymentToken.path.length).toEqual(0)
+    expect(quote.swapDataPaymentToken.path.length).toEqual(2)
     expect(quote.swapDataPaymentToken.pool).toEqual(
       '0x0000000000000000000000000000000000000000'
     )
