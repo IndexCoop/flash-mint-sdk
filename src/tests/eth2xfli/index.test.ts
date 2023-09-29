@@ -6,7 +6,6 @@ import {
   wei,
   ZeroExApiSwapQuote,
   resetHardhat,
-  balanceOf,
 } from '../utils'
 import { swapQuote01, swapQuote02 } from './quotes'
 
