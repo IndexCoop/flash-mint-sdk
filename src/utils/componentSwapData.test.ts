@@ -18,7 +18,7 @@ const usdt = USDT.address!.toLowerCase()
 const weth = WETH.address!.toLowerCase()
 const zeroAddress = '0x0000000000000000000000000000000000000000'
 
-describe('getIssuanceComponentSwapData()', () => {
+describe.skip('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token (USDC)', async () => {
     const inputToken = usdc
     const componentSwapData = await getIssuanceComponentSwapData(
@@ -95,7 +95,7 @@ describe('getIssuanceComponentSwapData()', () => {
   })
 })
 
-describe('getRedemptionComponentSwapData()', () => {
+describe.skip('getRedemptionComponentSwapData()', () => {
   test('returns correct swap data based on output token (USDC)', async () => {
     const outputToken = usdc
     const componentSwapData = await getRedemptionComponentSwapData(

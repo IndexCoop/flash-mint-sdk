@@ -22,7 +22,7 @@ zeroExMock
 
 describe('ETH2xFLI (mainnet)', () => {
   let factory: TestFactory
-  beforeEach(async () => {
+  beforeAll(async () => {
     const blockNumber = 17826737
     const provider = LocalhostProvider
     const signer = SignerAccount1
@@ -35,6 +35,17 @@ describe('ETH2xFLI (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: eth2xfli,
+      indexTokenAmount: wei('1'),
+      slippage: 1,
+    })
+    await factory.executeTx()
+  })
+
+  test('can redeem ETH2xFLI', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: eth2xfli,
+      outputToken: eth,
       indexTokenAmount: wei('1'),
       slippage: 1,
     })

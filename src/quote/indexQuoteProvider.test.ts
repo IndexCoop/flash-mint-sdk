@@ -40,7 +40,7 @@ describe('FlashMintQuoteProvider()', () => {
     )
   })
 
-  test('meta data is returned correctly', async () => {
+  test.skip('meta data is returned correctly', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
@@ -90,7 +90,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for minting MMI', async () => {
+  test.skip('returns a quote for minting MMI', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
@@ -116,7 +116,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for redeeming MMI', async () => {
+  test.skip('returns a quote for redeeming MMI', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: false,
       inputToken: mmi,

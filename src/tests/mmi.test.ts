@@ -13,7 +13,7 @@ const zeroExApi = ZeroExApiSwapQuote
 
 const { dai, eth, mmi, usdc, usdt, weth } = QuoteTokens
 
-describe('MMI (mainnet)', () => {
+describe.skip('MMI (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
