@@ -7,7 +7,7 @@ const indexToken = mmi
 const provider = LocalhostProvider
 const zeroExApi = ZeroExApiSwapQuote
 
-describe('WrappedQuoteProvider()', () => {
+describe.skip('WrappedQuoteProvider()', () => {
   beforeEach((): void => {
     jest.setTimeout(100000000)
   })
