@@ -246,7 +246,7 @@ async function getSwapDataAndPaymentTokenAmount(
   // By default the input/output swap data can be empty (as it will be ignored)
   let swapDataPaymentToken: SwapData = {
     exchange: Exchange.None,
-    path: [],
+    path: ['0x0000000000000000000000000000000000000000',  '0x0000000000000000000000000000000000000000'],
     fees: [],
     pool: '0x0000000000000000000000000000000000000000',
   }
