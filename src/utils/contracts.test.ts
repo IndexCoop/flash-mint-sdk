@@ -17,6 +17,7 @@ import {
   wsETH2,
   GitcoinStakedETHIndex,
   LeveragedrEthStakingYield,
+  CoinDeskEthTrendIndex,
 } from 'constants/tokens'
 
 import {
@@ -234,6 +235,22 @@ describe('getFlashMintZeroExContract()', () => {
 })
 
 describe('getFlashMintZeroExContractForToken()', () => {
+  test('returns Index Protocol for cdETI', async () => {
+    const expectedAddress = FlashMintZeroExMainnetAddress
+    const contract = getFlashMintZeroExContractForToken(
+      CoinDeskEthTrendIndex.symbol,
+      undefined,
+      1
+    )
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
+    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.issueExactSetFromToken).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForToken).toBeDefined()
+  })
+
   test('returns Index Protocol for dsETH, gtcETH and wsETH2', async () => {
     const expectedAddress = FlashMintZeroExMainnetAddress
     const contract = getFlashMintZeroExContractForToken(
