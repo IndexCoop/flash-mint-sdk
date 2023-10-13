@@ -6,6 +6,7 @@ import { FlashMint4626Address } from 'constants/contracts'
 import {
   BanklessBEDIndex,
   BTC2xFlexibleLeverageIndex,
+  CoinDeskEthTrendIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
@@ -218,6 +219,7 @@ function getContractAddress(contractType: FlashMintContractType): string {
 function getContractType(token: string): FlashMintContractType | null {
   if (
     token === BanklessBEDIndex.symbol ||
+    token === CoinDeskEthTrendIndex.symbol ||
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||
     token === GitcoinStakedETHIndex.symbol ||
