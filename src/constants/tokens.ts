@@ -18,7 +18,7 @@ export const BTC2xFlexibleLeverageIndex: Token = {
 }
 
 export const CoinDeskEthTrendIndex: Token = {
-  address: '0x7E88404a4BAb00e247dad7Aa14E01dd8782e8f3F',
+  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
   symbol: 'cdETI',
 }
 
