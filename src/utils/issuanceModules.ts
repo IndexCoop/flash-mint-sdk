@@ -16,6 +16,7 @@ import {
   wsETH2,
   GitcoinStakedETHIndex,
   LeveragedrEthStakingYield,
+  CoinDeskEthTrendIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -25,6 +26,7 @@ export interface IssuanceModule {
 
 function getIndexEthIssuanceModule(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
+    case CoinDeskEthTrendIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
@@ -37,6 +39,7 @@ function getIndexEthIssuanceModule(tokenSymbol: string): IssuanceModule {
 
 function getEthIssuanceModuleAddress(tokenSymbol: string): IssuanceModule {
   switch (tokenSymbol) {
+    case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
     case GitcoinStakedETHIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
