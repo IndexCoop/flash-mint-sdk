@@ -17,6 +17,11 @@ export const BTC2xFlexibleLeverageIndex: Token = {
   symbol: 'BTC2x-FLI',
 }
 
+export const CoinDeskEthTrendIndex: Token = {
+  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
+  symbol: 'cdETI',
+}
+
 export const DefiPulseIndex: Token = {
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
   addressPolygon: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',

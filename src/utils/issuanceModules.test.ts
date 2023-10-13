@@ -19,11 +19,19 @@ import {
   MoneyMarketIndexToken,
   wsETH2,
   LeveragedrEthStakingYield,
+  CoinDeskEthTrendIndex,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
 
 describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
+  test('returns debt issuance module v2 for cdETI', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
+    const issuanceModule = getIssuanceModule(CoinDeskEthTrendIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
   test('returns debt issuance module v2 for dsETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address
     const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
