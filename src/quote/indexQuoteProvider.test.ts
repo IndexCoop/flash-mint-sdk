@@ -1,5 +1,4 @@
 import {
-  FlashMint4626Address,
   FlashMintLeveragedAddress,
   FlashMintZeroExMainnetAddress,
 } from 'constants/contracts'
@@ -18,7 +17,7 @@ import {
 const provider = LocalhostProvider
 const zeroEx = ZeroExApiSwapQuote
 
-const { cdeti, dseth, eth, iceth, icreth, mmi, mvi, usdc } = QuoteTokens
+const { cdeti, dseth, eth, iceth, icreth, mvi, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -39,30 +38,6 @@ describe('FlashMintQuoteProvider()', () => {
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
       'Index token not supported'
     )
-  })
-
-  test.skip('meta data is returned correctly', async () => {
-    const request: FlashMintQuoteRequest = {
-      isMinting: true,
-      inputToken: usdc,
-      outputToken: mmi,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    // Only testing for values that have been provided (meta data)
-    // or that are indirectly determined from the quote request
-    const chainId = (await provider.getNetwork()).chainId
-    expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.erc4626)
-    expect(quote.contract).toEqual(FlashMint4626Address)
-    expect(quote.isMinting).toEqual(request.isMinting)
-    expect(quote.inputToken).toEqual(request.inputToken)
-    expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.slippage).toEqual(request.slippage)
   })
 
   test('returns a quote for minting cdETI', async () => {
@@ -114,58 +89,6 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(FlashMintLeveragedAddress)
-    expect(quote.tx.data?.length).toBeGreaterThan(0)
-  })
-
-  test.skip('returns a quote for minting MMI', async () => {
-    const request: FlashMintQuoteRequest = {
-      isMinting: true,
-      inputToken: usdc,
-      outputToken: mmi,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    const chainId = (await provider.getNetwork()).chainId
-    expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.erc4626)
-    expect(quote.contract).toEqual(FlashMint4626Address)
-    expect(quote.isMinting).toEqual(request.isMinting)
-    expect(quote.inputToken).toEqual(request.inputToken)
-    expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.inputOutputAmount.gt(0)).toBe(true)
-    expect(quote.slippage).toEqual(request.slippage)
-    expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMint4626Address)
-    expect(quote.tx.data?.length).toBeGreaterThan(0)
-  })
-
-  test.skip('returns a quote for redeeming MMI', async () => {
-    const request: FlashMintQuoteRequest = {
-      isMinting: false,
-      inputToken: mmi,
-      outputToken: usdc,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    const chainId = (await provider.getNetwork()).chainId
-    expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.erc4626)
-    expect(quote.contract).toEqual(FlashMint4626Address)
-    expect(quote.isMinting).toEqual(request.isMinting)
-    expect(quote.inputToken).toEqual(request.inputToken)
-    expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.inputOutputAmount.gt(0)).toBe(true)
-    expect(quote.slippage).toEqual(request.slippage)
-    expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMint4626Address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
@@ -264,22 +187,6 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(contract.address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
-  })
-
-  test('should fail if zeroExApiV1 is undefined for contract type erc4626', async () => {
-    const inputToken = usdc
-    const outputToken = mmi
-    const request: FlashMintQuoteRequest = {
-      isMinting: true,
-      inputToken,
-      outputToken,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
-    await expect(quoteProvider.getQuote(request)).rejects.toThrow(
-      'Contract type requires ZeroExApiV1 to be defined'
-    )
   })
 
   test('should fail if zeroExApiV1 is undefined for contract type leveraged', async () => {
