@@ -14,7 +14,6 @@ import {
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
-  MoneyMarketIndexToken,
 } from 'constants/tokens'
 import {
   FlashMintLeveragedBuildRequest,
@@ -233,8 +232,6 @@ function getContractType(token: string): FlashMintContractType | null {
     token === LeveragedrEthStakingYield.symbol
   )
     return FlashMintContractType.leveraged
-  if (token === MoneyMarketIndexToken.symbol)
-    return FlashMintContractType.erc4626
   return null
 }
 

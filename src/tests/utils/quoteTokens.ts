@@ -11,7 +11,6 @@ import {
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
-  MoneyMarketIndexToken,
   RETH,
   USDC,
   USDT,
@@ -82,12 +81,6 @@ const icreth: QuoteToken = {
   address: LeveragedrEthStakingYield.address!,
 }
 
-const mmi: QuoteToken = {
-  address: MoneyMarketIndexToken.address!,
-  decimals: 18,
-  symbol: MoneyMarketIndexToken.symbol,
-}
-
 const mvi: QuoteToken = {
   address: MetaverseIndex.address!,
   decimals: 18,
@@ -146,7 +139,6 @@ export const QuoteTokens = {
   gtcETH,
   iceth,
   icreth,
-  mmi,
   mvi,
   reth,
   seth2,

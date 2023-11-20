@@ -12,7 +12,6 @@ import {
   ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
-  MoneyMarketIndexToken,
   wsETH2,
   GitcoinStakedETHIndex,
   LeveragedrEthStakingYield,
@@ -47,7 +46,6 @@ export function getIssuanceModule(
       }
     case DiversifiedStakedETHIndex.symbol:
     case GitcoinStakedETHIndex.symbol:
-    case MoneyMarketIndexToken.symbol:
     case wsETH2.symbol:
       return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
     case InterestCompoundingETHIndex.symbol:
