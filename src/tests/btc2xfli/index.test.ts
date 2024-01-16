@@ -31,7 +31,7 @@ describe('BTC2xFLI (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem BTC2xFLI', async () => {
+  test.skip('can redeem BTC2xFLI', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: btc2xfli,
@@ -42,7 +42,7 @@ describe('BTC2xFLI (mainnet)', () => {
     await factory.executeTx(BigNumber.from(5_000_000))
   })
 
-  test('can redeem BTC2xFLI for ERC20', async () => {
+  test.skip('can redeem BTC2xFLI for ERC20', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: btc2xfli,

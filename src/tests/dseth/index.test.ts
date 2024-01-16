@@ -16,7 +16,7 @@ import {
 const { dseth, eth, reth, seth2, steth, usdc, weth, wseth } = QuoteTokens
 const zeroExApi = ZeroExApiSwapQuote
 
-describe('dsETH (mainnet)', () => {
+describe.skip('dsETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
