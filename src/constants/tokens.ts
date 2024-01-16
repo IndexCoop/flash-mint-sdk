@@ -59,11 +59,6 @@ export const MetaverseIndex: Token = {
   symbol: 'MVI',
 }
 
-export const MoneyMarketIndexToken: Token = {
-  address: '0xc30FBa978743a43E736fc32FBeEd364b8A2039cD',
-  symbol: 'icSMMT',
-}
-
 // Other
 
 export const DAI: Token = {

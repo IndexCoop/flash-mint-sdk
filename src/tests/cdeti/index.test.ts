@@ -1,7 +1,7 @@
 import {
   LocalhostProvider,
   QuoteTokens,
-  SignerAccount3,
+  SignerAccount5,
   TestFactory,
   transferFromWhale,
   wei,
@@ -15,8 +15,7 @@ describe('cdETI (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
-    // TODO: change?
-    const signer = SignerAccount3
+    const signer = SignerAccount5
     factory = new TestFactory(provider, signer, zeroExApi)
   })
 

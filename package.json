@@ -25,6 +25,12 @@
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "test": "jest",
+    "test:cdeti": "npm test src/tests/cdeti",
+    "test:dseth": "npm test src/tests/dseth",
+    "test:eth2xfli": "npm test src/tests/eth2xfli",
+    "test:gtceth": "npm test src/tests/gtceth",
+    "test:iceth": "npm test src/tests/iceth",
+    "test:icreth": "npm test src/tests/icreth",
     "test:watch": "jest --watch"
   },
   "keywords": [

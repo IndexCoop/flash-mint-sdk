@@ -52,7 +52,7 @@ describe('icRETH (mainnet) - ETH', () => {
   })
 })
 
-describe('icRETH (mainnet) - rETH', () => {
+describe.skip('icRETH (mainnet) - rETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider

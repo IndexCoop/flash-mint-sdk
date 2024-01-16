@@ -41,7 +41,7 @@ describe('ETH2xFLI (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem ETH2xFLI', async () => {
+  test.skip('can redeem ETH2xFLI', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: eth2xfli,

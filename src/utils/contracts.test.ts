@@ -5,7 +5,6 @@ import {
   ExchangeIssuanceZeroExPolygonAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
-  FlashMintWrappedAddress,
   FlashMintZeroExMainnetAddress,
 } from 'constants/contracts'
 
@@ -24,7 +23,6 @@ import {
   getExchangeIssuanceLeveragedContractAddress,
   getFlashMintLeveragedContract,
   getFlashMintLeveragedForCompoundContract,
-  getFlashMintWrappedContract,
   getExchangeIssuanceZeroExContractAddress,
   getFlashMintZeroExContract,
   getFlashMintZeroExContractForToken,
@@ -88,20 +86,6 @@ describe('getFlashMintLeveragedForCompoundContract()', () => {
     const contract = getFlashMintLeveragedForCompoundContract(undefined)
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
-    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-  })
-})
-
-describe('getFlashMintWrappedContract()', () => {
-  test('returns correct contract', async () => {
-    const expectedAddress = FlashMintWrappedAddress
-    const contract = getFlashMintWrappedContract(undefined)
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getIssueExactSet).toBeDefined()
-    expect(contract.functions.getRedeemExactSet).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
     expect(contract.functions.redeemExactSetForERC20).toBeDefined()
