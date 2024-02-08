@@ -28,4 +28,15 @@ describe('ETH2X (mainnet)', () => {
     })
     await factory.executeTx()
   })
+
+  test('can redeem with ETH', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: eth2x,
+      outputToken: eth,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
 })
