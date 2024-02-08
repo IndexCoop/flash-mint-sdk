@@ -56,15 +56,6 @@ export const getFlashMintLeveragedContract = (
   )
 }
 
-export const getIndexFlashMintLeveragedContractAddress = (
-  chainId = ChainId.Mainnet
-) => {
-  switch (chainId) {
-    default:
-      return FlashMintLeveragedAddress
-  }
-}
-
 /**
  * Returns an instance of the Index FlashMintLeveraged contract (mainnet)
  *
@@ -77,7 +68,7 @@ export const getIndexFlashMintLeveragedContract = (
   signerOrProvider: Signer | Provider | undefined,
   chainId: number = ChainId.Mainnet
 ): Contract => {
-  const contractAddress = getIndexFlashMintLeveragedContractAddress(chainId)
+  const contractAddress = FlashMintLeveragedAddress
   return new Contract(
     contractAddress,
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
@@ -175,8 +166,11 @@ export const getFlashMintZeroExContractForToken = (
     case DiversifiedStakedETHIndex.symbol:
     case GitcoinStakedETHIndex.symbol:
     case wsETH2.symbol:
-      const contractAddress = FlashMintZeroExMainnetAddress
-      return new Contract(contractAddress, FLASHMINT_ZEROEX_ABI, providerSigner)
+      return new Contract(
+        FlashMintZeroExMainnetAddress,
+        FLASHMINT_ZEROEX_ABI,
+        providerSigner
+      )
     default:
       return getFlashMintZeroExContract(providerSigner, chainId)
   }
