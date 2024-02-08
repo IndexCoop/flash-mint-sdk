@@ -25,6 +25,7 @@ import {
   GitcoinStakedETHIndex,
   LeveragedrEthStakingYield,
   CoinDeskEthTrendIndex,
+  IndexCoopEthereum2xIndex,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -65,8 +66,7 @@ export const getFlashMintLeveragedContract = (
  * @returns an instance of a FlashMintLeveraged contract
  */
 export const getIndexFlashMintLeveragedContract = (
-  signerOrProvider: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet
+  signerOrProvider: Signer | Provider | undefined
 ): Contract => {
   const contractAddress = FlashMintLeveragedAddress
   return new Contract(
@@ -111,8 +111,9 @@ export const getFlashMintLeveragedContractForToken = (
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
       return getFlashMintLeveragedForCompoundContract(signerOrProvider)
+    case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
-      return getIndexFlashMintLeveragedContract(signerOrProvider, chainId)
+      return getIndexFlashMintLeveragedContract(signerOrProvider)
     default:
       return getFlashMintLeveragedContract(signerOrProvider, chainId)
   }
