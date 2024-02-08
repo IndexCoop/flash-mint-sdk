@@ -27,7 +27,7 @@
     "test": "jest",
     "test:cdeti": "npm test src/tests/cdeti",
     "test:dseth": "npm test src/tests/dseth",
-    "test:eth2x": "npm test src/tests/eth2x",
+    "test:eth2x": "npm test src/tests/eth2x.test.ts",
     "test:eth2xfli": "npm test src/tests/eth2xfli",
     "test:gtceth": "npm test src/tests/gtceth",
     "test:iceth": "npm test src/tests/iceth",
