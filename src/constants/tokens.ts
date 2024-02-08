@@ -43,6 +43,11 @@ export const GitcoinStakedETHIndex: Token = {
   symbol: 'gtcETH',
 }
 
+export const IndexCoopEthereum2xIndex: Token = {
+  address: '0x31F13653433B6c48fD5B19945cD9ab20621F8d4B',
+  symbol: 'ETH2X',
+}
+
 export const InterestCompoundingETHIndex: Token = {
   symbol: 'icETH',
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
