@@ -175,34 +175,9 @@ export const getFlashMintZeroExContractForToken = (
     case DiversifiedStakedETHIndex.symbol:
     case GitcoinStakedETHIndex.symbol:
     case wsETH2.symbol:
-      return getIndexFlashMintZeroExContract(providerSigner, chainId)
+      const contractAddress = FlashMintZeroExMainnetAddress
+      return new Contract(contractAddress, FLASHMINT_ZEROEX_ABI, providerSigner)
     default:
       return getFlashMintZeroExContract(providerSigner, chainId)
   }
-}
-
-export function getIndexFlashMintZeroExContractAddress(
-  chainId: number
-): string {
-  switch (chainId) {
-    default:
-      return FlashMintZeroExMainnetAddress
-  }
-}
-
-/**
- * Returns an instance of an FlashMintZeroEx contract for Index Protocol (based
- * on the chain).
- *
- * @param providerSigner  A provider or signer
- * @param chainId         The chain ID for the network (default Mainnet)
- *
- * @returns An instance of a FlashMintZeroEx contract
- */
-export const getIndexFlashMintZeroExContract = (
-  providerSigner: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet
-): Contract => {
-  const contractAddress = getIndexFlashMintZeroExContractAddress(chainId)
-  return new Contract(contractAddress, FLASHMINT_ZEROEX_ABI, providerSigner)
 }
