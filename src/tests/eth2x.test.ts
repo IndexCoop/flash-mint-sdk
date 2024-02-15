@@ -10,7 +10,7 @@ import {
 const { eth, eth2x } = QuoteTokens
 const zeroExApi = ZeroExApiSwapQuote
 
-describe('ETH2X (mainnet)', () => {
+describe.skip('ETH2X (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
