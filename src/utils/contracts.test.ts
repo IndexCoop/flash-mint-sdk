@@ -17,6 +17,8 @@ import {
   GitcoinStakedETHIndex,
   LeveragedrEthStakingYield,
   CoinDeskEthTrendIndex,
+  IndexCoopEthereum2xIndex,
+  IndexCoopBitcoin2xIndex,
 } from 'constants/tokens'
 
 import {
@@ -26,7 +28,6 @@ import {
   getExchangeIssuanceZeroExContractAddress,
   getFlashMintZeroExContract,
   getFlashMintZeroExContractForToken,
-  getIndexFlashMintZeroExContract,
   getFlashMintLeveragedContractForToken,
 } from './contracts'
 
@@ -292,22 +293,34 @@ describe('getFlashMintZeroExContractForToken()', () => {
   })
 })
 
-describe('getIndexFlashMintZeroExContract()', () => {
-  test('return correct contract for mainnet', async () => {
-    const expectedAddress = FlashMintZeroExMainnetAddress
-    const contract = getIndexFlashMintZeroExContract(undefined, 1)
+describe('BTC2X', () => {
+  test('return correct contract for token', async () => {
+    const expectedAddress = FlashMintLeveragedAddress
+    const contract = getFlashMintLeveragedContractForToken(
+      IndexCoopBitcoin2xIndex.symbol,
+      undefined
+    )
     expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
   })
+})
 
-  test('returns mainnet contract by default', async () => {
-    const expectedAddress = FlashMintZeroExMainnetAddress
-    const contract = getIndexFlashMintZeroExContract(undefined)
+describe('ETH2X', () => {
+  test('return correct contract for token', async () => {
+    const expectedAddress = FlashMintLeveragedAddress
+    const contract = getFlashMintLeveragedContractForToken(
+      IndexCoopEthereum2xIndex.symbol,
+      undefined
+    )
     expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
 })

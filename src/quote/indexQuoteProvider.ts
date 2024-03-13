@@ -10,6 +10,8 @@ import {
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  IndexCoopBitcoin2xIndex,
+  IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
@@ -177,6 +179,8 @@ function getContractType(token: string): FlashMintContractType | null {
   if (
     token === BTC2xFlexibleLeverageIndex.symbol ||
     token === ETH2xFlexibleLeverageIndex.symbol ||
+    token === IndexCoopBitcoin2xIndex.symbol ||
+    token === IndexCoopEthereum2xIndex.symbol ||
     token === InterestCompoundingETHIndex.symbol ||
     token === LeveragedrEthStakingYield.symbol
   )

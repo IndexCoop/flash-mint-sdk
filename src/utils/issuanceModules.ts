@@ -16,6 +16,8 @@ import {
   GitcoinStakedETHIndex,
   LeveragedrEthStakingYield,
   CoinDeskEthTrendIndex,
+  IndexCoopEthereum2xIndex,
+  IndexCoopBitcoin2xIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -39,6 +41,8 @@ export function getIssuanceModule(
     case ETH2xFlexibleLeverageIndex.symbol:
       return { address: DebtIssuanceModuleAddress, isDebtIssuance: true }
     case CoinDeskEthTrendIndex.symbol:
+    case IndexCoopBitcoin2xIndex.symbol:
+    case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
