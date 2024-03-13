@@ -18,6 +18,7 @@ import {
   LeveragedrEthStakingYield,
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
+  IndexCoopBitcoin2xIndex,
 } from 'constants/tokens'
 
 import {
@@ -289,6 +290,22 @@ describe('getFlashMintZeroExContractForToken()', () => {
     expect(contract.functions.issueExactSetFromToken).toBeDefined()
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
     expect(contract.functions.redeemExactSetForToken).toBeDefined()
+  })
+})
+
+describe('BTC2X', () => {
+  test('return correct contract for token', async () => {
+    const expectedAddress = FlashMintLeveragedAddress
+    const contract = getFlashMintLeveragedContractForToken(
+      IndexCoopBitcoin2xIndex.symbol,
+      undefined
+    )
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
 })
 

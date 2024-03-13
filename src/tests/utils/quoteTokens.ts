@@ -8,6 +8,7 @@ import {
   ETH,
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
@@ -21,6 +22,12 @@ import {
   wsETH2,
 } from 'constants/tokens'
 import { QuoteToken } from 'quote/quoteToken'
+
+const btc2x: QuoteToken = {
+  address: IndexCoopBitcoin2xIndex.address!,
+  decimals: 18,
+  symbol: IndexCoopBitcoin2xIndex.symbol,
+}
 
 const btc2xfli: QuoteToken = {
   address: BTC2xFlexibleLeverageIndex.address!,
@@ -136,6 +143,7 @@ const wseth: QuoteToken = {
 }
 
 export const QuoteTokens = {
+  btc2x,
   btc2xfli,
   cdeti,
   dai,
