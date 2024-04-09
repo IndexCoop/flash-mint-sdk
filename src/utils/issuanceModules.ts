@@ -41,6 +41,8 @@ export function getIssuanceModule(
     case ETH2xFlexibleLeverageIndex.symbol:
       return { address: DebtIssuanceModuleAddress, isDebtIssuance: true }
     case CoinDeskEthTrendIndex.symbol:
+    case DiversifiedStakedETHIndex.symbol:
+    case GitcoinStakedETHIndex.symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
@@ -48,8 +50,6 @@ export function getIssuanceModule(
         address: IndexDebtIssuanceModuleV2Address_v2,
         isDebtIssuance: true,
       }
-    case DiversifiedStakedETHIndex.symbol:
-    case GitcoinStakedETHIndex.symbol:
     case wsETH2.symbol:
       return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
     case InterestCompoundingETHIndex.symbol:
