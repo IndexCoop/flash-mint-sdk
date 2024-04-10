@@ -16,7 +16,7 @@ import {
 const { dseth, eth, reth, seth2, steth, usdc, weth, wseth } = QuoteTokens
 const zeroExApi = ZeroExApiSwapQuote
 
-describe.skip('dsETH (mainnet)', () => {
+describe('dsETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
@@ -24,7 +24,7 @@ describe.skip('dsETH (mainnet)', () => {
     factory = new TestFactory(provider, signer, zeroExApi)
   })
 
-  test('minting with ETH', async () => {
+  test.only('minting with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,

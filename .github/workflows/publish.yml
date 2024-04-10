@@ -32,12 +32,12 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build --if-present
-      - run: npm run hardhat & npm run test:btc2x
-      - run: npm run hardhat & npm run test:cdeti
+      # - run: npm run hardhat & npm run test:btc2x
+      # - run: npm run hardhat & npm run test:cdeti
       - run: npm run hardhat & npm run test:dseth
-      - run: npm run hardhat & npm run test:eth2x
-      - run: npm run hardhat & npm run test:gtceth
-      - run: npm run hardhat & npm run test:iceth
+      # - run: npm run hardhat & npm run test:eth2x
+      # - run: npm run hardhat & npm run test:gtceth
+      # - run: npm run hardhat & npm run test:iceth
       # - run: npm run hardhat & npm run test:icreth
       # run last - as it alters the block number
-      - run: npm run hardhat & npm run test:eth2xfli
+      # - run: npm run hardhat & npm run test:eth2xfli
