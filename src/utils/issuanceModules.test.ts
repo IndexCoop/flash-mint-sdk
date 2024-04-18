@@ -55,7 +55,7 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   })
 
   test('returns debt issuance module v2 for gtcETH', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
+    const expectedModule = IndexDebtIssuanceModuleV2Address
     const issuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
