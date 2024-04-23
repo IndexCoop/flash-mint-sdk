@@ -29,6 +29,10 @@ import {
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
+  IndexCoopBitcoin3xIndex,
+  IndexCoopEthereum3xIndex,
+  IndexCoopInverseBitcoinIndex,
+  IndexCoopInverseEthereumIndex,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -139,6 +143,11 @@ export const getFlashMintLeveragedContractForToken = (
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
       return getFlashMintLeveragedForCompoundContract(signerOrProvider)
+    case IndexCoopBitcoin3xIndex.symbol:
+    case IndexCoopEthereum3xIndex.symbol:
+    case IndexCoopInverseBitcoinIndex.symbol:
+    case IndexCoopInverseEthereumIndex.symbol:
+      return getIndexFlashMintLeveragedExtendedContract(signerOrProvider)
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
