@@ -1,6 +1,7 @@
 export interface Token {
   symbol: string
   address?: string
+  addressArbitrum?: string
   addressOptimism?: string
   addressPolygon?: string
 }
