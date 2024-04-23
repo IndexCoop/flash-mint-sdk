@@ -46,12 +46,34 @@ export const GitcoinStakedETHIndex: Token = {
 
 export const IndexCoopBitcoin2xIndex: Token = {
   address: '0xD2AC55cA3Bbd2Dd1e9936eC640dCb4b745fDe759',
+  addressArbitrum: '0xfa69F1e2e48B411b98a105fb693fb381764Dc857',
   symbol: 'BTC2X',
+}
+
+export const IndexCoopBitcoin3xIndex: Token = {
+  addressArbitrum: '0x53765a7cF4933bc939e32fA560FFf3D8E1d63473',
+  symbol: 'BTC3X',
 }
 
 export const IndexCoopEthereum2xIndex: Token = {
   address: '0x65c4C0517025Ec0843C9146aF266A2C5a2D148A2',
+  addressArbitrum: '0x67d2373f0321Cd24a1b58e3c81fC1b6Ef15B205C',
   symbol: 'ETH2X',
+}
+
+export const IndexCoopEthereum3xIndex: Token = {
+  addressArbitrum: '0x0bef95Cc308027C9a754D7674DE0844AE1dcD5b1',
+  symbol: 'ETH3X',
+}
+
+export const IndexCoopInverseBitcoinIndex: Token = {
+  addressArbitrum: '0xCaD2B03e289260cCF59209CF059778342d1Cf33b',
+  symbol: 'iBTC1X',
+}
+
+export const IndexCoopInverseEthereumIndex: Token = {
+  addressArbitrum: '0xaa61DDA963d0Cf89dA3C13FE635C84a1B8B6B988',
+  symbol: 'iETH1X',
 }
 
 export const InterestCompoundingETHIndex: Token = {
