@@ -5,6 +5,7 @@ import { Contract } from '@ethersproject/contracts'
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
+import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
 import { ChainId } from '../constants/chains'
@@ -14,6 +15,7 @@ import {
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
   FlashMintLeveragedAddress,
+  FlashMintLeveragedExtendedAddress,
   FlashMintLeveragedForCompoundAddress,
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
@@ -78,6 +80,24 @@ export const getIndexFlashMintLeveragedContract = (
 }
 
 /**
+ * Returns an instance of the Index FlashMintLeveragedExtended contract (Arbitrum)
+ *
+ * @param signerOrProvider  a signer or provider
+ *
+ * @returns an instance of a FlashMintLeveraged contract
+ */
+export const getIndexFlashMintLeveragedExtendedContract = (
+  signerOrProvider: Signer | Provider | undefined
+): Contract => {
+  const contractAddress = FlashMintLeveragedExtendedAddress
+  return new Contract(
+    contractAddress,
+    FLASHMINT_LEVERAGED_EXTENDED_ABI,
+    signerOrProvider
+  )
+}
+
+/**
  * Returns an instance of a FlashMintLeveragedForCompound contract (mainnet only).
  * @param signerOrProvider  A signer or provider.
  * @returns An instance of a FlashMintLeveragedForCompound contract.
@@ -108,6 +128,13 @@ export const getFlashMintLeveragedContractForToken = (
   signerOrProvider: Signer | Provider | undefined,
   chainId: number = ChainId.Polygon
 ): Contract => {
+  if (
+    chainId === ChainId.Arbitrum &&
+    (token === IndexCoopBitcoin2xIndex.symbol ||
+      token === IndexCoopEthereum2xIndex.symbol)
+  ) {
+    return getIndexFlashMintLeveragedExtendedContract(signerOrProvider)
+  }
   switch (token) {
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
