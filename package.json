@@ -25,6 +25,7 @@
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "test": "jest",
+    "test:utils": "npm test src/flashmint src/quote src/utils",
     "test:btc2x": "npm test src/tests/btc2x.test.ts",
     "test:cdeti": "npm test src/tests/cdeti",
     "test:dseth": "npm test src/tests/dseth",

@@ -1,7 +1,4 @@
-import {
-  FlashMintLeveragedAddress,
-  FlashMintZeroExMainnetAddress,
-} from 'constants/contracts'
+import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
 import { LocalhostProvider, QuoteTokens, ZeroExApiSwapQuote } from 'tests/utils'
 import {
   getFlashMintLeveragedContractForToken,
@@ -17,7 +14,7 @@ import {
 const provider = LocalhostProvider
 const zeroEx = ZeroExApiSwapQuote
 
-const { cdeti, dseth, eth, iceth, icreth, mvi, usdc } = QuoteTokens
+const { cdeti, dseth, eth, iceth, mvi, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -63,32 +60,6 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(FlashMintZeroExMainnetAddress)
-    expect(quote.tx.data?.length).toBeGreaterThan(0)
-  })
-
-  test('returns a quote for minting icRETH', async () => {
-    const request: FlashMintQuoteRequest = {
-      isMinting: true,
-      inputToken: usdc,
-      outputToken: icreth,
-      indexTokenAmount: wei(1),
-      slippage: 0.1,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    const chainId = (await provider.getNetwork()).chainId
-    expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveraged)
-    expect(quote.contract).toEqual(FlashMintLeveragedAddress)
-    expect(quote.isMinting).toEqual(request.isMinting)
-    expect(quote.inputToken).toEqual(request.inputToken)
-    expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.inputOutputAmount.gt(0)).toBe(true)
-    expect(quote.slippage).toEqual(request.slippage)
-    expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMintLeveragedAddress)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 

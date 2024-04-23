@@ -13,7 +13,7 @@ import { LeveragedQuoteProvider } from './provider'
 const provider = LocalhostProvider
 const zeroExApi = ZeroExApiSwapQuote
 
-const { btc2xfli, eth, eth2xfli, iceth, icreth } = QuoteTokens
+const { eth, iceth } = QuoteTokens
 
 describe('LeveragedQuoteProvider()', () => {
   test('returns static swap data for 🧊ETH - minting', async () => {
