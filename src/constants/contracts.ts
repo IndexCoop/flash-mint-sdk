@@ -3,6 +3,9 @@
 export const FlashMintLeveragedAddress =
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
 
+export const FlashMintLeveragedExtendedAddress =
+  '0xC62e39d1f5232f154b7ccD3C6234A9c893bf9563'
+
 export const FlashMintLeveragedForCompoundAddress =
   '0xeA716Ed94964Ed0126Fb2fA3b546eD7F209cC2b8'
 
