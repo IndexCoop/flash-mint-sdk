@@ -132,22 +132,22 @@ export const getFlashMintLeveragedContractForToken = (
   signerOrProvider: Signer | Provider | undefined,
   chainId: number = ChainId.Polygon
 ): Contract => {
-  if (
-    chainId === ChainId.Arbitrum &&
-    (token === IndexCoopBitcoin2xIndex.symbol ||
-      token === IndexCoopEthereum2xIndex.symbol)
-  ) {
-    return getIndexFlashMintLeveragedExtendedContract(signerOrProvider)
+  if (chainId === ChainId.Arbitrum) {
+    switch (token) {
+      case IndexCoopBitcoin2xIndex.symbol:
+      case IndexCoopEthereum2xIndex.symbol:
+      case IndexCoopBitcoin3xIndex.symbol:
+      case IndexCoopEthereum3xIndex.symbol:
+      case IndexCoopInverseBitcoinIndex.symbol:
+      case IndexCoopInverseEthereumIndex.symbol:
+        return getIndexFlashMintLeveragedExtendedContract(signerOrProvider)
+    }
+    return getIndexFlashMintLeveragedContract(signerOrProvider)
   }
   switch (token) {
     case BTC2xFlexibleLeverageIndex.symbol:
     case ETH2xFlexibleLeverageIndex.symbol:
       return getFlashMintLeveragedForCompoundContract(signerOrProvider)
-    case IndexCoopBitcoin3xIndex.symbol:
-    case IndexCoopEthereum3xIndex.symbol:
-    case IndexCoopInverseBitcoinIndex.symbol:
-    case IndexCoopInverseEthereumIndex.symbol:
-      return getIndexFlashMintLeveragedExtendedContract(signerOrProvider)
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
