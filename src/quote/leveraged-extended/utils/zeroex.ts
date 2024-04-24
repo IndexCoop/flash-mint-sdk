@@ -1,10 +1,4 @@
-import {
-  Exchange,
-  getSwapDataCollateralDebt,
-  getSwapDataDebtCollateral,
-  getSwapData,
-  SwapData,
-} from 'utils/swapData'
+import { Exchange } from 'utils/swapData'
 
 // 0x keys https://github.com/0xProject/protocol/blob/4f32f3174f25858644eae4c3de59c3a6717a757c/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L38
 function get0xEchangeKey(exchange: Exchange): string {
