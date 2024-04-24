@@ -22,7 +22,7 @@
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "build:watch": "npm run build -- --watch src",
     "hardhat": "npx hardhat node",
-    "hardhat:arbitrum": "npx hardhat node --config hardhat.arbitrum.config.js",
+    "hardhat:arbitrum": "npx hardhat node --config hardhat.arbitrum.config.js --port 8548",
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "test": "jest",

@@ -11,7 +11,7 @@ import {
   noopSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import { LocalhostProvider } from 'tests/utils'
+import { LocalhostProviderArbitrum } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 
@@ -21,7 +21,7 @@ import {
 } from './leveraged-extended'
 
 const chainId = ChainId.Arbitrum
-const provider = LocalhostProvider
+const provider = LocalhostProviderArbitrum
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'

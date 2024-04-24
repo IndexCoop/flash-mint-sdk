@@ -23,6 +23,9 @@ export const AlchemyProvider = new JsonRpcProvider(
 
 // Hardhat
 export const LocalhostProvider = new JsonRpcProvider('http://127.0.0.1:8545/')
+export const LocalhostProviderArbitrum = new JsonRpcProvider(
+  'http://127.0.0.1:8548/'
+)
 
 // Hardhat Account #0
 export const SignerAccount0 = new Wallet(
