@@ -251,6 +251,7 @@ function getContractType(
 
 function requiresZeroExV1(contractType: FlashMintContractType): boolean {
   if (contractType === FlashMintContractType.leveraged) return true
+  if (contractType === FlashMintContractType.leveragedExtended) return true
   if (contractType === FlashMintContractType.zeroEx) return true
   return false
 }
