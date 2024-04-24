@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ChainId } from 'constants/chains'
-import { inputSwapData, outputSwapData } from 'constants/swapdata'
 import {
   ETH,
   InterestCompoundingETHIndex,
@@ -10,7 +9,6 @@ import {
   stETH,
 } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
-import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
   Exchange,
@@ -23,6 +21,7 @@ import {
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 
+import { getLeveragedTokenData } from './utils/data'
 import { getIncludedSources } from './utils/zeroex'
 
 export interface FlashMintLeveragedExtendedQuoteRequest {
@@ -73,7 +72,7 @@ export class LeveragedExtendedQuoteProvider
     const chainId = network.chainId
     console.log('chainId:', chainId)
 
-    const leveragedTokenData = await getLevTokenData(
+    const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
       indexTokenAmount,
       indexTokenSymbol,
@@ -146,32 +145,6 @@ export class LeveragedExtendedQuoteProvider
       swapDataDebtCollateral,
       swapDataPaymentToken,
     }
-  }
-}
-
-async function getLevTokenData(
-  setTokenAddress: string,
-  setTokenAmount: BigNumber,
-  setTokenSymbol: string,
-  isIssuance: boolean,
-  chainId: number,
-  provider: JsonRpcProvider
-): Promise<LeveragedTokenData | null> {
-  try {
-    const contract = getFlashMintLeveragedContractForToken(
-      setTokenSymbol,
-      provider,
-      chainId
-    )
-    return await contract.getLeveragedTokenData(
-      setTokenAddress,
-      setTokenAmount,
-      isIssuance
-    )
-  } catch (error) {
-    // TODO: should this just always fail cause it means there is something wrongly configured?
-    console.error('Error getting leveraged token data', error)
-    return null
   }
 }
 
