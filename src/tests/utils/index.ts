@@ -89,6 +89,13 @@ export const ZeroExApiSwapQuote = new ZeroExApi(
   '/mainnet/swap/v1/quote'
 )
 
+export const ZeroExApiArbitrumSwapQuote = new ZeroExApi(
+  index0xApiBaseUrl,
+  '',
+  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+  '/arbitrum/swap/v1/quote'
+)
+
 // Balance
 
 export async function transferFromWhale(

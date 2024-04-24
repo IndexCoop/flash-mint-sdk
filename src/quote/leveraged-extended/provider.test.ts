@@ -1,18 +1,17 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
-import {
-  collateralDebtSwapData,
-  debtCollateralSwapData,
-  inputSwapData,
-  outputSwapData,
-} from 'constants/swapdata'
+import { collateralDebtSwapData, outputSwapData } from 'constants/swapdata'
 import { wei } from 'utils/numbers'
-import { LocalhostProvider, QuoteTokens, ZeroExApiSwapQuote } from 'tests/utils'
+import {
+  LocalhostProvider,
+  QuoteTokens,
+  ZeroExApiArbitrumSwapQuote,
+} from 'tests/utils'
 
 import { LeveragedExtendedQuoteProvider } from './provider'
 
 const provider = LocalhostProvider
-const zeroExApi = ZeroExApiSwapQuote
+const zeroExApi = ZeroExApiArbitrumSwapQuote
 
 const { eth } = QuoteTokens
 
