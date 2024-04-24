@@ -100,7 +100,7 @@ export class LeveragedExtendedQuoteProvider
         )
     if (!debtCollateralResult) return null
     const { collateralObtainedOrSold } = debtCollateralResult
-    let { swapDataDebtCollateral } = debtCollateralResult
+    const { swapDataDebtCollateral } = debtCollateralResult
     // Relevant when issuing
     const collateralShortfall = leveragedTokenData.collateralAmount.sub(
       collateralObtainedOrSold
