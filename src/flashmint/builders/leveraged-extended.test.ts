@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
@@ -7,9 +8,10 @@ import {
   collateralDebtSwapData,
   debtCollateralSwapData,
   inputSwapData,
+  noopSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import { LocalhostProvider, QuoteTokens } from 'tests/utils'
+import { LocalhostProvider } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 
@@ -20,8 +22,6 @@ import {
 
 const chainId = ChainId.Arbitrum
 const provider = LocalhostProvider
-
-const { eth2x, usdc } = QuoteTokens
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
@@ -123,8 +123,7 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  // TODO: check
-  test.skip('returns tx for correct swap data with exchange type none', async () => {
+  test('returns tx for correct swap data with exchange type none', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.swapDataInputOutputToken = {
       exchange: 0,
@@ -137,15 +136,10 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx).not.toBeNull()
   })
 
-  // FIXME:
-  test.skip('returns a tx for minting ETH2X (ERC20)', async () => {
+  test('returns a tx for minting ETH2X (ERC20)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.isMinting = true
     const indexToken = buildRequest.outputToken
-    // TODO: figure out
-    const swapDataInputTokenForETH = inputSwapData['icETH']['ETH']
-    const priceEstimateInflator = BigNumber.from(0)
-    const maxDust = BigNumber.from(0)
     const refTx = await contract.populateTransaction.issueSetFromExactERC20(
       indexToken,
       buildRequest.outputTokenAmount,
@@ -153,9 +147,9 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.inputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      swapDataInputTokenForETH,
-      priceEstimateInflator,
-      maxDust
+      buildRequest.swapDataInputTokenForETH,
+      buildRequest.priceEstimateInflator,
+      buildRequest.maxDust
     )
     const builder = new LeveragedExtendedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -167,15 +161,13 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns a tx for minting ETH2X (ETH)', async () => {
     const buildRequest = createBuildRequest(true, eth, 'ETH')
     const indexToken = buildRequest.outputToken
-    const priceEstimateInflator = BigNumber.from(0)
-    const maxDust = BigNumber.from(0)
     const refTx = await contract.populateTransaction.issueSetFromExactETH(
       indexToken,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      priceEstimateInflator,
-      maxDust,
+      buildRequest.priceEstimateInflator,
+      buildRequest.maxDust,
       { value: buildRequest.inputTokenAmount }
     )
     const builder = new LeveragedExtendedTransactionBuilder(provider)
@@ -253,5 +245,8 @@ function createBuildRequest(
     swapDataInputOutputToken: isMinting
       ? inputSwapData['icETH']['ETH']
       : outputSwapData['icETH']['ETH'],
+    swapDataInputTokenForETH: noopSwapData,
+    priceEstimateInflator: wei(0.9),
+    maxDust: wei(0.00001),
   }
 }

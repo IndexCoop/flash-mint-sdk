@@ -18,6 +18,9 @@ export interface FlashMintLeveragedExtendedBuildRequest {
   outputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapData
   swapDataInputOutputToken: SwapData
+  swapDataInputTokenForETH: SwapData
+  priceEstimateInflator: BigNumber
+  maxDust: BigNumber
 }
 
 export class LeveragedExtendedTransactionBuilder
@@ -44,6 +47,8 @@ export class LeveragedExtendedTransactionBuilder
       isMinting,
       swapDataDebtCollateral,
       swapDataInputOutputToken,
+      priceEstimateInflator,
+      maxDust,
     } = request
     const network = await this.provider.getNetwork()
     const chainId = network.chainId
@@ -56,10 +61,7 @@ export class LeveragedExtendedTransactionBuilder
     )
     if (isMinting) {
       const isInputTokenEth = inputTokenSymbol === 'ETH'
-      // TODO:
       const minIndexTokenAmount = outputTokenAmount
-      const priceEstimateInflator = BigNumber.from(0)
-      const maxDust = BigNumber.from(0)
       if (isInputTokenEth) {
         return await contract.populateTransaction.issueSetFromExactETH(
           indexToken,
@@ -71,11 +73,7 @@ export class LeveragedExtendedTransactionBuilder
           { value: inputTokenAmount }
         )
       } else {
-        // TODO:
         const minIndexTokenAmount = outputTokenAmount
-        const swapDataInputTokenForETH = {}
-        const priceEstimateInflator = BigNumber.from(0)
-        const maxDust = BigNumber.from(0)
         return await contract.populateTransaction.issueSetFromExactERC20(
           indexToken,
           minIndexTokenAmount,
@@ -83,7 +81,7 @@ export class LeveragedExtendedTransactionBuilder
           inputTokenAmount,
           swapDataDebtCollateral,
           swapDataInputOutputToken,
-          swapDataInputTokenForETH,
+          request.swapDataInputTokenForETH,
           priceEstimateInflator,
           maxDust
         )
