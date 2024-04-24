@@ -152,7 +152,7 @@ export class FlashMintQuoteProvider
           swapDataDebtCollateral: leveragedExtendedQuote.swapDataDebtCollateral,
           swapDataInputOutputToken: leveragedExtendedQuote.swapDataPaymentToken,
           swapDataInputTokenForETH:
-            leveragedExtendedQuote.swapDataDebtCollateral, // FIXME:
+            leveragedExtendedQuote.swapDataDebtCollateral, // FIXME: add swapDataInputTokenForETH (returned from quote provider)
           // FIXME: check if new arguments should be set here in the SDK or rather passed as arguments to they can be set from the app
           priceEstimateInflator: wei(0.9),
           maxDust: wei(0.00001),
