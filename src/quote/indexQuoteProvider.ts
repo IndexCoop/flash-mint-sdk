@@ -29,7 +29,7 @@ import {
   LeveragedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
-import { ZeroExApi } from 'utils'
+import { ZeroExApi, wei } from 'utils'
 
 import { LeveragedQuoteProvider } from './leveraged'
 import { LeveragedExtendedQuoteProvider } from './leveraged-extended'
@@ -152,6 +152,11 @@ export class FlashMintQuoteProvider
           outputTokenAmount: BigNumber.from(0), // TODO: leveragedExtendedQuote.outputTokenAmount,
           swapDataDebtCollateral: leveragedExtendedQuote.swapDataDebtCollateral,
           swapDataInputOutputToken: leveragedExtendedQuote.swapDataPaymentToken,
+          swapDataInputTokenForETH:
+            leveragedExtendedQuote.swapDataDebtCollateral, // FIXME:
+          // FIXME: check if new arguments should be set here in the SDK or rather passed as arguments to they can be set from the app
+          priceEstimateInflator: wei(0.9),
+          maxDust: wei(0.00001),
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
