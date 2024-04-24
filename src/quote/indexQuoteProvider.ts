@@ -132,7 +132,6 @@ export class FlashMintQuoteProvider
         }
       }
       case FlashMintContractType.leveragedExtended: {
-        // TODO: make sure to use Arbitrum
         if (!zeroExApiV1) {
           throw new Error('Contract type requires ZeroExApiV1 to be defined')
         }
