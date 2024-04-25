@@ -35,6 +35,8 @@ jobs:
       - run: npm run build --if-present
       - run: npm run hardhat:arbitrum & npm run test:arbitrum
       - run: npm run hardhat & npm run test:utils
+      - run: npm run hardhat & npm run test:builders
+      - run: npm run hardhat & npm run test:quote
       - run: npm run hardhat & npm run test:btc2x
       - run: npm run hardhat & npm run test:cdeti
       - run: npm run hardhat & npm run test:dseth
