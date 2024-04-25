@@ -4,13 +4,14 @@ import { collateralDebtSwapData, outputSwapData } from 'constants/swapdata'
 import { wei } from 'utils/numbers'
 import {
   LocalhostProvider,
+  LocalhostProviderArbitrum,
   QuoteTokens,
   ZeroExApiArbitrumSwapQuote,
 } from 'tests/utils'
 
 import { LeveragedExtendedQuoteProvider } from './provider'
 
-const provider = LocalhostProvider
+const provider = LocalhostProviderArbitrum
 const zeroExApi = ZeroExApiArbitrumSwapQuote
 
 const { eth } = QuoteTokens
