@@ -67,20 +67,19 @@ export class LeveragedExtendedTransactionBuilder
           indexToken,
           minIndexTokenAmount,
           swapDataDebtCollateral,
-          swapDataInputOutputToken,
+          swapDataInputOutputToken, // _swapDataInputTokenForCollateral
           priceEstimateInflator,
           maxDust,
           { value: inputTokenAmount }
         )
       } else {
-        const minIndexTokenAmount = outputTokenAmount
         return await contract.populateTransaction.issueSetFromExactERC20(
           indexToken,
           minIndexTokenAmount,
           inputToken,
           inputTokenAmount,
           swapDataDebtCollateral,
-          swapDataInputOutputToken,
+          swapDataInputOutputToken, // _swapDataInputTokenForCollateral
           request.swapDataInputTokenForETH,
           priceEstimateInflator,
           maxDust
@@ -94,7 +93,7 @@ export class LeveragedExtendedTransactionBuilder
           inputTokenAmount,
           outputTokenAmount, // _minAmountOutputToken
           swapDataDebtCollateral,
-          swapDataInputOutputToken
+          swapDataInputOutputToken // _swapDataOutputToken
         )
       } else {
         return await contract.populateTransaction.redeemExactSetForERC20(
@@ -103,7 +102,7 @@ export class LeveragedExtendedTransactionBuilder
           outputToken,
           outputTokenAmount, // _minAmountOutputToken
           swapDataDebtCollateral,
-          swapDataInputOutputToken
+          swapDataInputOutputToken // _swapDataOutputToken
         )
       }
     }
