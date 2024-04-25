@@ -26,7 +26,7 @@
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "test": "jest",
-    "test:arbitrum": "npm test src/flashmint/builders/leveraged-extended.test.ts",
+    "test:arbitrum": "npm test src/flashmint/builders/leveraged-extended.test.ts src/quote/leveraged-extended",
     "test:builders": "npm test src/flashmint/builders/leveraged.test.ts src/flashmint/builders/zeroex.test.ts",
     "test:quote": "npm test src/quote/leveraged/provider.test.ts src/quote/zeroex src/quote/indexQuoteProvider.test.ts ",
     "test:utils": "npm test src/utils",
