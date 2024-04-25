@@ -1,13 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ChainId } from 'constants/chains'
-import {
-  ETH,
-  InterestCompoundingETHIndex,
-  MATIC,
-  stETH,
-} from 'constants/tokens'
+import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
@@ -111,9 +105,7 @@ export class LeveragedExtendedQuoteProvider
     )
     const inputOutputTokenAddress = getPaymentTokenAddress(
       isMinting ? inputToken.address : outputToken.address,
-      isMinting ? inputToken.symbol : outputToken.symbol,
-      isMinting,
-      chainId
+      isMinting ? inputToken.symbol : outputToken.symbol
     )
     const { swapDataPaymentToken, paymentTokenAmount } =
       await getSwapDataAndPaymentTokenAmount(
@@ -150,24 +142,11 @@ export class LeveragedExtendedQuoteProvider
 
 function getPaymentTokenAddress(
   paymentTokenAddress: string,
-  paymentTokenSymbol: string,
-  isMinting: boolean,
-  chainId: number
+  paymentTokenSymbol: string
 ): string {
   if (paymentTokenSymbol === ETH.symbol) {
     return 'ETH'
   }
-
-  if (paymentTokenSymbol === InterestCompoundingETHIndex.symbol && !isMinting) {
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    return stETH.address!
-  }
-
-  if (chainId === ChainId.Polygon && paymentTokenSymbol === MATIC.symbol) {
-    const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-    return WMATIC_ADDRESS
-  }
-
   return paymentTokenAddress
 }
 
