@@ -147,8 +147,8 @@ export class FlashMintQuoteProvider
           inputTokenSymbol: inputToken.symbol,
           outputToken: outputToken.address,
           outputTokenSymbol: outputToken.symbol,
-          inputTokenAmount: BigNumber.from(0), // TODO: leveragedExtendedQuote.inputTokenAmount,
-          outputTokenAmount: BigNumber.from(0), // TODO: leveragedExtendedQuote.outputTokenAmount,
+          inputTokenAmount: leveragedExtendedQuote.inputTokenAmount,
+          outputTokenAmount: leveragedExtendedQuote.outputTokenAmount,
           swapDataDebtCollateral: leveragedExtendedQuote.swapDataDebtCollateral,
           swapDataInputOutputToken: leveragedExtendedQuote.swapDataPaymentToken,
           swapDataInputTokenForETH:

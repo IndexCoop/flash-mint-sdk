@@ -27,6 +27,8 @@ export interface FlashMintLeveragedExtendedQuoteRequest {
 }
 
 export interface FlashMintLeveragedExtendedQuote {
+  inputTokenAmount: BigNumber
+  outputTokenAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapData
@@ -132,6 +134,8 @@ export class LeveragedExtendedQuoteProvider
       isMinting
     )
     return {
+      inputTokenAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+      outputTokenAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
       indexTokenAmount,
       inputOutputTokenAmount,
       swapDataDebtCollateral,
