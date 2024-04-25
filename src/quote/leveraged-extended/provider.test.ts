@@ -5,6 +5,7 @@ import {
   noopSwapData,
   outputSwapData,
 } from 'constants/swapdata'
+import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
 import {
   LocalhostProviderArbitrum,
@@ -72,15 +73,19 @@ describe('LeveragedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.swapDataDebtCollateral).toStrictEqual({
-      exchange: 3,
-      fees: [500],
-      path: [
-        '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
-        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-      ],
-      pool: '0x0000000000000000000000000000000000000000',
-    })
+    // Testing for individual params as changing quotes could affect the results
+    expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
+    expect(
+      quote.swapDataDebtCollateral.path.some(
+        (address) => address === '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
+      )
+    ).toBe(true)
+    expect(
+      quote.swapDataDebtCollateral.path.some(
+        (address) => address === '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
+      )
+    ).toBe(true)
     const swapDataOutputToken = noopSwapData
     noopSwapData.path = [
       '0x0000000000000000000000000000000000000000',
@@ -112,15 +117,19 @@ describe('LeveragedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-    expect(quote.swapDataDebtCollateral).toEqual({
-      exchange: 3,
-      fees: [500],
-      path: [
-        '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
-        '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-      ],
-      pool: '0x0000000000000000000000000000000000000000',
-    })
+    // Testing for individual params as changing quotes could affect the results
+    expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
+    expect(
+      quote.swapDataDebtCollateral.path.some(
+        (address) => address === '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
+      )
+    ).toBe(true)
+    expect(
+      quote.swapDataDebtCollateral.path.some(
+        (address) => address === '0xaf88d065e77c8cc2239327c5edb3a432268e5831'
+      )
+    ).toBe(true)
     const swapDataOutputToken = noopSwapData
     noopSwapData.path = [
       '0x0000000000000000000000000000000000000000',
