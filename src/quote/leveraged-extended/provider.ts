@@ -16,13 +16,14 @@ import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 
 import { getLeveragedTokenData } from './utils/data'
+import { getIndexTokenAmount } from './utils/issuance-call'
 import { getIncludedSources } from './utils/zeroex'
 
 export interface FlashMintLeveragedExtendedQuoteRequest {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
-  indexTokenAmount: BigNumber
+  inputTokenAmount: BigNumber
   slippage: number
 }
 
@@ -59,7 +60,7 @@ export class LeveragedExtendedQuoteProvider
     request: FlashMintLeveragedExtendedQuoteRequest
   ): Promise<FlashMintLeveragedExtendedQuote | null> {
     const { provider, zeroExApi } = this
-    const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
+    const { inputToken, inputTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
@@ -67,6 +68,16 @@ export class LeveragedExtendedQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
     console.log('chainId:', chainId)
+
+    // For redemptions the input token amount is the index token amount
+    let indexTokenAmount = inputTokenAmount
+    if (isMinting) {
+      // For issuance we have to static call the issue function so we can retrieve
+      // an index token amount that can be used to retrieve the correct debt/collateral
+      // amounts from `getLeveragedTokenData` below.
+      indexTokenAmount = await getIndexTokenAmount(request, provider)
+      // ISSUE: static call will fail if not approved or insufficient funds
+    }
 
     const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
