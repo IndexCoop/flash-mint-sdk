@@ -140,16 +140,13 @@ describe('LeveragedTransactionBuilder()', () => {
     const buildRequest = createBuildRequest()
     buildRequest.isMinting = true
     const indexToken = buildRequest.outputToken
-    const refTx = await contract.populateTransaction.issueSetFromExactERC20(
+    const refTx = await contract.populateTransaction.issueExactSetFromERC20(
       indexToken,
       buildRequest.outputTokenAmount,
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataInputOutputToken,
-      buildRequest.swapDataInputTokenForETH,
-      buildRequest.priceEstimateInflator,
-      buildRequest.maxDust
+      buildRequest.swapDataInputOutputToken
     )
     const builder = new LeveragedExtendedTransactionBuilder(provider)
     const tx = await builder.build(buildRequest)
@@ -161,13 +158,11 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns a tx for minting ETH2X (ETH)', async () => {
     const buildRequest = createBuildRequest(true, eth, 'ETH')
     const indexToken = buildRequest.outputToken
-    const refTx = await contract.populateTransaction.issueSetFromExactETH(
+    const refTx = await contract.populateTransaction.issueExactSetFromETH(
       indexToken,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      buildRequest.priceEstimateInflator,
-      buildRequest.maxDust,
       { value: buildRequest.inputTokenAmount }
     )
     const builder = new LeveragedExtendedTransactionBuilder(provider)
