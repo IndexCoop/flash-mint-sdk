@@ -127,6 +127,7 @@ export const stETH: Token = {
 export const USDC: Token = {
   symbol: 'USDC',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  addressArbitrum: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
 }
 
 export const USDT: Token = {
@@ -137,6 +138,7 @@ export const USDT: Token = {
 export const WETH: Token = {
   symbol: 'WETH',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+  addressArbitrum: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
   addressOptimism: '0x4200000000000000000000000000000000000006',
   addressPolygon: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
 }
