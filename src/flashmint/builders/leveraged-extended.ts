@@ -47,8 +47,8 @@ export class LeveragedExtendedTransactionBuilder
       isMinting,
       swapDataDebtCollateral,
       swapDataInputOutputToken,
-      priceEstimateInflator,
-      maxDust,
+      // priceEstimateInflator,
+      // maxDust,
     } = request
     const network = await this.provider.getNetwork()
     const chainId = network.chainId
@@ -61,28 +61,22 @@ export class LeveragedExtendedTransactionBuilder
     )
     if (isMinting) {
       const isInputTokenEth = inputTokenSymbol === 'ETH'
-      const minIndexTokenAmount = outputTokenAmount
       if (isInputTokenEth) {
-        return await contract.populateTransaction.issueSetFromExactETH(
+        return await contract.populateTransaction.issueExactSetFromETH(
           indexToken,
-          minIndexTokenAmount,
+          outputTokenAmount,
           swapDataDebtCollateral,
-          swapDataInputOutputToken, // _swapDataInputTokenForCollateral
-          priceEstimateInflator,
-          maxDust,
+          swapDataInputOutputToken,
           { value: inputTokenAmount }
         )
       } else {
-        return await contract.populateTransaction.issueSetFromExactERC20(
+        return await contract.populateTransaction.issueExactSetFromERC20(
           indexToken,
-          minIndexTokenAmount,
+          outputTokenAmount,
           inputToken,
-          inputTokenAmount,
+          inputTokenAmount, // _maxAmountInputToken
           swapDataDebtCollateral,
-          swapDataInputOutputToken, // _swapDataInputTokenForCollateral
-          request.swapDataInputTokenForETH,
-          priceEstimateInflator,
-          maxDust
+          swapDataInputOutputToken
         )
       }
     } else {
