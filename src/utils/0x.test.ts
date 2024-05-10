@@ -92,7 +92,7 @@ describe('ZeroExApi', () => {
   test('getting a swap quote', async () => {
     const chainId = 1
     const params = {
-      buyAmount: ONE,
+      buyAmount: '1000000',
       buyToken: USDC,
       sellToken: 'ETH',
     }
@@ -106,7 +106,7 @@ describe('ZeroExApi', () => {
   test('getting a swap quote - when overriding the swap path', async () => {
     const chainId = 1
     const params = {
-      buyAmount: ONE,
+      buyAmount: '1000000',
       buyToken: USDC,
       sellToken: 'ETH',
     }
@@ -125,7 +125,7 @@ describe('ZeroExApi', () => {
   test('getting a swap quote fails for wrong base url', async () => {
     const chainId = 1
     const params = {
-      buyAmount: ONE,
+      buyAmount: '1000000',
       buyToken: USDC,
       sellToken: 'ETH',
     }
