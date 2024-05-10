@@ -50,7 +50,7 @@ describe('ZeroExApi', () => {
     const chainId = 137
     const query = new URLSearchParams({
       buyAmount: ONE,
-      buyToken: USDC,
+      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
@@ -65,7 +65,7 @@ describe('ZeroExApi', () => {
     const chainId = 10
     const query = new URLSearchParams({
       buyAmount: ONE,
-      buyToken: USDC,
+      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(baseUrl, null, indexApiHeader)
@@ -81,7 +81,7 @@ describe('ZeroExApi', () => {
     const chainId = 10
     const query = new URLSearchParams({
       buyAmount: ONE,
-      buyToken: USDC,
+      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress, indexApiHeader)
