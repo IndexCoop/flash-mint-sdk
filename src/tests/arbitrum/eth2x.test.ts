@@ -1,4 +1,4 @@
-import { IndexCoopEthereum3xIndex } from 'constants/tokens'
+import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import {
   getSignerAccount,
   LocalhostProviderArbitrum,
@@ -9,25 +9,25 @@ import {
 } from 'tests/utils'
 
 const { eth } = QuoteTokens
-const eth3x = {
-  address: IndexCoopEthereum3xIndex.addressArbitrum!,
+const eth2x = {
+  address: IndexCoopEthereum2xIndex.addressArbitrum!,
   decimals: 18,
-  symbol: IndexCoopEthereum3xIndex.symbol,
+  symbol: IndexCoopEthereum2xIndex.symbol,
 }
 
-describe('ETH3X (Arbitrum)', () => {
+describe('ETH2X (Arbitrum)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProviderArbitrum
-    const signer = getSignerAccount(2, provider)
+    const signer = getSignerAccount(0, provider)
     factory = new TestFactory(provider, signer, ZeroExApiArbitrumSwapQuote)
   })
 
-  test.only('can mint with ETH', async () => {
+  test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
-      outputToken: eth3x,
+      outputToken: eth2x,
       indexTokenAmount: wei('1'),
       slippage: 0.5,
     })
@@ -37,7 +37,7 @@ describe('ETH3X (Arbitrum)', () => {
   test('can redeem with ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
-      inputToken: eth3x,
+      inputToken: eth2x,
       outputToken: eth,
       indexTokenAmount: wei('1'),
       slippage: 0.5,
