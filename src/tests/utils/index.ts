@@ -39,6 +39,18 @@ export function getSignerAccount(num: number = 0, provider: JsonRpcProvider) {
       privateKey =
         '0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6'
       break
+    case 3:
+      privateKey =
+        '0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6'
+      break
+    case 4:
+      privateKey =
+        '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a'
+      break
+    case 5:
+      privateKey =
+        '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba'
+      break
   }
   return new Wallet(privateKey, provider)
 }
