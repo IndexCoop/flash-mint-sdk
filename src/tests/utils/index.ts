@@ -27,7 +27,7 @@ export const LocalhostProviderArbitrum = new JsonRpcProvider(
   'http://127.0.0.1:8548/'
 )
 
-export function getSignerAccount(num: number = 0, provider: JsonRpcProvider) {
+export function getSignerAccount(num = 0, provider: JsonRpcProvider) {
   let privateKey =
     '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
   switch (num) {

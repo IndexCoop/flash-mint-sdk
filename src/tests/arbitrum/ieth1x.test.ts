@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { IndexCoopInverseEthereumIndex } from 'constants/tokens'
 import {
   getSignerAccount,
