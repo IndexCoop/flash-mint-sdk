@@ -3,17 +3,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
 import { FlashMintLeveragedExtendedAddress } from 'constants/contracts'
-import { IndexCoopEthereum2xIndex } from 'constants/tokens'
-import {
-  collateralDebtSwapData,
-  debtCollateralSwapData,
-  inputSwapData,
-  noopSwapData,
-  outputSwapData,
-} from 'constants/swapdata'
+import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
+import { inputSwapData, noopSwapData, outputSwapData } from 'constants/swapdata'
 import { LocalhostProviderArbitrum } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
+import { Exchange } from 'utils'
 
 import {
   FlashMintLeveragedExtendedBuildRequest,
@@ -226,6 +221,30 @@ function createBuildRequest(
   outputToken: string = IndexCoopEthereum2xIndex.addressArbitrum!,
   outputTokenSymbol: string = IndexCoopEthereum2xIndex.symbol
 ): FlashMintLeveragedExtendedBuildRequest {
+  const collateralDebtSwapData = {
+    exchange: Exchange.UniV3,
+    path: [USDC.addressArbitrum!, WETH.addressArbitrum!],
+    fees: [500],
+    pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
+  }
+  const debtCollateralSwapData = {
+    exchange: Exchange.UniV3,
+    path: [WETH.addressArbitrum!, USDC.addressArbitrum!],
+    fees: [500],
+    pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
+  }
+  const inputSwapData = {
+    exchange: Exchange.UniV3,
+    path: [USDC.addressArbitrum!, WETH.address!],
+    fees: [500],
+    pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
+  }
+  const outputSwapData = {
+    exchange: Exchange.UniV3,
+    path: [WETH.addressArbitrum!, USDC.addressArbitrum!],
+    fees: [500],
+    pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
+  }
   return {
     isMinting,
     inputToken,
@@ -235,11 +254,9 @@ function createBuildRequest(
     inputTokenAmount: wei(1),
     outputTokenAmount: BigNumber.from(194235680),
     swapDataDebtCollateral: isMinting
-      ? collateralDebtSwapData['icETH']
-      : debtCollateralSwapData['icETH'],
-    swapDataInputOutputToken: isMinting
-      ? inputSwapData['icETH']['ETH']
-      : outputSwapData['icETH']['ETH'],
+      ? collateralDebtSwapData
+      : debtCollateralSwapData,
+    swapDataInputOutputToken: isMinting ? inputSwapData : outputSwapData,
     swapDataInputTokenForETH: noopSwapData,
     priceEstimateInflator: wei(0.9),
     maxDust: wei(0.00001),
