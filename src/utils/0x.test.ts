@@ -2,6 +2,7 @@ import 'dotenv/config'
 
 import { ZeroExApi } from 'utils/0x'
 
+const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 const ONE = '1000000000000000000'
 
@@ -22,7 +23,7 @@ describe('ZeroExApi', () => {
     const chainId = 1
     const query = new URLSearchParams({
       buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
@@ -36,7 +37,7 @@ describe('ZeroExApi', () => {
     const chainId = 10
     const query = new URLSearchParams({
       buyAmount: '1000000000000000000',
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
@@ -50,7 +51,7 @@ describe('ZeroExApi', () => {
     const chainId = 137
     const query = new URLSearchParams({
       buyAmount: ONE,
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
@@ -65,7 +66,7 @@ describe('ZeroExApi', () => {
     const chainId = 10
     const query = new URLSearchParams({
       buyAmount: ONE,
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(baseUrl, null, indexApiHeader)
@@ -81,7 +82,7 @@ describe('ZeroExApi', () => {
     const chainId = 10
     const query = new URLSearchParams({
       buyAmount: ONE,
-      buyToken: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
+      buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
     const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress, indexApiHeader)
