@@ -67,7 +67,6 @@ export class LeveragedExtendedQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
     console.log('chainId:', chainId)
-
     const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
       indexTokenAmount,
@@ -76,7 +75,6 @@ export class LeveragedExtendedQuoteProvider
       chainId,
       provider
     )
-    console.log(leveragedTokenData)
     if (leveragedTokenData === null) return null
     const debtCollateralResult = isMinting
       ? await getSwapDataDebtCollateral(

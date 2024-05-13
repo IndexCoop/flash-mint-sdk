@@ -54,7 +54,6 @@ describe('dsETH (mainnet)', () => {
       indexTokenAmount: wei('0.1'),
       slippage: 1,
     })
-    console.log(quote)
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
     await factory.executeTx()
   })
