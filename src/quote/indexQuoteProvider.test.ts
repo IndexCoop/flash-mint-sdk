@@ -136,7 +136,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.only('returns a quote for minting ETH2X', async () => {
+  test('returns a quote for minting ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = usdc
     const outputToken = {
@@ -177,7 +177,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.only('returns a quote for redeeming ETH2X', async () => {
+  test('returns a quote for redeeming ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = {
       address: IndexCoopEthereum2xIndex.addressArbitrum!,

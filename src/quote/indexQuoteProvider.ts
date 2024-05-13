@@ -167,7 +167,7 @@ export class FlashMintQuoteProvider
           inputToken,
           outputToken,
           indexTokenAmount,
-          inputOutputAmount: leveragedExtendedQuote.inputOutputTokenAmount, // TODO: check
+          inputOutputAmount: leveragedExtendedQuote.inputOutputTokenAmount,
           slippage,
           tx,
         }
