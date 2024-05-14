@@ -1,5 +1,6 @@
 export * from './indexQuoteProvider'
 export * from './leveraged'
+export * from './leveraged-extended'
 export * from './quoteProvider'
 export * from './quoteToken'
 export * from './zeroEx'

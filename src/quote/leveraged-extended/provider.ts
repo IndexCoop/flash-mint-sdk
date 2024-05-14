@@ -35,14 +35,6 @@ export interface FlashMintLeveragedExtendedQuote {
   swapDataPaymentToken: SwapData
 }
 
-export interface LeveragedTokenData {
-  collateralAToken: string
-  collateralToken: string
-  debtToken: string
-  collateralAmount: BigNumber
-  debtAmount: BigNumber
-}
-
 export class LeveragedExtendedQuoteProvider
   implements
     QuoteProvider<
