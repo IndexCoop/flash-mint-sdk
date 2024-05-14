@@ -5,7 +5,6 @@ import {
   ZeroExApi,
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
-  ZeroExApiSwapResponseOrderBalancer,
   ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 import { decodePool, extractPoolFees } from './UniswapPath'
@@ -177,18 +176,19 @@ export function swapDataFrom0xQuote(
   }
 }
 
-function swapDataFromBalancer(
-  order: ZeroExApiSwapResponseOrderBalancer
-): SwapData | null {
-  const fillData = order.fillData
-  if (!fillData) return null
-  return {
-    exchange: Exchange.BalancerV2,
-    path: fillData.assets,
-    fees: [],
-    pool: fillData.vault,
-  }
-}
+// Not used at the moment
+// function swapDataFromBalancer(
+//   order: ZeroExApiSwapResponseOrderBalancer
+// ): SwapData | null {
+//   const fillData = order.fillData
+//   if (!fillData) return null
+//   return {
+//     exchange: Exchange.BalancerV2,
+//     path: fillData.assets,
+//     fees: [],
+//     pool: fillData.vault,
+//   }
+// }
 
 function swapDataFromCurve(order: ZeroExApiSwapResponseOrder): SwapData | null {
   const fillData = order.fillData

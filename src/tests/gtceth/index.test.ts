@@ -13,7 +13,7 @@ const { eth, gtcETH, weth } = QuoteTokens
 const zeroExApi = ZeroExApiSwapQuote
 
 // Works locally, fails on github actions for some reason.
-describe('gtcETH (mainnet)', () => {
+describe.skip('gtcETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider

@@ -2,6 +2,18 @@
 import { Exchange } from '../utils/swapData'
 import { ETH, InterestCompoundingETHIndex, stETH } from './tokens'
 
+export const noopSwapData: {
+  path: string[]
+  fees: number[]
+  pool: string
+  exchange: number
+} = {
+  path: [],
+  fees: [],
+  pool: '0x0000000000000000000000000000000000000000',
+  exchange: Exchange.None,
+}
+
 export const collateralDebtSwapData = {
   [InterestCompoundingETHIndex.symbol]: {
     exchange: Exchange.Curve,

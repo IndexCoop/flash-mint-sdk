@@ -4,7 +4,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
 import { createERC20Contract } from '.'
-import UniswapV3PoolAbi from './UniswapV3PoolAbi.json'
+// import UniswapV3PoolAbi from './UniswapV3PoolAbi.json'
 
 const UNISWAPV3_SWAPROUTER_ADDRESS =
   '0xE592427A0AEce92De3Edee1F18E0157C05861564'
@@ -31,8 +31,8 @@ export async function swapExactInput(
   signer: Wallet
 ) {
   // Get pool state to fetch the `sqrtPriceX96`
-  const poolContract = new Contract(poolAddress, UniswapV3PoolAbi, provider)
-  const [state] = await Promise.all([getPoolState(poolContract)])
+  // const poolContract = new Contract(poolAddress, UniswapV3PoolAbi, provider)
+  // const [state] = await Promise.all([getPoolState(poolContract)])
 
   const { amountIn, amountOutMin, tokenIn, tokenOut } = swapParams
 
@@ -66,25 +66,25 @@ export async function swapExactInput(
   })
 }
 
-async function getPoolState(poolContract: Contract) {
-  const [liquidity, slot] = await Promise.all([
-    poolContract.liquidity(),
-    poolContract.slot0(),
-  ])
+// async function getPoolState(poolContract: Contract) {
+//   const [liquidity, slot] = await Promise.all([
+//     poolContract.liquidity(),
+//     poolContract.slot0(),
+//   ])
 
-  const PoolState = {
-    liquidity,
-    sqrtPriceX96: slot[0],
-    tick: slot[1],
-    observationIndex: slot[2],
-    observationCardinality: slot[3],
-    observationCardinalityNext: slot[4],
-    feeProtocol: slot[5],
-    unlocked: slot[6],
-  }
+//   const PoolState = {
+//     liquidity,
+//     sqrtPriceX96: slot[0],
+//     tick: slot[1],
+//     observationIndex: slot[2],
+//     observationCardinality: slot[3],
+//     observationCardinalityNext: slot[4],
+//     feeProtocol: slot[5],
+//     unlocked: slot[6],
+//   }
 
-  return PoolState
-}
+//   return PoolState
+// }
 
 const UNISWAPV3_SWAPROUTER_ABI = [
   {

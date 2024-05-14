@@ -4,6 +4,7 @@
 name: publish
 
 env:
+  ARBITRUM_ALCHEMY_API: ${{ secrets.ARBITRUM_ALCHEMY_API }}
   INDEX_0X_API: ${{ secrets.INDEX_0X_API }}
   INDEX_0X_API_KEY: ${{ secrets.INDEX_0X_API_KEY }}
   MAINNET_ALCHEMY_API: ${{ secrets.MAINNET_ALCHEMY_API }}
@@ -32,6 +33,10 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build --if-present
+      - run: npm run hardhat:arbitrum & npm run test:arbitrum
+      - run: npm run hardhat & npm run test:utils
+      - run: npm run hardhat & npm run test:builders
+      - run: npm run hardhat & npm run test:quote
       - run: npm run hardhat & npm run test:btc2x
       - run: npm run hardhat & npm run test:cdeti
       - run: npm run hardhat & npm run test:dseth

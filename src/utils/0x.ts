@@ -133,6 +133,8 @@ export class ZeroExApi {
 
   private getDefaultBaseUrl(chainId: number) {
     switch (chainId) {
+      case ChainId.Arbitrum:
+        return 'https://arbitrum.api.0x.org/'
       case ChainId.Polygon:
         return 'https://polygon.api.0x.org'
       case ChainId.Optimism:
