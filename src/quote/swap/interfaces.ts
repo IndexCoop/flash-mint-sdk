@@ -1,4 +1,7 @@
-interface SwapQuote {}
+import { ZeroExApiSwapResponse } from 'quote/swap/adapters'
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface SwapQuote extends ZeroExApiSwapResponse {}
 export interface SwapQuoteRequest {
   chainId: number
   inputToken: string

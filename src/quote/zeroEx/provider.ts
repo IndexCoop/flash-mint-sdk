@@ -7,11 +7,11 @@ import {
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
   slippageAdjustedTokenAmount,
-  ZeroExApi,
 } from 'utils'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'
+import { SwapQuoteProvider } from 'quote/swap'
 
 export interface FlashMintZeroExQuoteRequest {
   isMinting: boolean
@@ -32,13 +32,13 @@ export class ZeroExQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
-    private readonly zeroExApi: ZeroExApi
+    private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintZeroExQuoteRequest
   ): Promise<FlashMintZeroExQuote | null> {
-    const { provider, zeroExApi } = this
+    const { provider, swapQuoteProvider } = this
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -62,7 +62,7 @@ export class ZeroExQuoteProvider
       chainId,
       slippage,
       wethAddress,
-      zeroExApi
+      swapQuoteProvider
     )
     const quoteResult = await quoteProvider.getComponentQuotes(
       components,

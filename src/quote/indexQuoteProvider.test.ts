@@ -3,11 +3,11 @@ import { ChainId } from 'constants/chains'
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import {
+  IndexZeroExSwapQuoteProvider,
+  IndexZeroExSwapQuoteProviderArbitrum,
   LocalhostProvider,
   LocalhostProviderArbitrum,
   QuoteTokens,
-  ZeroExApiArbitrumSwapQuote,
-  ZeroExApiSwapQuote,
 } from 'tests/utils'
 import {
   getFlashMintLeveragedContractForToken,
@@ -21,7 +21,7 @@ import {
 } from '.'
 
 const provider = LocalhostProvider
-const zeroEx = ZeroExApiSwapQuote
+const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 const { cdeti, dseth, eth, eth2x, iceth, mvi, usdc } = QuoteTokens
 
@@ -54,7 +54,10 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.1,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
+    const quoteProvider = new FlashMintQuoteProvider(
+      provider,
+      zeroexSwapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
@@ -86,7 +89,10 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
+    const quoteProvider = new FlashMintQuoteProvider(
+      provider,
+      zeroexSwapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
@@ -118,7 +124,10 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
+    const quoteProvider = new FlashMintQuoteProvider(
+      provider,
+      zeroexSwapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId
@@ -158,7 +167,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       arbitrumProvider,
-      ZeroExApiArbitrumSwapQuote
+      IndexZeroExSwapQuoteProviderArbitrum
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -199,7 +208,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       arbitrumProvider,
-      ZeroExApiArbitrumSwapQuote
+      IndexZeroExSwapQuoteProviderArbitrum
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -233,7 +242,10 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider, zeroEx)
+    const quoteProvider = new FlashMintQuoteProvider(
+      provider,
+      zeroexSwapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await provider.getNetwork()).chainId

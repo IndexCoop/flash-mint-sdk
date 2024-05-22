@@ -1,7 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZeroExApi, ZeroExApiSwapResponse } from 'utils/0x'
+import { ZeroExApiSwapResponse } from 'utils/0x'
 import { QuoteToken } from '../quoteToken'
+import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 
 export type ComponentQuotesResult = {
   componentQuotes: string[]
@@ -12,7 +13,7 @@ export class ComponentsQuoteProvider {
     readonly chainId: number,
     readonly slippage: number,
     readonly wethAddress: string,
-    readonly zeroExApi: ZeroExApi
+    readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   /**
@@ -37,13 +38,10 @@ export class ComponentsQuoteProvider {
     if (components.length === 0 || positions.length === 0) return null
     if (components.length !== positions.length) return null
 
-    const { chainId, slippage, zeroExApi } = this
+    const { chainId, slippage, swapQuoteProvider } = this
 
     const inputTokenAddress = this.getTokenAddressOrWeth(inputToken)
     const outputTokenAddress = this.getTokenAddressOrWeth(outputToken)
-
-    // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
-    const slippagePercentage = slippage / 100
 
     const quotePromises: Promise<ZeroExApiSwapResponse | null>[] = []
 
@@ -60,20 +58,18 @@ export class ComponentsQuoteProvider {
         const fakeResponse = this.getFakeZeroExResponse(amount)
         quotePromises.push(fakeResponse)
       } else {
-        const params = isMinting
-          ? {
-              buyToken,
-              sellToken,
-              buyAmount: buyAmount.toString(),
-              slippagePercentage,
-            }
-          : {
-              buyToken,
-              sellToken,
-              sellAmount: sellAmount.toString(),
-              slippagePercentage,
-            }
-        const quotePromise = zeroExApi.getSwapQuote(params, chainId ?? 1)
+        const params: SwapQuoteRequest = {
+          chainId,
+          outputToken: buyToken,
+          inputToken: sellToken,
+          slippage,
+        }
+        if (isMinting) {
+          params.outputAmount = buyAmount.toString()
+        } else {
+          params.inputAmount = sellAmount.toString()
+        }
+        const quotePromise = swapQuoteProvider.getSwapQuote(params)
         quotePromises.push(quotePromise)
       }
     }

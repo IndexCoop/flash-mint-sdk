@@ -148,7 +148,7 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
     const slippage = request.slippage ? request.slippage : 0.5
     const slippagePercentage = (slippage / 100).toString()
     // Params must be all string because URLSearchParams requires string only
-    let params: ZeroExApiSwapRequest = {
+    const params: ZeroExApiSwapRequest = {
       buyToken: request.outputToken,
       sellToken: request.inputToken,
       slippagePercentage,

@@ -36,6 +36,7 @@ import { LeveragedExtendedQuoteProvider } from './leveraged-extended'
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
 import { ZeroExQuoteProvider } from './zeroEx'
+import { SwapQuoteProvider } from 'quote/swap'
 
 export enum FlashMintContractType {
   leveraged,
@@ -70,13 +71,14 @@ export class FlashMintQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
+    private readonly swapQuoteProvider?: SwapQuoteProvider,
     private readonly zeroExApiV1?: ZeroExApi
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
-    const { provider, zeroExApiV1 } = this
+    const { provider, swapQuoteProvider, zeroExApiV1 } = this
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -173,12 +175,14 @@ export class FlashMintQuoteProvider
         }
       }
       case FlashMintContractType.zeroEx: {
-        if (!zeroExApiV1) {
-          throw new Error('Contract type requires ZeroExApiV1 to be defined')
+        if (!swapQuoteProvider) {
+          throw new Error(
+            'Contract type requires SwapQuoteProvider to be defined'
+          )
         }
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           provider,
-          zeroExApiV1
+          swapQuoteProvider
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote(request)
         if (!zeroExQuote) return null

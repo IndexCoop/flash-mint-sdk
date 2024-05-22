@@ -7,6 +7,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
 import { WETH } from 'constants/tokens'
+import { ZeroExSwapQuoteProvider } from 'quote'
 import { ZeroExApi } from 'utils/0x'
 
 export { wei } from 'utils/numbers'
@@ -113,6 +114,12 @@ export async function resetHardhat(
 
 // ZeroExApi
 const index0xApiBaseUrl = process.env.INDEX_0X_API
+export const IndexZeroExSwapQuoteProvider = new ZeroExSwapQuoteProvider(
+  index0xApiBaseUrl,
+  '',
+  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+  '/mainnet/swap/v1/quote'
+)
 export const ZeroExApiSwapQuote = new ZeroExApi(
   index0xApiBaseUrl,
   '',
@@ -120,6 +127,12 @@ export const ZeroExApiSwapQuote = new ZeroExApi(
   '/mainnet/swap/v1/quote'
 )
 
+export const IndexZeroExSwapQuoteProviderArbitrum = new ZeroExSwapQuoteProvider(
+  index0xApiBaseUrl,
+  '',
+  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+  '/arbitrum/swap/v1/quote'
+)
 export const ZeroExApiArbitrumSwapQuote = new ZeroExApi(
   index0xApiBaseUrl,
   '',
