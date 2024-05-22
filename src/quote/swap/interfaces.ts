@@ -1,4 +1,4 @@
-import { ZeroExApiSwapResponse } from 'quote/swap/adapters'
+import { ZeroExApiSwapResponse } from 'utils'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface SwapQuote extends ZeroExApiSwapResponse {}
