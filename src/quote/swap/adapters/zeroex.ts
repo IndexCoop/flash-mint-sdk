@@ -12,7 +12,7 @@ type ZeroExApiSwapRequest = {
   slippagePercentage?: string
 }
 
-export type ZeroExApiSwapResponseOrder = {
+type ZeroExApiSwapResponseOrder = {
   source: string
   fillData: {
     path?: string
@@ -24,7 +24,7 @@ export type ZeroExApiSwapResponseOrder = {
   }
 }
 
-export type ZeroExApiSwapResponseOrderBalancer = {
+type ZeroExApiSwapResponseOrderBalancer = {
   source: string
   fillData: {
     assets: string[]
@@ -36,7 +36,7 @@ export type ZeroExApiSwapResponseOrderBalancer = {
   }
 }
 
-export type ZeroExApiSwapResponseOrderSushi = {
+type ZeroExApiSwapResponseOrderSushi = {
   source: string
   makerToken: string
   takerToken: string
@@ -54,7 +54,7 @@ export type ZeroExApiSwapResponseOrderSushi = {
   }
 }
 
-export type ZeroExApiSwapResponse = {
+type ZeroExApiSwapResponse = {
   buyAmount: string
   buyTokenAddress: string
   data: string
