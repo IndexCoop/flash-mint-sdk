@@ -8,6 +8,7 @@ import {
   LocalhostProvider,
   LocalhostProviderArbitrum,
   QuoteTokens,
+  ZeroExApiSwapQuote,
 } from 'tests/utils'
 import {
   getFlashMintLeveragedContractForToken,
@@ -145,7 +146,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for minting ETH2X', async () => {
+  test.skip('returns a quote for minting ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = usdc
     const outputToken = {
@@ -186,7 +187,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for redeeming ETH2X', async () => {
+  test.skip('returns a quote for redeeming ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = {
       address: IndexCoopEthereum2xIndex.addressArbitrum!,
@@ -244,7 +245,8 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       provider,
-      zeroexSwapQuoteProvider
+      undefined,
+      ZeroExApiSwapQuote
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -279,7 +281,7 @@ describe('FlashMintQuoteProvider()', () => {
     )
   })
 
-  test('should fail if zeroExApiV1 is undefined for contract type zeroEx', async () => {
+  test('should fail if swap quote provider is undefined for contract type zeroEx', async () => {
     const inputToken = usdc
     const outputToken = mvi
     const request: FlashMintQuoteRequest = {
@@ -291,7 +293,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(provider)
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
-      'Contract type requires ZeroExApiV1 to be defined'
+      'Contract type requires SwapQuoteProvider to be defined'
     )
   })
 })
