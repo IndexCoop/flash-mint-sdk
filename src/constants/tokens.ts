@@ -46,33 +46,33 @@ export const GitcoinStakedETHIndex: Token = {
 
 export const IndexCoopBitcoin2xIndex: Token = {
   address: '0xD2AC55cA3Bbd2Dd1e9936eC640dCb4b745fDe759',
-  addressArbitrum: '0xfa69F1e2e48B411b98a105fb693fb381764Dc857',
+  addressArbitrum: '0xeb5bE62e6770137beaA0cC712741165C594F59D7',
   symbol: 'BTC2X',
 }
 
 export const IndexCoopBitcoin3xIndex: Token = {
-  addressArbitrum: '0x53765a7cF4933bc939e32fA560FFf3D8E1d63473',
+  addressArbitrum: '0x3bDd0d5c0C795b2Bf076F5C8F177c58e42beC0E6',
   symbol: 'BTC3X',
 }
 
 export const IndexCoopEthereum2xIndex: Token = {
   address: '0x65c4C0517025Ec0843C9146aF266A2C5a2D148A2',
-  addressArbitrum: '0x67d2373f0321Cd24a1b58e3c81fC1b6Ef15B205C',
+  addressArbitrum: '0x26d7D3728C6bb762a5043a1d0CeF660988Bca43C',
   symbol: 'ETH2X',
 }
 
 export const IndexCoopEthereum3xIndex: Token = {
-  addressArbitrum: '0x0bef95Cc308027C9a754D7674DE0844AE1dcD5b1',
+  addressArbitrum: '0xA0A17b2a015c14BE846C5d309D076379cCDfa543',
   symbol: 'ETH3X',
 }
 
 export const IndexCoopInverseBitcoinIndex: Token = {
-  addressArbitrum: '0xCaD2B03e289260cCF59209CF059778342d1Cf33b',
+  addressArbitrum: '0x80e58AEA88BCCaAE19bCa7f0e420C1387Cc087fC',
   symbol: 'iBTC1X',
 }
 
 export const IndexCoopInverseEthereumIndex: Token = {
-  addressArbitrum: '0xaa61DDA963d0Cf89dA3C13FE635C84a1B8B6B988',
+  addressArbitrum: '0x749654601a286833aD30357246400D2933b1C89b',
   symbol: 'iETH1X',
 }
 
