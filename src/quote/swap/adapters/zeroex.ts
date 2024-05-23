@@ -1,7 +1,12 @@
 import axios, { AxiosRequestHeaders } from 'axios'
 
 import { ChainId } from 'constants/chains'
-import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap/interfaces'
+import {
+  SwapQuote,
+  SwapQuoteProvider,
+  SwapQuoteRequest,
+} from 'quote/swap/interfaces'
+import { Exchange } from 'utils'
 
 type ZeroExApiSwapRequest = {
   buyAmount?: string
@@ -103,8 +108,8 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
    */
   public async getSwapQuote(
     request: SwapQuoteRequest
-  ): Promise<ZeroExApiSwapResponse | null> {
-    const { chainId } = request
+  ): Promise<SwapQuote | null> {
+    const { chainId, inputToken, outputToken, slippage } = request
     const params = this.getParams(request)
     const path = this.swapPathOverride ?? '/swap/v1/quote'
     const query = new URLSearchParams(params).toString()
@@ -118,7 +123,22 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
     try {
       const response = await axios.get(url, config)
       const res: ZeroExApiSwapResponse = response.data
-      return res
+      return {
+        chainId,
+        inputToken,
+        outputToken,
+        inputAmount: res.sellAmount,
+        outputAmount: res.buyAmount,
+        callData: res.data,
+        slippage: slippage ?? 0,
+        // TODO: add swap data
+        swapData: {
+          exchange: Exchange.UniV3,
+          path: ['', ''],
+          fees: [300],
+          pool: '0x0000000000000000000000000000000000000000',
+        },
+      }
     } catch (err: unknown) {
       return null
     }
