@@ -1,10 +1,6 @@
 // Index Protocol
-
 export const FlashMintLeveragedAddress =
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
-
-export const FlashMintLeveragedExtendedAddress =
-  '0xC62e39d1f5232f154b7ccD3C6234A9c893bf9563'
 
 export const FlashMintLeveragedForCompoundAddress =
   '0xeA716Ed94964Ed0126Fb2fA3b546eD7F209cC2b8'
@@ -18,6 +14,12 @@ export const IndexDebtIssuanceModuleV2Address =
 // Used by cdETI and icRETH only at the moment
 export const IndexDebtIssuanceModuleV2Address_v2 =
   '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
+
+// Arbitrum
+export const FlashMintLeveragedExtendedAddress =
+  '0xc6b3B4624941287bB7BdD8255302c1b337e42194'
+export const IndexDebtIssuanceModuleV3Address =
+  '0x4ac26c26116fa976352b70700af58bc2442489d8'
 
 // Set Protocol
 export const BasicIssuanceModuleAddress =
