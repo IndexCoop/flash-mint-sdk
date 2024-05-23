@@ -19,6 +19,10 @@ export const IndexDebtIssuanceModuleV2Address =
 export const IndexDebtIssuanceModuleV2Address_v2 =
   '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
 
+// Arbitrum
+export const IndexDebtIssuanceModuleV3Address =
+  '0x4ac26c26116fa976352b70700af58bc2442489d8'
+
 // Set Protocol
 export const BasicIssuanceModuleAddress =
   '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'

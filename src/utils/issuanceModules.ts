@@ -6,6 +6,7 @@ import {
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
+  IndexDebtIssuanceModuleV3Address,
 } from '../constants/contracts'
 import {
   BTC2xFlexibleLeverageIndex,
@@ -29,12 +30,17 @@ export function getIssuanceModule(
   tokenSymbol: string,
   chainId: number = ChainId.Mainnet
 ): IssuanceModule {
+  if (chainId === ChainId.Arbitrum) {
+    return {
+      address: IndexDebtIssuanceModuleV3Address,
+      isDebtIssuance: true,
+    }
+  }
   if (chainId === ChainId.Polygon)
     return {
       address: BasicIssuanceModulePolygonAddress,
       isDebtIssuance: false,
     }
-
   // Mainnet
   switch (tokenSymbol) {
     case BTC2xFlexibleLeverageIndex.symbol:

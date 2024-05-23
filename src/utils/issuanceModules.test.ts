@@ -6,6 +6,7 @@ import {
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
+  IndexDebtIssuanceModuleV3Address,
 } from 'constants/contracts'
 import {
   BanklessBEDIndex,
@@ -21,6 +22,7 @@ import {
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
+  IndexCoopBitcoin3xIndex,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
@@ -115,6 +117,28 @@ describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
   test('returns debt issuance module v2 for icETH', async () => {
     const expectedModule = DebtIssuanceModuleV2Address
     const issuanceModule = getIssuanceModule(InterestCompoundingETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+})
+
+describe('getIssuanceModule() - Arbitrum', () => {
+  test('returns debt issuance module v3 for BTC2X on Arbitrum', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV3Address
+    const issuanceModule = getIssuanceModule(
+      IndexCoopBitcoin2xIndex.symbol,
+      ChainId.Arbitrum
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for BTC3X', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV3Address
+    const issuanceModule = getIssuanceModule(
+      IndexCoopBitcoin3xIndex.symbol,
+      ChainId.Arbitrum
+    )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
