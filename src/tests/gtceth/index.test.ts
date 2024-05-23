@@ -1,16 +1,15 @@
 import { wei } from 'utils/numbers'
 
 import {
+  getMainnetTestFactory,
   LocalhostProvider,
   QuoteTokens,
   SignerAccount0,
   TestFactory,
   wrapETH,
-  ZeroExApiSwapQuote,
 } from '../utils'
 
 const { eth, gtcETH, weth } = QuoteTokens
-const zeroExApi = ZeroExApiSwapQuote
 
 // Works locally, fails on github actions for some reason.
 describe.skip('gtcETH (mainnet)', () => {
@@ -18,7 +17,7 @@ describe.skip('gtcETH (mainnet)', () => {
   beforeEach(async () => {
     const provider = LocalhostProvider
     const signer = SignerAccount0
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = getMainnetTestFactory(provider, signer)
   })
 
   test('minting with ETH', async () => {

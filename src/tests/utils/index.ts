@@ -9,6 +9,7 @@ import { Wallet } from '@ethersproject/wallet'
 import { WETH } from 'constants/tokens'
 import { ZeroExSwapQuoteProvider } from 'quote'
 import { ZeroExApi } from 'utils/0x'
+import { TestFactory } from './factories'
 
 export { wei } from 'utils/numbers'
 export * from './factories'
@@ -27,6 +28,24 @@ export const LocalhostProvider = new JsonRpcProvider('http://127.0.0.1:8545/')
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
   'http://127.0.0.1:8548/'
 )
+
+// Pre-configured TestFactories
+export function getArbitrumTestFactory(provider: JsonRpcProvider, signer: any) {
+  return new TestFactory(
+    provider,
+    signer,
+    IndexZeroExSwapQuoteProviderArbitrum,
+    ZeroExApiArbitrumSwapQuote
+  )
+}
+export function getMainnetTestFactory(provider: JsonRpcProvider, signer: any) {
+  return new TestFactory(
+    provider,
+    signer,
+    IndexZeroExSwapQuoteProvider,
+    ZeroExApiSwapQuote
+  )
+}
 
 export function getSignerAccount(num = 0, provider: JsonRpcProvider) {
   let privateKey =

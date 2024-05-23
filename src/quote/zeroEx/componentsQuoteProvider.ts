@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZeroExApiSwapResponse } from 'utils/0x'
 import { QuoteToken } from '../quoteToken'
-import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
+import { SwapQuote, SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
+import { Exchange } from 'utils'
 
 export type ComponentQuotesResult = {
   componentQuotes: string[]
@@ -43,7 +43,7 @@ export class ComponentsQuoteProvider {
     const inputTokenAddress = this.getTokenAddressOrWeth(inputToken)
     const outputTokenAddress = this.getTokenAddressOrWeth(outputToken)
 
-    const quotePromises: Promise<ZeroExApiSwapResponse | null>[] = []
+    const quotePromises: Promise<SwapQuote | null>[] = []
 
     for (let i = 0; i < components.length; i += 1) {
       const index = i
@@ -55,7 +55,7 @@ export class ComponentsQuoteProvider {
 
       if (buyToken === sellToken) {
         const amount = isMinting ? buyAmount : sellAmount
-        const fakeResponse = this.getFakeZeroExResponse(amount)
+        const fakeResponse = this.getFakeSwapQuote(amount)
         quotePromises.push(fakeResponse)
       } else {
         const params: SwapQuoteRequest = {
@@ -75,14 +75,14 @@ export class ComponentsQuoteProvider {
     }
 
     const resultsWithNull = await Promise.all(quotePromises)
-    const results: ZeroExApiSwapResponse[] = resultsWithNull.filter(
+    const results: SwapQuote[] = resultsWithNull.filter(
       (e): e is Exclude<typeof e, null> => e !== null
     )
     if (results.length !== resultsWithNull.length) return null
-    const componentQuotes = results.map((result) => result.data)
+    const componentQuotes = results.map((result) => result.callData)
     const inputOutputTokenAmount = results
       .map((result) =>
-        BigNumber.from(isMinting ? result.sellAmount : result.buyAmount)
+        BigNumber.from(isMinting ? result.inputAmount : result.outputAmount)
       )
       .reduce((prevValue, currValue) => {
         return currValue.add(prevValue)
@@ -94,19 +94,25 @@ export class ComponentsQuoteProvider {
   }
 
   /**
-   * This is just a helper function to return a fake ZeroEx response when the
+   * This is just a helper function to return a fake swap quote when the
    * component and input/output token are the same.
    */
-  async getFakeZeroExResponse(
-    amount: BigNumber
-  ): Promise<ZeroExApiSwapResponse> {
+  async getFakeSwapQuote(amount: BigNumber): Promise<SwapQuote> {
     return Promise.resolve({
-      buyAmount: amount.toString(),
-      buyTokenAddress: '',
-      sellAmount: amount.toString(),
-      sellTokenAddress: '',
+      chainId: 1,
+      inputToken: '',
+      outputToken: '',
+      inputAmount: amount.toString(),
+      outputAmount: amount.toString(),
       // Needs valid formatted hash - as otherwise validation will fail
-      data: '0x0000000000000000000000000000000000000000',
+      callData: '0x0000000000000000000000000000000000000000',
+      slippage: 0,
+      swapData: {
+        exchange: Exchange.UniV3,
+        path: ['', ''],
+        fees: [300],
+        pool: '0x0000000000000000000000000000000000000000',
+      },
     })
   }
 

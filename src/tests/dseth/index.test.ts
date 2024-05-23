@@ -1,6 +1,7 @@
 import {
   addLiquidityToLido,
   balanceOf,
+  getMainnetTestFactory,
   LocalhostProvider,
   QuoteTokens,
   SignerAccount3,
@@ -10,18 +11,16 @@ import {
   wei,
   wrapETH,
   wrapStEth,
-  ZeroExApiSwapQuote,
 } from '../utils'
 
 const { dseth, eth, reth, seth2, steth, usdc, weth, wseth } = QuoteTokens
-const zeroExApi = ZeroExApiSwapQuote
 
 describe('dsETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
     const signer = SignerAccount3
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = getMainnetTestFactory(provider, signer)
   })
 
   test.only('minting with ETH', async () => {

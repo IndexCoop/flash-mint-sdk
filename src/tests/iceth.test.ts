@@ -1,24 +1,23 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import {
+  getMainnetTestFactory,
   LocalhostProvider,
   QuoteTokens,
   SignerAccount4,
   TestFactory,
   wei,
   wrapETH,
-  ZeroExApiSwapQuote,
 } from './utils'
 
 const { eth, iceth, weth } = QuoteTokens
-const zeroExApi = ZeroExApiSwapQuote
 
 describe('icETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
     const signer = SignerAccount4
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = getMainnetTestFactory(provider, signer)
   })
 
   test('can mint icETH-ETH', async () => {

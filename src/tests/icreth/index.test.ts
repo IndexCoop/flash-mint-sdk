@@ -1,4 +1,5 @@
 import {
+  IndexZeroExSwapQuoteProvider,
   LocalhostProvider,
   QuoteTokens,
   resetHardhat,
@@ -19,6 +20,7 @@ import {
 const { eth, icreth, reth, usdc, weth } = QuoteTokens
 
 const signer = SignerAccount2
+const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 const zeroExApi = ZeroExApiSwapQuote
 const zeroExMock = jest.spyOn(zeroExApi, 'getSwapQuote')
 
@@ -26,7 +28,7 @@ describe('icRETH (mainnet) - ETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
   })
 
   test('can mint icRETH', async () => {
@@ -56,7 +58,7 @@ describe.skip('icRETH (mainnet) - rETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
   })
 
   test('can mint icRETH', async () => {
@@ -109,7 +111,7 @@ describe.skip('icRETH (mainnet) - USDC', () => {
     const blockNumber = 17940000
     const provider = LocalhostProvider
     await resetHardhat(provider, blockNumber)
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
   })
 
   test('can mint icRETH', async () => {
@@ -147,7 +149,7 @@ describe('icRETH (mainnet) - WETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
   })
 
   test('can mint icRETH', async () => {
