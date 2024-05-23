@@ -2,7 +2,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
-import { FlashMintQuote, FlashMintQuoteProvider, QuoteToken } from 'quote'
+import {
+  FlashMintQuote,
+  FlashMintQuoteProvider,
+  QuoteToken,
+  SwapQuoteProvider,
+} from 'quote'
 
 import { ZeroExApi } from 'utils'
 import { approveErc20, balanceOf } from './'
@@ -79,8 +84,17 @@ export class TestFactory {
   private quote: FlashMintQuote | null = null
   private quoteProvider: FlashMintQuoteProvider
   private txFactory: TxTestFactory
-  constructor(provider: JsonRpcProvider, signer: Wallet, zeroExApi: ZeroExApi) {
-    this.quoteProvider = new FlashMintQuoteProvider(provider, zeroExApi)
+  constructor(
+    provider: JsonRpcProvider,
+    signer: Wallet,
+    swapQuoteProvider: SwapQuoteProvider,
+    zeroExApi: ZeroExApi
+  ) {
+    this.quoteProvider = new FlashMintQuoteProvider(
+      provider,
+      swapQuoteProvider,
+      zeroExApi
+    )
     this.txFactory = new TxTestFactory(provider, signer)
   }
 

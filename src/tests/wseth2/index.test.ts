@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { sETH2, WETH, wsETH2 } from 'constants/tokens'
 import {
+  getMainnetTestFactory,
   LocalhostProvider,
   resetHardhat,
   SignerAccount17,
@@ -8,10 +9,7 @@ import {
   TestFactory,
   wei,
   wrapETH,
-  ZeroExApiSwapQuote,
 } from '../utils'
-
-const zeroExApi = ZeroExApiSwapQuote
 
 describe.skip('wsETH2 (mainnet)', () => {
   let factory: TestFactory
@@ -20,7 +18,7 @@ describe.skip('wsETH2 (mainnet)', () => {
     const provider = LocalhostProvider
     const signer = SignerAccount17
     await resetHardhat(provider, blockNumber)
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = getMainnetTestFactory(provider, signer)
   })
 
   test('can mint wsETH2 w/ sETH2', async () => {

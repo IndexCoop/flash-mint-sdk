@@ -6,10 +6,12 @@ import {
   wei,
   ZeroExApiSwapQuote,
   resetHardhat,
+  IndexZeroExSwapQuoteProvider,
 } from '../utils'
 import { swapQuote01, swapQuote02 } from './quotes'
 
 const { eth, eth2xfli } = QuoteTokens
+const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 const zeroExApi = ZeroExApiSwapQuote
 const zeroExMock = jest.spyOn(zeroExApi, 'getSwapQuote')
 zeroExMock
@@ -27,7 +29,7 @@ describe('ETH2xFLI (mainnet)', () => {
     const provider = LocalhostProvider
     const signer = SignerAccount1
     await resetHardhat(provider, blockNumber)
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
   })
 
   test('can mint ETH2xFLI', async () => {

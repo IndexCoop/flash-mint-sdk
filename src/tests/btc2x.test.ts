@@ -1,21 +1,20 @@
 import {
+  getMainnetTestFactory,
   LocalhostProvider,
   QuoteTokens,
   SignerAccount4,
   TestFactory,
   wei,
-  ZeroExApiSwapQuote,
 } from './utils'
 
 const { btc2x, eth } = QuoteTokens
-const zeroExApi = ZeroExApiSwapQuote
 
 describe('BTC2X (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProvider
     const signer = SignerAccount4
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = getMainnetTestFactory(provider, signer)
   })
 
   test('can mint with ETH', async () => {

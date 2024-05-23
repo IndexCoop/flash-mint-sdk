@@ -1,12 +1,12 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { IndexCoopBitcoin3xIndex } from 'constants/tokens'
 import {
+  getArbitrumTestFactory,
   getSignerAccount,
   LocalhostProviderArbitrum,
   QuoteTokens,
   TestFactory,
   wei,
-  ZeroExApiArbitrumSwapQuote,
 } from 'tests/utils'
 
 const { eth } = QuoteTokens
@@ -21,7 +21,7 @@ describe.skip('BTC3X (Arbitrum)', () => {
   beforeEach(async () => {
     const provider = LocalhostProviderArbitrum
     const signer = getSignerAccount(5, provider)
-    factory = new TestFactory(provider, signer, ZeroExApiArbitrumSwapQuote)
+    factory = getArbitrumTestFactory(provider, signer)
   })
 
   test('can mint with ETH', async () => {
