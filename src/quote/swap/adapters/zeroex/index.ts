@@ -6,12 +6,14 @@ import {
   SwapQuoteProvider,
   SwapQuoteRequest,
 } from 'quote/swap/interfaces'
+import { Exchange } from 'utils'
 
-import { getSwapData } from './swap-data'
+import { get0xEchangeKey, getSwapData } from './swap-data'
 
 type ZeroExApiSwapRequest = {
   buyAmount?: string
   buyToken: string
+  includedSources?: string
   sellAmount?: string
   sellToken: string
   // 0xAPI expects percentage as value between 0-1 e.g. 5% -> 0.05
@@ -160,6 +162,24 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
     }
   }
 
+  // Returns a comma separated string of sources to be included for 0x API calls
+  private getIncludedSources(sources: Exchange[]): string {
+    let includedSources: string[] = []
+    if (sources.includes(Exchange.Curve)) {
+      includedSources.push(get0xEchangeKey(Exchange.Curve))
+    }
+    if (sources.includes(Exchange.Quickswap)) {
+      includedSources.push(get0xEchangeKey(Exchange.Quickswap))
+    }
+    if (sources.includes(Exchange.Sushiswap)) {
+      includedSources.push(get0xEchangeKey(Exchange.Sushiswap))
+    }
+    if (sources.includes(Exchange.UniV3)) {
+      includedSources.push(get0xEchangeKey(Exchange.UniV3))
+    }
+    return includedSources.toString()
+  }
+
   private getParams(request: SwapQuoteRequest): ZeroExApiSwapRequest {
     const slippage = request.slippage ? request.slippage : 0.5
     const slippagePercentage = (slippage / 100).toString()
@@ -174,6 +194,10 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
       params.sellAmount = request.inputAmount
     } else {
       params.buyAmount = request.outputAmount
+    }
+
+    if (request.sources) {
+      params.includedSources = this.getIncludedSources(request.sources)
     }
 
     return params

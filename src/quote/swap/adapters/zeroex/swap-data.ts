@@ -7,62 +7,6 @@ import {
   ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 
-// TODO:
-// // Used for redeeming (buy debt, sell collateral)
-// // Returns collateral amount needed to be sold
-// export const getSwapDataCollateralDebt = async (
-//   leveragedTokenData: LeveragedTokenData,
-//   includedSources: string,
-//   slippage: number,
-//   chainId: number,
-//   zeroExApi: ZeroExApi
-// ) => {
-//   const result = await getSwapData(
-//     {
-//       buyToken: leveragedTokenData.debtToken,
-//       buyAmount: leveragedTokenData.debtAmount.toString(),
-//       sellToken: leveragedTokenData.collateralToken,
-//       includedSources,
-//     },
-//     slippage,
-//     chainId,
-//     zeroExApi
-//   )
-//   if (!result || !result.zeroExQuote) return null
-//   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-//   const collateralSold = BigNumber.from(zeroExQuote.sellAmount)
-//   return { swapDataDebtCollateral, collateralObtainedOrSold: collateralSold }
-// }
-
-// // Used for minting (buy collateral, sell debt)
-// // Returns collateral amount bought
-// export const getSwapDataDebtCollateral = async (
-//   leveragedTokenData: LeveragedTokenData,
-//   includedSources: string,
-//   slippage: number,
-//   chainId: number,
-//   zeroExApi: ZeroExApi
-// ) => {
-//   const result = await getSwapData(
-//     {
-//       buyToken: leveragedTokenData.collateralToken,
-//       sellAmount: leveragedTokenData.debtAmount.toString(),
-//       sellToken: leveragedTokenData.debtToken,
-//       includedSources,
-//     },
-//     slippage,
-//     chainId,
-//     zeroExApi
-//   )
-//   if (!result || !result.zeroExQuote) return null
-//   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-//   const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
-//   return {
-//     swapDataDebtCollateral,
-//     collateralObtainedOrSold: collateralObtained,
-//   }
-// }
-
 export const getSwapData = async (
   zeroExQuote: ZeroExApiSwapResponse | null
 ) => {
@@ -84,6 +28,22 @@ export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
       return Exchange.UniV3
     default:
       return null
+  }
+}
+
+// 0x keys https://github.com/0xProject/protocol/blob/4f32f3174f25858644eae4c3de59c3a6717a757c/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L38
+export function get0xEchangeKey(exchange: Exchange): string {
+  switch (exchange) {
+    case Exchange.Curve:
+      return 'Curve'
+    case Exchange.Quickswap:
+      return 'QuickSwap'
+    case Exchange.Sushiswap:
+      return 'SushiSwap'
+    case Exchange.UniV3:
+      return 'Uniswap_V3'
+    default:
+      return ''
   }
 }
 

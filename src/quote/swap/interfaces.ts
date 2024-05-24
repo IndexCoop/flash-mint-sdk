@@ -1,4 +1,4 @@
-import { SwapData } from 'utils'
+import { Exchange, SwapData } from 'utils'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SwapQuote {
@@ -20,8 +20,8 @@ export interface SwapQuoteRequest {
   inputAmount?: string
   outputAmount?: string
   // Optional
-  includedSources?: string // TODO:
   slippage?: number
+  sources?: Exchange[]
 }
 
 export interface SwapQuoteProvider {
