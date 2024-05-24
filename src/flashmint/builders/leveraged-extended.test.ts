@@ -5,7 +5,10 @@ import { ChainId } from 'constants/chains'
 import { FlashMintLeveragedExtendedAddress } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { noopSwapData } from 'constants/swapdata'
-import { LocalhostProviderArbitrum } from 'tests/utils'
+import {
+  LocalhostProviderArbitrum,
+  LocalhostProviderUrlArbitrum,
+} from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { Exchange } from 'utils'
@@ -17,6 +20,7 @@ import {
 
 const chainId = ChainId.Arbitrum
 const provider = LocalhostProviderArbitrum
+const rpcUrl = LocalhostProviderUrlArbitrum
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
@@ -36,7 +40,7 @@ describe('LeveragedTransactionBuilder()', () => {
     const buildRequest = createBuildRequest()
     buildRequest.isMinting = true
     buildRequest.outputToken = ''
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -44,7 +48,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (no input/output token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputToken = ''
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -52,7 +56,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (inputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -60,7 +64,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (outputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.outputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -73,7 +77,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [],
       pool: '',
     }
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -86,7 +90,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [],
       pool: '0x0000000000000000000000000000000000000000',
     }
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -100,7 +104,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [3000],
       pool: '0x0000000000000000000000000000000000000000',
     }
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -113,7 +117,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [500],
       pool: '0x00000000000000000000000000000000000000',
     }
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -126,7 +130,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [500],
       pool: '0x0000000000000000000000000000000000000000',
     }
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).not.toBeNull()
   })
@@ -143,7 +147,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken
     )
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedExtendedAddress)
@@ -160,7 +164,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataInputOutputToken,
       { value: buildRequest.inputTokenAmount }
     )
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedExtendedAddress)
@@ -184,7 +188,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken
     )
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedExtendedAddress)
@@ -206,7 +210,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken
     )
-    const builder = new LeveragedExtendedTransactionBuilder(provider)
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedExtendedAddress)

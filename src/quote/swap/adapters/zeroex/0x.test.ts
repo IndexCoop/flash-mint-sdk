@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { ZeroExSwapQuoteProvider } from 'quote/swap/adapters/zeroex'
+import { ZeroExApi } from './0x'
 
 const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -26,7 +26,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExSwapQuoteProvider(null, null, indexApiHeader)
+    const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -40,7 +40,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExSwapQuoteProvider(null, null, indexApiHeader)
+    const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -54,7 +54,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExSwapQuoteProvider(null, null, indexApiHeader)
+    const zeroExApi = new ZeroExApi(null, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -69,7 +69,7 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExSwapQuoteProvider(baseUrl, null, indexApiHeader)
+    const zeroExApi = new ZeroExApi(baseUrl, null, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
@@ -85,57 +85,53 @@ describe('ZeroExApi', () => {
       buyToken: DPI,
       sellToken: 'ETH',
     }).toString()
-    const zeroExApi = new ZeroExSwapQuoteProvider(
-      baseUrl,
-      affiliateAddress,
-      indexApiHeader
-    )
+    const zeroExApi = new ZeroExApi(baseUrl, affiliateAddress, indexApiHeader)
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
   })
 
   test('getting a swap quote', async () => {
-    const request = {
-      chainId: 1,
-      inputToken: 'ETH',
-      outputToken: USDC,
-      outputAmount: '1000000',
+    const chainId = 1
+    const params = {
+      buyAmount: '1000000',
+      buyToken: USDC,
+      sellToken: 'ETH',
     }
-    const zeroExApi = new ZeroExSwapQuoteProvider(null, null, default0xHeader)
-    const quote = await zeroExApi.getSwapQuote(request)
+    const zeroExApi = new ZeroExApi(null, null, default0xHeader)
+    const quote = await zeroExApi.getSwapQuote(params, chainId)
     if (!quote) fail()
     expect(quote).not.toBeNull()
     expect(quote.sellAmount).not.toBeNull()
   })
 
   test('getting a swap quote - when overriding the swap path', async () => {
-    const request = {
-      chainId: 1,
-      inputToken: 'ETH',
-      outputToken: USDC,
-      outputAmount: '1000000',
+    const chainId = 1
+    const params = {
+      buyAmount: '1000000',
+      buyToken: USDC,
+      sellToken: 'ETH',
     }
-    const zeroExApi = new ZeroExSwapQuoteProvider(
+    const zeroExApi = new ZeroExApi(
       index0xApiBaseUrl,
       '',
       indexApiHeader,
       '/mainnet/swap/v1/quote'
     )
-    const quote = await zeroExApi.getSwapQuote(request)
+    const quote = await zeroExApi.getSwapQuote(params, chainId)
     if (!quote) fail()
     expect(quote).not.toBeNull()
     expect(quote.sellAmount).not.toBeNull()
   })
 
   test('getting a swap quote fails for wrong base url', async () => {
-    const request = {
-      chainId: 1,
-      inputToken: 'ETH',
-      outputToken: USDC,
-      outputAmount: '1000000',
+    const chainId = 1
+    const params = {
+      buyAmount: '1000000',
+      buyToken: USDC,
+      sellToken: 'ETH',
     }
-    const zeroExApi = new ZeroExSwapQuoteProvider('https://')
-    const quote = await zeroExApi.getSwapQuote(request)
+    const zeroExApi = new ZeroExApi('https://')
+    const quote = await zeroExApi.getSwapQuote(params, chainId)
     expect(quote).toBeNull()
   })
 })

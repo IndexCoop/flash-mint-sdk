@@ -3,16 +3,17 @@ import { noopSwapData } from 'constants/swapdata'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
+
 import {
-  LocalhostProviderArbitrum,
+  IndexZeroExSwapQuoteProviderArbitrum,
+  LocalhostProviderUrlArbitrum,
   QuoteTokens,
-  ZeroExApiArbitrumSwapQuote,
 } from 'tests/utils'
 
 import { LeveragedExtendedQuoteProvider } from './provider'
 
-const provider = LocalhostProviderArbitrum
-const zeroExApi = ZeroExApiArbitrumSwapQuote
+const rpcUrl = LocalhostProviderUrlArbitrum
+const swapQuoteProvider = IndexZeroExSwapQuoteProviderArbitrum
 
 const { eth, usdc } = QuoteTokens
 
@@ -36,8 +37,8 @@ describe('LeveragedQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
-      provider,
-      zeroExApi
+      rpcUrl,
+      swapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -69,8 +70,8 @@ describe('LeveragedQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
-      provider,
-      zeroExApi
+      rpcUrl,
+      swapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -102,8 +103,8 @@ describe('LeveragedQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
-      provider,
-      zeroExApi
+      rpcUrl,
+      swapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -141,8 +142,8 @@ describe('LeveragedQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
-      provider,
-      zeroExApi
+      rpcUrl,
+      swapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
