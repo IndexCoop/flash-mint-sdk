@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import {
   getMainnetTestFactory,
-  LocalhostProvider,
   QuoteTokens,
   SignerAccount2,
   TestFactory,
@@ -14,9 +13,8 @@ const { btc2xfli, eth, usdc } = QuoteTokens
 describe('BTC2xFLI (mainnet)', () => {
   let factory: TestFactory
   beforeEach(() => {
-    const provider = LocalhostProvider
     const signer = SignerAccount2
-    factory = getMainnetTestFactory(provider, signer)
+    factory = getMainnetTestFactory(signer)
   })
 
   test('can mint BTC2xFLI', async () => {

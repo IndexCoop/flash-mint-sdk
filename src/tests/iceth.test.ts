@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import {
   getMainnetTestFactory,
-  LocalhostProvider,
   QuoteTokens,
   SignerAccount4,
   TestFactory,
@@ -15,9 +14,8 @@ const { eth, iceth, weth } = QuoteTokens
 describe('icETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProvider
     const signer = SignerAccount4
-    factory = getMainnetTestFactory(provider, signer)
+    factory = getMainnetTestFactory(signer)
   })
 
   test('can mint icETH-ETH', async () => {

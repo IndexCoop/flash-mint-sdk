@@ -1,7 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
-import { LocalhostProvider, QuoteTokens } from 'tests/utils'
+import {
+  LocalhostProvider,
+  LocalhostProviderUrl,
+  QuoteTokens,
+} from 'tests/utils'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
@@ -9,6 +13,7 @@ import { FlashMintZeroExBuildRequest, ZeroExTransactionBuilder } from './zeroex'
 
 const chainId = 1
 const provider = LocalhostProvider
+const rpcUrl = LocalhostProviderUrl
 
 const { dseth, usdc } = QuoteTokens
 
@@ -31,7 +36,7 @@ describe('ZeroExTransactionBuilder()', () => {
   test('returns null for invalid request (no index token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.indexToken = ''
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -39,7 +44,7 @@ describe('ZeroExTransactionBuilder()', () => {
   test('returns null for invalid request (no input/output token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputOutputToken = ''
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -47,7 +52,7 @@ describe('ZeroExTransactionBuilder()', () => {
   test('returns null for invalid request (indexTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.indexTokenAmount = BigNumber.from(0)
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -55,7 +60,7 @@ describe('ZeroExTransactionBuilder()', () => {
   test('returns null for invalid request (inputOutputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputOutputTokenAmount = BigNumber.from(0)
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -63,7 +68,7 @@ describe('ZeroExTransactionBuilder()', () => {
   test('returns null for invalid request (no component quotes)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.componentQuotes = []
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -79,7 +84,7 @@ describe('ZeroExTransactionBuilder()', () => {
       issuanceModule.address,
       issuanceModule.isDebtIssuance
     )
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintZeroExMainnetAddress)
@@ -96,7 +101,7 @@ describe('ZeroExTransactionBuilder()', () => {
       issuanceModule.isDebtIssuance,
       { value: buildRequest.inputOutputTokenAmount }
     )
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintZeroExMainnetAddress)
@@ -115,7 +120,7 @@ describe('ZeroExTransactionBuilder()', () => {
       issuanceModule.address,
       issuanceModule.isDebtIssuance
     )
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintZeroExMainnetAddress)
@@ -132,7 +137,7 @@ describe('ZeroExTransactionBuilder()', () => {
       issuanceModule.address,
       issuanceModule.isDebtIssuance
     )
-    const builder = new ZeroExTransactionBuilder(provider)
+    const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintZeroExMainnetAddress)

@@ -2,7 +2,6 @@ import { wei } from 'utils/numbers'
 
 import {
   getMainnetTestFactory,
-  LocalhostProvider,
   QuoteTokens,
   SignerAccount0,
   TestFactory,
@@ -15,9 +14,8 @@ const { eth, gtcETH, weth } = QuoteTokens
 describe.skip('gtcETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProvider
     const signer = SignerAccount0
-    factory = getMainnetTestFactory(provider, signer)
+    factory = getMainnetTestFactory(signer)
   })
 
   test('minting with ETH', async () => {

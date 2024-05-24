@@ -2,7 +2,6 @@ import {
   addLiquidityToLido,
   balanceOf,
   getMainnetTestFactory,
-  LocalhostProvider,
   QuoteTokens,
   SignerAccount3,
   TestFactory,
@@ -18,9 +17,8 @@ const { dseth, eth, reth, seth2, steth, usdc, weth, wseth } = QuoteTokens
 describe('dsETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProvider
     const signer = SignerAccount3
-    factory = getMainnetTestFactory(provider, signer)
+    factory = getMainnetTestFactory(signer)
   })
 
   test.only('minting with ETH', async () => {
