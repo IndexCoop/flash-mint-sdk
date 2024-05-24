@@ -101,13 +101,9 @@ export class FlashMintQuoteProvider
             'Contract type requires SwapQuoteProvider to be defined'
           )
         }
-        if (!zeroExApiV1) {
-          throw new Error('Contract type requires ZeroExApiV1 to be defined')
-        }
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
           provider,
-          swapQuoteProvider,
-          zeroExApiV1
+          swapQuoteProvider
         )
         const leveragedQuote = await leveragedQuoteProvider.getQuote(request)
         if (!leveragedQuote) return null

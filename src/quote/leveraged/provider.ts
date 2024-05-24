@@ -19,7 +19,6 @@ import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import { Exchange, SwapData } from 'utils/swapData'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
-import { ZeroExApi } from 'utils/0x'
 import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 
 export interface FlashMintLeveragedQuoteRequest {
@@ -51,14 +50,13 @@ export class LeveragedQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
-    private readonly swapQuoteProvider: SwapQuoteProvider,
-    private readonly zeroExApi: ZeroExApi
+    private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintLeveragedQuoteRequest
   ): Promise<FlashMintLeveragedQuote | null> {
-    const { provider, zeroExApi } = this
+    const { provider } = this
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -242,9 +240,9 @@ export class LeveragedQuoteProvider
         quoteRequest.inputAmount = paymentTokenAmount.toString()
       }
       const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
-      if (result) {
+      if (result && result.swapData) {
         const { inputAmount, outputAmount, swapData } = result
-        swapDataPaymentToken = swapData!
+        swapDataPaymentToken = swapData
         paymentTokenAmount = isMinting
           ? BigNumber.from(inputAmount)
           : BigNumber.from(outputAmount)

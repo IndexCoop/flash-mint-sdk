@@ -10,14 +10,12 @@ import {
   IndexZeroExSwapQuoteProvider,
   LocalhostProvider,
   QuoteTokens,
-  ZeroExApiSwapQuote,
 } from 'tests/utils'
 
 import { LeveragedQuoteProvider } from './provider'
 
 const provider = LocalhostProvider
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
-const zeroExApi = ZeroExApiSwapQuote
 
 const { eth, iceth } = QuoteTokens
 
@@ -38,8 +36,7 @@ describe('LeveragedQuoteProvider()', () => {
     }
     const quoteProvider = new LeveragedQuoteProvider(
       provider,
-      swapQuoteProvider,
-      zeroExApi
+      swapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -69,8 +66,7 @@ describe('LeveragedQuoteProvider()', () => {
     }
     const quoteProvider = new LeveragedQuoteProvider(
       provider,
-      swapQuoteProvider,
-      zeroExApi
+      swapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()

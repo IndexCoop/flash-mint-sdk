@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ZeroExApiSwapQuote } from 'tests/utils'
 import { Exchange } from 'utils'
 
 import {
@@ -8,8 +7,6 @@ import {
   getSwapData,
   swapDataFrom0xQuote,
 } from './swap-data'
-
-const zeroExApi = ZeroExApiSwapQuote
 
 describe('getEchangeFrom0xKey()', () => {
   test('returns null if 0x key undefined', async () => {

@@ -164,7 +164,7 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
 
   // Returns a comma separated string of sources to be included for 0x API calls
   private getIncludedSources(sources: Exchange[]): string {
-    let includedSources: string[] = []
+    const includedSources: string[] = []
     if (sources.includes(Exchange.Curve)) {
       includedSources.push(get0xEchangeKey(Exchange.Curve))
     }
