@@ -245,8 +245,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       provider,
-      undefined,
-      ZeroExApiSwapQuote
+      zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()

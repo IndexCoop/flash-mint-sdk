@@ -14,7 +14,6 @@ import {
   MATIC,
   stETH,
 } from 'constants/tokens'
-import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 import {
   getLeveragedTokenData,
   LeveragedTokenData,
@@ -24,6 +23,7 @@ import { Exchange, SwapData } from 'utils/swapData'
 
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
+import { SwapQuoteProvider, SwapQuoteRequest } from '../swap'
 
 export interface FlashMintLeveragedQuoteRequest {
   isMinting: boolean

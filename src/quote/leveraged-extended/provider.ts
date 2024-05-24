@@ -2,21 +2,16 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
-import { ZeroExApi } from 'utils/0x'
-import { getLeveragedTokenData } from 'utils/leveraged-token-data'
-import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
-  Exchange,
-  getSwapDataCollateralDebt,
-  getSwapDataDebtCollateral,
-  getSwapData,
-  SwapData,
-} from 'utils/swapData'
+  getLeveragedTokenData,
+  LeveragedTokenData,
+} from 'utils/leveraged-token-data'
+import { slippageAdjustedTokenAmount } from 'utils/slippage'
+import { Exchange, SwapData } from 'utils/swapData'
 
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
-
-import { getIncludedSources } from './utils/zeroex'
+import { SwapQuoteProvider, SwapQuoteRequest } from '../swap'
 
 export interface FlashMintLeveragedExtendedQuoteRequest {
   isMinting: boolean
@@ -44,18 +39,18 @@ export class LeveragedExtendedQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
-    private readonly zeroExApi: ZeroExApi
+    private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintLeveragedExtendedQuoteRequest
   ): Promise<FlashMintLeveragedExtendedQuote | null> {
-    const { provider, zeroExApi } = this
+    const { provider } = this
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
-    const includedSources = getIncludedSources()
+    const sources = [Exchange.Sushiswap, Exchange.UniV3]
     const network = await provider.getNetwork()
     const chainId = network.chainId
     console.log('chainId:', chainId)
@@ -69,19 +64,17 @@ export class LeveragedExtendedQuoteProvider
     )
     if (leveragedTokenData === null) return null
     const debtCollateralResult = isMinting
-      ? await getSwapDataDebtCollateral(
+      ? await this.getSwapDataDebtToCollateral(
           leveragedTokenData,
-          includedSources,
+          sources,
           slippage,
-          chainId,
-          zeroExApi
+          chainId
         )
-      : await getSwapDataCollateralDebt(
+      : await this.getSwapDataCollateralToDebt(
           leveragedTokenData,
-          includedSources,
+          sources,
           slippage,
-          chainId,
-          zeroExApi
+          chainId
         )
     if (!debtCollateralResult) return null
     const { collateralObtainedOrSold } = debtCollateralResult
@@ -99,7 +92,7 @@ export class LeveragedExtendedQuoteProvider
       isMinting ? inputToken.symbol : outputToken.symbol
     )
     const { swapDataPaymentToken, paymentTokenAmount } =
-      await getSwapDataAndPaymentTokenAmount(
+      await this.getSwapDataAndPaymentTokenAmount(
         indexTokenSymbol,
         leveragedTokenData.collateralToken,
         collateralShortfall,
@@ -107,8 +100,7 @@ export class LeveragedExtendedQuoteProvider
         inputOutputTokenAddress,
         isMinting,
         slippage,
-        includedSources,
-        zeroExApi,
+        sources,
         chainId
       )
 
@@ -131,6 +123,118 @@ export class LeveragedExtendedQuoteProvider
       swapDataPaymentToken,
     }
   }
+
+  // Used for redeeming (buy debt, sell collateral)
+  // Returns collateral amount needed to be sold
+  private async getSwapDataCollateralToDebt(
+    leveragedTokenData: LeveragedTokenData,
+    includeSources: Exchange[],
+    slippage: number,
+    chainId: number
+  ) {
+    const quoteRequest: SwapQuoteRequest = {
+      chainId,
+      inputToken: leveragedTokenData.collateralToken,
+      outputToken: leveragedTokenData.debtToken,
+      outputAmount: leveragedTokenData.debtAmount.toString(),
+      slippage,
+      sources: includeSources,
+    }
+    const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+    if (!result || !result.swapData) return null
+    const { inputAmount, swapData } = result
+    const collateralSold = BigNumber.from(inputAmount)
+    return {
+      swapDataDebtCollateral: swapData,
+      collateralObtainedOrSold: collateralSold,
+    }
+  }
+
+  // Used for minting (buy collateral, sell debt)
+  // Returns collateral amount bought
+  private async getSwapDataDebtToCollateral(
+    leveragedTokenData: LeveragedTokenData,
+    includeSources: Exchange[],
+    slippage: number,
+    chainId: number
+  ) {
+    const quoteRequest: SwapQuoteRequest = {
+      chainId,
+      inputToken: leveragedTokenData.debtToken,
+      outputToken: leveragedTokenData.collateralToken,
+      inputAmount: leveragedTokenData.debtAmount.toString(),
+      slippage,
+      sources: includeSources,
+    }
+    const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+    if (!result || !result.swapData) return null
+    const { outputAmount, swapData } = result
+    const collateralObtained = BigNumber.from(outputAmount)
+    return {
+      swapDataDebtCollateral: swapData,
+      collateralObtainedOrSold: collateralObtained,
+    }
+  }
+
+  private async getSwapDataAndPaymentTokenAmount(
+    setTokenSymbol: string,
+    collateralToken: string,
+    collateralShortfall: BigNumber,
+    leftoverCollateral: BigNumber,
+    paymentTokenAddress: string,
+    isMinting: boolean,
+    slippage: number,
+    includeSources: Exchange[],
+    chainId: number
+  ): Promise<{
+    swapDataPaymentToken: SwapData
+    paymentTokenAmount: BigNumber
+  }> {
+    // By default the input/output swap data can be empty (as it will be ignored)
+    let swapDataPaymentToken: SwapData = {
+      exchange: Exchange.None,
+      path: [
+        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000000',
+      ],
+      fees: [],
+      pool: '0x0000000000000000000000000000000000000000',
+    }
+
+    // Default if collateral token should be equal to payment token
+    let paymentTokenAmount = isMinting
+      ? collateralShortfall
+      : leftoverCollateral
+
+    // Only fetch input/output swap data if collateral token is not the same as payment token
+    if (
+      collateralToken !== paymentTokenAddress &&
+      setTokenSymbol !== InterestCompoundingETHIndex.symbol
+    ) {
+      const quoteRequest: SwapQuoteRequest = {
+        inputToken: isMinting ? paymentTokenAddress : collateralToken,
+        outputToken: isMinting ? collateralToken : paymentTokenAddress,
+        chainId,
+        slippage,
+        sources: includeSources,
+      }
+      if (isMinting) {
+        quoteRequest.outputAmount = paymentTokenAmount.toString()
+      } else {
+        quoteRequest.inputAmount = paymentTokenAmount.toString()
+      }
+      const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+      if (result && result.swapData) {
+        const { inputAmount, outputAmount, swapData } = result
+        swapDataPaymentToken = swapData
+        paymentTokenAmount = isMinting
+          ? BigNumber.from(inputAmount)
+          : BigNumber.from(outputAmount)
+      }
+    }
+
+    return { swapDataPaymentToken, paymentTokenAmount }
+  }
 }
 
 function getPaymentTokenAddress(
@@ -141,70 +245,4 @@ function getPaymentTokenAddress(
     return 'ETH'
   }
   return paymentTokenAddress
-}
-
-async function getSwapDataAndPaymentTokenAmount(
-  setTokenSymbol: string,
-  collateralToken: string,
-  collateralShortfall: BigNumber,
-  leftoverCollateral: BigNumber,
-  paymentTokenAddress: string,
-  isMinting: boolean,
-  slippage: number,
-  includedSources: string,
-  zeroExApi: ZeroExApi,
-  chainId: number
-): Promise<{
-  swapDataPaymentToken: SwapData
-  paymentTokenAmount: BigNumber
-}> {
-  // By default the input/output swap data can be empty (as it will be ignored)
-  let swapDataPaymentToken: SwapData = {
-    exchange: Exchange.None,
-    path: [
-      '0x0000000000000000000000000000000000000000',
-      '0x0000000000000000000000000000000000000000',
-    ],
-    fees: [],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
-
-  const issuanceParams = {
-    buyToken: collateralToken,
-    buyAmount: collateralShortfall.toString(),
-    sellToken: paymentTokenAddress,
-    includedSources,
-  }
-
-  const redeemingParams = {
-    buyToken: paymentTokenAddress,
-    sellAmount: leftoverCollateral.toString(),
-    sellToken: collateralToken,
-    includedSources,
-  }
-
-  // Default if collateral token should be equal to payment token
-  let paymentTokenAmount = isMinting ? collateralShortfall : leftoverCollateral
-
-  // Only fetch input/output swap data if collateral token is not the same as payment token
-  if (
-    collateralToken !== paymentTokenAddress &&
-    setTokenSymbol !== InterestCompoundingETHIndex.symbol
-  ) {
-    const result = await getSwapData(
-      isMinting ? issuanceParams : redeemingParams,
-      slippage,
-      chainId,
-      zeroExApi
-    )
-    if (result) {
-      const { swapData, zeroExQuote } = result
-      swapDataPaymentToken = swapData
-      paymentTokenAmount = isMinting
-        ? BigNumber.from(zeroExQuote.sellAmount)
-        : BigNumber.from(zeroExQuote.buyAmount)
-    }
-  }
-
-  return { swapDataPaymentToken, paymentTokenAmount }
 }

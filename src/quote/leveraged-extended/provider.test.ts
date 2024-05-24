@@ -3,16 +3,17 @@ import { noopSwapData } from 'constants/swapdata'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
+
 import {
+  IndexZeroExSwapQuoteProviderArbitrum,
   LocalhostProviderArbitrum,
   QuoteTokens,
-  ZeroExApiArbitrumSwapQuote,
 } from 'tests/utils'
 
 import { LeveragedExtendedQuoteProvider } from './provider'
 
 const provider = LocalhostProviderArbitrum
-const zeroExApi = ZeroExApiArbitrumSwapQuote
+const zeroExApi = IndexZeroExSwapQuoteProviderArbitrum
 
 const { eth, usdc } = QuoteTokens
 
