@@ -9,7 +9,7 @@ export interface SwapQuote {
   outputAmount: string
   callData: string
   slippage: number
-  swapData: SwapData
+  swapData: SwapData | null
 }
 
 export interface SwapQuoteRequest {

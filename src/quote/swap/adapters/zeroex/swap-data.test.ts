@@ -36,12 +36,7 @@ describe('getEchangeFrom0xKey()', () => {
 
 describe('getSwapData()', () => {
   test('fails with null', async () => {
-    const swapData = await getSwapData(
-      { buyToken: '', sellToken: '' },
-      0.5,
-      1,
-      zeroExApi
-    )
+    const swapData = await getSwapData(null)
     expect(swapData).toBeNull()
   })
 })

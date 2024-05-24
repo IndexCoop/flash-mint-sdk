@@ -6,7 +6,8 @@ import {
   SwapQuoteProvider,
   SwapQuoteRequest,
 } from 'quote/swap/interfaces'
-import { Exchange } from 'utils'
+
+import { getSwapData } from './swap-data'
 
 type ZeroExApiSwapRequest = {
   buyAmount?: string
@@ -123,6 +124,7 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
     try {
       const response = await axios.get(url, config)
       const res: ZeroExApiSwapResponse = response.data
+      const swapData = await getSwapData(res)
       return {
         chainId,
         inputToken,
@@ -131,13 +133,7 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
         outputAmount: res.buyAmount,
         callData: res.data,
         slippage: slippage ?? 0,
-        // TODO: add swap data
-        swapData: {
-          exchange: Exchange.UniV3,
-          path: ['', ''],
-          fees: [300],
-          pool: '0x0000000000000000000000000000000000000000',
-        },
+        swapData,
       }
     } catch (err: unknown) {
       return null

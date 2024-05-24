@@ -1,97 +1,73 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
-import { LeveragedTokenData } from 'quote/leveraged'
 import { decodePool, extractPoolFees } from 'utils/UniswapPath'
 import { Exchange, SwapData } from 'utils'
 
 import {
-  ZeroExApi,
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
   ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 
-// Used for redeeming (buy debt, sell collateral)
-// Returns collateral amount needed to be sold
-export const getSwapDataCollateralDebt = async (
-  leveragedTokenData: LeveragedTokenData,
-  includedSources: string,
-  slippage: number,
-  chainId: number,
-  zeroExApi: ZeroExApi
-) => {
-  const result = await getSwapData(
-    {
-      buyToken: leveragedTokenData.debtToken,
-      buyAmount: leveragedTokenData.debtAmount.toString(),
-      sellToken: leveragedTokenData.collateralToken,
-      includedSources,
-    },
-    slippage,
-    chainId,
-    zeroExApi
-  )
-  if (!result || !result.zeroExQuote) return null
-  const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-  const collateralSold = BigNumber.from(zeroExQuote.sellAmount)
-  return { swapDataDebtCollateral, collateralObtainedOrSold: collateralSold }
-}
+// TODO:
+// // Used for redeeming (buy debt, sell collateral)
+// // Returns collateral amount needed to be sold
+// export const getSwapDataCollateralDebt = async (
+//   leveragedTokenData: LeveragedTokenData,
+//   includedSources: string,
+//   slippage: number,
+//   chainId: number,
+//   zeroExApi: ZeroExApi
+// ) => {
+//   const result = await getSwapData(
+//     {
+//       buyToken: leveragedTokenData.debtToken,
+//       buyAmount: leveragedTokenData.debtAmount.toString(),
+//       sellToken: leveragedTokenData.collateralToken,
+//       includedSources,
+//     },
+//     slippage,
+//     chainId,
+//     zeroExApi
+//   )
+//   if (!result || !result.zeroExQuote) return null
+//   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
+//   const collateralSold = BigNumber.from(zeroExQuote.sellAmount)
+//   return { swapDataDebtCollateral, collateralObtainedOrSold: collateralSold }
+// }
 
-// Used for minting (buy collateral, sell debt)
-// Returns collateral amount bought
-export const getSwapDataDebtCollateral = async (
-  leveragedTokenData: LeveragedTokenData,
-  includedSources: string,
-  slippage: number,
-  chainId: number,
-  zeroExApi: ZeroExApi
-) => {
-  const result = await getSwapData(
-    {
-      buyToken: leveragedTokenData.collateralToken,
-      sellAmount: leveragedTokenData.debtAmount.toString(),
-      sellToken: leveragedTokenData.debtToken,
-      includedSources,
-    },
-    slippage,
-    chainId,
-    zeroExApi
-  )
-  if (!result || !result.zeroExQuote) return null
-  const { swapData: swapDataDebtCollateral, zeroExQuote } = result
-  const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
-  return {
-    swapDataDebtCollateral,
-    collateralObtainedOrSold: collateralObtained,
-  }
-}
-
-interface SwapDataParams {
-  buyToken: string
-  buyAmount?: string
-  sellAmount?: string
-  sellToken: string
-  includedSources?: string
-}
+// // Used for minting (buy collateral, sell debt)
+// // Returns collateral amount bought
+// export const getSwapDataDebtCollateral = async (
+//   leveragedTokenData: LeveragedTokenData,
+//   includedSources: string,
+//   slippage: number,
+//   chainId: number,
+//   zeroExApi: ZeroExApi
+// ) => {
+//   const result = await getSwapData(
+//     {
+//       buyToken: leveragedTokenData.collateralToken,
+//       sellAmount: leveragedTokenData.debtAmount.toString(),
+//       sellToken: leveragedTokenData.debtToken,
+//       includedSources,
+//     },
+//     slippage,
+//     chainId,
+//     zeroExApi
+//   )
+//   if (!result || !result.zeroExQuote) return null
+//   const { swapData: swapDataDebtCollateral, zeroExQuote } = result
+//   const collateralObtained = BigNumber.from(zeroExQuote.buyAmount)
+//   return {
+//     swapDataDebtCollateral,
+//     collateralObtainedOrSold: collateralObtained,
+//   }
+// }
 
 export const getSwapData = async (
-  params: SwapDataParams,
-  slippage: number,
-  chainId: number,
-  zeroExApi: ZeroExApi
+  zeroExQuote: ZeroExApiSwapResponse | null
 ) => {
-  // TODO: error handling (for INSUFFICIENT_ASSET_LIQUIDITY)
-  const zeroExQuote = await zeroExApi.getSwapQuote(
-    {
-      ...params,
-      slippagePercentage: slippage / 100,
-    },
-    chainId
-  )
   if (!zeroExQuote) return null
-  const swapData = swapDataFrom0xQuote(zeroExQuote)
-  if (swapData) return { swapData, zeroExQuote }
-  return null
+  return swapDataFrom0xQuote(zeroExQuote)
 }
 
 export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
@@ -159,20 +135,6 @@ export function swapDataFrom0xQuote(
     pool: '0x0000000000000000000000000000000000000000',
   }
 }
-
-// Not used at the moment
-// function swapDataFromBalancer(
-//   order: ZeroExApiSwapResponseOrderBalancer
-// ): SwapData | null {
-//   const fillData = order.fillData
-//   if (!fillData) return null
-//   return {
-//     exchange: Exchange.BalancerV2,
-//     path: fillData.assets,
-//     fees: [],
-//     pool: fillData.vault,
-//   }
-// }
 
 function swapDataFromCurve(order: ZeroExApiSwapResponseOrder): SwapData | null {
   const fillData = order.fillData
