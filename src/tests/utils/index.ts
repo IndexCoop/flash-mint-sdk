@@ -9,7 +9,6 @@ import { Wallet } from '@ethersproject/wallet'
 
 import { WETH } from 'constants/tokens'
 import { ZeroExSwapQuoteProvider } from 'quote'
-import { ZeroExApi } from 'utils/0x'
 import { TestFactory } from './factories'
 
 export { wei } from 'utils/numbers'
@@ -130,20 +129,8 @@ export const IndexZeroExSwapQuoteProvider = new ZeroExSwapQuoteProvider(
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
   '/mainnet/swap/v1/quote'
 )
-export const ZeroExApiSwapQuote = new ZeroExApi(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/mainnet/swap/v1/quote'
-)
 
 export const IndexZeroExSwapQuoteProviderArbitrum = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/arbitrum/swap/v1/quote'
-)
-export const ZeroExApiArbitrumSwapQuote = new ZeroExApi(
   index0xApiBaseUrl,
   '',
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },

@@ -19,7 +19,7 @@ import {
   LeveragedTokenData,
 } from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
-import { Exchange, SwapData } from 'utils/swapData'
+import { Exchange, SwapData } from 'utils'
 
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'

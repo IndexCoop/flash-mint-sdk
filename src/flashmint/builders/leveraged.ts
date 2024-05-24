@@ -2,8 +2,8 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { getFlashMintLeveragedContractForToken } from '../../utils/contracts'
-import { Exchange, SwapData } from '../../utils/swapData'
+import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { Exchange, SwapData } from 'utils'
 import { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
