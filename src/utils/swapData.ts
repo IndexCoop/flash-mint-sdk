@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { LeveragedTokenData } from '../quote/leveraged'
+import { LeveragedTokenData } from 'utils/leveraged-token-data'
+
 import {
   ZeroExApi,
   ZeroExApiSwapResponse,
