@@ -20,12 +20,12 @@ import {
   Exchange,
   getSwapDataCollateralDebt,
   getSwapDataDebtCollateral,
-  getSwapData,
   SwapData,
 } from 'utils/swapData'
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 import { ZeroExApi } from 'utils/0x'
+import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 
 export interface FlashMintLeveragedQuoteRequest {
   isMinting: boolean
@@ -56,6 +56,7 @@ export class LeveragedQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
+    private readonly swapQuoteProvider: SwapQuoteProvider,
     private readonly zeroExApi: ZeroExApi
   ) {}
 
@@ -119,7 +120,7 @@ export class LeveragedQuoteProvider
       chainId
     )
     const { swapDataPaymentToken, paymentTokenAmount } =
-      await getSwapDataAndPaymentTokenAmount(
+      await this.getSwapDataAndPaymentTokenAmount(
         indexTokenSymbol,
         leveragedTokenData.collateralToken,
         collateralShortfall,
@@ -128,7 +129,6 @@ export class LeveragedQuoteProvider
         isMinting,
         slippage,
         includedSources,
-        zeroExApi,
         chainId
       )
 
@@ -148,6 +148,75 @@ export class LeveragedQuoteProvider
       swapDataDebtCollateral,
       swapDataPaymentToken,
     }
+  }
+
+  private async getSwapDataAndPaymentTokenAmount(
+    setTokenSymbol: string,
+    collateralToken: string,
+    collateralShortfall: BigNumber,
+    leftoverCollateral: BigNumber,
+    paymentTokenAddress: string,
+    isMinting: boolean,
+    slippage: number,
+    includedSources: string,
+    chainId: number
+  ): Promise<{
+    swapDataPaymentToken: SwapData
+    paymentTokenAmount: BigNumber
+  }> {
+    // By default the input/output swap data can be empty (as it will be ignored)
+    let swapDataPaymentToken: SwapData = {
+      exchange: Exchange.None,
+      path: [
+        '0x0000000000000000000000000000000000000000',
+        '0x0000000000000000000000000000000000000000',
+      ],
+      fees: [],
+      pool: '0x0000000000000000000000000000000000000000',
+    }
+
+    // Default if collateral token should be equal to payment token
+    let paymentTokenAmount = isMinting
+      ? collateralShortfall
+      : leftoverCollateral
+
+    // Only fetch input/output swap data if collateral token is not the same as payment token
+    if (
+      collateralToken !== paymentTokenAddress &&
+      setTokenSymbol !== InterestCompoundingETHIndex.symbol
+    ) {
+      // TODO: sources
+      const quoteRequest: SwapQuoteRequest = {
+        inputToken: isMinting ? paymentTokenAddress : collateralToken,
+        outputToken: isMinting ? collateralToken : paymentTokenAddress,
+        chainId,
+        slippage,
+      }
+      if (isMinting) {
+        quoteRequest.outputAmount = paymentTokenAmount.toString()
+      } else {
+        quoteRequest.inputAmount = paymentTokenAmount.toString()
+      }
+      const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+      if (result) {
+        const { inputAmount, outputAmount, swapData } = result
+        swapDataPaymentToken = swapData!
+        paymentTokenAmount = isMinting
+          ? BigNumber.from(inputAmount)
+          : BigNumber.from(outputAmount)
+      }
+    }
+
+    if (setTokenSymbol === InterestCompoundingETHIndex.symbol) {
+      const outputTokenSymbol =
+        paymentTokenAddress === stETH.address ? stETH.symbol : ETH.symbol
+      // Just use the static versions here
+      swapDataPaymentToken = isMinting
+        ? inputSwapData[setTokenSymbol][outputTokenSymbol]
+        : outputSwapData[setTokenSymbol][ETH.symbol]
+    }
+
+    return { swapDataPaymentToken, paymentTokenAmount }
   }
 }
 
@@ -226,79 +295,4 @@ function getPaymentTokenAddress(
   }
 
   return paymentTokenAddress
-}
-
-async function getSwapDataAndPaymentTokenAmount(
-  setTokenSymbol: string,
-  collateralToken: string,
-  collateralShortfall: BigNumber,
-  leftoverCollateral: BigNumber,
-  paymentTokenAddress: string,
-  isMinting: boolean,
-  slippage: number,
-  includedSources: string,
-  zeroExApi: ZeroExApi,
-  chainId: number
-): Promise<{
-  swapDataPaymentToken: SwapData
-  paymentTokenAmount: BigNumber
-}> {
-  // By default the input/output swap data can be empty (as it will be ignored)
-  let swapDataPaymentToken: SwapData = {
-    exchange: Exchange.None,
-    path: [
-      '0x0000000000000000000000000000000000000000',
-      '0x0000000000000000000000000000000000000000',
-    ],
-    fees: [],
-    pool: '0x0000000000000000000000000000000000000000',
-  }
-
-  const issuanceParams = {
-    buyToken: collateralToken,
-    buyAmount: collateralShortfall.toString(),
-    sellToken: paymentTokenAddress,
-    includedSources,
-  }
-
-  const redeemingParams = {
-    buyToken: paymentTokenAddress,
-    sellAmount: leftoverCollateral.toString(),
-    sellToken: collateralToken,
-    includedSources,
-  }
-
-  // Default if collateral token should be equal to payment token
-  let paymentTokenAmount = isMinting ? collateralShortfall : leftoverCollateral
-
-  // Only fetch input/output swap data if collateral token is not the same as payment token
-  if (
-    collateralToken !== paymentTokenAddress &&
-    setTokenSymbol !== InterestCompoundingETHIndex.symbol
-  ) {
-    const result = await getSwapData(
-      isMinting ? issuanceParams : redeemingParams,
-      slippage,
-      chainId,
-      zeroExApi
-    )
-    if (result) {
-      const { swapData, zeroExQuote } = result
-      swapDataPaymentToken = swapData
-      paymentTokenAmount = isMinting
-        ? BigNumber.from(zeroExQuote.sellAmount)
-        : BigNumber.from(zeroExQuote.buyAmount)
-    }
-  }
-
-  if (setTokenSymbol === InterestCompoundingETHIndex.symbol) {
-    const outputTokenSymbol =
-      paymentTokenAddress === stETH.address ? stETH.symbol : ETH.symbol
-    // Just use the static versions here
-    swapDataPaymentToken = isMinting
-      ? inputSwapData[setTokenSymbol][outputTokenSymbol]
-      : outputSwapData[setTokenSymbol][ETH.symbol]
-  }
-
-  return { swapDataPaymentToken, paymentTokenAmount }
 }
