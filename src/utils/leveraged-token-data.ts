@@ -3,7 +3,13 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 
-import { LeveragedTokenData } from '../provider'
+export interface LeveragedTokenData {
+  collateralAToken: string
+  collateralToken: string
+  debtToken: string
+  collateralAmount: BigNumber
+  debtAmount: BigNumber
+}
 
 export async function getLeveragedTokenData(
   indexTokenAddress: string,

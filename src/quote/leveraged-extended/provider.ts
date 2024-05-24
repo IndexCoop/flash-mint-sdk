@@ -3,6 +3,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
 import { ZeroExApi } from 'utils/0x'
+import { getLeveragedTokenData } from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import {
   Exchange,
@@ -15,7 +16,6 @@ import {
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
 
-import { getLeveragedTokenData } from './utils/data'
 import { getIncludedSources } from './utils/zeroex'
 
 export interface FlashMintLeveragedExtendedQuoteRequest {

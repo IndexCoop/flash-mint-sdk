@@ -14,12 +14,16 @@ import {
   MATIC,
   stETH,
 } from 'constants/tokens'
-import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
+import {
+  getLeveragedTokenData,
+  LeveragedTokenData,
+} from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import { Exchange, SwapData } from 'utils/swapData'
+
 import { QuoteProvider } from '../quoteProvider'
 import { QuoteToken } from '../quoteToken'
-import { SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 
 export interface FlashMintLeveragedQuoteRequest {
   isMinting: boolean
@@ -34,14 +38,6 @@ export interface FlashMintLeveragedQuote {
   inputOutputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
-}
-
-export interface LeveragedTokenData {
-  collateralAToken: string
-  collateralToken: string
-  debtToken: string
-  collateralAmount: BigNumber
-  debtAmount: BigNumber
 }
 
 export class LeveragedQuoteProvider
@@ -65,7 +61,7 @@ export class LeveragedQuoteProvider
     const sources = getSourcesToInclude(isIcEth)
     const network = await provider.getNetwork()
     const chainId = network.chainId
-    const leveragedTokenData = await getLevTokenData(
+    const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
       indexTokenAmount,
       indexTokenSymbol,
@@ -267,32 +263,6 @@ function getSourcesToInclude(isIcEth: boolean): Exchange[] {
   return isIcEth
     ? [Exchange.Curve]
     : [Exchange.Quickswap, Exchange.Sushiswap, Exchange.UniV3]
-}
-
-async function getLevTokenData(
-  setTokenAddress: string,
-  setTokenAmount: BigNumber,
-  setTokenSymbol: string,
-  isIssuance: boolean,
-  chainId: number,
-  provider: JsonRpcProvider
-): Promise<LeveragedTokenData | null> {
-  try {
-    const contract = getFlashMintLeveragedContractForToken(
-      setTokenSymbol,
-      provider,
-      chainId
-    )
-    return await contract.getLeveragedTokenData(
-      setTokenAddress,
-      setTokenAmount,
-      isIssuance
-    )
-  } catch (error) {
-    // TODO: should this just always fail cause it means there is something wrongly configured?
-    console.error('Error getting leveraged token data', error)
-    return null
-  }
 }
 
 function getPaymentTokenAddress(
