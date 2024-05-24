@@ -10,7 +10,11 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import { LocalhostProvider, QuoteTokens } from 'tests/utils'
+import {
+  LocalhostProvider,
+  LocalhostProviderUrl,
+  QuoteTokens,
+} from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import {
@@ -20,6 +24,7 @@ import {
 
 const chainId = 1
 const provider = LocalhostProvider
+const rpcUrl = LocalhostProviderUrl
 
 const { iceth, icreth, reth, usdc } = QuoteTokens
 
@@ -41,7 +46,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (no index token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.indexToken = ''
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -49,7 +54,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (no input/output token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputOutputToken = ''
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -57,7 +62,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (indexTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.indexTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -65,7 +70,7 @@ describe('LeveragedTransactionBuilder()', () => {
   test('returns null for invalid request (inputOutputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputOutputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -78,7 +83,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [],
       pool: '',
     }
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -91,7 +96,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [],
       pool: '0x0000000000000000000000000000000000000000',
     }
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -105,7 +110,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [3000],
       pool: '0x0000000000000000000000000000000000000000',
     }
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -118,7 +123,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [500],
       pool: '0x00000000000000000000000000000000000000',
     }
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -131,7 +136,7 @@ describe('LeveragedTransactionBuilder()', () => {
       fees: [500],
       pool: '0x0000000000000000000000000000000000000000',
     }
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).not.toBeNull()
   })
@@ -146,7 +151,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataPaymentToken
     )
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(ExchangeIssuanceLeveragedMainnetAddress)
@@ -162,7 +167,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataPaymentToken,
       { value: buildRequest.inputOutputTokenAmount }
     )
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(ExchangeIssuanceLeveragedMainnetAddress)
@@ -195,7 +200,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataPaymentToken
     )
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedAddress)
@@ -212,7 +217,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataPaymentToken
     )
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(ExchangeIssuanceLeveragedMainnetAddress)
@@ -228,7 +233,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataPaymentToken
     )
-    const builder = new LeveragedTransactionBuilder(provider)
+    const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(ExchangeIssuanceLeveragedMainnetAddress)

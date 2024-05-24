@@ -6,6 +6,8 @@ export function getAddressForToken(
   chainId: number | undefined
 ): string | undefined {
   switch (chainId) {
+    case ChainId.Arbitrum:
+      return token.addressArbitrum
     case ChainId.Mainnet:
       return token.address
     case ChainId.Optimism:

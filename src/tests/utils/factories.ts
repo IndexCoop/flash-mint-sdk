@@ -84,11 +84,12 @@ export class TestFactory {
   private quoteProvider: FlashMintQuoteProvider
   private txFactory: TxTestFactory
   constructor(
-    provider: JsonRpcProvider,
+    rpcUrl: string,
     signer: Wallet,
     swapQuoteProvider: SwapQuoteProvider
   ) {
-    this.quoteProvider = new FlashMintQuoteProvider(provider, swapQuoteProvider)
+    const provider = new JsonRpcProvider(rpcUrl)
+    this.quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)
     this.txFactory = new TxTestFactory(provider, signer)
   }
 

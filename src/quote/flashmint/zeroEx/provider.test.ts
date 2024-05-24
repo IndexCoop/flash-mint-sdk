@@ -2,13 +2,14 @@ import 'dotenv/config'
 
 import {
   IndexZeroExSwapQuoteProvider,
-  LocalhostProvider,
+  LocalhostProviderUrl,
   QuoteTokens,
 } from 'tests/utils'
 import { wei } from 'utils'
+
 import { ZeroExQuoteProvider } from './provider'
 
-const provider = LocalhostProvider
+const rpcUrl = LocalhostProviderUrl
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 const { dpi, dseth, eth, mvi } = QuoteTokens
@@ -22,7 +23,7 @@ describe('ZeroExQuoteProvider', () => {
     const indexTokenAmount = wei(1)
     const inputToken = eth
     const outputToken = dseth
-    const quoteProvider = new ZeroExQuoteProvider(provider, swapQuoteProvider)
+    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote({
       isMinting: true,
       inputToken,
@@ -41,7 +42,7 @@ describe('ZeroExQuoteProvider', () => {
     const indexTokenAmount = wei(1)
     const inputToken = dseth
     const outputToken = eth
-    const quoteProvider = new ZeroExQuoteProvider(provider, swapQuoteProvider)
+    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote({
       isMinting: false,
       inputToken,
@@ -71,7 +72,7 @@ describe('ZeroExQuoteProvider', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ZeroExQuoteProvider(provider, swapQuoteProvider)
+    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.componentQuotes.length).toBeGreaterThan(0)
@@ -90,7 +91,7 @@ describe('ZeroExQuoteProvider', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ZeroExQuoteProvider(provider, swapQuoteProvider)
+    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.componentQuotes.length).toBeGreaterThan(0)
@@ -109,7 +110,7 @@ describe('ZeroExQuoteProvider', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ZeroExQuoteProvider(provider, swapQuoteProvider)
+    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.componentQuotes.length).toBeGreaterThan(0)
@@ -128,7 +129,7 @@ describe('ZeroExQuoteProvider', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new ZeroExQuoteProvider(provider, swapQuoteProvider)
+    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.componentQuotes.length).toBeGreaterThan(0)

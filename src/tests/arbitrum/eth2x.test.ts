@@ -21,7 +21,7 @@ describe('ETH2X (Arbitrum)', () => {
   beforeEach(async () => {
     const provider = LocalhostProviderArbitrum
     const signer = getSignerAccount(0, provider)
-    factory = getArbitrumTestFactory(provider, signer)
+    factory = getArbitrumTestFactory(signer)
   })
 
   test('can mint with ETH', async () => {

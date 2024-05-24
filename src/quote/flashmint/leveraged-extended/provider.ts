@@ -1,31 +1,18 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ChainId } from 'constants/chains'
-import {
-  collateralDebtSwapData,
-  debtCollateralSwapData,
-  inputSwapData,
-  outputSwapData,
-} from 'constants/swapdata'
-import {
-  ETH,
-  InterestCompoundingETHIndex,
-  MATIC,
-  stETH,
-} from 'constants/tokens'
+import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
 import {
   getLeveragedTokenData,
   LeveragedTokenData,
 } from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
-import { Exchange, SwapData } from 'utils/swapData'
+import { Exchange, SwapData } from 'utils'
 
-import { QuoteProvider } from '../quoteProvider'
-import { QuoteToken } from '../quoteToken'
-import { SwapQuoteProvider, SwapQuoteRequest } from '../swap'
+import { QuoteProvider, QuoteToken } from '../../interfaces'
+import { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
+import { getRpcProvider } from 'utils/rpc-provider'
 
-export interface FlashMintLeveragedQuoteRequest {
+export interface FlashMintLeveragedExtendedQuoteRequest {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
@@ -33,34 +20,39 @@ export interface FlashMintLeveragedQuoteRequest {
   slippage: number
 }
 
-export interface FlashMintLeveragedQuote {
+export interface FlashMintLeveragedExtendedQuote {
+  inputTokenAmount: BigNumber
+  outputTokenAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
 }
 
-export class LeveragedQuoteProvider
+export class LeveragedExtendedQuoteProvider
   implements
-    QuoteProvider<FlashMintLeveragedQuoteRequest, FlashMintLeveragedQuote>
+    QuoteProvider<
+      FlashMintLeveragedExtendedQuoteRequest,
+      FlashMintLeveragedExtendedQuote
+    >
 {
   constructor(
-    private readonly provider: JsonRpcProvider,
+    private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
-    request: FlashMintLeveragedQuoteRequest
-  ): Promise<FlashMintLeveragedQuote | null> {
-    const { provider } = this
-    const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
+    request: FlashMintLeveragedExtendedQuoteRequest
+  ): Promise<FlashMintLeveragedExtendedQuote | null> {
+    const provider = getRpcProvider(this.rpcUrl)
+    const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
-    const isIcEth = indexTokenSymbol === InterestCompoundingETHIndex.symbol
-    const sources = getSourcesToInclude(isIcEth)
+    const sources = [Exchange.Sushiswap, Exchange.UniV3]
     const network = await provider.getNetwork()
     const chainId = network.chainId
+    console.log('chainId:', chainId)
     const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
       indexTokenAmount,
@@ -85,13 +77,7 @@ export class LeveragedQuoteProvider
         )
     if (!debtCollateralResult) return null
     const { collateralObtainedOrSold } = debtCollateralResult
-    let { swapDataDebtCollateral } = debtCollateralResult
-    if (isIcEth) {
-      // Just using the static versions for icETH
-      swapDataDebtCollateral = isMinting
-        ? debtCollateralSwapData[indexTokenSymbol]
-        : collateralDebtSwapData[indexTokenSymbol]
-    }
+    const { swapDataDebtCollateral } = debtCollateralResult
     // Relevant when issuing
     const collateralShortfall = leveragedTokenData.collateralAmount.sub(
       collateralObtainedOrSold
@@ -101,9 +87,8 @@ export class LeveragedQuoteProvider
       collateralObtainedOrSold
     )
     const inputOutputTokenAddress = getPaymentTokenAddress(
-      isMinting ? inputToken : outputToken,
-      isMinting,
-      chainId
+      isMinting ? inputToken.address : outputToken.address,
+      isMinting ? inputToken.symbol : outputToken.symbol
     )
     const { swapDataPaymentToken, paymentTokenAmount } =
       await this.getSwapDataAndPaymentTokenAmount(
@@ -129,6 +114,8 @@ export class LeveragedQuoteProvider
       isMinting
     )
     return {
+      inputTokenAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+      outputTokenAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
       indexTokenAmount,
       inputOutputTokenAmount,
       swapDataDebtCollateral,
@@ -245,47 +232,16 @@ export class LeveragedQuoteProvider
       }
     }
 
-    if (setTokenSymbol === InterestCompoundingETHIndex.symbol) {
-      const outputTokenSymbol =
-        paymentTokenAddress === stETH.address ? stETH.symbol : ETH.symbol
-      // Just use the static versions here
-      swapDataPaymentToken = isMinting
-        ? inputSwapData[setTokenSymbol][outputTokenSymbol]
-        : outputSwapData[setTokenSymbol][ETH.symbol]
-    }
-
     return { swapDataPaymentToken, paymentTokenAmount }
   }
 }
 
-// Returns an array of sources to be included when requesting a swap quote
-function getSourcesToInclude(isIcEth: boolean): Exchange[] {
-  return isIcEth
-    ? [Exchange.Curve]
-    : [Exchange.Quickswap, Exchange.Sushiswap, Exchange.UniV3]
-}
-
 function getPaymentTokenAddress(
-  paymentToken: QuoteToken,
-  isMinting: boolean,
-  chainId: number
+  paymentTokenAddress: string,
+  paymentTokenSymbol: string
 ): string {
-  if (paymentToken.symbol === ETH.symbol) {
+  if (paymentTokenSymbol === ETH.symbol) {
     return 'ETH'
   }
-
-  if (
-    paymentToken.symbol === InterestCompoundingETHIndex.symbol &&
-    !isMinting
-  ) {
-    /* eslint-disable @typescript-eslint/no-non-null-assertion */
-    return stETH.address!
-  }
-
-  if (chainId === ChainId.Polygon && paymentToken.symbol === MATIC.symbol) {
-    const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
-    return WMATIC_ADDRESS
-  }
-
-  return paymentToken.address!
+  return paymentTokenAddress
 }

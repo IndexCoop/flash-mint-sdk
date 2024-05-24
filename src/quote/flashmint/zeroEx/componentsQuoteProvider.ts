@@ -1,8 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { QuoteToken } from '../quoteToken'
 import { SwapQuote, SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 import { Exchange } from 'utils'
+
+import { QuoteToken } from '../../interfaces'
 
 export type ComponentQuotesResult = {
   componentQuotes: string[]

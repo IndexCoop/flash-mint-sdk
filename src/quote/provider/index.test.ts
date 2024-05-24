@@ -13,6 +13,8 @@ import {
   IndexZeroExSwapQuoteProviderArbitrum,
   LocalhostProvider,
   LocalhostProviderArbitrum,
+  LocalhostProviderUrl,
+  LocalhostProviderUrlArbitrum,
   QuoteTokens,
 } from 'tests/utils'
 
@@ -22,6 +24,7 @@ import {
   FlashMintQuoteRequest,
 } from '.'
 
+const rpcUrl = LocalhostProviderUrl
 const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
@@ -43,7 +46,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      provider,
+      rpcUrl,
       zeroexSwapQuoteProvider
     )
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
@@ -60,7 +63,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.1,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      provider,
+      rpcUrl,
       zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
@@ -95,7 +98,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      provider,
+      rpcUrl,
       zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
@@ -130,7 +133,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      provider,
+      rpcUrl,
       zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
@@ -171,7 +174,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      arbitrumProvider,
+      LocalhostProviderUrlArbitrum,
       IndexZeroExSwapQuoteProviderArbitrum
     )
     const quote = await quoteProvider.getQuote(request)
@@ -212,7 +215,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      arbitrumProvider,
+      LocalhostProviderUrlArbitrum,
       IndexZeroExSwapQuoteProviderArbitrum
     )
     const quote = await quoteProvider.getQuote(request)
@@ -248,7 +251,7 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      provider,
+      rpcUrl,
       zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)

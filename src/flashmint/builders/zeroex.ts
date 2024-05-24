@@ -1,6 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
+
+import { getRpcProvider } from 'utils/rpc-provider'
 
 import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
 import { getIssuanceModule } from '../../utils/issuanceModules'
@@ -22,13 +23,14 @@ export class ZeroExTransactionBuilder
   implements
     TransactionBuilder<FlashMintZeroExBuildRequest, TransactionRequest>
 {
-  constructor(private readonly provider: JsonRpcProvider) {}
+  constructor(private readonly rpcUrl: string) {}
 
   async build(
     request: FlashMintZeroExBuildRequest
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
+    const provider = getRpcProvider(this.rpcUrl)
     const {
       componentQuotes,
       indexToken,
@@ -39,13 +41,13 @@ export class ZeroExTransactionBuilder
       inputOutputTokenAmount,
       isMinting,
     } = request
-    const network = await this.provider.getNetwork()
+    const network = await provider.getNetwork()
     const chainId = network.chainId
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
     const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
     const contract = getFlashMintZeroExContractForToken(
       indexTokenSymbol,
-      this.provider,
+      provider,
       chainId
     )
     if (isMinting) {

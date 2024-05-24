@@ -9,7 +9,6 @@ import { Wallet } from '@ethersproject/wallet'
 
 import { WETH } from 'constants/tokens'
 import { ZeroExSwapQuoteProvider } from 'quote'
-import { ZeroExApi } from 'utils/0x'
 import { TestFactory } from './factories'
 
 export { wei } from 'utils/numbers'
@@ -25,17 +24,25 @@ export const AlchemyProvider = new JsonRpcProvider(
 )
 
 // Hardhat
-export const LocalhostProvider = new JsonRpcProvider('http://127.0.0.1:8545/')
+export const LocalhostProviderUrl = 'http://127.0.0.1:8545/'
+export const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
+export const LocalhostProvider = new JsonRpcProvider(LocalhostProviderUrl)
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
-  'http://127.0.0.1:8548/'
+  LocalhostProviderUrlArbitrum
 )
 
 // Pre-configured TestFactories
-export function getArbitrumTestFactory(provider: JsonRpcProvider, signer: any) {
-  return new TestFactory(provider, signer, IndexZeroExSwapQuoteProviderArbitrum)
+export function getArbitrumTestFactory(
+  signer: any,
+  rpcUrl: string = LocalhostProviderUrlArbitrum
+) {
+  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderArbitrum)
 }
-export function getMainnetTestFactory(provider: JsonRpcProvider, signer: any) {
-  return new TestFactory(provider, signer, IndexZeroExSwapQuoteProvider)
+export function getMainnetTestFactory(
+  signer: any,
+  rpcUrl: string = LocalhostProviderUrl
+) {
+  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProvider)
 }
 
 export function getSignerAccount(num = 0, provider: JsonRpcProvider) {
@@ -130,20 +137,8 @@ export const IndexZeroExSwapQuoteProvider = new ZeroExSwapQuoteProvider(
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
   '/mainnet/swap/v1/quote'
 )
-export const ZeroExApiSwapQuote = new ZeroExApi(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/mainnet/swap/v1/quote'
-)
 
 export const IndexZeroExSwapQuoteProviderArbitrum = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/arbitrum/swap/v1/quote'
-)
-export const ZeroExApiArbitrumSwapQuote = new ZeroExApi(
   index0xApiBaseUrl,
   '',
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
