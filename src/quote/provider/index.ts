@@ -58,8 +58,8 @@ export class FlashMintQuoteProvider
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
-    const provider = new JsonRpcProvider(this.rpcUrl)
-    const { swapQuoteProvider } = this
+    const { rpcUrl, swapQuoteProvider } = this
+    const provider = new JsonRpcProvider(rpcUrl)
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -78,7 +78,7 @@ export class FlashMintQuoteProvider
         )
         const leveragedQuote = await leveragedQuoteProvider.getQuote(request)
         if (!leveragedQuote) return null
-        const builder = new LeveragedTransactionBuilder(provider)
+        const builder = new LeveragedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedBuildRequest = {
           isMinting,
           indexToken: indexToken.address,
@@ -112,7 +112,7 @@ export class FlashMintQuoteProvider
         const leveragedExtendedQuote =
           await leverageExtendedQuoteProvider.getQuote(request)
         if (!leveragedExtendedQuote) return null
-        const builder = new LeveragedExtendedTransactionBuilder(provider)
+        const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedExtendedBuildRequest = {
           isMinting,
           inputToken: inputToken.address,
@@ -151,7 +151,7 @@ export class FlashMintQuoteProvider
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote(request)
         if (!zeroExQuote) return null
-        const builder = new ZeroExTransactionBuilder(provider)
+        const builder = new ZeroExTransactionBuilder(rpcUrl)
         const txRequest: FlashMintZeroExBuildRequest = {
           isMinting,
           indexToken: indexToken.address,

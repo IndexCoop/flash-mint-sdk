@@ -1,9 +1,10 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
+import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, SwapData } from 'utils'
+
 import { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
@@ -23,13 +24,14 @@ export class LeveragedTransactionBuilder
   implements
     TransactionBuilder<FlashMintLeveragedBuildRequest, TransactionRequest>
 {
-  constructor(private readonly provider: JsonRpcProvider) {}
+  constructor(private readonly rpcUrl: string) {}
 
   async build(
     request: FlashMintLeveragedBuildRequest
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
+    const provider = getRpcProvider(this.rpcUrl)
     const {
       indexToken,
       indexTokenSymbol,
@@ -41,12 +43,12 @@ export class LeveragedTransactionBuilder
       swapDataDebtCollateral,
       swapDataPaymentToken,
     } = request
-    const network = await this.provider.getNetwork()
+    const network = await provider.getNetwork()
     const chainId = network.chainId
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
     const contract = getFlashMintLeveragedContractForToken(
       indexTokenSymbol,
-      this.provider,
+      provider,
       chainId
     )
     if (isMinting) {
