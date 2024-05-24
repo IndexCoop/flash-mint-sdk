@@ -25,7 +25,7 @@ import {
 const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
-const { cdeti, dseth, eth, eth2x, iceth, mvi, usdc } = QuoteTokens
+const { cdeti, dseth, eth, eth2x, iceth, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
