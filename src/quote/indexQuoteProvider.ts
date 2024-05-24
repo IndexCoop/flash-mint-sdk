@@ -41,7 +41,6 @@ import { ZeroExQuoteProvider } from './zeroEx'
 export enum FlashMintContractType {
   leveraged,
   leveragedExtended,
-  erc4626,
   zeroEx,
 }
 
