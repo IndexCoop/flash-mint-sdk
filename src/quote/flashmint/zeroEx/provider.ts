@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { WETH } from 'constants/tokens'
+import { getRpcProvider } from 'utils/rpc-provider'
 import {
   getAddressForToken,
   getFlashMintZeroExContractForToken,
@@ -31,14 +32,15 @@ export class ZeroExQuoteProvider
   implements QuoteProvider<FlashMintZeroExQuoteRequest, FlashMintZeroExQuote>
 {
   constructor(
-    private readonly provider: JsonRpcProvider,
+    private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintZeroExQuoteRequest
   ): Promise<FlashMintZeroExQuote | null> {
-    const { provider, swapQuoteProvider } = this
+    const { rpcUrl, swapQuoteProvider } = this
+    const provider = getRpcProvider(rpcUrl)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken

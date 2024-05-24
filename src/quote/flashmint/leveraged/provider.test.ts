@@ -8,13 +8,13 @@ import {
 import { wei } from 'utils/numbers'
 import {
   IndexZeroExSwapQuoteProvider,
-  LocalhostProvider,
+  LocalhostProviderUrl,
   QuoteTokens,
 } from 'tests/utils'
 
 import { LeveragedQuoteProvider } from './provider'
 
-const provider = LocalhostProvider
+const rpcUrl = LocalhostProviderUrl
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 const { eth, iceth } = QuoteTokens
@@ -34,10 +34,7 @@ describe('LeveragedQuoteProvider()', () => {
       indexTokenAmount,
       slippage: 0.5,
     }
-    const quoteProvider = new LeveragedQuoteProvider(
-      provider,
-      swapQuoteProvider
-    )
+    const quoteProvider = new LeveragedQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
@@ -64,10 +61,7 @@ describe('LeveragedQuoteProvider()', () => {
       indexTokenAmount,
       slippage: 0.5,
     }
-    const quoteProvider = new LeveragedQuoteProvider(
-      provider,
-      swapQuoteProvider
-    )
+    const quoteProvider = new LeveragedQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)

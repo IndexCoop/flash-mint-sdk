@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
 import {
@@ -11,6 +10,7 @@ import { Exchange, SwapData } from 'utils'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
 import { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 export interface FlashMintLeveragedExtendedQuoteRequest {
   isMinting: boolean
@@ -37,14 +37,14 @@ export class LeveragedExtendedQuoteProvider
     >
 {
   constructor(
-    private readonly provider: JsonRpcProvider,
+    private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintLeveragedExtendedQuoteRequest
   ): Promise<FlashMintLeveragedExtendedQuote | null> {
-    const { provider } = this
+    const provider = getRpcProvider(this.rpcUrl)
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken

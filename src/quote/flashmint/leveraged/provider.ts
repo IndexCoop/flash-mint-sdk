@@ -1,5 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ChainId } from 'constants/chains'
 import {
@@ -18,6 +17,7 @@ import {
   getLeveragedTokenData,
   LeveragedTokenData,
 } from 'utils/leveraged-token-data'
+import { getRpcProvider } from 'utils/rpc-provider'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import { Exchange, SwapData } from 'utils'
 
@@ -44,14 +44,14 @@ export class LeveragedQuoteProvider
     QuoteProvider<FlashMintLeveragedQuoteRequest, FlashMintLeveragedQuote>
 {
   constructor(
-    private readonly provider: JsonRpcProvider,
+    private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintLeveragedQuoteRequest
   ): Promise<FlashMintLeveragedQuote | null> {
-    const { provider } = this
+    const provider = getRpcProvider(this.rpcUrl)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken

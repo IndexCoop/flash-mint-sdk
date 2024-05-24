@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import {
   FlashMintLeveragedBuildRequest,
@@ -19,6 +18,7 @@ import { QuoteProvider, QuoteToken } from '../interfaces'
 import { SwapQuoteProvider } from '../swap'
 
 import { getContractType } from './utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 export enum FlashMintContractType {
   leveraged,
@@ -59,7 +59,7 @@ export class FlashMintQuoteProvider
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
     const { rpcUrl, swapQuoteProvider } = this
-    const provider = new JsonRpcProvider(rpcUrl)
+    const provider = getRpcProvider(rpcUrl)
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -73,7 +73,7 @@ export class FlashMintQuoteProvider
     switch (contractType) {
       case FlashMintContractType.leveraged: {
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
-          provider,
+          rpcUrl,
           swapQuoteProvider
         )
         const leveragedQuote = await leveragedQuoteProvider.getQuote(request)
@@ -108,7 +108,7 @@ export class FlashMintQuoteProvider
       }
       case FlashMintContractType.leveragedExtended: {
         const leverageExtendedQuoteProvider =
-          new LeveragedExtendedQuoteProvider(provider, swapQuoteProvider)
+          new LeveragedExtendedQuoteProvider(rpcUrl, swapQuoteProvider)
         const leveragedExtendedQuote =
           await leverageExtendedQuoteProvider.getQuote(request)
         if (!leveragedExtendedQuote) return null
@@ -146,7 +146,7 @@ export class FlashMintQuoteProvider
       }
       case FlashMintContractType.zeroEx: {
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
-          provider,
+          rpcUrl,
           swapQuoteProvider
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote(request)
