@@ -69,14 +69,15 @@ export class FlashMintQuoteProvider
   implements QuoteProvider<FlashMintQuoteRequest, FlashMintQuote>
 {
   constructor(
-    private readonly provider: JsonRpcProvider,
+    private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
-    const { provider, swapQuoteProvider } = this
+    const provider = new JsonRpcProvider(this.rpcUrl)
+    const { swapQuoteProvider } = this
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken

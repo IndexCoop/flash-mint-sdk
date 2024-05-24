@@ -21,7 +21,7 @@ describe('iBTC1X (Arbitrum)', () => {
   beforeEach(async () => {
     const provider = LocalhostProviderArbitrum
     const signer = getSignerAccount(4, provider)
-    factory = getArbitrumTestFactory(provider, signer)
+    factory = getArbitrumTestFactory(signer)
   })
 
   test('can mint with ETH', async () => {

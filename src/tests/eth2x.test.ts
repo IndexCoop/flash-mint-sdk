@@ -1,6 +1,5 @@
 import {
   getMainnetTestFactory,
-  LocalhostProvider,
   QuoteTokens,
   SignerAccount4,
   TestFactory,
@@ -12,9 +11,8 @@ const { eth, eth2x } = QuoteTokens
 describe('ETH2X (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProvider
     const signer = SignerAccount4
-    factory = getMainnetTestFactory(provider, signer)
+    factory = getMainnetTestFactory(signer)
   })
 
   test('can mint with ETH', async () => {

@@ -1,6 +1,5 @@
 import {
   getMainnetTestFactory,
-  LocalhostProvider,
   QuoteTokens,
   SignerAccount5,
   TestFactory,
@@ -13,9 +12,8 @@ const { cdeti, eth, usdc } = QuoteTokens
 describe('cdETI (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProvider
     const signer = SignerAccount5
-    factory = getMainnetTestFactory(provider, signer)
+    factory = getMainnetTestFactory(signer)
   })
 
   test('minting with ETH', async () => {
