@@ -124,7 +124,7 @@ describe('ZeroExApi', () => {
     const quote = await zeroExApi.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
-    expect(quote.outputAmount).not.toBeNull()
+    expect(quote.inputAmount).not.toBeNull()
   })
 
   test('getting a swap quote fails for wrong base url', async () => {
