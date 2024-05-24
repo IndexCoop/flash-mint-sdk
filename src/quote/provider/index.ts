@@ -31,12 +31,11 @@ import {
 } from 'flashmint'
 import { wei } from 'utils'
 
-import { LeveragedQuoteProvider } from './leveraged'
-import { LeveragedExtendedQuoteProvider } from './leveraged-extended'
-import { QuoteProvider } from './quoteProvider'
-import { QuoteToken } from './quoteToken'
-import { SwapQuoteProvider } from './swap'
-import { ZeroExQuoteProvider } from './zeroEx'
+import { LeveragedQuoteProvider } from '../flashmint/leveraged'
+import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
+import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
+import { QuoteProvider, QuoteToken } from '../interfaces'
+import { SwapQuoteProvider } from '../swap'
 
 export enum FlashMintContractType {
   leveraged,

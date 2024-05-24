@@ -21,9 +21,8 @@ import {
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import { Exchange, SwapData } from 'utils'
 
-import { QuoteProvider } from '../quoteProvider'
-import { QuoteToken } from '../quoteToken'
-import { SwapQuoteProvider, SwapQuoteRequest } from '../swap'
+import { QuoteProvider, QuoteToken } from '../../interfaces'
+import { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
 
 export interface FlashMintLeveragedQuoteRequest {
   isMinting: boolean

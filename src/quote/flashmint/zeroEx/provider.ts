@@ -8,10 +8,10 @@ import {
   getIssuanceModule,
   slippageAdjustedTokenAmount,
 } from 'utils'
-import { QuoteProvider } from '../quoteProvider'
-import { QuoteToken } from '../quoteToken'
+
+import { QuoteProvider, QuoteToken } from '../../interfaces'
+import { SwapQuoteProvider } from '../../swap'
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'
-import { SwapQuoteProvider } from 'quote/swap'
 
 export interface FlashMintZeroExQuoteRequest {
   isMinting: boolean
