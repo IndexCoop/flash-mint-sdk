@@ -42,7 +42,10 @@ describe('FlashMintQuoteProvider()', () => {
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
+    const quoteProvider = new FlashMintQuoteProvider(
+      provider,
+      zeroexSwapQuoteProvider
+    )
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
       'Index token not supported'
     )
@@ -263,21 +266,5 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(contract.address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
-  })
-
-  test('should fail if swap quote provider is undefined for contract type zeroEx', async () => {
-    const inputToken = usdc
-    const outputToken = mvi
-    const request: FlashMintQuoteRequest = {
-      isMinting: true,
-      inputToken,
-      outputToken,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
-    await expect(quoteProvider.getQuote(request)).rejects.toThrow(
-      'Contract type requires SwapQuoteProvider to be defined'
-    )
   })
 })
