@@ -70,7 +70,7 @@ export class FlashMintQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
-    private readonly swapQuoteProvider?: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
@@ -89,11 +89,6 @@ export class FlashMintQuoteProvider
     }
     switch (contractType) {
       case FlashMintContractType.leveraged: {
-        if (!swapQuoteProvider) {
-          throw new Error(
-            'Contract type requires SwapQuoteProvider to be defined'
-          )
-        }
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
           provider,
           swapQuoteProvider
@@ -129,11 +124,6 @@ export class FlashMintQuoteProvider
         }
       }
       case FlashMintContractType.leveragedExtended: {
-        if (!swapQuoteProvider) {
-          throw new Error(
-            'Contract type requires SwapQuoteProvider to be defined'
-          )
-        }
         const leverageExtendedQuoteProvider =
           new LeveragedExtendedQuoteProvider(provider, swapQuoteProvider)
         const leveragedExtendedQuote =
@@ -172,11 +162,6 @@ export class FlashMintQuoteProvider
         }
       }
       case FlashMintContractType.zeroEx: {
-        if (!swapQuoteProvider) {
-          throw new Error(
-            'Contract type requires SwapQuoteProvider to be defined'
-          )
-        }
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           provider,
           swapQuoteProvider
