@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { ZeroExSwapQuoteProvider } from 'quote/swap/adapters/zeroex'
+import { ZeroExSwapQuoteProvider } from './index'
 
 const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -105,7 +105,7 @@ describe('ZeroExApi', () => {
     const quote = await zeroExApi.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
-    expect(quote.sellAmount).not.toBeNull()
+    expect(quote.inputAmount).not.toBeNull()
   })
 
   test('getting a swap quote - when overriding the swap path', async () => {
@@ -124,7 +124,7 @@ describe('ZeroExApi', () => {
     const quote = await zeroExApi.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
-    expect(quote.sellAmount).not.toBeNull()
+    expect(quote.outputAmount).not.toBeNull()
   })
 
   test('getting a swap quote fails for wrong base url', async () => {
