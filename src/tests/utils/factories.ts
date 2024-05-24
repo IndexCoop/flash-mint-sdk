@@ -9,7 +9,6 @@ import {
   SwapQuoteProvider,
 } from 'quote'
 
-import { ZeroExApi } from 'utils'
 import { approveErc20, balanceOf } from './'
 
 class TxTestFactory {
@@ -87,14 +86,9 @@ export class TestFactory {
   constructor(
     provider: JsonRpcProvider,
     signer: Wallet,
-    swapQuoteProvider: SwapQuoteProvider,
-    zeroExApi: ZeroExApi
+    swapQuoteProvider: SwapQuoteProvider
   ) {
-    this.quoteProvider = new FlashMintQuoteProvider(
-      provider,
-      swapQuoteProvider,
-      zeroExApi
-    )
+    this.quoteProvider = new FlashMintQuoteProvider(provider, swapQuoteProvider)
     this.txFactory = new TxTestFactory(provider, signer)
   }
 

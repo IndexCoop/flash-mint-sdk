@@ -32,20 +32,10 @@ export const LocalhostProviderArbitrum = new JsonRpcProvider(
 
 // Pre-configured TestFactories
 export function getArbitrumTestFactory(provider: JsonRpcProvider, signer: any) {
-  return new TestFactory(
-    provider,
-    signer,
-    IndexZeroExSwapQuoteProviderArbitrum,
-    ZeroExApiArbitrumSwapQuote
-  )
+  return new TestFactory(provider, signer, IndexZeroExSwapQuoteProviderArbitrum)
 }
 export function getMainnetTestFactory(provider: JsonRpcProvider, signer: any) {
-  return new TestFactory(
-    provider,
-    signer,
-    IndexZeroExSwapQuoteProvider,
-    ZeroExApiSwapQuote
-  )
+  return new TestFactory(provider, signer, IndexZeroExSwapQuoteProvider)
 }
 
 export function getSignerAccount(num = 0, provider: JsonRpcProvider) {

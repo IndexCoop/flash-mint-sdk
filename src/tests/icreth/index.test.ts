@@ -8,27 +8,18 @@ import {
   transferFromWhale,
   wei,
   wrapETH,
-  ZeroExApiSwapQuote,
 } from '../utils'
-import {
-  mintQuoteUsdc1,
-  mintQuoteUsdc2,
-  redeemQuoteUsdc1,
-  redeemQuoteUsdc2,
-} from './quotes'
 
 const { eth, icreth, reth, usdc, weth } = QuoteTokens
 
 const signer = SignerAccount2
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
-const zeroExApi = ZeroExApiSwapQuote
-const zeroExMock = jest.spyOn(zeroExApi, 'getSwapQuote')
 
 describe('icRETH (mainnet) - ETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider
-    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider)
   })
 
   test('can mint icRETH', async () => {
@@ -58,7 +49,7 @@ describe.skip('icRETH (mainnet) - rETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider
-    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider)
   })
 
   test('can mint icRETH', async () => {
@@ -95,23 +86,8 @@ describe.skip('icRETH (mainnet) - rETH', () => {
 describe.skip('icRETH (mainnet) - USDC', () => {
   let factory: TestFactory
   beforeAll(async () => {
-    zeroExMock
-      .mockImplementationOnce(async () => {
-        return mintQuoteUsdc1
-      })
-      .mockImplementationOnce(async () => {
-        return mintQuoteUsdc2
-      })
-      .mockImplementationOnce(async () => {
-        return redeemQuoteUsdc1
-      })
-      .mockImplementationOnce(async () => {
-        return redeemQuoteUsdc2
-      })
-    const blockNumber = 17940000
     const provider = LocalhostProvider
-    await resetHardhat(provider, blockNumber)
-    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider)
   })
 
   test('can mint icRETH', async () => {
@@ -149,7 +125,7 @@ describe('icRETH (mainnet) - WETH', () => {
   let factory: TestFactory
   beforeAll(async () => {
     const provider = LocalhostProvider
-    factory = new TestFactory(provider, signer, swapQuoteProvider, zeroExApi)
+    factory = new TestFactory(provider, signer, swapQuoteProvider)
   })
 
   test('can mint icRETH', async () => {
