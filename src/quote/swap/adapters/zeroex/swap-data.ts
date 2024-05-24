@@ -1,14 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { LeveragedTokenData } from 'quote/leveraged'
+import { decodePool, extractPoolFees } from 'utils/UniswapPath'
+import { Exchange, SwapData } from 'utils'
+
 import {
   ZeroExApi,
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
   ZeroExApiSwapResponseOrderSushi,
-} from 'utils/0x'
-import { decodePool, extractPoolFees } from 'utils/UniswapPath'
-import { Exchange, SwapData } from 'utils'
+} from './0x'
 
 // Used for redeeming (buy debt, sell collateral)
 // Returns collateral amount needed to be sold
