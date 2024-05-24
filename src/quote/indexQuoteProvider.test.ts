@@ -3,18 +3,19 @@ import { ChainId } from 'constants/chains'
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import {
+  getFlashMintLeveragedContractForToken,
+  getFlashMintZeroExContractForToken,
+  wei,
+} from 'utils'
+
+import {
   IndexZeroExSwapQuoteProvider,
   IndexZeroExSwapQuoteProviderArbitrum,
   LocalhostProvider,
   LocalhostProviderArbitrum,
   QuoteTokens,
-  ZeroExApiSwapQuote,
 } from 'tests/utils'
-import {
-  getFlashMintLeveragedContractForToken,
-  getFlashMintZeroExContractForToken,
-  wei,
-} from 'utils'
+
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
@@ -146,7 +147,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.skip('returns a quote for minting ETH2X', async () => {
+  test('returns a quote for minting ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = usdc
     const outputToken = {
@@ -187,7 +188,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.skip('returns a quote for redeeming ETH2X', async () => {
+  test('returns a quote for redeeming ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = {
       address: IndexCoopEthereum2xIndex.addressArbitrum!,
@@ -262,22 +263,6 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(contract.address)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
-  })
-
-  test('should fail if zeroExApiV1 is undefined for contract type leveraged', async () => {
-    const inputToken = usdc
-    const outputToken = iceth
-    const request: FlashMintQuoteRequest = {
-      isMinting: true,
-      inputToken,
-      outputToken,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new FlashMintQuoteProvider(provider)
-    await expect(quoteProvider.getQuote(request)).rejects.toThrow(
-      'Contract type requires ZeroExApiV1 to be defined'
-    )
   })
 
   test('should fail if swap quote provider is undefined for contract type zeroEx', async () => {

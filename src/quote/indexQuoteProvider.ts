@@ -29,14 +29,14 @@ import {
   LeveragedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
-import { ZeroExApi, wei } from 'utils'
+import { wei } from 'utils'
 
 import { LeveragedQuoteProvider } from './leveraged'
 import { LeveragedExtendedQuoteProvider } from './leveraged-extended'
 import { QuoteProvider } from './quoteProvider'
 import { QuoteToken } from './quoteToken'
+import { SwapQuoteProvider } from './swap'
 import { ZeroExQuoteProvider } from './zeroEx'
-import { SwapQuoteProvider } from 'quote/swap'
 
 export enum FlashMintContractType {
   leveraged,
@@ -71,14 +71,13 @@ export class FlashMintQuoteProvider
 {
   constructor(
     private readonly provider: JsonRpcProvider,
-    private readonly swapQuoteProvider?: SwapQuoteProvider,
-    private readonly zeroExApiV1?: ZeroExApi
+    private readonly swapQuoteProvider?: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
-    const { provider, swapQuoteProvider, zeroExApiV1 } = this
+    const { provider, swapQuoteProvider } = this
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -88,11 +87,6 @@ export class FlashMintQuoteProvider
     const contractType = getContractType(indexToken.symbol, chainId)
     if (contractType === null) {
       throw new Error('Index token not supported')
-    }
-    if (requiresZeroExV1(contractType)) {
-      if (!zeroExApiV1) {
-        throw new Error('Contract type requires ZeroExApiV1 to be defined')
-      }
     }
     switch (contractType) {
       case FlashMintContractType.leveraged: {
@@ -136,11 +130,13 @@ export class FlashMintQuoteProvider
         }
       }
       case FlashMintContractType.leveragedExtended: {
-        if (!zeroExApiV1) {
-          throw new Error('Contract type requires ZeroExApiV1 to be defined')
+        if (!swapQuoteProvider) {
+          throw new Error(
+            'Contract type requires SwapQuoteProvider to be defined'
+          )
         }
         const leverageExtendedQuoteProvider =
-          new LeveragedExtendedQuoteProvider(provider, zeroExApiV1)
+          new LeveragedExtendedQuoteProvider(provider, swapQuoteProvider)
         const leveragedExtendedQuote =
           await leverageExtendedQuoteProvider.getQuote(request)
         if (!leveragedExtendedQuote) return null
@@ -256,10 +252,4 @@ function getContractType(
   )
     return FlashMintContractType.leveraged
   return null
-}
-
-function requiresZeroExV1(contractType: FlashMintContractType): boolean {
-  if (contractType === FlashMintContractType.leveraged) return true
-  if (contractType === FlashMintContractType.leveragedExtended) return true
-  return false
 }
