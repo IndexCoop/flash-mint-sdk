@@ -114,8 +114,7 @@ export class LeveragedQuoteProvider
       collateralObtainedOrSold
     )
     const inputOutputTokenAddress = getPaymentTokenAddress(
-      isMinting ? inputToken.address : outputToken.address,
-      isMinting ? inputToken.symbol : outputToken.symbol,
+      isMinting ? inputToken : outputToken,
       isMinting,
       chainId
     )
@@ -275,24 +274,26 @@ async function getLevTokenData(
 }
 
 function getPaymentTokenAddress(
-  paymentTokenAddress: string,
-  paymentTokenSymbol: string,
+  paymentToken: QuoteToken,
   isMinting: boolean,
   chainId: number
 ): string {
-  if (paymentTokenSymbol === ETH.symbol) {
+  if (paymentToken.symbol === ETH.symbol) {
     return 'ETH'
   }
 
-  if (paymentTokenSymbol === InterestCompoundingETHIndex.symbol && !isMinting) {
+  if (
+    paymentToken.symbol === InterestCompoundingETHIndex.symbol &&
+    !isMinting
+  ) {
     /* eslint-disable @typescript-eslint/no-non-null-assertion */
     return stETH.address!
   }
 
-  if (chainId === ChainId.Polygon && paymentTokenSymbol === MATIC.symbol) {
+  if (chainId === ChainId.Polygon && paymentToken.symbol === MATIC.symbol) {
     const WMATIC_ADDRESS = '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270'
     return WMATIC_ADDRESS
   }
 
-  return paymentTokenAddress
+  return paymentToken.address!
 }
