@@ -79,6 +79,8 @@ interface FlashMintQuote {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
+  inputAmount: BigNumber
+  outputAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputAmount: BigNumber
   slippage: number
