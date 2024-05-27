@@ -49,10 +49,10 @@ const outputToken: QuoteToken = {
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
 }
 
-// Add a RPC URL e.g. from Alchemy.
+// Add a RPC URL e.g. from Alchemy
 const rpcUrl = ''
-// Use the 0x swap quote provider configured to your needs to provide your own
-// adapter implementing `SwapQuoteProvider`.
+// Use the 0x swap quote provider configured to your needs e.g. custom base url -
+// or provide your own adapter implementing the `SwapQuoteProvider` interface
 const zeroexSwapQuoteProvider = new ZeroExSwapQuoteProvider()
 const quoteProvider = new FlashMintQuoteProvider(
   rpcUrl,
@@ -67,8 +67,8 @@ const quote = await quoteProvider.getQuote({
 })
 ```
 
-The returned quote is an object with meta data but most importantly the `inputOutputAmount`
-which is the quote for the given request and a `tx` object which is a tx object
+The returned quote is an object including meta data but most importantly the `inputOutputAmount`
+which is the quote for the given request\* and a `tx` object which is a tx object
 basically ready to be send.
 
 ```typescript
@@ -85,6 +85,8 @@ interface FlashMintQuote {
   tx: TransactionRequest
 }
 ```
+
+\* for minting this will be the input amount, for redeeming the output amount
 
 ## Flashmint
 
@@ -139,6 +141,6 @@ is still TBD. 🚧 In the meantime just open an issue.
 
 ## License
 
-Copyright © 2023 Index Coop.
+Copyright © 2024 Index Coop.
 
 [MIT License](./LICENSE)
