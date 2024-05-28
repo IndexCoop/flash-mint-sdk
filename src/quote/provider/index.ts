@@ -41,6 +41,8 @@ export interface FlashMintQuote {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
+  inputAmount: BigNumber
+  outputAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputAmount: BigNumber
   slippage: number
@@ -92,6 +94,7 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
+        const { inputOutputTokenAmount } = leveragedQuote
         return {
           chainId,
           contractType,
@@ -100,8 +103,10 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken,
           outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
           indexTokenAmount,
-          inputOutputAmount: leveragedQuote.inputOutputTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
           slippage,
           tx,
         }
@@ -130,6 +135,7 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
+        const { inputOutputTokenAmount } = leveragedExtendedQuote
         return {
           chainId,
           contractType,
@@ -138,8 +144,10 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken,
           outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
           indexTokenAmount,
-          inputOutputAmount: leveragedExtendedQuote.inputOutputTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
           slippage,
           tx,
         }
@@ -164,6 +172,7 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
+        const { inputOutputTokenAmount } = zeroExQuote
         return {
           chainId,
           contractType,
@@ -172,8 +181,10 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken,
           outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
           indexTokenAmount,
-          inputOutputAmount: zeroExQuote.inputOutputTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
           slippage,
           tx,
         }
