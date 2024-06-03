@@ -8,6 +8,7 @@ import {
   ETH,
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
@@ -21,7 +22,7 @@ import {
   stETH,
   wsETH2,
 } from 'constants/tokens'
-import { QuoteToken } from 'quote/quoteToken'
+import { QuoteToken } from 'quote/interfaces'
 
 const btc2x: QuoteToken = {
   address: IndexCoopBitcoin2xIndex.address!,
@@ -81,6 +82,12 @@ const gtcETH = {
   address: GitcoinStakedETHIndex.address!,
   decimals: 18,
   symbol: GitcoinStakedETHIndex.symbol,
+}
+
+const hyeth = {
+  address: HighYieldETHIndex.address!,
+  decimals: 18,
+  symbol: HighYieldETHIndex.symbol,
 }
 
 const iceth: QuoteToken = {
@@ -153,6 +160,7 @@ export const QuoteTokens = {
   eth2x,
   eth2xfli,
   gtcETH,
+  hyeth,
   iceth,
   icreth,
   mvi,
