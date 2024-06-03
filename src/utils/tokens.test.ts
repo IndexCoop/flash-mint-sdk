@@ -6,11 +6,14 @@ import { getAddressForToken } from './tokens'
 describe('getAddressForToken()', () => {
   test('returns correct addresses or undefined', async () => {
     const mainnetAddress = getAddressForToken(WETH, ChainId.Mainnet)
+    const arbitrumAddress = getAddressForToken(WETH, ChainId.Arbitrum)
     const optimismAddress = getAddressForToken(WETH, ChainId.Optimism)
     const polygonAddress = getAddressForToken(WETH, ChainId.Polygon)
     const unsupportedNetworkAddress = getAddressForToken(WETH, 100)
     expect(mainnetAddress).toBeDefined()
     expect(mainnetAddress).toEqual(WETH.address)
+    expect(arbitrumAddress).toBeDefined()
+    expect(arbitrumAddress).toEqual(WETH.addressArbitrum)
     expect(optimismAddress).toBeDefined()
     expect(optimismAddress).toEqual(WETH.addressOptimism)
     expect(polygonAddress).toBeDefined()

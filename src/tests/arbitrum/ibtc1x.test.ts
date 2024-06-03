@@ -1,12 +1,12 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { IndexCoopInverseBitcoinIndex } from 'constants/tokens'
 import {
+  getArbitrumTestFactory,
   getSignerAccount,
   LocalhostProviderArbitrum,
   QuoteTokens,
   TestFactory,
   wei,
-  ZeroExApiArbitrumSwapQuote,
 } from 'tests/utils'
 
 const { eth } = QuoteTokens
@@ -21,7 +21,7 @@ describe('iBTC1X (Arbitrum)', () => {
   beforeEach(async () => {
     const provider = LocalhostProviderArbitrum
     const signer = getSignerAccount(4, provider)
-    factory = new TestFactory(provider, signer, ZeroExApiArbitrumSwapQuote)
+    factory = getArbitrumTestFactory(signer)
   })
 
   test('can mint with ETH', async () => {

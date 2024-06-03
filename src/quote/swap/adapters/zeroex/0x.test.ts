@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { ZeroExApi } from 'utils/0x'
+import { ZeroExApi } from './0x'
 
 const DPI = '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'

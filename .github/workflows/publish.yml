@@ -45,4 +45,5 @@ jobs:
       - run: npm run hardhat & npm run test:iceth
       # - run: npm run hardhat & npm run test:icreth
       # run last - as it alters the block number
-      - run: npm run hardhat & npm run test:eth2xfli
+      # skip as it can't be minted or redeemed with 0x
+      # - run: npm run hardhat & npm run test:eth2xfli

@@ -1,6 +1,6 @@
 import axios, { AxiosRequestHeaders } from 'axios'
 
-import { ChainId } from '../constants/chains'
+import { ChainId } from 'constants/chains'
 
 export type ZeroExApiSwapRequest = {
   buyAmount?: string

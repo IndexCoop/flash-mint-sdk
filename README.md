@@ -1,6 +1,6 @@
-# Flash Mint SDK v2
+# Flash Mint SDK v3
 
-The Flash Mint SDK provides easy to use functions to integrate flashminting for
+The Flash Mint SDK provides easy to use functions to integrate flash minting for
 Index's products.
 
 ## The Contracts
@@ -29,27 +29,35 @@ specific FlashMint contracts.
 
 ### Quotes
 
-In v2 we made it way easier to fetch a quote. Meet the `FlashMintQuoteProvider`.
-This provider will now return the appropriate quotes for any Index token, automatically
-selecting the correct FlashMint contract for you.
+With v3, while you could still use other quote providers individually, we recommend
+solely using the `FlashMintQuoteProvider` which will do most of the guess work for you.
+This provider will return the appropriate quotes for any Index token, automatically
+selecting the correct FlashMint contract for you - as well as preparing the call data.
 
 ```typescript
-import { FlashMintQuoteProvider } from '@indexcoop/flash-mint-sdk'
+import { FlashMintQuoteProvider, QuoteToken } from '@indexcoop/flash-mint-sdk'
 
 // Input/output token should be of type QuoteToken with the following properties
-const inputToken = {
+const inputToken: QuoteToken = {
   symbol: 'ETH',
   decimals: 18,
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
 }
-const outputToken = {
+const outputToken: QuoteToken = {
   symbol: 'icETH',
   decimals: 18,
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
 }
 
-const rpcProvider = new JsonRpcProvider('')
-const quoteProvider = new FlashMintQuoteProvider(rpcProvider)
+// Add a RPC URL e.g. from Alchemy
+const rpcUrl = ''
+// Use the 0x swap quote provider configured to your needs e.g. custom base url -
+// or provide your own adapter implementing the `SwapQuoteProvider` interface
+const zeroexSwapQuoteProvider = new ZeroExSwapQuoteProvider()
+const quoteProvider = new FlashMintQuoteProvider(
+  rpcUrl,
+  zeroexSwapQuoteProvider
+)
 const quote = await quoteProvider.getQuote({
   isMinting: true,
   inputToken,
@@ -59,8 +67,8 @@ const quote = await quoteProvider.getQuote({
 })
 ```
 
-The returned quote is an object with meta data but most importantly the `inputOutputAmount`
-which is the quote for the given request and a `tx` object which is a tx object
+The returned quote is an object including meta data but most importantly the `inputOutputAmount`
+which is the quote for the given request\* and a `tx` object which is a tx object
 basically ready to be send.
 
 ```typescript
@@ -71,6 +79,8 @@ interface FlashMintQuote {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
+  inputAmount: BigNumber
+  outputAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputAmount: BigNumber
   slippage: number
@@ -78,52 +88,19 @@ interface FlashMintQuote {
 }
 ```
 
-You can still fetch quotes for individual FlashMint contracts e.g. using the `ZeroExQuoteProvider`.
-
-```typescript
-import { QuoteToken, ZeroExQuoteProvider } from '@indexcoop/flash-mint-sdk'
-
-// Input/output token should be of type QuoteToken with the following properties
-const inputToken: QuoteToken = {
-  symbol: 'ETH',
-  decimals: 18,
-  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-}
-const outputToken: QuoteToken = {
-  symbol: 'dsETH',
-  decimals: 18,
-  address: '0x341c05c0E9b33C0E38d64de76516b2Ce970bB3BE',
-}
-const rpcProvider = new JsonRpcProvider('')
-const quoteProvider = new ZeroExQuoteProvider(rpcProvider, zeroExApiV1)
-const quote = await quoteProvider.getQuote({
-  isMinting: true,
-  inputToken,
-  outputToken,
-  indexTokenAmount,
-  slippage: 0.1,
-})
-```
-
-The quote providers for the individual FlashMint contracts will return not just
-the `inputOutputAmount` but also the `swap data/component quotes`.
-
-```typescript
-interface FlashMintZeroExQuote {
-  componentQuotes: string[]
-  indexTokenAmount: BigNumber
-  inputOutputTokenAmount: BigNumber
-}
-```
+\* for minting this will be the input amount, for redeeming the output amount
 
 ## Flashmint
 
-To execute the flashminting of an Index for convenience use the `tx` object
+To execute the flash minting of an Index token for convenience use the `tx` object
 returned by the `FlashMintQuoteProvider`.
 
 ```typescript
 ...
-const quoteProvider = new FlashMintQuoteProvider(rpcProvider)
+const quoteProvider = new FlashMintQuoteProvider(
+      rpcUrl,
+      zeroexSwapQuoteProvider
+    )
 const quote = await quoteProvider.getQuote({...})
 let tx = quote.tx
 const gasEstimate = await provider.estimateGas(tx)
@@ -150,7 +127,7 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 1. add a test for determining the correct contract [here](./src/utils/contracts.test.ts)
 2. if there is a new FlashMint contract, add it as described [below](#adding-a-new-contract)
 3. additionally, add a test in [tests](./src/tests/)
-4. add symbol to `function getContractType(token: string)` in `FlashMintQuoteProvider`
+4. add symbol to `function getContractType(token: string)` in [src/quote/provider/utils.ts](./src/quote//provider/utils.ts) and add a test
 
 ### Adding a new contract
 
@@ -166,6 +143,6 @@ is still TBD. 🚧 In the meantime just open an issue.
 
 ## License
 
-Copyright © 2023 Index Coop.
+Copyright © 2024 Index Coop.
 
 [MIT License](./LICENSE)

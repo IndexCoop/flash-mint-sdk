@@ -1,22 +1,19 @@
 import {
-  LocalhostProvider,
+  getMainnetTestFactory,
   QuoteTokens,
   SignerAccount5,
   TestFactory,
   transferFromWhale,
   wei,
-  ZeroExApiSwapQuote,
 } from '../utils'
 
 const { cdeti, eth, usdc } = QuoteTokens
-const zeroExApi = ZeroExApiSwapQuote
 
 describe('cdETI (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProvider
     const signer = SignerAccount5
-    factory = new TestFactory(provider, signer, zeroExApi)
+    factory = getMainnetTestFactory(signer)
   })
 
   test('minting with ETH', async () => {

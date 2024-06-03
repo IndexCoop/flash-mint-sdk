@@ -1,5 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { Exchange } from '../utils/swapData'
+import { Exchange } from 'utils'
 import { ETH, InterestCompoundingETHIndex, stETH } from './tokens'
 
 export const noopSwapData: {

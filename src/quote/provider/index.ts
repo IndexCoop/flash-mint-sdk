@@ -1,26 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { ChainId } from 'constants/chains'
-import {
-  BanklessBEDIndex,
-  BTC2xFlexibleLeverageIndex,
-  CoinDeskEthTrendIndex,
-  DefiPulseIndex,
-  DiversifiedStakedETHIndex,
-  ETH2xFlexibleLeverageIndex,
-  GitcoinStakedETHIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
-  InterestCompoundingETHIndex,
-  LeveragedrEthStakingYield,
-  MetaverseIndex,
-} from 'constants/tokens'
 import {
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
@@ -29,18 +9,20 @@ import {
   LeveragedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
-import { ZeroExApi, wei } from 'utils'
+import { wei } from 'utils'
 
-import { LeveragedQuoteProvider } from './leveraged'
-import { LeveragedExtendedQuoteProvider } from './leveraged-extended'
-import { QuoteProvider } from './quoteProvider'
-import { QuoteToken } from './quoteToken'
-import { ZeroExQuoteProvider } from './zeroEx'
+import { LeveragedQuoteProvider } from '../flashmint/leveraged'
+import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
+import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
+import { QuoteProvider, QuoteToken } from '../interfaces'
+import { SwapQuoteProvider } from '../swap'
+
+import { getContractType } from './utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 export enum FlashMintContractType {
   leveraged,
   leveragedExtended,
-  erc4626,
   zeroEx,
 }
 
@@ -59,6 +41,8 @@ export interface FlashMintQuote {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
+  inputAmount: BigNumber
+  outputAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputAmount: BigNumber
   slippage: number
@@ -69,14 +53,15 @@ export class FlashMintQuoteProvider
   implements QuoteProvider<FlashMintQuoteRequest, FlashMintQuote>
 {
   constructor(
-    private readonly provider: JsonRpcProvider,
-    private readonly zeroExApiV1?: ZeroExApi
+    private readonly rpcUrl: string,
+    private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest
   ): Promise<FlashMintQuote | null> {
-    const { provider, zeroExApiV1 } = this
+    const { rpcUrl, swapQuoteProvider } = this
+    const provider = getRpcProvider(rpcUrl)
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
     const indexToken = isMinting ? outputToken : inputToken
@@ -87,23 +72,15 @@ export class FlashMintQuoteProvider
     if (contractType === null) {
       throw new Error('Index token not supported')
     }
-    if (requiresZeroExV1(contractType)) {
-      if (!zeroExApiV1) {
-        throw new Error('Contract type requires ZeroExApiV1 to be defined')
-      }
-    }
     switch (contractType) {
       case FlashMintContractType.leveraged: {
-        if (!zeroExApiV1) {
-          throw new Error('Contract type requires ZeroExApiV1 to be defined')
-        }
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
-          provider,
-          zeroExApiV1
+          rpcUrl,
+          swapQuoteProvider
         )
         const leveragedQuote = await leveragedQuoteProvider.getQuote(request)
         if (!leveragedQuote) return null
-        const builder = new LeveragedTransactionBuilder(provider)
+        const builder = new LeveragedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedBuildRequest = {
           isMinting,
           indexToken: indexToken.address,
@@ -117,6 +94,7 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
+        const { inputOutputTokenAmount } = leveragedQuote
         return {
           chainId,
           contractType,
@@ -125,22 +103,21 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken,
           outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
           indexTokenAmount,
-          inputOutputAmount: leveragedQuote.inputOutputTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
           slippage,
           tx,
         }
       }
       case FlashMintContractType.leveragedExtended: {
-        if (!zeroExApiV1) {
-          throw new Error('Contract type requires ZeroExApiV1 to be defined')
-        }
         const leverageExtendedQuoteProvider =
-          new LeveragedExtendedQuoteProvider(provider, zeroExApiV1)
+          new LeveragedExtendedQuoteProvider(rpcUrl, swapQuoteProvider)
         const leveragedExtendedQuote =
           await leverageExtendedQuoteProvider.getQuote(request)
         if (!leveragedExtendedQuote) return null
-        const builder = new LeveragedExtendedTransactionBuilder(provider)
+        const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedExtendedBuildRequest = {
           isMinting,
           inputToken: inputToken.address,
@@ -158,6 +135,7 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
+        const { inputOutputTokenAmount } = leveragedExtendedQuote
         return {
           chainId,
           contractType,
@@ -166,23 +144,22 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken,
           outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
           indexTokenAmount,
-          inputOutputAmount: leveragedExtendedQuote.inputOutputTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
           slippage,
           tx,
         }
       }
       case FlashMintContractType.zeroEx: {
-        if (!zeroExApiV1) {
-          throw new Error('Contract type requires ZeroExApiV1 to be defined')
-        }
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
-          provider,
-          zeroExApiV1
+          rpcUrl,
+          swapQuoteProvider
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote(request)
         if (!zeroExQuote) return null
-        const builder = new ZeroExTransactionBuilder(provider)
+        const builder = new ZeroExTransactionBuilder(rpcUrl)
         const txRequest: FlashMintZeroExBuildRequest = {
           isMinting,
           indexToken: indexToken.address,
@@ -195,6 +172,7 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
+        const { inputOutputTokenAmount } = zeroExQuote
         return {
           chainId,
           contractType,
@@ -203,8 +181,10 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken,
           outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
           indexTokenAmount,
-          inputOutputAmount: zeroExQuote.inputOutputTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
           slippage,
           tx,
         }
@@ -213,48 +193,4 @@ export class FlashMintQuoteProvider
         return null
     }
   }
-}
-
-// Returns contract type for token or null if not supported
-function getContractType(
-  token: string,
-  chainId: number
-): FlashMintContractType | null {
-  if (chainId === ChainId.Arbitrum) {
-    switch (token) {
-      case IndexCoopBitcoin2xIndex.symbol:
-      case IndexCoopBitcoin3xIndex.symbol:
-      case IndexCoopEthereum2xIndex.symbol:
-      case IndexCoopEthereum3xIndex.symbol:
-      case IndexCoopInverseBitcoinIndex.symbol:
-      case IndexCoopInverseEthereumIndex.symbol:
-        return FlashMintContractType.leveragedExtended
-    }
-  }
-  if (
-    token === BanklessBEDIndex.symbol ||
-    token === CoinDeskEthTrendIndex.symbol ||
-    token === DefiPulseIndex.symbol ||
-    token === DiversifiedStakedETHIndex.symbol ||
-    token === GitcoinStakedETHIndex.symbol ||
-    token === MetaverseIndex.symbol
-  )
-    return FlashMintContractType.zeroEx
-  if (
-    token === BTC2xFlexibleLeverageIndex.symbol ||
-    token === ETH2xFlexibleLeverageIndex.symbol ||
-    token === IndexCoopBitcoin2xIndex.symbol ||
-    token === IndexCoopEthereum2xIndex.symbol ||
-    token === InterestCompoundingETHIndex.symbol ||
-    token === LeveragedrEthStakingYield.symbol
-  )
-    return FlashMintContractType.leveraged
-  return null
-}
-
-function requiresZeroExV1(contractType: FlashMintContractType): boolean {
-  if (contractType === FlashMintContractType.leveraged) return true
-  if (contractType === FlashMintContractType.leveragedExtended) return true
-  if (contractType === FlashMintContractType.zeroEx) return true
-  return false
 }

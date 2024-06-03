@@ -3,9 +3,9 @@ import 'dotenv/config'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { MetaverseIndex, WETH } from 'constants/tokens'
-import { ZeroExApi } from 'utils/0x'
 
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'
+import { ZeroExSwapQuoteProvider } from 'quote/swap'
 
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 
@@ -14,7 +14,7 @@ const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
 describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
   const chainId = 1
   const slippage = 1
-  const zeroExApi = new ZeroExApi(
+  const zeroExApi = new ZeroExSwapQuoteProvider(
     index0xApiBaseUrl,
     '',
     { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
@@ -253,7 +253,7 @@ describe('ComponentsQuoteProvider - getTokenAddressOrWeth()', () => {
   test('returns token address when appropriate', async () => {
     const chainId = 1
     const slippage = 1
-    const zeroExApi = new ZeroExApi(
+    const zeroExApi = new ZeroExSwapQuoteProvider(
       index0xApiBaseUrl,
       '',
       { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
@@ -277,7 +277,7 @@ describe('ComponentsQuoteProvider - getTokenAddressOrWeth()', () => {
   test('returns WETH when token is ETH', async () => {
     const chainId = 1
     const slippage = 1
-    const zeroExApi = new ZeroExApi(
+    const zeroExApi = new ZeroExSwapQuoteProvider(
       index0xApiBaseUrl,
       '',
       { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },

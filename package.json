@@ -28,7 +28,7 @@
     "test": "jest",
     "test:arbitrum": "npm test src/flashmint/builders/leveraged-extended.test.ts src/quote/leveraged-extended",
     "test:builders": "npm test src/flashmint/builders/leveraged.test.ts src/flashmint/builders/zeroex.test.ts",
-    "test:quote": "npm test src/quote/leveraged/provider.test.ts src/quote/zeroex src/quote/indexQuoteProvider.test.ts ",
+    "test:quote": "npm test src/quote/flashmint/leveraged/provider.test.ts src/quote/flashmint/zeroex src/quote/provider/ ",
     "test:utils": "npm test src/utils",
     "test:btc2x": "npm test src/tests/btc2x.test.ts",
     "test:cdeti": "npm test src/tests/cdeti",
