@@ -52,6 +52,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
+    expect(quote.swapDataInputTokenToEth).toBeNull()
   })
 
   test('returns a quote for minting w/ WETH', async () => {
