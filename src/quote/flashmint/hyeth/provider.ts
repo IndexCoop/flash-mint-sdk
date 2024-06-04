@@ -2,6 +2,7 @@ import { QuoteProvider, QuoteToken } from 'quote/interfaces'
 import {
   getComponentsSwapData,
   getEthToInputOutputTokenSwapData,
+  getInputTokenToEthSwapData,
 } from './swap-data'
 import { SwapData } from 'utils'
 
@@ -34,12 +35,11 @@ export class FlashMintHyEthQuoteProvider
   ): Promise<FlashMintHyEthQuote | null> {
     const { indexTokenAmount, inputToken, isMinting, outputToken } = request
     const componentsSwapData = getComponentsSwapData(isMinting)
-    const swapDataInputTokenToEth = null
+    const swapDataInputTokenToEth = getInputTokenToEthSwapData(inputToken)
     const inputOutputToken = isMinting ? inputToken : outputToken
     const swapDataEthToInputOutputToken =
       getEthToInputOutputTokenSwapData(inputOutputToken)
     // TODO: static call write functions?
-    // TODO: define return type
     // TODO: return quote
     return {
       indexTokenAmount,

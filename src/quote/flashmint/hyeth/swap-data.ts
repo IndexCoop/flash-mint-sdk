@@ -45,3 +45,25 @@ export function getEthToInputOutputTokenSwapData(
   }
   return null
 }
+
+export function getInputTokenToEthSwapData(
+  inputToken: QuoteToken
+): SwapData | null {
+  if (inputToken.symbol === WETH.symbol) {
+    return {
+      path: [inputToken.address, EthAddress],
+      fees: [],
+      pool: AddressZero,
+      exchange: Exchange.None,
+    }
+  }
+  if (inputToken.symbol === USDC.symbol) {
+    return {
+      path: [inputToken.address, WETH.address!],
+      fees: [500],
+      pool: AddressZero,
+      exchange: Exchange.UniV3,
+    }
+  }
+  return null
+}

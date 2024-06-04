@@ -85,6 +85,13 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
+    const swapDataInputTokenToEth = {
+      path: [weth.address, EthAddress],
+      fees: [],
+      pool: AddressZero,
+      exchange: Exchange.None,
+    }
+    expect(quote.swapDataInputTokenToEth).toStrictEqual(swapDataInputTokenToEth)
     const swapDataEthToInputToken = {
       path: [EthAddress, weth.address],
       fees: [],
@@ -127,6 +134,13 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
+    const swapDataInputTokenToEth = {
+      path: [USDC.address, WETH.address],
+      fees: [500],
+      pool: AddressZero,
+      exchange: Exchange.UniV3,
+    }
+    expect(quote.swapDataInputTokenToEth).toStrictEqual(swapDataInputTokenToEth)
     const swapDataEthToInputToken = {
       path: [WETH.address, USDC.address],
       fees: [500],
