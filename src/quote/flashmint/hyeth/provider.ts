@@ -1,5 +1,8 @@
 import { QuoteProvider, QuoteToken } from 'quote/interfaces'
-import { getComponentsSwapData } from './swap-data'
+import {
+  getComponentsSwapData,
+  getEthToInputOutputTokenSwapData,
+} from './swap-data'
 import { SwapData } from 'utils'
 
 export interface FlashMintHyEthQuoteRequest {
@@ -13,14 +16,14 @@ export interface FlashMintHyEthQuoteRequest {
 export interface FlashMintHyEthQuote {
   indexTokenAmount: bigint
   inputOutputTokenAmount: bigint
-  // represents `swapDataEthToComponent` for minting
+  // Represents `swapDataEthToComponent` for minting
   // and `swapDataComponentToEth` for redeeming
   componentsSwapData: SwapData[]
-  // swapDataEthToInputOutputToken
-  // mint
-  // swapDataEthToInputToken: SwapData
-  // redeem
-  // swapDataEthToOutputToken: SwapData
+  // Used only for minting w/ ERC-20 tokens
+  swapDataInputTokenToEth: SwapData | null
+  // Represents `swapDataEthToInputToken` for minting w/ ERC-20 token
+  // and `swapDataEthToOutputToken` for redeeming to ERC-20 token
+  swapDataEthToInputOutputToken: SwapData | null
 }
 
 export class FlashMintHyEthQuoteProvider
@@ -29,9 +32,12 @@ export class FlashMintHyEthQuoteProvider
   async getQuote(
     request: FlashMintHyEthQuoteRequest
   ): Promise<FlashMintHyEthQuote | null> {
-    const { indexTokenAmount, isMinting } = request
+    const { indexTokenAmount, inputToken, isMinting, outputToken } = request
     const componentsSwapData = getComponentsSwapData(isMinting)
-    // TOOD: swap data
+    const swapDataInputTokenToEth = null
+    const inputOutputToken = isMinting ? inputToken : outputToken
+    const swapDataEthToInputOutputToken =
+      getEthToInputOutputTokenSwapData(inputOutputToken)
     // TODO: static call write functions?
     // TODO: define return type
     // TODO: return quote
@@ -40,6 +46,8 @@ export class FlashMintHyEthQuoteProvider
       // TODO:
       inputOutputTokenAmount: BigInt(1),
       componentsSwapData,
+      swapDataInputTokenToEth,
+      swapDataEthToInputOutputToken,
     }
   }
 }
