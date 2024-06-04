@@ -1,10 +1,17 @@
+import { Contract } from '@ethersproject/contracts'
+
+import FLASHMINT_HYETH_ABI from 'constants/abis/FlashMintHyEth.json'
+import { FlashMintHyEthAddress } from 'constants/contracts'
 import { QuoteProvider, QuoteToken } from 'quote/interfaces'
+import { getRpcProvider } from 'utils/rpc-provider'
+import { SwapData, wei } from 'utils'
+
 import {
   getComponentsSwapData,
   getEthToInputOutputTokenSwapData,
   getInputTokenToEthSwapData,
 } from './swap-data'
-import { SwapData } from 'utils'
+import { BigNumber } from '@ethersproject/bignumber'
 
 export interface FlashMintHyEthQuoteRequest {
   isMinting: boolean
@@ -30,9 +37,12 @@ export interface FlashMintHyEthQuote {
 export class FlashMintHyEthQuoteProvider
   implements QuoteProvider<FlashMintHyEthQuoteRequest, FlashMintHyEthQuote>
 {
+  constructor(private readonly rpcUrl: string) {}
+
   async getQuote(
     request: FlashMintHyEthQuoteRequest
   ): Promise<FlashMintHyEthQuote | null> {
+    const provider = getRpcProvider(this.rpcUrl)
     const { indexTokenAmount, inputToken, isMinting, outputToken } = request
     const componentsSwapData = getComponentsSwapData(isMinting)
     // Only relevant for minting ERC-20's
@@ -43,11 +53,26 @@ export class FlashMintHyEthQuoteProvider
     const swapDataEthToInputOutputToken =
       getEthToInputOutputTokenSwapData(inputOutputToken)
     // TODO: static call write functions?
-    // TODO: return quote
+    const indexToken = isMinting ? outputToken : inputToken
+    const contract = new Contract(
+      FlashMintHyEthAddress,
+      FLASHMINT_HYETH_ABI,
+      provider
+    )
+    // TODO: switch to provider.call(tx) from builder to handle issue/redeem
+    // TODO: just for testing, delete later
+    const inputOutputTokenAmount: BigNumber =
+      await contract.callStatic.issueExactSetFromETH(
+        indexToken.address,
+        indexTokenAmount,
+        componentsSwapData,
+        // TODO:
+        { value: wei(1) }
+      )
+    console.log(inputOutputTokenAmount.toString())
     return {
       indexTokenAmount,
-      // TODO:
-      inputOutputTokenAmount: BigInt(1),
+      inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
       componentsSwapData,
       swapDataInputTokenToEth,
       swapDataEthToInputOutputToken,
