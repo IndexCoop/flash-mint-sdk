@@ -4,6 +4,7 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
+  FlashMintHyEthAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedExtendedAddress,
   FlashMintLeveragedForCompoundAddress,
@@ -34,6 +35,7 @@ import {
   getFlashMintZeroExContract,
   getFlashMintZeroExContractForToken,
   getFlashMintLeveragedContractForToken,
+  getFlashMintHyEthContract,
 } from './contracts'
 
 describe('getExchangeIssuanceLeveragedContractAddress()', () => {
@@ -53,6 +55,19 @@ describe('getExchangeIssuanceLeveragedContractAddress()', () => {
     const expectedAddress = ExchangeIssuanceLeveragedMainnetAddress
     const address = getExchangeIssuanceLeveragedContractAddress()
     expect(address).toEqual(expectedAddress)
+  })
+})
+
+describe('getFlashMintHyEthContract()', () => {
+  test('return correct contract', async () => {
+    const expectedAddress = FlashMintHyEthAddress
+    const contract = getFlashMintHyEthContract(undefined)
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
 })
 

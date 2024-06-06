@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
+import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
@@ -14,6 +15,7 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
+  FlashMintHyEthAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedExtendedAddress,
   FlashMintLeveragedForCompoundAddress,
@@ -62,6 +64,17 @@ export const getFlashMintLeveragedContract = (
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
     signerOrProvider
   )
+}
+
+/**
+ * Returns an instance of a FlashMintHyEth contract.
+ * Currently, only Mainnet is supported.
+ */
+export const getFlashMintHyEthContract = (
+  signerOrProvider: Signer | Provider | undefined
+): Contract => {
+  const contractAddress = FlashMintHyEthAddress
+  return new Contract(contractAddress, FLASHMINT_HYETH_ABI, signerOrProvider)
 }
 
 /**
