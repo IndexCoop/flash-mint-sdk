@@ -27,7 +27,6 @@ const indexToken = hyeth
 
 describe('FlashMintHyEthTransactionBuilder()', () => {
   const contract = getFlashMintHyEthContract(provider)
-  //   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
 
   beforeEach((): void => {
     jest.setTimeout(10000000)
