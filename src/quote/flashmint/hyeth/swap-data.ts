@@ -6,21 +6,21 @@ import { QuoteToken } from 'quote/interfaces'
 import { Exchange, SwapData } from 'utils'
 
 export function getComponentsSwapData(isMinting: boolean): SwapData[] {
-  const path = isMinting
-    ? [WETH.address!, USDC.address!]
-    : [USDC.address!, WETH.address!]
+  // const path = isMinting
+  //   ? [WETH.address!, USDC.address!]
+  //   : [USDC.address!, WETH.address!]
   return [
     noopSwapData,
     noopSwapData,
     noopSwapData,
     noopSwapData,
     noopSwapData,
-    {
-      exchange: Exchange.UniV3,
-      fees: [500],
-      path,
-      pool: AddressZero,
-    },
+    // {
+    //   exchange: Exchange.UniV3,
+    //   fees: [500],
+    //   path,
+    //   pool: AddressZero,
+    // },
   ]
 }
 

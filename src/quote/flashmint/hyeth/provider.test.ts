@@ -46,12 +46,6 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
-      {
-        exchange: Exchange.UniV3,
-        fees: [500],
-        path: [WETH.address, USDC.address],
-        pool: AddressZero,
-      },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
@@ -84,12 +78,12 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
-      {
-        exchange: Exchange.UniV3,
-        fees: [500],
-        path: [WETH.address, USDC.address],
-        pool: AddressZero,
-      },
+      // {
+      //   exchange: Exchange.UniV3,
+      //   fees: [500],
+      //   path: [WETH.address, USDC.address],
+      //   pool: AddressZero,
+      // },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     const swapDataInputTokenToEth = {
@@ -136,12 +130,12 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
-      {
-        exchange: Exchange.UniV3,
-        fees: [500],
-        path: [WETH.address, USDC.address],
-        pool: AddressZero,
-      },
+      // {
+      //   exchange: Exchange.UniV3,
+      //   fees: [500],
+      //   path: [WETH.address, USDC.address],
+      //   pool: AddressZero,
+      // },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     const swapDataInputTokenToEth = {
@@ -188,12 +182,12 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
-      {
-        exchange: Exchange.UniV3,
-        fees: [500],
-        path: [USDC.address, WETH.address],
-        pool: AddressZero,
-      },
+      // {
+      //   exchange: Exchange.UniV3,
+      //   fees: [500],
+      //   path: [USDC.address, WETH.address],
+      //   pool: AddressZero,
+      // },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataRedeem)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
@@ -226,12 +220,12 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
-      {
-        exchange: Exchange.UniV3,
-        fees: [500],
-        path: [USDC.address, WETH.address],
-        pool: AddressZero,
-      },
+      // {
+      //   exchange: Exchange.UniV3,
+      //   fees: [500],
+      //   path: [USDC.address, WETH.address],
+      //   pool: AddressZero,
+      // },
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataRedeem)
     expect(quote.swapDataInputTokenToEth).toBeNull()

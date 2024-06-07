@@ -59,6 +59,8 @@ export class FlashMintHyEthQuoteProvider
       this.rpcUrl
     )
 
+    if (componentsSwapData.length !== components.length) return null
+
     // Mainnet only for now
     const chainId = 1
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
