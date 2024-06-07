@@ -14,7 +14,7 @@ import {
 import { FlashMintHyEthQuoteProvider } from './provider'
 
 const rpcUrl = LocalhostProviderUrl
-// const swapQuoteProvider = IndexZeroExSwapQuoteProvider
+const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 const { eth, hyeth, usdc, weth } = QuoteTokens
 const indexToken = hyeth
@@ -32,7 +32,10 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(rpcUrl)
+    const quoteProvider = new FlashMintHyEthQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -67,7 +70,10 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(rpcUrl)
+    const quoteProvider = new FlashMintHyEthQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -116,7 +122,10 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(rpcUrl)
+    const quoteProvider = new FlashMintHyEthQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -165,7 +174,10 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(rpcUrl)
+    const quoteProvider = new FlashMintHyEthQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
@@ -200,7 +212,10 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(rpcUrl)
+    const quoteProvider = new FlashMintHyEthQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider
+    )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)

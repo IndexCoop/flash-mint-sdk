@@ -6,6 +6,7 @@ import FLASHMINT_HYETH_ABI from 'constants/abis/FlashMintHyEth.json'
 import { FlashMintHyEthAddress } from 'constants/contracts'
 import { WETH } from 'constants/tokens'
 import { SwapQuoteProvider } from 'quote/swap'
+import { isSameAddress } from 'utils/addresses'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 export class PendleQuoteProvider {
@@ -49,6 +50,7 @@ export class PendleQuoteProvider {
     position: bigint,
     inputToken: string
   ): Promise<bigint | null> {
+    const outputToken = this.weth
     const fmHyEth = this.getFlashMintHyEth()
     const market = await fmHyEth.pendleMarkets(component)
     // const ptContract = this.getPtContract(component)
@@ -57,10 +59,11 @@ export class PendleQuoteProvider {
     const routerContract = this.getRouterStatic(this.routerStaticMainnet)
     const assetRate: BigNumber = await routerContract.getPtToAssetRate(market)
     const ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
+    if (isSameAddress(inputToken, outputToken)) return ethAmount
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken,
-      outputToken: this.weth,
+      outputToken,
       outputAmount: ethAmount.toString(),
     })
     if (!quote) return null
@@ -72,14 +75,16 @@ export class PendleQuoteProvider {
     position: bigint,
     outputToken: string
   ): Promise<bigint | null> {
+    const inputToken = this.weth
     const fmHyEth = this.getFlashMintHyEth()
     const market = await fmHyEth.pendleMarkets(component)
     const routerContract = this.getRouterStatic(this.routerStaticMainnet)
     const assetRate: BigNumber = await routerContract.getPtToAssetRate(market)
     const ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
+    if (isSameAddress(inputToken, outputToken)) return ethAmount
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
-      inputToken: this.weth,
+      inputToken,
       outputToken,
       inputAmount: ethAmount.toString(),
     })

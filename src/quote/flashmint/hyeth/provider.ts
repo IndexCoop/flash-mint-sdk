@@ -1,17 +1,15 @@
-import { Contract } from '@ethersproject/contracts'
-
-import FLASHMINT_HYETH_ABI from 'constants/abis/FlashMintHyEth.json'
-import { FlashMintHyEthAddress } from 'constants/contracts'
+import { WETH } from 'constants/tokens'
 import { QuoteProvider, QuoteToken } from 'quote/interfaces'
-import { getRpcProvider } from 'utils/rpc-provider'
-import { SwapData, wei } from 'utils'
+import { SwapQuoteProvider } from 'quote/swap'
+import { SwapData } from 'utils'
 
+import { ComponentQuotesProvider } from './component-quotes'
+import { getRequiredComponents } from './issuance'
 import {
   getComponentsSwapData,
   getEthToInputOutputTokenSwapData,
   getInputTokenToEthSwapData,
 } from './swap-data'
-import { BigNumber } from '@ethersproject/bignumber'
 
 export interface FlashMintHyEthQuoteRequest {
   isMinting: boolean
@@ -37,13 +35,16 @@ export interface FlashMintHyEthQuote {
 export class FlashMintHyEthQuoteProvider
   implements QuoteProvider<FlashMintHyEthQuoteRequest, FlashMintHyEthQuote>
 {
-  constructor(private readonly rpcUrl: string) {}
+  constructor(
+    private readonly rpcUrl: string,
+    private readonly swapQuoteProvider: SwapQuoteProvider
+  ) {}
 
   async getQuote(
     request: FlashMintHyEthQuoteRequest
   ): Promise<FlashMintHyEthQuote | null> {
-    const provider = getRpcProvider(this.rpcUrl)
-    const { indexTokenAmount, inputToken, isMinting, outputToken } = request
+    const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
+      request
     const componentsSwapData = getComponentsSwapData(isMinting)
     // Only relevant for minting ERC-20's
     const swapDataInputTokenToEth = isMinting
@@ -52,27 +53,36 @@ export class FlashMintHyEthQuoteProvider
     const inputOutputToken = isMinting ? inputToken : outputToken
     const swapDataEthToInputOutputToken =
       getEthToInputOutputTokenSwapData(inputOutputToken)
-    // TODO: static call write functions?
-    const indexToken = isMinting ? outputToken : inputToken
-    const contract = new Contract(
-      FlashMintHyEthAddress,
-      FLASHMINT_HYETH_ABI,
-      provider
+
+    const { components, positions } = await getRequiredComponents(
+      request,
+      this.rpcUrl
     )
-    // TODO: switch to provider.call(tx) from builder to handle issue/redeem
-    // TODO: just for testing, delete later
-    const inputOutputTokenAmount: BigNumber =
-      await contract.callStatic.issueExactSetFromETH(
-        indexToken.address,
-        indexTokenAmount,
-        componentsSwapData,
-        // TODO:
-        { value: wei(1) }
-      )
-    console.log(inputOutputTokenAmount.toString())
+
+    // Mainnet only for now
+    const chainId = 1
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const wethAddress = WETH.address!
+    const quoteProvider = new ComponentQuotesProvider(
+      chainId,
+      slippage,
+      wethAddress,
+      this.rpcUrl,
+      this.swapQuoteProvider
+    )
+    const quoteResult = await quoteProvider.getComponentQuotes(
+      components,
+      positions,
+      isMinting,
+      inputToken,
+      outputToken
+    )
+    if (!quoteResult) return null
+
+    const inputOutputTokenAmount = quoteResult.inputOutputTokenAmount
     return {
       indexTokenAmount,
-      inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
+      inputOutputTokenAmount,
       componentsSwapData,
       swapDataInputTokenToEth,
       swapDataEthToInputOutputToken,

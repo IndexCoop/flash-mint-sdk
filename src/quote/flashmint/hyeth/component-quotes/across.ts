@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 
 import { WETH } from 'constants/tokens'
 import { SwapQuoteProvider } from 'quote/swap'
+import { isSameAddress } from 'utils/addresses'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 export class AcrossQuoteProvider {
@@ -29,6 +30,7 @@ export class AcrossQuoteProvider {
     acrossLpAmount: bigint,
     inputToken: string
   ): Promise<bigint | null> {
+    const outputToken = this.weth
     const pool = this.getPoolContract()
     const exchangeRate: BigNumber = await pool.callStatic.exchangeRateCurrent(
       this.weth
@@ -36,10 +38,11 @@ export class AcrossQuoteProvider {
     const ethAmount =
       (exchangeRate.toBigInt() * acrossLpAmount) / BigInt(1e18) +
       this.roundingError
+    if (isSameAddress(inputToken, outputToken)) return ethAmount
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken,
-      outputToken: this.weth,
+      outputToken,
       outputAmount: ethAmount.toString(),
     })
     if (!quote) return null
@@ -50,6 +53,7 @@ export class AcrossQuoteProvider {
     acrossLpAmount: bigint,
     outputToken: string
   ): Promise<bigint | null> {
+    const inputToken = this.weth
     const pool = this.getPoolContract()
     const exchangeRate: BigNumber = await pool.callStatic.exchangeRateCurrent(
       this.weth
@@ -57,9 +61,10 @@ export class AcrossQuoteProvider {
     const ethAmount =
       (exchangeRate.toBigInt() * acrossLpAmount) / BigInt(1e18) +
       this.roundingError
+    if (isSameAddress(inputToken, outputToken)) return ethAmount
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
-      inputToken: this.weth,
+      inputToken,
       outputToken,
       inputAmount: ethAmount.toString(),
     })
