@@ -89,6 +89,9 @@ export class FlashMintQuoteProvider
           slippage,
         })
         if (!hyethQuote) return null
+        const inputOutputTokenAmount = BigNumber.from(
+          hyethQuote.inputOutputTokenAmount.toString()
+        )
         const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
         const txRequest = {
           isMinting,
@@ -96,8 +99,12 @@ export class FlashMintQuoteProvider
           inputTokenSymbol: inputToken.symbol,
           outputToken: outputToken.address,
           outputTokenSymbol: outputToken.symbol,
-          inputTokenAmount: indexTokenAmount,
-          outputTokenAmount: indexTokenAmount,
+          inputTokenAmount: isMinting
+            ? inputOutputTokenAmount
+            : indexTokenAmount,
+          outputTokenAmount: isMinting
+            ? indexTokenAmount
+            : inputOutputTokenAmount,
           componentsSwapData: hyethQuote.componentsSwapData,
           swapDataInputTokenToEth: hyethQuote.swapDataInputTokenToEth,
           swapDataEthToInputOutputToken:
@@ -105,9 +112,6 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
-        const inputOutputTokenAmount = BigNumber.from(
-          hyethQuote.inputOutputTokenAmount.toString()
-        )
         return {
           chainId,
           contractType,
