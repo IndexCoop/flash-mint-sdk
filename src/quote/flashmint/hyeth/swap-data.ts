@@ -27,6 +27,7 @@ export function getComponentsSwapData(isMinting: boolean): SwapData[] {
 export function getEthToInputOutputTokenSwapData(
   inputOutputToken: QuoteToken
 ): SwapData | null {
+  if (inputOutputToken.symbol === ETH.symbol) return null
   if (inputOutputToken.symbol === WETH.symbol) {
     return {
       path: [EthAddress, inputOutputToken.address],
@@ -35,15 +36,12 @@ export function getEthToInputOutputTokenSwapData(
       exchange: Exchange.None,
     }
   }
-  if (inputOutputToken.symbol === USDC.symbol) {
-    return {
-      path: [WETH.address!, inputOutputToken.address],
-      fees: [500],
-      pool: AddressZero,
-      exchange: Exchange.UniV3,
-    }
+  return {
+    path: [WETH.address!, inputOutputToken.address],
+    fees: [500],
+    pool: AddressZero,
+    exchange: Exchange.UniV3,
   }
-  return null
 }
 
 export function getInputTokenToEthSwapData(
@@ -58,13 +56,10 @@ export function getInputTokenToEthSwapData(
       exchange: Exchange.None,
     }
   }
-  if (inputToken.symbol === USDC.symbol) {
-    return {
-      path: [inputToken.address, WETH.address!],
-      fees: [500],
-      pool: AddressZero,
-      exchange: Exchange.UniV3,
-    }
+  return {
+    path: [inputToken.address, WETH.address!],
+    fees: [500],
+    pool: AddressZero,
+    exchange: Exchange.UniV3,
   }
-  return null
 }
