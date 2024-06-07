@@ -33,8 +33,10 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build --if-present
-      - run: npm run hardhat:arbitrum
-      - run: npm run hardhat
+      - run: npm run hardhat:arbitrum &
+      - run: npm run hardhat &
+      - name: wait for hardhat node to start
+        run: sleep 10
       - run: npm run test:arbitrum
       - run: npm run test:utils
       - run: npm run test:builders
