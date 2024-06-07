@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { noopSwapData } from 'constants/swapdata'
-import { ETH, USDC, WETH } from 'constants/tokens'
+import { ETH, WETH } from 'constants/tokens'
 import { QuoteToken } from 'quote/interfaces'
 import { Exchange, SwapData } from 'utils'
 
