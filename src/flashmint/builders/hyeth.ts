@@ -46,7 +46,6 @@ export class FlashMintHyEthTransactionBuilder
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenAmount = isMinting ? outputTokenAmount : inputTokenAmount
     const contract = getFlashMintHyEthContract(provider)
-    console.log(contract.address, 'contract')
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
         return await contract.populateTransaction.issueExactSetFromETH(
