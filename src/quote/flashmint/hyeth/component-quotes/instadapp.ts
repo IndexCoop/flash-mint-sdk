@@ -22,7 +22,6 @@ export class InstadappQuoteProvider {
     // https://etherscan.io/address/0xa0d3707c569ff8c87fa923d3823ec5d81c98be78#readProxyContract
     const tokenContract = new Contract(component, VAULT_ABI, provider)
     const stEthAmount: BigNumber = await tokenContract.previewMint(position)
-    console.log(stEthAmount.toString())
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken,
@@ -43,14 +42,12 @@ export class InstadappQuoteProvider {
     const tokenContract = new Contract(component, VAULT_ABI, provider)
     // TODO: confirm previewWithdraw (and not previewRedeem)
     const stEthAmount: BigNumber = await tokenContract.previewWithdraw(position)
-    console.log(stEthAmount.toString())
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken: stETH.address!,
       outputToken,
       inputAmount: stEthAmount.toString(),
     })
-    console.log(quote)
     if (!quote) return null
     return BigInt(quote.outputAmount)
   }
