@@ -47,7 +47,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can redeem with ETH', async () => {
+  test('can redeem to ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
