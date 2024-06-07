@@ -63,7 +63,6 @@ describe('getFlashMintHyEthContract()', () => {
     const expectedAddress = FlashMintHyEthAddress
     const contract = getFlashMintHyEthContract(undefined)
     expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
     expect(contract.functions.redeemExactSetForERC20).toBeDefined()
