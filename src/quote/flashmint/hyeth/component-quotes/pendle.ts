@@ -3,6 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
 import FLASHMINT_HYETH_ABI from 'constants/abis/FlashMintHyEth.json'
+import { AddressZero } from 'constants/addresses'
 import { FlashMintHyEthAddress } from 'constants/contracts'
 import { WETH } from 'constants/tokens'
 import { SwapQuoteProvider } from 'quote/swap'
@@ -37,13 +38,13 @@ export class PendleQuoteProvider {
     return new Contract(pt, abi, provider)
   }
 
-  //   getSyContract(sy: string): Contract {
-  //     const provider = getRpcProvider(this.rpcUrl)
-  //     const abi = [
-  //       'function _previewDeposit(address tokenIn, uint256 amountTokenToDeposit) view returns (uint256 amountSharesOut) ',
-  //     ]
-  //     return new Contract(sy, abi, provider)
-  //   }
+  getSyContract(sy: string): Contract {
+    const provider = getRpcProvider(this.rpcUrl)
+    const abi = [
+      'function previewDeposit(address tokenIn, uint256 amountTokenToDeposit) view returns (uint256 amountSharesOut) ',
+    ]
+    return new Contract(sy, abi, provider)
+  }
 
   async getDepositQuote(
     component: string,
@@ -53,12 +54,22 @@ export class PendleQuoteProvider {
     const outputToken = this.weth
     const fmHyEth = this.getFlashMintHyEth()
     const market = await fmHyEth.pendleMarkets(component)
-    // const ptContract = this.getPtContract(component)
-    // const sy = await ptContract.SY()
-    // console.log(sy, 'SY', component)
+    const marketData = await fmHyEth.pendleMarketData(market)
+    const ptContract = this.getPtContract(component)
+    const sy = await ptContract.SY()
+    const syContract = this.getSyContract(sy)
     const routerContract = this.getRouterStatic(this.routerStaticMainnet)
     const assetRate: BigNumber = await routerContract.getPtToAssetRate(market)
-    const ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
+    let ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
+    const syAmountPreview: BigNumber = await syContract.previewDeposit(
+      AddressZero,
+      ethAmount
+    )
+    if (syAmountPreview.toBigInt() < position) {
+      ethAmount =
+        (ethAmount * marketData.exchangeRateFactor.toBigInt()) /
+        BigInt('1000000000000000000')
+    }
     if (isSameAddress(inputToken, outputToken)) return ethAmount
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
