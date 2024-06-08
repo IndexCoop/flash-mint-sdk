@@ -57,4 +57,15 @@ describe('hyETH', () => {
     })
     await factory.executeTx()
   })
+
+  test('can redeem to USDC', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: indexToken,
+      outputToken: eth,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
 })
