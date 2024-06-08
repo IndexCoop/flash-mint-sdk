@@ -82,19 +82,12 @@ export class FlashMintHyEthQuoteProvider
       outputToken
     )
     if (!quoteResult) return null
-    const inputOutputTokenAmount = slippageAdjustedTokenAmount(
-      BigNumber.from(quoteResult.inputOutputTokenAmount.toString()),
-      isMinting ? inputToken.decimals : outputToken.decimals,
-      slippage,
-      isMinting
-    )
-    console.log(
-      inputOutputTokenAmount.toString(),
-      quoteResult.inputOutputTokenAmount.toString()
-    )
+    const inputOutputTokenAmount = isMinting
+      ? (quoteResult.inputOutputTokenAmount * BigInt(1003)) / BigInt(1000)
+      : (quoteResult.inputOutputTokenAmount * BigInt(1000)) / BigInt(1007)
     return {
       indexTokenAmount,
-      inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
+      inputOutputTokenAmount,
       componentsSwapData,
       swapDataInputTokenToEth,
       swapDataEthToInputOutputToken,
