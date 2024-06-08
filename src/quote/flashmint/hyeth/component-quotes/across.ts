@@ -58,9 +58,7 @@ export class AcrossQuoteProvider {
     const exchangeRate: BigNumber = await pool.callStatic.exchangeRateCurrent(
       this.weth
     )
-    const ethAmount =
-      (exchangeRate.toBigInt() * acrossLpAmount) / BigInt(1e18) +
-      this.roundingError
+    const ethAmount = (exchangeRate.toBigInt() * acrossLpAmount) / BigInt(1e18)
     if (isSameAddress(inputToken, outputToken)) return ethAmount
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
