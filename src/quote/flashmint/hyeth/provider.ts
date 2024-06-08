@@ -1,9 +1,7 @@
-import { BigNumber } from '@ethersproject/bignumber'
-
 import { WETH } from 'constants/tokens'
 import { QuoteProvider, QuoteToken } from 'quote/interfaces'
 import { SwapQuoteProvider } from 'quote/swap'
-import { slippageAdjustedTokenAmount, SwapData } from 'utils'
+import { SwapData } from 'utils'
 
 import { ComponentQuotesProvider } from './component-quotes'
 import { getRequiredComponents } from './issuance'
