@@ -47,7 +47,7 @@ export class FlashMintHyEthQuoteProvider
   ): Promise<FlashMintHyEthQuote | null> {
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
-    const componentsSwapData = getComponentsSwapData(isMinting)
+    const componentsSwapData = getComponentsSwapData()
     // Only relevant for minting ERC-20's
     const swapDataInputTokenToEth = isMinting
       ? getInputTokenToEthSwapData(inputToken)

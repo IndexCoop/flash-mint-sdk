@@ -172,7 +172,7 @@ function createBuildRequest(
     fees: [500],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
-  const componentsSwapData = getComponentsSwapData(isMinting)
+  const componentsSwapData = getComponentsSwapData()
   return {
     isMinting,
     inputToken,
