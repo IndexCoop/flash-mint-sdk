@@ -1,6 +1,9 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { ChainId } from 'constants/chains'
-import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
+import {
+  FlashMintHyEthAddress,
+  FlashMintZeroExMainnetAddress,
+} from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import {
   getFlashMintLeveragedContractForToken,
@@ -28,7 +31,7 @@ const rpcUrl = LocalhostProviderUrl
 const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
-const { cdeti, dseth, eth, eth2x, iceth, usdc } = QuoteTokens
+const { cdeti, dseth, eth, eth2x, hyeth, iceth, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -202,6 +205,37 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
+  test('returns a quote for minting hyETH', async () => {
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: hyeth,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(
+      LocalhostProviderUrl,
+      IndexZeroExSwapQuoteProvider
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    const chainId = (await provider.getNetwork()).chainId
+    expect(quote.chainId).toEqual(chainId)
+    expect(quote.contractType).toEqual(FlashMintContractType.hyeth)
+    expect(quote.contract).toEqual(FlashMintHyEthAddress)
+    expect(quote.isMinting).toEqual(request.isMinting)
+    expect(quote.inputToken).toEqual(request.inputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.inputAmount).toEqual(quote.inputOutputAmount)
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    expect(quote.slippage).toEqual(request.slippage)
+    expect(quote.tx).not.toBeNull()
+    expect(quote.tx.to).toBe(FlashMintHyEthAddress)
+    expect(quote.tx.data?.length).toBeGreaterThan(0)
+  })
+
   test('returns a quote for redeeming ETH2X', async () => {
     const arbitrumProvider = LocalhostProviderArbitrum
     const inputToken = {
@@ -242,6 +276,36 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(contract.address)
+    expect(quote.tx.data?.length).toBeGreaterThan(0)
+  })
+
+  test('returns a quote for redeeming hyETH', async () => {
+    const request: FlashMintQuoteRequest = {
+      isMinting: false,
+      inputToken: hyeth,
+      outputToken: usdc,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(
+      LocalhostProviderUrl,
+      IndexZeroExSwapQuoteProvider
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    const chainId = (await provider.getNetwork()).chainId
+    expect(quote.chainId).toEqual(chainId)
+    expect(quote.contractType).toEqual(FlashMintContractType.hyeth)
+    expect(quote.contract).toEqual(FlashMintHyEthAddress)
+    expect(quote.isMinting).toEqual(request.isMinting)
+    expect(quote.inputToken).toEqual(request.inputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.inputAmount).toEqual(quote.indexTokenAmount)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    expect(quote.slippage).toEqual(request.slippage)
+    expect(quote.tx).not.toBeNull()
+    expect(quote.tx.to).toBe(FlashMintHyEthAddress)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 

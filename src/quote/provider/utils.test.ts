@@ -7,6 +7,7 @@ import {
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -121,12 +122,20 @@ describe('getContractType()', () => {
     expect(contractType).toBe(FlashMintContractType.leveraged)
   })
 
-  test('returns correct contract type for ETH2X (mainnet', async () => {
+  test('returns correct contract type for ETH2X (mainnet)', async () => {
     const contractType = getContractType(
       IndexCoopEthereum2xIndex.symbol,
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
+  })
+
+  test('returns correct contract type for hyETH', async () => {
+    const contractType = getContractType(
+      HighYieldETHIndex.symbol,
+      ChainId.Mainnet
+    )
+    expect(contractType).toBe(FlashMintContractType.hyeth)
   })
 
   test('returns correct contract type for icETH', async () => {

@@ -7,6 +7,7 @@ import {
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
+  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -35,6 +36,9 @@ export function getContractType(
       case IndexCoopInverseEthereumIndex.symbol:
         return FlashMintContractType.leveragedExtended
     }
+  }
+  if (token === HighYieldETHIndex.symbol) {
+    return FlashMintContractType.hyeth
   }
   if (
     token === BanklessBEDIndex.symbol ||

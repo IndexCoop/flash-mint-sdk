@@ -33,17 +33,21 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build --if-present
-      - run: npm run hardhat:arbitrum & npm run test:arbitrum
-      - run: npm run hardhat & npm run test:utils
-      - run: npm run hardhat & npm run test:builders
-      - run: npm run hardhat & npm run test:quote
-      - run: npm run hardhat & npm run test:btc2x
-      - run: npm run hardhat & npm run test:cdeti
-      - run: npm run hardhat & npm run test:dseth
-      - run: npm run hardhat & npm run test:eth2x
-      - run: npm run hardhat & npm run test:gtceth
-      - run: npm run hardhat & npm run test:iceth
-      # - run: npm run hardhat & npm run test:icreth
+      - run: npm run hardhat:arbitrum &
+      - run: npm run hardhat &
+      - name: Wait for hardhat nodes to start
+        run: sleep 10
+      - run: npm run test:utils
+      - run: npm run test:builders
+      - run: npm run test:quotes
+      - run: npm run test:hyeth
+      - run: npm run test:btc2x
+      - run: npm run test:cdeti
+      - run: npm run test:dseth
+      - run: npm run test:eth2x
+      - run: npm run test:gtceth
+      - run: npm run test:iceth
+      # - run: npm run test:icreth
       # run last - as it alters the block number
       # skip as it can't be minted or redeemed with 0x
-      # - run: npm run hardhat & npm run test:eth2xfli
+      # - run: npm run test:eth2xfli

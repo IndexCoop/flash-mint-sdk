@@ -2,6 +2,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import {
+  FlashMintHyEthTransactionBuilder,
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
   FlashMintZeroExBuildRequest,
@@ -9,8 +10,10 @@ import {
   LeveragedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
+import { getRpcProvider } from 'utils/rpc-provider'
 import { wei } from 'utils'
 
+import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
@@ -18,9 +21,9 @@ import { QuoteProvider, QuoteToken } from '../interfaces'
 import { SwapQuoteProvider } from '../swap'
 
 import { getContractType } from './utils'
-import { getRpcProvider } from 'utils/rpc-provider'
 
 export enum FlashMintContractType {
+  hyeth,
   leveraged,
   leveragedExtended,
   zeroEx,
@@ -73,6 +76,58 @@ export class FlashMintQuoteProvider
       throw new Error('Index token not supported')
     }
     switch (contractType) {
+      case FlashMintContractType.hyeth: {
+        const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
+          rpcUrl,
+          swapQuoteProvider
+        )
+        const hyethQuote = await hyethQuoteProvider.getQuote({
+          isMinting,
+          inputToken,
+          outputToken,
+          indexTokenAmount: indexTokenAmount.toBigInt(),
+          slippage,
+        })
+        if (!hyethQuote) return null
+        const inputOutputTokenAmount = BigNumber.from(
+          hyethQuote.inputOutputTokenAmount.toString()
+        )
+        const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
+        const txRequest = {
+          isMinting,
+          inputToken: inputToken.address,
+          inputTokenSymbol: inputToken.symbol,
+          outputToken: outputToken.address,
+          outputTokenSymbol: outputToken.symbol,
+          inputTokenAmount: isMinting
+            ? inputOutputTokenAmount
+            : indexTokenAmount,
+          outputTokenAmount: isMinting
+            ? indexTokenAmount
+            : inputOutputTokenAmount,
+          componentsSwapData: hyethQuote.componentsSwapData,
+          swapDataInputTokenToEth: hyethQuote.swapDataInputTokenToEth,
+          swapDataEthToInputOutputToken:
+            hyethQuote.swapDataEthToInputOutputToken,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return {
+          chainId,
+          contractType,
+          /* eslint-disable @typescript-eslint/no-non-null-assertion */
+          contract: tx.to!,
+          isMinting,
+          inputToken,
+          outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
+          indexTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
+          slippage,
+          tx,
+        }
+      }
       case FlashMintContractType.leveraged: {
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
           rpcUrl,
@@ -98,7 +153,7 @@ export class FlashMintQuoteProvider
         return {
           chainId,
           contractType,
-          /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+          /* eslint-disable @typescript-eslint/no-non-null-assertion */
           contract: tx.to!,
           isMinting,
           inputToken,
@@ -139,7 +194,7 @@ export class FlashMintQuoteProvider
         return {
           chainId,
           contractType,
-          /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+          /* eslint-disable @typescript-eslint/no-non-null-assertion */
           contract: tx.to!,
           isMinting,
           inputToken,

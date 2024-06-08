@@ -1,4 +1,7 @@
 // Index Protocol
+export const FlashMintHyEthAddress =
+  '0xC290c371F5a36970AfF00bbffDBFADd81820109a'
+
 export const FlashMintLeveragedAddress =
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
 

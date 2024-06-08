@@ -1,6 +1,6 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "The FlashMintSDK of the Index Coop.",
   "engines": {
     "node": ">=18"
@@ -26,9 +26,8 @@
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "test": "jest",
-    "test:arbitrum": "npm test src/flashmint/builders/leveraged-extended.test.ts src/quote/leveraged-extended",
-    "test:builders": "npm test src/flashmint/builders/leveraged.test.ts src/flashmint/builders/zeroex.test.ts",
-    "test:quote": "npm test src/quote/flashmint/leveraged/provider.test.ts src/quote/flashmint/zeroex src/quote/provider/ ",
+    "test:builders": "npm test src/flashmint/",
+    "test:quotes": "npm test src/quote/",
     "test:utils": "npm test src/utils",
     "test:btc2x": "npm test src/tests/btc2x.test.ts",
     "test:cdeti": "npm test src/tests/cdeti",
@@ -36,6 +35,7 @@
     "test:eth2x": "npm test src/tests/eth2x.test.ts",
     "test:eth2xfli": "npm test src/tests/eth2xfli",
     "test:gtceth": "npm test src/tests/gtceth",
+    "test:hyeth": "npm test src/tests/hyeth.test.ts",
     "test:iceth": "npm test src/tests/iceth",
     "test:icreth": "npm test src/tests/icreth",
     "test:watch": "jest --watch"

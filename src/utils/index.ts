@@ -1,3 +1,4 @@
+export * from './addresses'
 export * from './contracts'
 export * from './issuanceModules'
 export * from './numbers'

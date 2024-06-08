@@ -126,8 +126,8 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 0. add a test for determining the correct issuance module [here](./src/utils/issuanceModules.test.ts)
 1. add a test for determining the correct contract [here](./src/utils/contracts.test.ts)
 2. if there is a new FlashMint contract, add it as described [below](#adding-a-new-contract)
-3. additionally, add a test in [tests](./src/tests/)
-4. add symbol to `function getContractType(token: string)` in [src/quote/provider/utils.ts](./src/quote//provider/utils.ts) and add a test
+3. add symbol to `function getContractType(token: string)` in [src/quote/provider/utils.ts](./src/quote//provider/utils.ts) and add a test
+4. additionally, add a test in [tests](./src/tests/)
 
 ### Adding a new contract
 

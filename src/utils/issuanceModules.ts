@@ -19,6 +19,7 @@ import {
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
+  HighYieldETHIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -48,6 +49,7 @@ export function getIssuanceModule(
       return { address: DebtIssuanceModuleAddress, isDebtIssuance: true }
     case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
+    case HighYieldETHIndex.symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
