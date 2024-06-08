@@ -2,6 +2,7 @@ import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import {
+  FlashMintHyEthTransactionBuilder,
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
   FlashMintZeroExBuildRequest,
@@ -9,8 +10,10 @@ import {
   LeveragedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
+import { getRpcProvider } from 'utils/rpc-provider'
 import { wei } from 'utils'
 
+import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
@@ -18,9 +21,6 @@ import { QuoteProvider, QuoteToken } from '../interfaces'
 import { SwapQuoteProvider } from '../swap'
 
 import { getContractType } from './utils'
-import { getRpcProvider } from 'utils/rpc-provider'
-import { FlashMintHyEthQuoteProvider } from 'quote/flashmint/hyeth'
-import { FlashMintHyEthTransactionBuilder } from 'flashmint/builders/hyeth'
 
 export enum FlashMintContractType {
   hyeth,
