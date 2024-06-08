@@ -41,8 +41,7 @@ export class InstadappQuoteProvider {
     const provider = getRpcProvider(this.rpcUrl)
     // https://etherscan.io/address/0xa0d3707c569ff8c87fa923d3823ec5d81c98be78#readProxyContract
     const tokenContract = new Contract(component, VAULT_ABI, provider)
-    // TODO: confirm previewWithdraw (and not previewRedeem)
-    const stEthAmount: BigNumber = await tokenContract.previewWithdraw(position)
+    const stEthAmount: BigNumber = await tokenContract.previewRedeem(position)
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken: stETH.address!,
