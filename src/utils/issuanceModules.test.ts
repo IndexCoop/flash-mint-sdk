@@ -24,6 +24,7 @@ import {
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   HighYieldETHIndex,
+  RealWorldAssetIndex,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
@@ -74,6 +75,13 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for icRETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(LeveragedrEthStakingYield.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for RWA', async () => {
+    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
+    const issuanceModule = getIssuanceModule(RealWorldAssetIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

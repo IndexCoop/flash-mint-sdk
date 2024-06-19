@@ -20,6 +20,7 @@ import {
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   HighYieldETHIndex,
+  RealWorldAssetIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -53,6 +54,7 @@ export function getIssuanceModule(
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case LeveragedrEthStakingYield.symbol:
+    case RealWorldAssetIndex.symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
         isDebtIssuance: true,
