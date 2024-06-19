@@ -17,6 +17,7 @@ import {
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
+  RealWorldAssetIndex,
 } from 'constants/tokens'
 
 import { FlashMintContractType } from './'
@@ -152,5 +153,13 @@ describe('getContractType()', () => {
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
+  })
+
+  test('returns correct contract type for RWA', async () => {
+    const contractType = getContractType(
+      RealWorldAssetIndex.symbol,
+      ChainId.Mainnet
+    )
+    expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 })

@@ -15,6 +15,7 @@ import {
   LeveragedrEthStakingYield,
   MetaverseIndex,
   RETH,
+  RealWorldAssetIndex,
   USDC,
   USDT,
   WETH,
@@ -113,6 +114,13 @@ const reth: QuoteToken = {
   decimals: 18,
   symbol: RETH.symbol,
 }
+
+const rwa: QuoteToken = {
+  address: RealWorldAssetIndex.address!,
+  decimals: 18,
+  symbol: RealWorldAssetIndex.symbol,
+}
+
 const seth2: QuoteToken = {
   address: sETH2.address!,
   decimals: 18,
@@ -165,6 +173,7 @@ export const QuoteTokens = {
   icreth,
   mvi,
   reth,
+  rwa,
   seth2,
   steth,
   usdc,
