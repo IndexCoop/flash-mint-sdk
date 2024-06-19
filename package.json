@@ -36,6 +36,7 @@
     "test:eth2xfli": "npm test src/tests/eth2xfli",
     "test:gtceth": "npm test src/tests/gtceth",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
+    "test:rwa": "npm test src/tests/rwa.presale.test.ts",
     "test:iceth": "npm test src/tests/iceth",
     "test:icreth": "npm test src/tests/icreth",
     "test:watch": "jest --watch"
