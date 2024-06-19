@@ -17,6 +17,7 @@ import {
   InterestCompoundingETHIndex,
   LeveragedrEthStakingYield,
   MetaverseIndex,
+  RealWorldAssetIndex,
 } from 'constants/tokens'
 
 import { FlashMintContractType } from './index'
@@ -46,7 +47,8 @@ export function getContractType(
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||
     token === GitcoinStakedETHIndex.symbol ||
-    token === MetaverseIndex.symbol
+    token === MetaverseIndex.symbol ||
+    token === RealWorldAssetIndex.symbol
   )
     return FlashMintContractType.zeroEx
   if (
