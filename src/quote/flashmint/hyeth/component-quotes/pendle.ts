@@ -100,6 +100,6 @@ export class PendleQuoteProvider {
       inputAmount: ethAmount.toString(),
     })
     if (!quote) return null
-    return BigInt(quote.inputAmount)
+    return BigInt(quote.outputAmount)
   }
 }
