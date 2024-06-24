@@ -7,6 +7,7 @@ import { QuoteToken } from '../../../interfaces'
 
 import { AcrossQuoteProvider } from './across'
 import { InstadappQuoteProvider } from './instadapp'
+import { MorphoQuoteProvider } from './morpho'
 import { PendleQuoteProvider } from './pendle'
 
 interface ComponentQuotesResult {
@@ -34,6 +35,13 @@ export class ComponentQuotesProvider {
     return isAddressEqual(
       token as Address,
       '0xA0D3707c569ff8C87FA923d3823eC5D81c98Be78'
+    )
+  }
+
+  isMorpho(token: string) {
+    return isAddressEqual(
+      token as Address,
+      '0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0'
     )
   }
 
@@ -104,6 +112,28 @@ export class ComponentQuotesProvider {
           quotePromises.push(quotePromise)
         } else {
           const quotePromise = instadappProvider.getRedeemQuote(
+            component,
+            amount,
+            outputTokenAddress
+          )
+          quotePromises.push(quotePromise)
+        }
+      }
+
+      if (this.isMorpho(component)) {
+        const morphoQuoteProvider = new MorphoQuoteProvider(
+          this.rpcUrl,
+          swapQuoteProvider
+        )
+        if (isMinting) {
+          const quotePromise = morphoQuoteProvider.getMintQuote(
+            component,
+            amount,
+            inputTokenAddress
+          )
+          quotePromises.push(quotePromise)
+        } else {
+          const quotePromise = morphoQuoteProvider.getRedeemQuote(
             component,
             amount,
             outputTokenAddress
