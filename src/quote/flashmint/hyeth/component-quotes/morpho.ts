@@ -34,7 +34,7 @@ export class MorphoQuoteProvider {
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken,
-      outputToken: WETH.address!,
+      outputToken: this.weth,
       outputAmount: ethAmount.toString(),
     })
     if (!quote) return null
@@ -51,7 +51,7 @@ export class MorphoQuoteProvider {
     if (isSameAddress(outputToken, this.weth)) return ethAmount.toBigInt()
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
-      inputToken: WETH.address!,
+      inputToken: this.weth,
       outputToken,
       inputAmount: ethAmount.toString(),
     })
