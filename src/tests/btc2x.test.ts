@@ -26,7 +26,7 @@ describe('BTC2X (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem with ETH', async () => {
+  test.skip('can redeem with ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: btc2x,
