@@ -8,7 +8,7 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
 import { WETH } from 'constants/tokens'
-import { ZeroExSwapQuoteProvider } from 'quote'
+import { LiFiSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
 import { TestFactory } from './factories'
 
 export { wei } from 'utils/numbers'
@@ -42,7 +42,11 @@ export function getMainnetTestFactory(
   signer: any,
   rpcUrl: string = LocalhostProviderUrl
 ) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProvider)
+  const swapQuoteProvider = new LiFiSwapQuoteProvider(
+    process.env.LIFI_API_KEY!,
+    'indexcoop'
+  )
+  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 
 export function getSignerAccount(num = 0, provider: JsonRpcProvider) {
