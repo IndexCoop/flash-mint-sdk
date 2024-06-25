@@ -20,6 +20,7 @@ export interface SwapQuoteRequest {
   inputAmount?: string
   outputAmount?: string
   // Optional
+  address?: string
   slippage?: number
   sources?: Exchange[]
 }

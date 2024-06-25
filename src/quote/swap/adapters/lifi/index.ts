@@ -17,12 +17,11 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
   constructor(readonly apiKey: string, readonly integrator: string) {}
 
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
-    // TODO:
-    const address = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
     // This is not ideal but right now the only way to get only uniV2 and sushi quotes
     const allowExchanges = ['uniswap', 'sushiswap']
     const { integrator } = this
     const {
+      address,
       chainId,
       inputAmount,
       inputToken,
@@ -30,6 +29,9 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
       outputToken,
       slippage,
     } = request
+    if (!address) {
+      throw new Error('Error - account address must be set')
+    }
     if (!inputAmount && !outputAmount) {
       throw new Error('Error - either input or output amount must be set')
     }
