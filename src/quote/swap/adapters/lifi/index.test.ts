@@ -15,6 +15,7 @@ const ONE = '1000000000000000000'
 describe('LifiSwapQuoteProvider', () => {
   test('getting a swap quote for a specified output amount', async () => {
     const request = {
+      address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: 1,
       inputToken: ETH,
       outputToken: USDC,
@@ -30,6 +31,7 @@ describe('LifiSwapQuoteProvider', () => {
 
   test('getting a swap quote for a specified input amount', async () => {
     const request = {
+      address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: 1,
       inputToken: ETH,
       outputToken: USDC,
