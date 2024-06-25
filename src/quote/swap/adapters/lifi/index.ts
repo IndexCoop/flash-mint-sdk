@@ -11,6 +11,8 @@ import {
   SwapQuoteRequest,
 } from 'quote/swap/interfaces'
 
+import { getSwapData } from './swap-data'
+
 export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
   constructor(readonly apiKey: string) {}
 
@@ -42,9 +44,6 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
           toToken: outputToken,
         }
         result = await getContractCallsQuote(quoteRequest, undefined)
-        console.log('LI.FI')
-        console.log('////////')
-        console.log(result.estimate)
       } else {
         // https://github.com/lifinance/sdk/blob/main/src/services/api.ts#L68
         const quoteRequest = {
@@ -57,13 +56,11 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
         }
         result = await getQuote(quoteRequest)
       }
-
       if (!result) {
         throw new Error('no estimate')
       }
       const estimate = result.estimate
-
-      console.log(estimate)
+      const swapData = getSwapData(result)
       return {
         chainId,
         inputToken,
@@ -72,8 +69,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
         outputAmount: estimate.toAmount,
         callData: result.transactionRequest?.data ?? '0x',
         slippage: slippage ?? 0,
-        // TODO:
-        swapData: null,
+        swapData,
       }
     } catch (error) {
       console.log('Error getting LiFi swap quote:')
