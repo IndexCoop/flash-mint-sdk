@@ -23,6 +23,7 @@ describe('LifiSwapQuoteProvider', () => {
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
+    expect(quote.callData).not.toBe('0x')
     expect(quote.inputAmount).not.toBeNull()
   })
 
@@ -37,6 +38,7 @@ describe('LifiSwapQuoteProvider', () => {
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
+    expect(quote.callData).not.toBe('0x')
     expect(quote.inputAmount).not.toBeNull()
   })
 })
