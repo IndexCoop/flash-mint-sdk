@@ -6,6 +6,7 @@ import { EthAddress } from 'constants/addresses'
 import { LiFiSwapQuoteProvider } from './'
 
 const apiKey = process.env.LIFI_API_KEY!
+const integrator = 'indexcoop'
 
 const ETH = EthAddress
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -19,7 +20,7 @@ describe('LifiSwapQuoteProvider', () => {
       outputToken: USDC,
       outputAmount: '1000000',
     }
-    const provider = new LiFiSwapQuoteProvider(apiKey)
+    const provider = new LiFiSwapQuoteProvider(apiKey, integrator)
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
@@ -34,7 +35,7 @@ describe('LifiSwapQuoteProvider', () => {
       outputToken: USDC,
       inputAmount: ONE,
     }
-    const provider = new LiFiSwapQuoteProvider(apiKey)
+    const provider = new LiFiSwapQuoteProvider(apiKey, integrator)
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()

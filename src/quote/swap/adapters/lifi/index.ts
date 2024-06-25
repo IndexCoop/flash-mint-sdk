@@ -14,11 +14,12 @@ import {
 import { getSwapData } from './swap-data'
 
 export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
-  constructor(readonly apiKey: string) {}
+  constructor(readonly apiKey: string, readonly integrator: string) {}
 
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
     // TODO:
     const address = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+    const { integrator } = this
     const {
       chainId,
       inputAmount,
@@ -35,6 +36,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
       if (outputAmount) {
         // https://github.com/lifinance/sdk/blob/main/src/services/api.ts#L140
         const quoteRequest: ContractCallsQuoteRequest = {
+          integrator,
           contractCalls: [],
           fromAddress: address,
           fromChain: chainId,
@@ -47,6 +49,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
       } else {
         // https://github.com/lifinance/sdk/blob/main/src/services/api.ts#L68
         const quoteRequest = {
+          integrator,
           fromAddress: address,
           fromChain: chainId,
           fromToken: inputToken,
