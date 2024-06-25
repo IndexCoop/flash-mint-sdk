@@ -19,6 +19,8 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
     // TODO:
     const address = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+    // This is not ideal but right now the only way to get only uniV2 and sushi quotes
+    const allowExchanges = ['uniswap', 'sushiswap']
     const { integrator } = this
     const {
       chainId,
@@ -44,6 +46,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
           toAmount: outputAmount ?? '',
           toChain: chainId,
           toToken: outputToken,
+          allowExchanges,
         }
         result = await getContractCallsQuote(quoteRequest, undefined)
       } else {
@@ -56,6 +59,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
           fromAmount: inputAmount ?? '',
           toChain: chainId,
           toToken: outputToken,
+          allowExchanges,
         }
         result = await getQuote(quoteRequest)
       }
