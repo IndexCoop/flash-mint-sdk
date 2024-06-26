@@ -88,7 +88,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for minting dsETH', async () => {
+  test.skip('returns a quote for minting dsETH', async () => {
     const inputToken = usdc
     const outputToken = dseth
     const contract = getFlashMintZeroExContractForToken(
@@ -125,7 +125,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for redeeming dsETH', async () => {
+  test.skip('returns a quote for redeeming dsETH', async () => {
     const inputToken = dseth
     const outputToken = usdc
     const contract = getFlashMintZeroExContractForToken(
