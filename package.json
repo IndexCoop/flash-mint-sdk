@@ -1,6 +1,6 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "description": "The FlashMintSDK of the Index Coop.",
   "engines": {
     "node": ">=18"
@@ -73,6 +73,7 @@
     "hardhat": "^2.17.1",
     "jest": "^28.1.1",
     "prettier": "^2.6.2",
+    "semantic-release": "^24.0.0",
     "ts-node": "^10.8.1",
     "tsup": "^7.0.0",
     "typescript": "^5.4.5"
