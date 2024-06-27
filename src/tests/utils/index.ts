@@ -18,10 +18,8 @@ export * from './lido'
 export * from './uniswap'
 
 // Alchemy
-export const AlchemyProvider = new JsonRpcProvider(
-  process.env.MAINNET_ALCHEMY_API,
-  1
-)
+export const AlchemyProviderUrl = process.env.MAINNET_ALCHEMY_API!
+export const AlchemyProvider = new JsonRpcProvider(AlchemyProviderUrl, 1)
 
 // Hardhat
 export const LocalhostProviderUrl = 'http://127.0.0.1:8545/'
