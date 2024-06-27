@@ -17,7 +17,7 @@ export async function getPool(
   tokenB: Token,
   poolFee: FeeAmount,
   rpcUrl: string
-): Promise<Pool> {
+): Promise<Pool | null> {
   const provider = getRpcProvider(rpcUrl)
 
   const address = computePoolAddress({
@@ -27,17 +27,22 @@ export async function getPool(
     fee: poolFee,
   })
 
-  const poolContract = new Contract(address, IUniswapV3PoolABI.abi, provider)
-  const [token0, token1, fee] = await Promise.all([
-    poolContract.token0(),
-    poolContract.token1(),
-    poolContract.fee(),
-  ])
-
-  return {
-    address,
-    token0,
-    token1,
-    fee,
+  try {
+    const poolContract = new Contract(address, IUniswapV3PoolABI.abi, provider)
+    const [token0, token1, fee] = await Promise.all([
+      poolContract.token0(),
+      poolContract.token1(),
+      poolContract.fee(),
+    ])
+    return {
+      address,
+      token0,
+      token1,
+      fee,
+    }
+  } catch (error) {
+    console.log('Error getting Uniswap V3 pool:')
+    console.log(error)
+    return null
   }
 }
