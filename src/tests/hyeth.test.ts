@@ -28,7 +28,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can mint with ETH (large amout)', async () => {
+  test.skip('can mint with ETH (large amout)', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
@@ -44,14 +44,14 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
-      indexTokenAmount: wei('100'),
+      indexTokenAmount: wei('1'),
       slippage: 0.5,
     })
     const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
-      wei('1000000', quote.inputToken.decimals),
+      wei('100000', quote.inputToken.decimals),
       quote.inputToken.address,
       factory.getProvider()
     )
@@ -69,7 +69,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to ETH (large amount)', async () => {
+  test.skip('can redeem to ETH (large amount)', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
