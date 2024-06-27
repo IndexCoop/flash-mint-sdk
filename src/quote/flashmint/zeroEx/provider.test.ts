@@ -19,7 +19,7 @@ describe('ZeroExQuoteProvider', () => {
     jest.setTimeout(100000)
   })
 
-  test('returns a quote for minting dsETH', async () => {
+  test.skip('returns a quote for minting dsETH', async () => {
     const indexTokenAmount = wei(1)
     const inputToken = eth
     const outputToken = dseth
@@ -38,7 +38,7 @@ describe('ZeroExQuoteProvider', () => {
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
   })
 
-  test('returns a quote for redeeming dsETH', async () => {
+  test.skip('returns a quote for redeeming dsETH', async () => {
     const indexTokenAmount = wei(1)
     const inputToken = dseth
     const outputToken = eth

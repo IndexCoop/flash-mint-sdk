@@ -44,7 +44,8 @@ jobs:
       - run: npm run test:rwa
       - run: npm run test:btc2x
       - run: npm run test:cdeti
-      - run: npm run test:dseth
+      # skipping as currently no liquidity for sfrETH
+      # - run: npm run test:dseth
       # - run: npm run test:eth2x
       # - run: npm run test:gtceth
       # - run: npm run test:iceth
