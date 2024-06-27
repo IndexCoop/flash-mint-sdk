@@ -43,13 +43,13 @@ jobs:
       - run: npm run test:hyeth
       - run: npm run test:rwa
       - run: npm run test:btc2x
-      - run: npm run test:cdeti
       # skipping as currently no liquidity for sfrETH
       # - run: npm run test:dseth
       # - run: npm run test:eth2x
       # - run: npm run test:gtceth
       # - run: npm run test:iceth
       # - run: npm run test:icreth
+      # - run: npm run test:cdeti
       # run last - as it alters the block number
       # skip as it can't be minted or redeemed with 0x
       # - run: npm run test:eth2xfli
