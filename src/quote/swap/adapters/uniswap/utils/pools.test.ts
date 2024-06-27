@@ -54,7 +54,7 @@ describe('getPool', () => {
   })
 
   test('returns null if no pool exists', async () => {
-    let nonExistantToken = new Token(1, AddressZero, 18)
+    const nonExistantToken = new Token(1, AddressZero, 18)
     const pool = await getPool(nonExistantToken, usdc, FeeAmount.MEDIUM, rpcUrl)
     expect(pool).toBeNull()
   })
