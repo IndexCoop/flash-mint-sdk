@@ -4,6 +4,7 @@ import { getTokenDataByAddress } from '@indexcoop/tokenlists'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { Token } from '@uniswap/sdk-core'
 
+import { AddressZero } from 'constants/addresses'
 import {
   SwapQuote,
   SwapQuoteProvider,
@@ -86,8 +87,6 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
           0
         )
       }
-      // TODO: construct swap data
-      //   const swapData = getSwapData(result)
       return {
         chainId,
         inputToken,
@@ -108,7 +107,8 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
           exchange: Exchange.UniV3,
           path,
           fees: [pool.fee],
-          pool: pool.address,
+          // For UniV3 swap data the contract only needs the path and the fees
+          pool: AddressZero,
         },
       }
     } catch (error) {
