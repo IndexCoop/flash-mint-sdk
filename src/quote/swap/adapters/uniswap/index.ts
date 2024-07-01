@@ -11,6 +11,7 @@ import {
 import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, isSameAddress } from 'utils'
 
+import { getPath } from './utils/path'
 import { getPool } from './utils/pools'
 
 const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
@@ -38,6 +39,9 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
     if (!inputAmount && !outputAmount) {
       throw new Error('Error - either input or output amount must be set')
     }
+
+    const path = getPath(inputToken, outputToken)
+    console.log(path)
 
     // TODO: just for testing, remove later
     const isStEth =
@@ -115,7 +119,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         slippage: slippage ?? 0,
         swapData: {
           exchange: Exchange.UniV3,
-          path: [inputToken, outputToken],
+          path,
           fees: [pool.fee],
           pool: pool.address,
         },
