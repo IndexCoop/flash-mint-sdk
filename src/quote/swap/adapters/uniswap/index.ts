@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+import { getTokenDataByAddress } from '@indexcoop/tokenlists'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { Token } from '@uniswap/sdk-core'
 
@@ -40,6 +41,13 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
       throw new Error('Error - either input or output amount must be set')
     }
 
+    const inputTokenData = getTokenDataByAddress(inputToken, chainId)
+    const outputTokenData = getTokenDataByAddress(outputToken, chainId)
+
+    if (!inputTokenData || !outputTokenData) {
+      throw new Error('Error - either input or output token is invalid')
+    }
+
     const path = getPath(inputToken, outputToken)
     console.log(path)
 
@@ -51,32 +59,11 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
       ) ||
       isSameAddress(inputToken, '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84')
 
-    const isInputTokenUsdc = isSameAddress(
-      inputToken,
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    )
-    const isOutputTokenUsdc = isSameAddress(
-      outputToken,
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    )
-    const isInputTokenUsdt = isSameAddress(
-      inputToken,
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    )
-    const isOutputTokenUsdt = isSameAddress(
-      outputToken,
-      '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
-    )
-
-    // TODO: get decimals from tokenlists
-    const decimalsInputToken = isInputTokenUsdc || isInputTokenUsdt ? 6 : 18
-    const decimalsOutputToken = isOutputTokenUsdc || isOutputTokenUsdt ? 6 : 18
-
     try {
       // TODO: create convenience function to fetch best pool (best fees)?
       const fee = isStEth ? 3000 : 500
-      const tokenA = new Token(1, inputToken, decimalsInputToken)
-      const tokenB = new Token(1, outputToken, decimalsOutputToken)
+      const tokenA = new Token(1, inputToken, inputTokenData.decimals)
+      const tokenB = new Token(1, outputToken, outputTokenData.decimals)
       const pool = await getPool(tokenA, tokenB, fee, this.rpcUrl)
       if (!pool) return null
       const quoterContract = this.getQuoterContract()
