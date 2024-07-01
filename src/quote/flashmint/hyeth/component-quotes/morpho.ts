@@ -17,8 +17,8 @@ export class MorphoQuoteProvider {
   getTokenContract(address: string): Contract {
     const provider = getRpcProvider(this.rpcUrl)
     const abi = [
-      'function previewMint(uint256 shares) public returns (uint256)',
-      'function previewRedeem(uint256 shares) public returns (uint256)',
+      'function previewMint(uint256 shares) public view returns (uint256)',
+      'function previewRedeem(uint256 shares) public view returns (uint256)',
     ]
     return new Contract(address, abi, provider)
   }
