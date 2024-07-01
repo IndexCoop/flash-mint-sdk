@@ -89,6 +89,7 @@
     "@ethersproject/contracts": "^5.6.2",
     "@ethersproject/providers": "^5.6.8",
     "@ethersproject/units": "^5.6.1",
+    "@indexcoop/tokenlists": "1.47.0",
     "@lifi/sdk": "3.0.0-beta.1",
     "@uniswap/sdk-core": "^5.3.1",
     "@uniswap/v3-sdk": "^3.13.1",
