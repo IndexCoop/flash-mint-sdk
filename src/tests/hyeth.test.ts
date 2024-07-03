@@ -28,12 +28,12 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test.skip('can mint with ETH (large amout)', async () => {
+  test('can mint with ETH (large amout)', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
       outputToken: indexToken,
-      indexTokenAmount: wei('300'),
+      indexTokenAmount: wei('550'),
       slippage: 0.5,
     })
     await factory.executeTx()
