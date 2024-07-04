@@ -80,9 +80,7 @@ export class FlashMintHyEthQuoteProvider
       outputToken
     )
     if (!quoteResult) return null
-    const inputOutputTokenAmount = isMinting
-      ? (quoteResult.inputOutputTokenAmount * BigInt(1003)) / BigInt(1000)
-      : (quoteResult.inputOutputTokenAmount * BigInt(1000)) / BigInt(1007)
+    const inputOutputTokenAmount = quoteResult.inputOutputTokenAmount
     return {
       indexTokenAmount,
       inputOutputTokenAmount,
