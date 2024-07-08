@@ -32,19 +32,21 @@ export class CurveSwapQuoteProvider implements SwapQuoteProvider {
       slippage,
     } = request
     const pool = this.getPoolContract()
-    const quoteAmount = await pool.get_dy(
-      0,
-      1,
-      BigNumber.from('1000000000000000000')
-    )
+    let quoteAmount = BigNumber.from(0)
+    if (outputAmount) {
+      quoteAmount = await pool.get_dy(1, 0, BigNumber.from(outputAmount))
+    } else {
+      quoteAmount = await pool.get_dy(0, 1, BigNumber.from(inputAmount))
+    }
     console.log(quoteAmount.toString())
     return {
       chainId,
       inputToken,
       outputToken,
-      inputAmount: BigNumber.from(0).toString(),
-      outputAmount: BigNumber.from(0).toString(),
-      callData: '0x', // TOOD: result.transactionRequest?.data ?? '0x',
+      inputAmount: inputAmount ?? quoteAmount.toString(),
+      outputAmount: outputAmount ?? quoteAmount.toString(),
+      // TOOD:
+      callData: '0x',
       slippage: slippage ?? 0,
       swapData: getSwapData(),
     }
