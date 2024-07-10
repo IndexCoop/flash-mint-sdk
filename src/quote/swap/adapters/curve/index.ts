@@ -34,9 +34,9 @@ export class CurveSwapQuoteProvider implements SwapQuoteProvider {
     const pool = this.getPoolContract()
     let quoteAmount = BigNumber.from(0)
     if (outputAmount) {
-      quoteAmount = await pool.get_dy(1, 0, BigNumber.from(outputAmount))
+      quoteAmount = await pool.get_dy(0, 1, BigNumber.from(outputAmount))
     } else {
-      quoteAmount = await pool.get_dy(0, 1, BigNumber.from(inputAmount))
+      quoteAmount = await pool.get_dy(1, 0, BigNumber.from(inputAmount))
     }
     console.log(quoteAmount.toString())
     return {
