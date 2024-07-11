@@ -38,7 +38,6 @@ export class CurveSwapQuoteProvider implements SwapQuoteProvider {
     } else {
       quoteAmount = await pool.get_dy(1, 0, BigNumber.from(inputAmount))
     }
-    console.log(quoteAmount.toString())
     return {
       chainId,
       inputToken,
