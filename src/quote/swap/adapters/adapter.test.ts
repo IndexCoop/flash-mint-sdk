@@ -22,7 +22,7 @@ describe('CurveSwapQuoteProvider', () => {
       outputToken: steth,
       outputAmount: ONE,
     }
-    const provider = new IndexSwapQuoteProvider()
+    const provider = new IndexSwapQuoteProvider(rpcUrl)
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
@@ -42,7 +42,7 @@ describe('CurveSwapQuoteProvider', () => {
       outputToken: eth,
       inputAmount: ONE,
     }
-    const provider = new IndexSwapQuoteProvider()
+    const provider = new IndexSwapQuoteProvider(rpcUrl)
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
