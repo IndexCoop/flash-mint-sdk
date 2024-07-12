@@ -1,5 +1,6 @@
-import { stETH } from 'constants/tokens'
+import { ETH, stETH } from 'constants/tokens'
 import { CurveSwapQuoteProvider } from 'quote/swap/adapters/curve'
+import { UniswapSwapQuoteProvider } from 'quote/swap/adapters/uniswap'
 
 import {
   SwapQuote,
@@ -14,16 +15,20 @@ export class IndexSwapQuoteProvider implements SwapQuoteProvider {
   public async getSwapQuote(
     request: SwapQuoteRequest
   ): Promise<SwapQuote | null> {
-    const { chainId, inputToken, outputToken } = request
-    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+    const { inputToken, outputToken } = request
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const eth = ETH.address!
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const stEth = stETH.address!
+    const isEth =
+      isSameAddress(inputToken, eth) || isSameAddress(outputToken, eth)
     const isStEth =
       isSameAddress(inputToken, stEth) || isSameAddress(outputToken, stEth)
-    if (isStEth) {
-      // tODO: check whether input token is ETH or ERC-20
+    if (isStEth && isEth) {
       const curveSwapQuoteProvider = new CurveSwapQuoteProvider(this.rpcUrl)
       return await curveSwapQuoteProvider.getSwapQuote(request)
     }
-    return null
+    const uniswapSwapQuoteProvider = new UniswapSwapQuoteProvider(this.rpcUrl)
+    return await uniswapSwapQuoteProvider.getSwapQuote(request)
   }
 }
