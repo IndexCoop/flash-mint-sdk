@@ -44,7 +44,7 @@ export class CurveSwapQuoteProvider implements SwapQuoteProvider {
       outputToken,
       inputAmount: inputAmount ?? quoteAmount.toString(),
       outputAmount: outputAmount ?? quoteAmount.toString(),
-      // TOOD:
+      // Will not be used anywhere, so no need to return constructed call data
       callData: '0x',
       slippage: slippage ?? 0,
       swapData: getSwapData(),

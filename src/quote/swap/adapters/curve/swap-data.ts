@@ -2,6 +2,8 @@ import { stETH, WETH } from 'constants/tokens'
 import { Exchange, SwapData } from 'utils'
 
 export function getSwapData(): SwapData {
+  // The curve adapter is mostly just used for ETH/stETH swapping, so we can
+  // hard-code the return here.
   return {
     exchange: Exchange.Curve,
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
