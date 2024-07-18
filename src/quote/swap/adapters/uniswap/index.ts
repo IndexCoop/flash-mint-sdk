@@ -1,8 +1,12 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { getTokenData, getTokenDataByAddress } from '@indexcoop/tokenlists'
 import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
-import { ChainId, Token, TradeType } from '@uniswap/sdk-core'
+import { Token, TradeType } from '@uniswap/sdk-core'
+import {
+  AlphaRouter,
+  CurrencyAmount,
+  SwapRoute,
+} from '@uniswap/smart-order-router'
 import { Address, encodePacked } from 'viem'
 
 import { AddressZero, EthAddress } from 'constants/addresses'
@@ -15,7 +19,6 @@ import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, isSameAddress } from 'utils'
 
 import { getPath } from './utils/path'
-import { getPool } from './utils/pools'
 
 const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
 
@@ -93,41 +96,73 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
     try {
       const isExactOutput = outputAmount !== undefined
       const path = getPath(inputToken, outputToken)
-      // TODO: fees/pools
-      const fees = path.length === 3 ? [500, 500] : [500]
-      const encodedPath = encodePathV3(path, fees, isExactOutput)
-      let quotedAmount: BigNumber = BigNumber.from(0)
-      const quoterContract = this.getQuoterContract()
+
+      const inputTokenCurrency = new Token(
+        chainId,
+        inputToken,
+        inputTokenData.decimals
+      )
+      const outputTokenCurrency = new Token(
+        chainId,
+        outputToken,
+        outputTokenData.decimals
+      )
+
+      const router = new AlphaRouter({
+        chainId,
+        provider: getRpcProvider(this.rpcUrl),
+      })
+
+      let route: SwapRoute | null = null
       if (isExactOutput) {
-        quotedAmount = await quoterContract.callStatic.quoteExactOutput(
-          encodedPath,
-          BigNumber.from(outputAmount)
+        route = await router.route(
+          CurrencyAmount.fromRawAmount(outputTokenCurrency, outputAmount!),
+          inputTokenCurrency,
+          TradeType.EXACT_OUTPUT
         )
       } else {
-        quotedAmount = await quoterContract.callStatic.quoteExactInput(
-          encodedPath,
-          BigNumber.from(inputAmount)
+        route = await router.route(
+          CurrencyAmount.fromRawAmount(inputTokenCurrency, inputAmount!),
+          outputTokenCurrency,
+          TradeType.EXACT_INPUT
         )
       }
+      const tradeR = route.trade
+
+
+      if (!tradeR) return null
+
+      let fees: number[] = []
+      const encodedPath = encodePathV3(path, fees, isExactOutput)
+      const swap = tradeR.swaps[0]
+      const quotedAmount = isExactOutput
+        ? swap.inputAmount.quotient.toString()
+        : swap.outputAmount.quotient.toString()
+
+      const swapRoute = swap.route
+      const isV3 = swapRoute.protocol === 'V3'
+
+      if (isV3) {
+        fees = swapRoute.pools.map((pool: any) => pool.fee)
+        console.log(fees)
+      } else {
+        fees = swapRoute.pools.map(() => 3000)
+      }
+
       return {
         chainId,
         inputToken,
         outputToken,
-        inputAmount: (
-          inputAmount ??
-          quotedAmount ??
-          BigNumber.from(0)
-        )?.toString(),
-        outputAmount: (
-          outputAmount ??
-          quotedAmount ??
-          BigNumber.from(0)
-        )?.toString(),
+        inputAmount: inputAmount ?? quotedAmount,
+        outputAmount: outputAmount ?? quotedAmount,
         callData: '0x', // TOOD: result.transactionRequest?.data ?? '0x',
         slippage: slippage ?? 0,
         swapData: {
-          exchange: Exchange.UniV3,
+          // TODO:
+          exchange: isV3 ? Exchange.UniV3 : Exchange.Sushiswap,
+          // TODO: write tests
           path,
+          // TODO: write tests
           fees,
           // For UniV3 swap data the contract only needs the path and the fees
           pool: AddressZero,

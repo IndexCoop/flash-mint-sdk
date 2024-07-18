@@ -30,6 +30,8 @@ describe('UniswapSwapQuoteProvider', () => {
       request.inputToken,
       request.outputToken,
     ])
+    expect(quote.outputAmount).toEqual(request.outputAmount)
+    expect(quote.inputAmount).not.toEqual(quote.outputAmount)
     // expect(quote.callData).not.toBe('0x')
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
   })
@@ -52,23 +54,25 @@ describe('UniswapSwapQuoteProvider', () => {
       request.inputToken,
       request.outputToken,
     ])
+    expect(quote.inputAmount).toEqual(request.inputAmount)
+    expect(quote.inputAmount).not.toEqual(quote.outputAmount)
     // expect(quote.callData).not.toBe('0x')
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
   })
 
-  test('getting a swap quote for a specified input amount', async () => {
+  test('getting a swap quote for a specified input amount (stETH)', async () => {
     const request = {
       chainId: 1,
       inputToken: usdc,
       // TODO: check why it doesn't work with stETH (just wstETH)
-      outputToken: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
+      outputToken: '0xae7ab96520de3a18e5e111b5eaab095312d7fe84',
       inputAmount: '100000000',
     }
     const provider = new UniswapSwapQuoteProvider(rpcUrl)
     const quote = await provider.getSwapQuote(request)
     if (!quote) fail()
     expect(quote).not.toBeNull()
-    expect(quote.swapData?.exchange).toBe(Exchange.UniV3)
+    expect(quote.swapData?.exchange).toBe(Exchange.Sushiswap)
     expect(quote.swapData?.path.length).toBe(3)
     expect(quote.swapData?.fees.length).toBe(2)
     expect(quote.swapData?.path).toEqual([
