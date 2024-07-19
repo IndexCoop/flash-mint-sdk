@@ -1,7 +1,6 @@
 import { ETH, stETH } from 'constants/tokens'
 import { CurveSwapQuoteProvider } from 'quote/swap/adapters/curve'
 import { UniswapSwapQuoteProvider } from 'quote/swap/adapters/uniswap'
-
 import {
   SwapQuote,
   SwapQuoteProvider,
