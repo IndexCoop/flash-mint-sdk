@@ -14,7 +14,7 @@ const steth = stETH.address!
 const weth = WETH.address!
 const ONE = '1000000000000000000'
 
-describe('CurveSwapQuoteProvider', () => {
+describe('IndexSwapQuoteProvider', () => {
   test('returns a swap quote for buying stETH with ETH', async () => {
     const request = {
       chainId: 1,
