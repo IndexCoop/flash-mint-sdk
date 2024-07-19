@@ -19,6 +19,7 @@ export * from './uniswap'
 
 // Alchemy
 export const AlchemyProviderUrl = process.env.MAINNET_ALCHEMY_API!
+export const AlchemyProviderUrlArbitrum = process.env.ARBITRUM_ALCHEMY_API!
 export const AlchemyProvider = new JsonRpcProvider(AlchemyProviderUrl, 1)
 
 // Hardhat

@@ -1,13 +1,10 @@
-import { Contract } from '@ethersproject/contracts'
 import { getTokenData, getTokenDataByAddress } from '@indexcoop/tokenlists'
-import Quoter from '@uniswap/v3-periphery/artifacts/contracts/lens/Quoter.sol/Quoter.json'
 import { Token, TradeType } from '@uniswap/sdk-core'
 import {
   AlphaRouter,
   CurrencyAmount,
   SwapRoute,
 } from '@uniswap/smart-order-router'
-import { Address, encodePacked } from 'viem'
 
 import { AddressZero, EthAddress } from 'constants/addresses'
 import {
@@ -18,61 +15,23 @@ import {
 import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, isSameAddress } from 'utils'
 
-import { getPath } from './utils/path'
-
-const QUOTER_CONTRACT_ADDRESS = '0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6'
-
-function encodePathV3(
-  path: string[],
-  fees: number[],
-  reverseOrder: boolean
-): string {
-  if (reverseOrder) {
-    let encodedPath = encodePacked(
-      ['address'],
-      [path[path.length - 1] as Address]
-    )
-    for (let i = 0; i < fees.length; i++) {
-      const index = fees.length - i - 1
-      encodedPath = encodePacked(
-        ['bytes', 'uint24', 'address'],
-        [encodedPath as `0x${string}`, fees[index], path[index] as Address]
-      )
-      console.log(encodedPath, i)
-    }
-    return encodedPath
+function changeToWethIfNecessary(token: string, chainId: number): string {
+  if (isSameAddress(token, EthAddress)) {
+    const weth = getTokenData('WETH', chainId)
+    return weth?.address ?? token
   }
-  let encodedPath = encodePacked(['address'], [path[0] as Address])
-  console.log(encodedPath)
-  for (let i = 0; i < fees.length; i++) {
-    encodedPath = encodePacked(
-      ['bytes', 'uint24', 'address'],
-      [encodedPath as `0x${string}`, fees[i], path[i + 1] as Address]
-    )
-    console.log(encodedPath, i)
-  }
-  return encodedPath
+  return token
 }
 
 export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
   constructor(readonly rpcUrl: string) {}
 
-  getQuoterContract() {
-    const rpcProvider = getRpcProvider(this.rpcUrl)
-    return new Contract(QUOTER_CONTRACT_ADDRESS, Quoter.abi, rpcProvider)
-  }
-
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
-    const {
-      chainId,
-      inputAmount,
-      inputToken,
-      outputAmount,
-      outputToken,
-      slippage,
-    } = request
+    const { chainId, inputAmount, outputAmount, slippage } = request
 
-    // TODO: if input/output token is ETH, change to WETH
+    const inputToken = changeToWethIfNecessary(request.inputToken, chainId)
+    const outputToken = changeToWethIfNecessary(request.outputToken, chainId)
+
     if (
       isSameAddress(inputToken, EthAddress) ||
       isSameAddress(outputToken, EthAddress)
@@ -95,7 +54,6 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
 
     try {
       const isExactOutput = outputAmount !== undefined
-      const path = getPath(inputToken, outputToken)
 
       const inputTokenCurrency = new Token(
         chainId,
@@ -113,40 +71,43 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         provider: getRpcProvider(this.rpcUrl),
       })
 
-      let route: SwapRoute | null = null
+      let swapRoute: SwapRoute | null = null
       if (isExactOutput) {
-        route = await router.route(
+        swapRoute = await router.route(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           CurrencyAmount.fromRawAmount(outputTokenCurrency, outputAmount!),
           inputTokenCurrency,
           TradeType.EXACT_OUTPUT
         )
       } else {
-        route = await router.route(
+        swapRoute = await router.route(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           CurrencyAmount.fromRawAmount(inputTokenCurrency, inputAmount!),
           outputTokenCurrency,
           TradeType.EXACT_INPUT
         )
       }
-      const tradeR = route.trade
 
+      if (!swapRoute) return null
 
-      if (!tradeR) return null
+      const trade = swapRoute.trade
+      if (!trade) return null
 
-      let fees: number[] = []
-      const encodedPath = encodePathV3(path, fees, isExactOutput)
-      const swap = tradeR.swaps[0]
+      const swap = trade.swaps[0]
       const quotedAmount = isExactOutput
         ? swap.inputAmount.quotient.toString()
         : swap.outputAmount.quotient.toString()
 
-      const swapRoute = swap.route
-      const isV3 = swapRoute.protocol === 'V3'
+      const route = swap.route
+      const path: string[] = route.path.map((token) => token.address)
 
+      const isV3 = route.protocol === 'V3'
+      let fees: number[] = []
       if (isV3) {
-        fees = swapRoute.pools.map((pool: any) => pool.fee)
-        console.log(fees)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fees = route.pools.map((pool: any) => pool.fee)
       } else {
-        fees = swapRoute.pools.map(() => 3000)
+        fees = route.pools.map(() => 3000)
       }
 
       return {
@@ -155,14 +116,12 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         outputToken,
         inputAmount: inputAmount ?? quotedAmount,
         outputAmount: outputAmount ?? quotedAmount,
-        callData: '0x', // TOOD: result.transactionRequest?.data ?? '0x',
+        callData: '0x', // TOOD:
         slippage: slippage ?? 0,
         swapData: {
           // TODO:
           exchange: isV3 ? Exchange.UniV3 : Exchange.Sushiswap,
-          // TODO: write tests
           path,
-          // TODO: write tests
           fees,
           // For UniV3 swap data the contract only needs the path and the fees
           pool: AddressZero,
