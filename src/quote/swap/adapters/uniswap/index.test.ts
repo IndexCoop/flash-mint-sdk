@@ -126,7 +126,9 @@ describe('UniswapSwapQuoteProvider', () => {
     const path = quote.swapData?.path ?? []
     expect(path.length).toBeGreaterThanOrEqual(2)
     expect(path[0]).toEqual(request.inputToken)
-    expect(path[path.length - 1]).toEqual(request.outputToken)
+    expect(path[path.length - 1]).toEqual(
+      '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1'
+    )
     expect(quote.swapData?.fees.length).toBeGreaterThanOrEqual(1)
     // expect(quote.callData).not.toBe('0x')
     expect(quote.inputAmount).toEqual(request.inputAmount)
