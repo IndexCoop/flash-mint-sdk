@@ -8,10 +8,10 @@ import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
 import { WETH } from 'constants/tokens'
-import { ZeroExSwapQuoteProvider } from 'quote'
+import { IndexSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
 import { TestFactory } from './factories'
-
 export { wei } from 'utils/numbers'
+
 export * from './factories'
 export { QuoteTokens } from './quoteTokens'
 export * from './lido'
@@ -37,11 +37,26 @@ export function getArbitrumTestFactory(
 ) {
   return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderArbitrum)
 }
+export function getArbitrumTestFactoryUniswap(
+  signer: any,
+  rpcUrl: string = AlchemyProviderUrlArbitrum
+) {
+  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
+  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
+}
+
 export function getMainnetTestFactory(
   signer: any,
   rpcUrl: string = LocalhostProviderUrl
 ) {
   return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProvider)
+}
+export function getMainnetTestFactoryUniswap(
+  signer: any,
+  rpcUrl: string = LocalhostProviderUrl
+) {
+  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
+  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 
 export function getSignerAccount(num = 0, provider: JsonRpcProvider) {

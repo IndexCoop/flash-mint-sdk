@@ -14,7 +14,16 @@ export class IndexSwapQuoteProvider implements SwapQuoteProvider {
   public async getSwapQuote(
     request: SwapQuoteRequest
   ): Promise<SwapQuote | null> {
-    const { inputToken, outputToken } = request
+    let inputToken = request.inputToken
+    let outputToken = request.outputToken
+    if (inputToken === 'ETH') {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      inputToken = ETH.address!
+    }
+    if (outputToken === 'ETH') {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      outputToken = ETH.address!
+    }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const eth = ETH.address!
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -25,9 +34,17 @@ export class IndexSwapQuoteProvider implements SwapQuoteProvider {
       isSameAddress(inputToken, stEth) || isSameAddress(outputToken, stEth)
     if (isStEth && isEth) {
       const curveSwapQuoteProvider = new CurveSwapQuoteProvider(this.rpcUrl)
-      return await curveSwapQuoteProvider.getSwapQuote(request)
+      return await curveSwapQuoteProvider.getSwapQuote({
+        ...request,
+        inputToken,
+        outputToken,
+      })
     }
     const uniswapSwapQuoteProvider = new UniswapSwapQuoteProvider(this.rpcUrl)
-    return await uniswapSwapQuoteProvider.getSwapQuote(request)
+    return await uniswapSwapQuoteProvider.getSwapQuote({
+      ...request,
+      inputToken,
+      outputToken,
+    })
   }
 }
