@@ -110,6 +110,12 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         fees = route.pools.map(() => 3000)
       }
 
+      // FlashMint contracts use the Quickswap type for UniV2
+      const exchange = isV3 ? Exchange.UniV3 : Exchange.Quickswap
+
+      // For UniV3 swap data the contract only needs the path and the fees
+      const pool = AddressZero
+
       return {
         chainId,
         inputToken,
@@ -119,12 +125,10 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         callData: '0x', // TOOD:
         slippage: slippage ?? 0,
         swapData: {
-          // TODO:
-          exchange: isV3 ? Exchange.UniV3 : Exchange.Sushiswap,
+          exchange,
           path,
           fees,
-          // For UniV3 swap data the contract only needs the path and the fees
-          pool: AddressZero,
+          pool,
         },
       }
     } catch (error) {
