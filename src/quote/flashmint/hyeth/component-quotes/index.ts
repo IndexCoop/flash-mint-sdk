@@ -2,6 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Address, isAddressEqual } from 'viem'
 
 import { SwapQuoteProvider } from 'quote/swap'
+import { slippageAdjustedTokenAmount } from 'utils'
 
 import { QuoteToken } from '../../../interfaces'
 
@@ -175,9 +176,15 @@ export class ComponentQuotesProvider {
       .reduce((prevValue, currValue) => {
         return currValue + prevValue
       })
+    const adjustedAmount = slippageAdjustedTokenAmount(
+      BigNumber.from(inputOutputTokenAmount.toString()),
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      this.slippage,
+      isMinting
+    )
     return {
       componentQuotes: [],
-      inputOutputTokenAmount,
+      inputOutputTokenAmount: adjustedAmount.toBigInt(),
     }
   }
 
