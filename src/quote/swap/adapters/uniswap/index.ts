@@ -126,7 +126,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         outputToken,
         inputAmount: inputAmount ?? quotedAmount,
         outputAmount: outputAmount ?? quotedAmount,
-        callData: '0x', // TOOD:
+        callData: '0x',
         slippage: slippage ?? 0,
         swapData: {
           exchange,

@@ -39,7 +39,7 @@ export function getArbitrumTestFactory(
 }
 export function getArbitrumTestFactoryUniswap(
   signer: any,
-  rpcUrl: string = AlchemyProviderUrlArbitrum
+  rpcUrl: string = LocalhostProviderUrlArbitrum
 ) {
   const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
