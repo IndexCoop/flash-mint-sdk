@@ -32,6 +32,10 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
     const inputToken = changeToWethIfNecessary(request.inputToken, chainId)
     const outputToken = changeToWethIfNecessary(request.outputToken, chainId)
 
+    if (isSameAddress(inputToken, outputToken)) {
+      return null
+    }
+
     if (
       isSameAddress(inputToken, EthAddress) ||
       isSameAddress(outputToken, EthAddress)

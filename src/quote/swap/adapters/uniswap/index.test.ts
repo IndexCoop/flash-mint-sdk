@@ -15,6 +15,30 @@ const usdc = USDC.address!
 const ONE = '1000000000000000000'
 
 describe('UniswapSwapQuoteProvider', () => {
+  test('returns null if input and output token are the same', async () => {
+    const request = {
+      chainId: 1,
+      inputToken: usdc,
+      outputToken: usdc,
+      outputAmount: ONE,
+    }
+    const provider = new UniswapSwapQuoteProvider(rpcUrl)
+    const quote = await provider.getSwapQuote(request)
+    expect(quote).toBeNull()
+  })
+
+  test('returns null if input and output token are ETH/WETH', async () => {
+    const request = {
+      chainId: 1,
+      inputToken: EthAddress,
+      outputToken: weth,
+      outputAmount: ONE,
+    }
+    const provider = new UniswapSwapQuoteProvider(rpcUrl)
+    const quote = await provider.getSwapQuote(request)
+    expect(quote).toBeNull()
+  })
+
   test('getting a swap quote for a specified output amount', async () => {
     const request = {
       chainId: 1,
