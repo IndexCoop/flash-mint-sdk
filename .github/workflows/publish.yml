@@ -43,9 +43,6 @@ jobs:
       - run: npm run test:hyeth
       - run: npm run test:btc2x
       # - run: npm run test:eth2x
-      # skipping as currently no liquidity for sfrETH
-      # - run: npm run test:dseth
-      # - run: npm run test:iceth
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
