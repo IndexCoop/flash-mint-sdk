@@ -14,7 +14,6 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
-  LeveragedrEthStakingYield,
   MetaverseIndex,
 } from 'constants/tokens'
 
@@ -132,14 +131,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for icETH', async () => {
     const contractType = getContractType(
       InterestCompoundingETHIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
-  })
-
-  test('returns correct contract type for icRETH', async () => {
-    const contractType = getContractType(
-      LeveragedrEthStakingYield.symbol,
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)

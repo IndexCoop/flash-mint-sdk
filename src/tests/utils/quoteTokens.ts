@@ -11,7 +11,6 @@ import {
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
-  LeveragedrEthStakingYield,
   MetaverseIndex,
   RETH,
   USDC,
@@ -89,12 +88,6 @@ const iceth: QuoteToken = {
   address: InterestCompoundingETHIndex.address!,
 }
 
-const icreth: QuoteToken = {
-  symbol: LeveragedrEthStakingYield.symbol,
-  decimals: 18,
-  address: LeveragedrEthStakingYield.address!,
-}
-
 const mvi: QuoteToken = {
   address: MetaverseIndex.address!,
   decimals: 18,
@@ -155,7 +148,6 @@ export const QuoteTokens = {
   gtcETH,
   hyeth,
   iceth,
-  icreth,
   mvi,
   reth,
   seth2,

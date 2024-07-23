@@ -18,7 +18,6 @@ import {
   InterestCompoundingETHIndex,
   MetaverseIndex,
   wsETH2,
-  LeveragedrEthStakingYield,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -59,13 +58,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for hyETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(HighYieldETHIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for icRETH', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
-    const issuanceModule = getIssuanceModule(LeveragedrEthStakingYield.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

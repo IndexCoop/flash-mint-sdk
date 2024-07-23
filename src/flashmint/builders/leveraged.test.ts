@@ -1,9 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import {
-  ExchangeIssuanceLeveragedMainnetAddress,
-  FlashMintLeveragedAddress,
-} from 'constants/contracts'
+import { ExchangeIssuanceLeveragedMainnetAddress } from 'constants/contracts'
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
@@ -26,7 +23,7 @@ const chainId = 1
 const provider = LocalhostProvider
 const rpcUrl = LocalhostProviderUrl
 
-const { iceth, icreth, reth, usdc } = QuoteTokens
+const { iceth, usdc } = QuoteTokens
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const indexToken = iceth
@@ -173,38 +170,6 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx.to).toBe(ExchangeIssuanceLeveragedMainnetAddress)
     expect(tx.data).toEqual(refTx.data)
     expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
-  })
-
-  test('returns a tx for minting icRETH (rETH)', async () => {
-    const isMinting = true
-    const buildRequest = {
-      isMinting,
-      indexToken: icreth.address,
-      indexTokenSymbol: icreth.symbol,
-      inputOutputToken: reth.address,
-      inputOutputTokenSymbol: reth.symbol,
-      indexTokenAmount: wei(1),
-      inputOutputTokenAmount: BigNumber.from(194235680),
-      swapDataDebtCollateral: isMinting
-        ? collateralDebtSwapData['icETH']
-        : debtCollateralSwapData['icETH'],
-      swapDataPaymentToken: isMinting
-        ? inputSwapData[indexToken.symbol]['ETH']
-        : outputSwapData[indexToken.symbol]['ETH'],
-    }
-    const refTx = await contract.populateTransaction.issueExactSetFromERC20(
-      buildRequest.indexToken,
-      buildRequest.indexTokenAmount,
-      buildRequest.inputOutputToken,
-      buildRequest.inputOutputTokenAmount,
-      buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataPaymentToken
-    )
-    const builder = new LeveragedTransactionBuilder(rpcUrl)
-    const tx = await builder.build(buildRequest)
-    if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedAddress)
-    expect(tx.data).toEqual(refTx.data)
   })
 
   test('returns a tx for redeeming dsETH (ERC20)', async () => {

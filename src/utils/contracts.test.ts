@@ -17,7 +17,6 @@ import {
   InterestCompoundingETHIndex,
   wsETH2,
   GitcoinStakedETHIndex,
-  LeveragedrEthStakingYield,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum3xIndex,
@@ -118,21 +117,6 @@ describe('getFlashMintLeveragedContractForToken()', () => {
     const contract = getFlashMintLeveragedContractForToken(
       InterestCompoundingETHIndex.symbol,
       undefined
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getLeveragedTokenData).toBeDefined()
-    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-  })
-
-  test('returns FlashMintLeveraged contract for icRETH (mainnet)', async () => {
-    const expectedAddress = FlashMintLeveragedAddress
-    const contract = getFlashMintLeveragedContractForToken(
-      LeveragedrEthStakingYield.symbol,
-      undefined,
-      1
     )
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()

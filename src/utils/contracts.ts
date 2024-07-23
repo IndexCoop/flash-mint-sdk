@@ -27,7 +27,6 @@ import {
   DiversifiedStakedETHIndex,
   wsETH2,
   GitcoinStakedETHIndex,
-  LeveragedrEthStakingYield,
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
@@ -164,7 +163,6 @@ export const getFlashMintLeveragedContractForToken = (
       return getFlashMintLeveragedForCompoundContract(signerOrProvider)
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
-    case LeveragedrEthStakingYield.symbol:
       return getIndexFlashMintLeveragedContract(signerOrProvider)
     default:
       return getFlashMintLeveragedContract(signerOrProvider, chainId)
