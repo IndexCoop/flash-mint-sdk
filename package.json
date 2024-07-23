@@ -30,7 +30,6 @@
     "test:quotes": "npm test src/quote/",
     "test:utils": "npm test src/utils",
     "test:btc2x": "npm test src/tests/btc2x.test.ts",
-    "test:cdeti": "npm test src/tests/cdeti",
     "test:dseth": "npm test src/tests/dseth",
     "test:eth2x": "npm test src/tests/eth2x.test.ts",
     "test:eth2xfli": "npm test src/tests/eth2xfli",

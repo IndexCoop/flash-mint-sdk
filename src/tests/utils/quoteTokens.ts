@@ -1,7 +1,6 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import {
   BTC2xFlexibleLeverageIndex,
-  CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
@@ -35,12 +34,6 @@ const btc2xfli: QuoteToken = {
   address: BTC2xFlexibleLeverageIndex.address!,
   decimals: 18,
   symbol: BTC2xFlexibleLeverageIndex.symbol,
-}
-
-const cdeti: QuoteToken = {
-  address: CoinDeskEthTrendIndex.address!,
-  decimals: 18,
-  symbol: CoinDeskEthTrendIndex.symbol,
 }
 
 const dai: QuoteToken = {
@@ -160,7 +153,6 @@ const wseth: QuoteToken = {
 export const QuoteTokens = {
   btc2x,
   btc2xfli,
-  cdeti,
   dai,
   dpi,
   dseth,

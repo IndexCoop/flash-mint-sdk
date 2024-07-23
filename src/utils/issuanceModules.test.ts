@@ -19,7 +19,6 @@ import {
   MetaverseIndex,
   wsETH2,
   LeveragedrEthStakingYield,
-  CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -33,13 +32,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for BTC2X', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(IndexCoopBitcoin2xIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for cdETI', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
-    const issuanceModule = getIssuanceModule(CoinDeskEthTrendIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

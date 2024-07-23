@@ -2,7 +2,6 @@ import { ChainId } from 'constants/chains'
 import {
   BanklessBEDIndex,
   BTC2xFlexibleLeverageIndex,
-  CoinDeskEthTrendIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
@@ -60,14 +59,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for BED', async () => {
     const contractType = getContractType(
       BanklessBEDIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for cdETI', async () => {
-    const contractType = getContractType(
-      CoinDeskEthTrendIndex.symbol,
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.zeroEx)
