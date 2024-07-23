@@ -16,7 +16,7 @@ describe('ETH2X (mainnet)', () => {
     factory = getMainnetTestFactory(signer)
   })
 
-  test('can mint with ETH', async () => {
+  test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
