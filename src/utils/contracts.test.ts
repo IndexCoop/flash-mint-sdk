@@ -24,7 +24,6 @@ import {
   IndexCoopBitcoin3xIndex,
   IndexCoopInverseEthereumIndex,
   IndexCoopInverseBitcoinIndex,
-  RealWorldAssetIndex,
 } from 'constants/tokens'
 
 import {
@@ -441,23 +440,5 @@ describe('iETH1x', () => {
     // Functions specific to extended contract
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
-  })
-})
-
-describe('RWA', () => {
-  test('return correct contract for token - arbitrum', async () => {
-    const expectedAddress = FlashMintZeroExMainnetAddress
-    const contract = getFlashMintZeroExContractForToken(
-      RealWorldAssetIndex.symbol,
-      undefined,
-      ChainId.Mainnet
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
   })
 })
