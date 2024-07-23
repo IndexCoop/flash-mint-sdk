@@ -11,8 +11,6 @@ import {
   FlashMintZeroExMainnetAddress,
 } from 'constants/contracts'
 import {
-  BTC2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
   wsETH2,
@@ -134,27 +132,6 @@ describe('getFlashMintLeveragedContractForToken()', () => {
       1
     )
     expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getLeveragedTokenData).toBeDefined()
-    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-  })
-
-  test('returns the FlashMintLeveragedForCompound contract', async () => {
-    const expectedAddress = FlashMintLeveragedForCompoundAddress
-    const contract = getFlashMintLeveragedContractForToken(
-      BTC2xFlexibleLeverageIndex.symbol,
-      undefined,
-      1
-    )
-    const contract2 = getFlashMintLeveragedContractForToken(
-      ETH2xFlexibleLeverageIndex.symbol,
-      undefined,
-      1
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract2.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()

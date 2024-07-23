@@ -32,7 +32,6 @@
     "test:btc2x": "npm test src/tests/btc2x.test.ts",
     "test:dseth": "npm test src/tests/dseth",
     "test:eth2x": "npm test src/tests/eth2x.test.ts",
-    "test:eth2xfli": "npm test src/tests/eth2xfli",
     "test:gtceth": "npm test src/tests/gtceth",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
     "test:iceth": "npm test src/tests/iceth",

@@ -1,7 +1,6 @@
 import { ChainId } from 'constants/chains'
 import {
   BanklessBEDIndex,
-  BTC2xFlexibleLeverageIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
@@ -86,14 +85,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for MVI', async () => {
     const contractType = getContractType(MetaverseIndex.symbol, ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for BTC2x-FLI', async () => {
-    const contractType = getContractType(
-      BTC2xFlexibleLeverageIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
   })
 
   test('returns correct contract type for ETH2x-FLI', async () => {

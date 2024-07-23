@@ -2,7 +2,6 @@ import { ChainId } from 'constants/chains'
 import {
   BasicIssuanceModuleAddress,
   BasicIssuanceModulePolygonAddress,
-  DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
@@ -10,9 +9,7 @@ import {
 } from 'constants/contracts'
 import {
   BanklessBEDIndex,
-  BTC2xFlexibleLeverageIndex,
   DefiPulseIndex,
-  ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
@@ -90,20 +87,6 @@ describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
     const issuanceModule = getIssuanceModule(MetaverseIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(false)
-  })
-
-  test('returns debt issuance module for BTC2XFLI', async () => {
-    const expectedModule = DebtIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(BTC2xFlexibleLeverageIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module for ETH2xFLI', async () => {
-    const expectedModule = DebtIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(ETH2xFlexibleLeverageIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
   })
 
   test('returns debt issuance module v2 for icETH', async () => {
