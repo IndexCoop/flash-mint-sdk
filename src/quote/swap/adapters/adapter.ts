@@ -1,4 +1,5 @@
-import { ETH, stETH } from 'constants/tokens'
+import { EthAddress } from 'constants/addresses'
+import { stETH } from 'constants/tokens'
 import { CurveSwapQuoteProvider } from 'quote/swap/adapters/curve'
 import { UniswapSwapQuoteProvider } from 'quote/swap/adapters/uniswap'
 import {
@@ -17,15 +18,12 @@ export class IndexSwapQuoteProvider implements SwapQuoteProvider {
     let inputToken = request.inputToken
     let outputToken = request.outputToken
     if (inputToken === 'ETH') {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      inputToken = ETH.address!
+      inputToken = EthAddress
     }
     if (outputToken === 'ETH') {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      outputToken = ETH.address!
+      outputToken = EthAddress
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const eth = ETH.address!
+    const eth = EthAddress
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const stEth = stETH.address!
     const isEth =

@@ -15,7 +15,6 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
-  LeveragedrEthStakingYield,
   MetaverseIndex,
   RealWorldAssetIndex,
 } from 'constants/tokens'
@@ -56,8 +55,7 @@ export function getContractType(
     token === ETH2xFlexibleLeverageIndex.symbol ||
     token === IndexCoopBitcoin2xIndex.symbol ||
     token === IndexCoopEthereum2xIndex.symbol ||
-    token === InterestCompoundingETHIndex.symbol ||
-    token === LeveragedrEthStakingYield.symbol
+    token === InterestCompoundingETHIndex.symbol
   )
     return FlashMintContractType.leveraged
   return null

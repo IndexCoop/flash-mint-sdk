@@ -1,21 +1,16 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import {
-  BTC2xFlexibleLeverageIndex,
-  CoinDeskEthTrendIndex,
   DAI,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
-  ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
-  LeveragedrEthStakingYield,
   MetaverseIndex,
   RETH,
-  RealWorldAssetIndex,
   USDC,
   USDT,
   WETH,
@@ -29,18 +24,6 @@ const btc2x: QuoteToken = {
   address: IndexCoopBitcoin2xIndex.address!,
   decimals: 18,
   symbol: IndexCoopBitcoin2xIndex.symbol,
-}
-
-const btc2xfli: QuoteToken = {
-  address: BTC2xFlexibleLeverageIndex.address!,
-  decimals: 18,
-  symbol: BTC2xFlexibleLeverageIndex.symbol,
-}
-
-const cdeti: QuoteToken = {
-  address: CoinDeskEthTrendIndex.address!,
-  decimals: 18,
-  symbol: CoinDeskEthTrendIndex.symbol,
 }
 
 const dai: QuoteToken = {
@@ -73,12 +56,6 @@ const eth2x: QuoteToken = {
   address: IndexCoopEthereum2xIndex.address!,
 }
 
-const eth2xfli: QuoteToken = {
-  symbol: ETH2xFlexibleLeverageIndex.symbol,
-  decimals: 18,
-  address: ETH2xFlexibleLeverageIndex.address!,
-}
-
 const gtcETH = {
   address: GitcoinStakedETHIndex.address!,
   decimals: 18,
@@ -97,12 +74,6 @@ const iceth: QuoteToken = {
   address: InterestCompoundingETHIndex.address!,
 }
 
-const icreth: QuoteToken = {
-  symbol: LeveragedrEthStakingYield.symbol,
-  decimals: 18,
-  address: LeveragedrEthStakingYield.address!,
-}
-
 const mvi: QuoteToken = {
   address: MetaverseIndex.address!,
   decimals: 18,
@@ -113,12 +84,6 @@ const reth: QuoteToken = {
   address: RETH.address!,
   decimals: 18,
   symbol: RETH.symbol,
-}
-
-const rwa: QuoteToken = {
-  address: RealWorldAssetIndex.address!,
-  decimals: 18,
-  symbol: RealWorldAssetIndex.symbol,
 }
 
 const seth2: QuoteToken = {
@@ -159,21 +124,16 @@ const wseth: QuoteToken = {
 
 export const QuoteTokens = {
   btc2x,
-  btc2xfli,
-  cdeti,
   dai,
   dpi,
   dseth,
   eth,
   eth2x,
-  eth2xfli,
   gtcETH,
   hyeth,
   iceth,
-  icreth,
   mvi,
   reth,
-  rwa,
   seth2,
   steth,
   usdc,

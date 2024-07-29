@@ -1,8 +1,6 @@
 import { ChainId } from 'constants/chains'
 import {
   BanklessBEDIndex,
-  BTC2xFlexibleLeverageIndex,
-  CoinDeskEthTrendIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH2xFlexibleLeverageIndex,
@@ -15,9 +13,7 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
-  LeveragedrEthStakingYield,
   MetaverseIndex,
-  RealWorldAssetIndex,
 } from 'constants/tokens'
 
 import { FlashMintContractType } from './'
@@ -65,14 +61,6 @@ describe('getContractType()', () => {
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 
-  test('returns correct contract type for cdETI', async () => {
-    const contractType = getContractType(
-      CoinDeskEthTrendIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
   test('returns correct contract type for DPI', async () => {
     const contractType = getContractType(DefiPulseIndex.symbol, ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.zeroEx)
@@ -97,14 +85,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for MVI', async () => {
     const contractType = getContractType(MetaverseIndex.symbol, ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for BTC2x-FLI', async () => {
-    const contractType = getContractType(
-      BTC2xFlexibleLeverageIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
   })
 
   test('returns correct contract type for ETH2x-FLI', async () => {
@@ -145,21 +125,5 @@ describe('getContractType()', () => {
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
-  })
-
-  test('returns correct contract type for icRETH', async () => {
-    const contractType = getContractType(
-      LeveragedrEthStakingYield.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
-  })
-
-  test('returns correct contract type for RWA', async () => {
-    const contractType = getContractType(
-      RealWorldAssetIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 })

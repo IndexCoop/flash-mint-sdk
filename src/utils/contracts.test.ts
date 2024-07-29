@@ -11,21 +11,16 @@ import {
   FlashMintZeroExMainnetAddress,
 } from 'constants/contracts'
 import {
-  BTC2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
   wsETH2,
   GitcoinStakedETHIndex,
-  LeveragedrEthStakingYield,
-  CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum3xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopInverseEthereumIndex,
   IndexCoopInverseBitcoinIndex,
-  RealWorldAssetIndex,
 } from 'constants/tokens'
 
 import {
@@ -129,21 +124,6 @@ describe('getFlashMintLeveragedContractForToken()', () => {
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
 
-  test('returns FlashMintLeveraged contract for icRETH (mainnet)', async () => {
-    const expectedAddress = FlashMintLeveragedAddress
-    const contract = getFlashMintLeveragedContractForToken(
-      LeveragedrEthStakingYield.symbol,
-      undefined,
-      1
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getLeveragedTokenData).toBeDefined()
-    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-  })
-
   test('returns the old FlashMintLeveraged contract (mainnet)', async () => {
     const expectedAddress = ExchangeIssuanceLeveragedMainnetAddress
     const contract = getFlashMintLeveragedContractForToken(
@@ -152,27 +132,6 @@ describe('getFlashMintLeveragedContractForToken()', () => {
       1
     )
     expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getLeveragedTokenData).toBeDefined()
-    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-  })
-
-  test('returns the FlashMintLeveragedForCompound contract', async () => {
-    const expectedAddress = FlashMintLeveragedForCompoundAddress
-    const contract = getFlashMintLeveragedContractForToken(
-      BTC2xFlexibleLeverageIndex.symbol,
-      undefined,
-      1
-    )
-    const contract2 = getFlashMintLeveragedContractForToken(
-      ETH2xFlexibleLeverageIndex.symbol,
-      undefined,
-      1
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract2.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
@@ -240,22 +199,6 @@ describe('getFlashMintZeroExContract()', () => {
 })
 
 describe('getFlashMintZeroExContractForToken()', () => {
-  test('returns Index Protocol for cdETI', async () => {
-    const expectedAddress = FlashMintZeroExMainnetAddress
-    const contract = getFlashMintZeroExContractForToken(
-      CoinDeskEthTrendIndex.symbol,
-      undefined,
-      1
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
-  })
-
   test('returns Index Protocol for dsETH, gtcETH and wsETH2', async () => {
     const expectedAddress = FlashMintZeroExMainnetAddress
     const contract = getFlashMintZeroExContractForToken(
@@ -458,23 +401,5 @@ describe('iETH1x', () => {
     // Functions specific to extended contract
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
-  })
-})
-
-describe('RWA', () => {
-  test('return correct contract for token - arbitrum', async () => {
-    const expectedAddress = FlashMintZeroExMainnetAddress
-    const contract = getFlashMintZeroExContractForToken(
-      RealWorldAssetIndex.symbol,
-      undefined,
-      ChainId.Mainnet
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
   })
 })

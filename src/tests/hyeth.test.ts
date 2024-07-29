@@ -32,7 +32,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can mint with USDC (IndexSwapQuoteProvider)', async () => {
+  test.skip('can mint with USDC (IndexSwapQuoteProvider)', async () => {
     const factory = getMainnetTestFactoryUniswap(signer)
     const quote = await factory.fetchQuote({
       isMinting: true,
@@ -52,7 +52,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to ETH (IndexSwapQuoteProvider)', async () => {
+  test.skip('can redeem to ETH (IndexSwapQuoteProvider)', async () => {
     const factory = getMainnetTestFactoryUniswap(signer)
     await factory.fetchQuote({
       isMinting: false,

@@ -5,12 +5,11 @@ import {
   QuoteTokens,
   SignerAccount0,
   TestFactory,
-  wrapETH,
 } from '../utils'
 
-const { eth, gtcETH, weth } = QuoteTokens
+const { eth, gtcETH } = QuoteTokens
 
-// Works locally, fails on github actions for some reason.
+// Does not work atm because of 0x quotes
 describe.skip('gtcETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
@@ -26,18 +25,6 @@ describe.skip('gtcETH (mainnet)', () => {
       indexTokenAmount: wei('0.1'),
       slippage: 0.5,
     })
-    await factory.executeTx()
-  })
-
-  test.skip('minting with WETH', async () => {
-    await factory.fetchQuote({
-      isMinting: true,
-      inputToken: weth,
-      outputToken: gtcETH,
-      indexTokenAmount: wei('0.1'),
-      slippage: 0.5,
-    })
-    await wrapETH(wei(2), factory.getSigner())
     await factory.executeTx()
   })
 })

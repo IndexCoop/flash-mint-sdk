@@ -15,7 +15,6 @@ import {
   InterestCompoundingETHIndex,
   wsETH2,
   GitcoinStakedETHIndex,
-  LeveragedrEthStakingYield,
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
@@ -53,7 +52,6 @@ export function getIssuanceModule(
     case HighYieldETHIndex.symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
-    case LeveragedrEthStakingYield.symbol:
     case RealWorldAssetIndex.symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
