@@ -103,7 +103,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         : swap.outputAmount.quotient.toString()
 
       const route = swap.route
-      const path: string[] = route.path.map((token) => token.address)
+      const path: string[] = route.path.map((token) => (token as Token).address)
 
       const isV3 = route.protocol === 'V3'
       let fees: number[] = []
