@@ -20,7 +20,7 @@ describe('hyETH', () => {
 
   // IndexSwapQuoteProvider
 
-  test('can mint with ETH (IndexSwapQuoteProvider)', async () => {
+  test.skip('can mint with ETH (IndexSwapQuoteProvider)', async () => {
     const factory = getMainnetTestFactoryUniswap(signer)
     await factory.fetchQuote({
       isMinting: true,

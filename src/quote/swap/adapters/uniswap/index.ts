@@ -1,10 +1,6 @@
+import axios from 'axios'
 import { getTokenData, getTokenDataByAddress } from '@indexcoop/tokenlists'
-import { Token, TradeType } from '@uniswap/sdk-core'
-import {
-  AlphaRouter,
-  CurrencyAmount,
-  SwapRoute,
-} from '@uniswap/smart-order-router'
+import { Token } from '@uniswap/sdk-core'
 
 import { AddressZero, EthAddress } from 'constants/addresses'
 import {
@@ -12,7 +8,6 @@ import {
   SwapQuoteProvider,
   SwapQuoteRequest,
 } from 'quote/swap/interfaces'
-import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, isSameAddress } from 'utils'
 
 function changeToWethIfNecessary(token: string, chainId: number): string {
@@ -24,7 +19,7 @@ function changeToWethIfNecessary(token: string, chainId: number): string {
 }
 
 export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
-  constructor(readonly rpcUrl: string) {}
+  constructor(readonly endpointUrl: string) {}
 
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
     const { chainId, inputAmount, outputAmount, slippage } = request
@@ -59,38 +54,19 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
     try {
       const isExactOutput = outputAmount !== undefined
 
-      const inputTokenCurrency = new Token(
+      const data = {
         chainId,
-        inputToken,
-        inputTokenData.decimals
-      )
-      const outputTokenCurrency = new Token(
-        chainId,
-        outputToken,
-        outputTokenData.decimals
-      )
-
-      const router = new AlphaRouter({
-        chainId,
-        provider: getRpcProvider(this.rpcUrl),
-      })
-
-      let swapRoute: SwapRoute | null = null
-      if (isExactOutput) {
-        swapRoute = await router.route(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          CurrencyAmount.fromRawAmount(outputTokenCurrency, outputAmount!),
-          inputTokenCurrency,
-          TradeType.EXACT_OUTPUT
-        )
-      } else {
-        swapRoute = await router.route(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          CurrencyAmount.fromRawAmount(inputTokenCurrency, inputAmount!),
-          outputTokenCurrency,
-          TradeType.EXACT_INPUT
-        )
+        inputToken: inputTokenData.address,
+        inputTokenDecimals: inputTokenData.decimals,
+        outputToken: outputTokenData.address,
+        outputTokenDecimals: outputTokenData.decimals,
+        inputAmount,
+        outputAmount,
       }
+      const url = 'https://app.indexcoop.com/quote/uniswap'
+      const response = await axios.post(url, data, {})
+      console.log(response.status, response.data)
+      const swapRoute = response.data.route
 
       if (!swapRoute) return null
 
@@ -103,7 +79,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         : swap.outputAmount.quotient.toString()
 
       const route = swap.route
-      const path: string[] = route.path.map((token) => (token as Token).address)
+      const path: string[] = route.path.map((token: Token) => token.address)
 
       const isV3 = route.protocol === 'V3'
       let fees: number[] = []

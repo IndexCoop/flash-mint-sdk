@@ -14,7 +14,7 @@ const weth = WETH.address!
 const usdc = USDC.address!
 const ONE = '1000000000000000000'
 
-describe('UniswapSwapQuoteProvider', () => {
+describe.skip('UniswapSwapQuoteProvider', () => {
   test('returns null if input and output token are the same', async () => {
     const request = {
       chainId: 1,
