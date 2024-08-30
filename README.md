@@ -9,7 +9,7 @@ To find out more about the contracts, go to Index's smart contracts [repo](https
 
 This SDK currently supports the contracts listed [here](./src/constants/contracts.ts).
 Check out the [utility](./src/utils/contracts.ts) functions for easily obtaining
-the correct addresses and contracts.
+the correct addresses and contracts on Mainnet, Arbitrum and Base.
 
 ## Install
 
