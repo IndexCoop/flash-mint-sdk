@@ -7,7 +7,7 @@ module.exports = {
     hardhat: {
       chainId: 8453,
       forking: {
-        url: process.env.ARBITRUM_ALCHEMY_API,
+        url: process.env.BASE_ALCHEMY_API,
       },
     },
   },
