@@ -18,6 +18,7 @@ import {
   FlashMintHyEthAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedExtendedAddress,
+  FlashMintLeveragedExtendedBaseAddress,
   FlashMintLeveragedForCompoundAddress,
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
@@ -97,16 +98,21 @@ export const getIndexFlashMintLeveragedContract = (
 }
 
 /**
- * Returns an instance of the Index FlashMintLeveragedExtended contract (Arbitrum)
+ * Returns an instance of the Index FlashMintLeveragedExtended contract (Arbitrum + Base)
  *
  * @param signerOrProvider  a signer or provider
+ * @params chainId Arbitrum or Base chainId
  *
  * @returns an instance of a FlashMintLeveraged contract
  */
 export const getIndexFlashMintLeveragedExtendedContract = (
-  signerOrProvider: Signer | Provider | undefined
+  signerOrProvider: Signer | Provider | undefined,
+  chainId: number
 ): Contract => {
-  const contractAddress = FlashMintLeveragedExtendedAddress
+  const isArbitrum = chainId === ChainId.Arbitrum
+  const contractAddress = isArbitrum
+    ? FlashMintLeveragedExtendedAddress
+    : FlashMintLeveragedExtendedBaseAddress
   return new Contract(
     contractAddress,
     FLASHMINT_LEVERAGED_EXTENDED_ABI,
@@ -153,7 +159,21 @@ export const getFlashMintLeveragedContractForToken = (
       case IndexCoopEthereum3xIndex.symbol:
       case IndexCoopInverseBitcoinIndex.symbol:
       case IndexCoopInverseEthereumIndex.symbol:
-        return getIndexFlashMintLeveragedExtendedContract(signerOrProvider)
+        return getIndexFlashMintLeveragedExtendedContract(
+          signerOrProvider,
+          chainId
+        )
+    }
+    return getIndexFlashMintLeveragedContract(signerOrProvider)
+  }
+  if (chainId === ChainId.Base) {
+    switch (token) {
+      case IndexCoopEthereum2xIndex.symbol:
+      case IndexCoopEthereum3xIndex.symbol:
+        return getIndexFlashMintLeveragedExtendedContract(
+          signerOrProvider,
+          chainId
+        )
     }
     return getIndexFlashMintLeveragedContract(signerOrProvider)
   }
