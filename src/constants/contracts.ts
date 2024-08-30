@@ -24,6 +24,10 @@ export const FlashMintLeveragedExtendedAddress =
 export const IndexDebtIssuanceModuleV3Address =
   '0x4ac26c26116fa976352b70700af58bc2442489d8'
 
+// Base
+export const FlashMintLeveragedExtendedBaseAddress =
+  '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE'
+
 // Set Protocol
 export const BasicIssuanceModuleAddress =
   '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'
