@@ -2,6 +2,7 @@ export interface Token {
   symbol: string
   address?: string
   addressArbitrum?: string
+  addressBase?: string
   addressOptimism?: string
   addressPolygon?: string
 }
@@ -63,11 +64,13 @@ export const IndexCoopBitcoin3xIndex: Token = {
 export const IndexCoopEthereum2xIndex: Token = {
   address: '0x65c4C0517025Ec0843C9146aF266A2C5a2D148A2',
   addressArbitrum: '0x26d7D3728C6bb762a5043a1d0CeF660988Bca43C',
+  addressBase: '0xC884646E6C88d9b172a23051b38B0732Cc3E35a6',
   symbol: 'ETH2X',
 }
 
 export const IndexCoopEthereum3xIndex: Token = {
   addressArbitrum: '0xA0A17b2a015c14BE846C5d309D076379cCDfa543',
+  addressBase: '0x329f6656792c7d34D0fBB9762FA9A8F852272acb',
   symbol: 'ETH3X',
 }
 
