@@ -23,6 +23,7 @@
     "build:watch": "npm run build -- --watch src",
     "hardhat": "npx hardhat node",
     "hardhat:arbitrum": "npx hardhat node --config hardhat.arbitrum.config.js --port 8548",
+    "hardhat:base": "npx hardhat node --config hardhat.base.config.js --port 8453",
     "lint": "prettier -c . && eslint ./src",
     "lint:fix": "prettier -w . && eslint ./src --fix",
     "test": "jest",
