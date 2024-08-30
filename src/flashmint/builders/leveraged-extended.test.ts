@@ -2,12 +2,17 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
-import { FlashMintLeveragedExtendedAddress } from 'constants/contracts'
+import {
+  FlashMintLeveragedExtendedAddress,
+  FlashMintLeveragedExtendedBaseAddress,
+} from 'constants/contracts'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { noopSwapData } from 'constants/swapdata'
 import {
   LocalhostProviderArbitrum,
+  LocalhostProviderBase,
   LocalhostProviderUrlArbitrum,
+  LocalhostProviderUrlBase,
 } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
@@ -18,9 +23,10 @@ import {
   LeveragedExtendedTransactionBuilder,
 } from './leveraged-extended'
 
-const chainId = ChainId.Arbitrum
 const provider = LocalhostProviderArbitrum
+const providerBase = LocalhostProviderBase
 const rpcUrl = LocalhostProviderUrlArbitrum
+const rpcUrlBase = LocalhostProviderUrlBase
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
@@ -29,7 +35,12 @@ describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
     IndexCoopEthereum2xIndex.symbol,
     provider,
-    chainId
+    ChainId.Arbitrum
+  )
+  const contractBase = getFlashMintLeveragedContractForToken(
+    IndexCoopEthereum2xIndex.symbol,
+    providerBase,
+    ChainId.Base
   )
 
   beforeEach((): void => {
@@ -214,6 +225,75 @@ describe('LeveragedTransactionBuilder()', () => {
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedExtendedAddress)
+    expect(tx.data).toEqual(refTx.data)
+  })
+
+  test('returns a tx for minting ETH2X (ETH) - Base', async () => {
+    const buildRequest = createBuildRequest(
+      true,
+      eth,
+      'ETH',
+      IndexCoopEthereum2xIndex.addressBase!,
+      IndexCoopEthereum2xIndex.symbol
+    )
+    const indexToken = buildRequest.outputToken
+    const refTx = await contractBase.populateTransaction.issueExactSetFromETH(
+      indexToken,
+      buildRequest.outputTokenAmount,
+      buildRequest.swapDataDebtCollateral,
+      buildRequest.swapDataInputOutputToken,
+      { value: buildRequest.inputTokenAmount }
+    )
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrlBase)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintLeveragedExtendedBaseAddress)
+    expect(tx.data).toEqual(refTx.data)
+    expect(tx.value).toEqual(buildRequest.inputTokenAmount)
+  })
+
+  test('returns a tx for redeeming ETH2X (ERC20) - Base', async () => {
+    const buildRequest = createBuildRequest(
+      false,
+      IndexCoopEthereum2xIndex.addressBase!,
+      IndexCoopEthereum2xIndex.symbol,
+      usdcAddress,
+      'USDC'
+    )
+    const refTx = await contractBase.populateTransaction.redeemExactSetForERC20(
+      buildRequest.inputToken,
+      buildRequest.inputTokenAmount,
+      buildRequest.outputToken,
+      buildRequest.outputTokenAmount,
+      buildRequest.swapDataDebtCollateral,
+      buildRequest.swapDataInputOutputToken
+    )
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrlBase)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintLeveragedExtendedBaseAddress)
+    expect(tx.data).toEqual(refTx.data)
+  })
+
+  test('returns a tx for redeeming ETH2X (ETH) - Base', async () => {
+    const buildRequest = createBuildRequest(
+      false,
+      IndexCoopEthereum2xIndex.addressBase!,
+      IndexCoopEthereum2xIndex.symbol,
+      eth,
+      'ETH'
+    )
+    const refTx = await contractBase.populateTransaction.redeemExactSetForETH(
+      buildRequest.inputToken,
+      buildRequest.inputTokenAmount,
+      buildRequest.outputTokenAmount,
+      buildRequest.swapDataDebtCollateral,
+      buildRequest.swapDataInputOutputToken
+    )
+    const builder = new LeveragedExtendedTransactionBuilder(rpcUrlBase)
+    const tx = await builder.build(buildRequest)
+    if (!tx) fail()
+    expect(tx.to).toBe(FlashMintLeveragedExtendedBaseAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 })
