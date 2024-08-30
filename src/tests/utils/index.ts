@@ -49,6 +49,13 @@ export function getArbitrumTestFactoryUniswap(
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 
+export function getBaseTestFactory(
+  signer: any,
+  rpcUrl: string = LocalhostProviderUrlBase
+) {
+  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderBase)
+}
+
 export function getMainnetTestFactory(
   signer: any,
   rpcUrl: string = LocalhostProviderUrl
