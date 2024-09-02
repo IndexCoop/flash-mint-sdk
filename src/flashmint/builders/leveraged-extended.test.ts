@@ -2,10 +2,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
-import {
-  FlashMintLeveragedExtendedAddress,
-  FlashMintLeveragedExtendedBaseAddress,
-} from 'constants/contracts'
+import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { noopSwapData } from 'constants/swapdata'
 import {
@@ -30,6 +27,11 @@ const rpcUrlBase = LocalhostProviderUrlBase
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
+
+const FlashMintLeveragedExtendedAddress =
+  Contracts[ChainId.Arbitrum].FlashMintLeveragedExtended
+const FlashMintLeveragedExtendedBaseAddress =
+  Contracts[ChainId.Base].FlashMintLeveragedExtended
 
 describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
