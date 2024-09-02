@@ -2,11 +2,11 @@ import { ChainId } from '../constants/chains'
 import {
   BasicIssuanceModuleAddress,
   BasicIssuanceModulePolygonAddress,
+  Contracts,
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
-  IndexDebtIssuanceModuleV3Address,
 } from '../constants/contracts'
 import {
   BTC2xFlexibleLeverageIndex,
@@ -33,7 +33,13 @@ export function getIssuanceModule(
 ): IssuanceModule {
   if (chainId === ChainId.Arbitrum) {
     return {
-      address: IndexDebtIssuanceModuleV3Address,
+      address: Contracts[chainId].DebtIssuanceModuleV3,
+      isDebtIssuance: true,
+    }
+  }
+  if (chainId === ChainId.Base) {
+    return {
+      address: Contracts[chainId].DebtIssuanceModuleV3,
       isDebtIssuance: true,
     }
   }

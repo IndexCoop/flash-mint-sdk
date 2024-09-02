@@ -5,6 +5,7 @@ name: publish
 
 env:
   ARBITRUM_ALCHEMY_API: ${{ secrets.ARBITRUM_ALCHEMY_API }}
+  BASE_ALCHEMY_API: ${{ secrets.BASE_ALCHEMY_API }}
   INDEX_0X_API: ${{ secrets.INDEX_0X_API }}
   INDEX_0X_API_KEY: ${{ secrets.INDEX_0X_API_KEY }}
   MAINNET_ALCHEMY_API: ${{ secrets.MAINNET_ALCHEMY_API }}
@@ -34,12 +35,14 @@ jobs:
       - run: npm run lint
       - run: npm run build --if-present
       - run: npm run hardhat:arbitrum &
+      - run: npm run hardhat:base &
       - run: npm run hardhat &
       - name: Wait for hardhat nodes to start
         run: sleep 10
       - run: npm run test:utils
       - run: npm run test:builders
       - run: npm run test:quotes
+      - run: npm run test:base
       - run: npm run test:hyeth
       - run: npm run test:btc2x
       - run: npm run test:eth2x

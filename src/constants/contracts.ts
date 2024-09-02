@@ -1,3 +1,17 @@
+import { ChainId } from 'constants/chains'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const Contracts: { [key: number]: any } = {
+  [ChainId.Arbitrum]: {
+    DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
+    FlashMintLeveragedExtended: '0xc6b3B4624941287bB7BdD8255302c1b337e42194',
+  },
+  [ChainId.Base]: {
+    DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
+    FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
+  },
+}
+
 // Index Protocol
 export const FlashMintHyEthAddress =
   '0x940ECB16416fE52856e8653B2958Bfd556aA6A7E'
@@ -17,12 +31,6 @@ export const IndexDebtIssuanceModuleV2Address =
 // Used by cdETI and icRETH only at the moment
 export const IndexDebtIssuanceModuleV2Address_v2 =
   '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
-
-// Arbitrum
-export const FlashMintLeveragedExtendedAddress =
-  '0xc6b3B4624941287bB7BdD8255302c1b337e42194'
-export const IndexDebtIssuanceModuleV3Address =
-  '0x4ac26c26116fa976352b70700af58bc2442489d8'
 
 // Set Protocol
 export const BasicIssuanceModuleAddress =

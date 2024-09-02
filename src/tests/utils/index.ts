@@ -25,9 +25,13 @@ export const AlchemyProvider = new JsonRpcProvider(AlchemyProviderUrl, 1)
 // Hardhat
 export const LocalhostProviderUrl = 'http://127.0.0.1:8545/'
 export const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
+export const LocalhostProviderUrlBase = 'http://127.0.0.1:8453/'
 export const LocalhostProvider = new JsonRpcProvider(LocalhostProviderUrl)
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
   LocalhostProviderUrlArbitrum
+)
+export const LocalhostProviderBase = new JsonRpcProvider(
+  LocalhostProviderUrlBase
 )
 
 // Pre-configured TestFactories
@@ -43,6 +47,13 @@ export function getArbitrumTestFactoryUniswap(
 ) {
   const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
+}
+
+export function getBaseTestFactory(
+  signer: any,
+  rpcUrl: string = LocalhostProviderUrlBase
+) {
+  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderBase)
 }
 
 export function getMainnetTestFactory(
@@ -157,6 +168,13 @@ export const IndexZeroExSwapQuoteProviderArbitrum = new ZeroExSwapQuoteProvider(
   '',
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
   '/arbitrum/swap/v1/quote'
+)
+
+export const IndexZeroExSwapQuoteProviderBase = new ZeroExSwapQuoteProvider(
+  index0xApiBaseUrl,
+  '',
+  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+  '/base/swap/v1/quote'
 )
 
 // Balance

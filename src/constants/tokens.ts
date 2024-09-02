@@ -2,6 +2,7 @@ export interface Token {
   symbol: string
   address?: string
   addressArbitrum?: string
+  addressBase?: string
   addressOptimism?: string
   addressPolygon?: string
 }
@@ -63,11 +64,13 @@ export const IndexCoopBitcoin3xIndex: Token = {
 export const IndexCoopEthereum2xIndex: Token = {
   address: '0x65c4C0517025Ec0843C9146aF266A2C5a2D148A2',
   addressArbitrum: '0x26d7D3728C6bb762a5043a1d0CeF660988Bca43C',
+  addressBase: '0xC884646E6C88d9b172a23051b38B0732Cc3E35a6',
   symbol: 'ETH2X',
 }
 
 export const IndexCoopEthereum3xIndex: Token = {
   addressArbitrum: '0xA0A17b2a015c14BE846C5d309D076379cCDfa543',
+  addressBase: '0x329f6656792c7d34D0fBB9762FA9A8F852272acb',
   symbol: 'ETH3X',
 }
 
@@ -133,6 +136,7 @@ export const USDC: Token = {
   symbol: 'USDC',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   addressArbitrum: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+  addressBase: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 }
 
 export const USDT: Token = {
@@ -144,6 +148,7 @@ export const WETH: Token = {
   symbol: 'WETH',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   addressArbitrum: '0x82af49447d8a07e3bd95bd0d56f35241523fbab1',
+  addressBase: '0x4200000000000000000000000000000000000006',
   addressOptimism: '0x4200000000000000000000000000000000000006',
   addressPolygon: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
 }

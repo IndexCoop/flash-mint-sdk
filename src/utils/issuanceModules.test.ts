@@ -2,10 +2,10 @@ import { ChainId } from 'constants/chains'
 import {
   BasicIssuanceModuleAddress,
   BasicIssuanceModulePolygonAddress,
+  Contracts,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
-  IndexDebtIssuanceModuleV3Address,
 } from 'constants/contracts'
 import {
   BanklessBEDIndex,
@@ -99,7 +99,7 @@ describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
 
 describe('getIssuanceModule() - Arbitrum', () => {
   test('returns debt issuance module v3 for BTC2X on Arbitrum', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV3Address
+    const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin2xIndex.symbol,
       ChainId.Arbitrum
@@ -109,10 +109,32 @@ describe('getIssuanceModule() - Arbitrum', () => {
   })
 
   test('returns debt issuance module v3 for BTC3X', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV3Address
+    const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin3xIndex.symbol,
       ChainId.Arbitrum
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+})
+
+describe('getIssuanceModule() - Base', () => {
+  test('returns debt issuance module v3 for ETH2X on Base', async () => {
+    const expectedModule = Contracts[ChainId.Base].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      IndexCoopBitcoin2xIndex.symbol,
+      ChainId.Base
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for ETH3X', async () => {
+    const expectedModule = Contracts[ChainId.Base].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      IndexCoopBitcoin3xIndex.symbol,
+      ChainId.Base
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)

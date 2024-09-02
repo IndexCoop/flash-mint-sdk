@@ -37,6 +37,13 @@ export function getContractType(
         return FlashMintContractType.leveragedExtended
     }
   }
+  if (chainId === ChainId.Base) {
+    switch (token) {
+      case IndexCoopEthereum2xIndex.symbol:
+      case IndexCoopEthereum3xIndex.symbol:
+        return FlashMintContractType.leveragedExtended
+    }
+  }
   if (token === HighYieldETHIndex.symbol) {
     return FlashMintContractType.hyeth
   }
