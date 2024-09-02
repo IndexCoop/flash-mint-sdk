@@ -11,14 +11,13 @@ import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
 import { ChainId } from '../constants/chains'
 import {
+  Contracts,
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
   FlashMintHyEthAddress,
   FlashMintLeveragedAddress,
-  FlashMintLeveragedExtendedAddress,
-  FlashMintLeveragedExtendedBaseAddress,
   FlashMintLeveragedForCompoundAddress,
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
@@ -107,12 +106,9 @@ export const getIndexFlashMintLeveragedContract = (
  */
 export const getIndexFlashMintLeveragedExtendedContract = (
   signerOrProvider: Signer | Provider | undefined,
-  chainId: number
+  chainId: ChainId
 ): Contract => {
-  const isArbitrum = chainId === ChainId.Arbitrum
-  const contractAddress = isArbitrum
-    ? FlashMintLeveragedExtendedAddress
-    : FlashMintLeveragedExtendedBaseAddress
+  const contractAddress = Contracts[chainId].FlashMintLeveragedExtended
   return new Contract(
     contractAddress,
     FLASHMINT_LEVERAGED_EXTENDED_ABI,
@@ -149,7 +145,7 @@ export const getFlashMintLeveragedForCompoundContract = (
 export const getFlashMintLeveragedContractForToken = (
   token: string,
   signerOrProvider: Signer | Provider | undefined,
-  chainId: number = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon
 ): Contract => {
   if (chainId === ChainId.Arbitrum) {
     switch (token) {
