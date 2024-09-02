@@ -3,6 +3,7 @@ import {
   BasicIssuanceModuleAddress,
   BasicIssuanceModulePolygonAddress,
   DebtIssuanceModuleV2Address,
+  DebtIssuanceModuleV3BaseAddress,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
   IndexDebtIssuanceModuleV3Address,
@@ -113,6 +114,28 @@ describe('getIssuanceModule() - Arbitrum', () => {
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin3xIndex.symbol,
       ChainId.Arbitrum
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+})
+
+describe('getIssuanceModule() - Base', () => {
+  test('returns debt issuance module v3 for ETH2X on Base', async () => {
+    const expectedModule = DebtIssuanceModuleV3BaseAddress
+    const issuanceModule = getIssuanceModule(
+      IndexCoopBitcoin2xIndex.symbol,
+      ChainId.Base
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for ETH3X', async () => {
+    const expectedModule = DebtIssuanceModuleV3BaseAddress
+    const issuanceModule = getIssuanceModule(
+      IndexCoopBitcoin3xIndex.symbol,
+      ChainId.Base
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)

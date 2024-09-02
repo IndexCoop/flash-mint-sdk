@@ -4,6 +4,7 @@ import {
   BasicIssuanceModulePolygonAddress,
   DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
+  DebtIssuanceModuleV3BaseAddress,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
   IndexDebtIssuanceModuleV3Address,
@@ -34,6 +35,12 @@ export function getIssuanceModule(
   if (chainId === ChainId.Arbitrum) {
     return {
       address: IndexDebtIssuanceModuleV3Address,
+      isDebtIssuance: true,
+    }
+  }
+  if (chainId === ChainId.Base) {
+    return {
+      address: DebtIssuanceModuleV3BaseAddress,
       isDebtIssuance: true,
     }
   }
