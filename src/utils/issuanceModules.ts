@@ -64,6 +64,8 @@ export function getIssuanceModule(
         isDebtIssuance: true,
       }
     case GitcoinStakedETHIndex.symbol:
+    // TODO: add index token
+    case 'USDCY':
     case wsETH2.symbol:
       return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
     case InterestCompoundingETHIndex.symbol:
