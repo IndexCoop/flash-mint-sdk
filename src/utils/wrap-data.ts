@@ -14,7 +14,7 @@ const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
   // TODO: add check once token is available
-  //   if (tokenSymbol !== USDCY.symbol) return []
+  if (tokenSymbol !== 'USDCY') return []
   return [
     {
       integrationName: '',
