@@ -10,6 +10,9 @@ export const Contracts: { [key: number]: any } = {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
     FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
   },
+  [ChainId.Mainnet]: {
+    FlashMintWrapped: '0x5C0D0a9a0c3A0a5B591496fF894686893b69FaA2',
+  },
 }
 
 // Index Protocol
