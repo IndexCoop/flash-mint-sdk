@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { DAI, USDC, USDT } from 'constants/tokens'
+import { USDC } from 'constants/tokens'
 import { Exchange, SwapData } from 'utils/swap-data'
 import { Address, createPublicClient, http, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
@@ -256,7 +256,7 @@ async function getUnderlyingErc20(token: string): Promise<WrappedToken> {
   // FIXME: pass in? or config externally?
   const publicClient = createPublicClient({
     chain: mainnet,
-    transport: http(process.env.MAINNET_ALCHEMY_API!),
+    transport: http(process.env.MAINNET_ALCHEMY_API),
   })
   const decimals: number = await publicClient.readContract({
     address: token as Address,
