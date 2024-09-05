@@ -1,10 +1,10 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { PopulatedTransaction } from '@ethersproject/contracts'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { ComponentSwapData } from 'utils/component-swap-data'
 import { getFlashMintWrappedContract } from 'utils/contracts'
+import { getRpcProvider } from 'utils/rpc-provider'
 import { ComponentWrapData } from 'utils/wrap-data'
 
 import { TransactionBuilder } from './interface'
@@ -25,13 +25,14 @@ export class WrappedTransactionBuilder
   implements
     TransactionBuilder<FlashMintWrappedBuildRequest, TransactionRequest>
 {
-  constructor(private readonly provider: JsonRpcProvider) {}
+  constructor(private readonly rpcUrl: string) {}
 
   async build(
     request: FlashMintWrappedBuildRequest
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
+    const provider = getRpcProvider(this.rpcUrl)
     const {
       componentSwapData,
       componentWrapData,
@@ -43,7 +44,7 @@ export class WrappedTransactionBuilder
       isMinting,
     } = request
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
-    const contract = getFlashMintWrappedContract(this.provider)
+    const contract = getFlashMintWrappedContract(provider)
     let tx: PopulatedTransaction | null = null
     if (isMinting) {
       if (inputOutputTokenIsEth) {

@@ -2,9 +2,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import { LocalhostProvider, QuoteTokens } from 'tests/utils'
+import { LocalhostProviderUrl, QuoteTokens } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
+import { getRpcProvider } from 'utils/rpc-provider'
 import { ComponentWrapData } from 'utils/wrap-data'
 
 import {
@@ -12,7 +13,7 @@ import {
   WrappedTransactionBuilder,
 } from './wrapped'
 
-const provider = LocalhostProvider
+const rpcUrl = LocalhostProviderUrl
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 const { usdc } = QuoteTokens
@@ -31,7 +32,7 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no index token)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.indexToken = ''
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -39,7 +40,7 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no input/output token)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.inputOutputToken = ''
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -47,7 +48,7 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (indexTokenAmount = 0)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.indexTokenAmount = BigNumber.from(0)
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -55,7 +56,7 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (inputOutputTokenAmount = 0)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.inputOutputTokenAmount = BigNumber.from(0)
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -63,7 +64,7 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no component swap data)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.componentSwapData = []
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -71,7 +72,7 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no wrap data)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.componentWrapData = []
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -79,13 +80,14 @@ describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (wrap data and swap data length mismatch)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.componentWrapData = buildRequest.componentWrapData.slice(0, -1)
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
 
   test('returns a tx for minting MMI (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest()
+    const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.issueExactSetFromERC20(
       buildRequest.indexToken,
@@ -95,7 +97,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.componentSwapData,
       buildRequest.componentWrapData
     )
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintWrappedAddress)
@@ -104,6 +106,7 @@ describe('WrappedTransactionBuilder()', () => {
 
   test('returns a tx for minting MMI (ETH)', async () => {
     const buildRequest = getDefaultBuildRequest(true, eth, 'ETH')
+    const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.issueExactSetFromETH(
       buildRequest.indexToken,
@@ -112,7 +115,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.componentWrapData,
       { value: buildRequest.inputOutputTokenAmount }
     )
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintWrappedAddress)
@@ -122,6 +125,7 @@ describe('WrappedTransactionBuilder()', () => {
 
   test('returns a tx for redeeming MMI (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest(false)
+    const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.redeemExactSetForERC20(
       buildRequest.indexToken,
@@ -131,7 +135,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.componentSwapData,
       buildRequest.componentWrapData
     )
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintWrappedAddress)
@@ -140,6 +144,7 @@ describe('WrappedTransactionBuilder()', () => {
 
   test('returns a tx for redeeming MMI (ETH)', async () => {
     const buildRequest = getDefaultBuildRequest(false, eth, 'ETH')
+    const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.indexToken,
@@ -148,7 +153,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.componentSwapData,
       buildRequest.componentWrapData
     )
-    const builder = new WrappedTransactionBuilder(provider)
+    const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintWrappedAddress)
