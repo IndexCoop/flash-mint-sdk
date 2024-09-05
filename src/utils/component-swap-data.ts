@@ -1,11 +1,26 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DAI, USDC, USDT } from 'constants/tokens'
 import { Exchange, SwapData } from 'utils/swap-data'
+import { Address, createPublicClient, http, parseAbi } from 'viem'
+import { mainnet } from 'viem/chains'
 
 // import { ZeroExApi } from './0x'
+
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+const usdc = USDC.address!
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
+// const DEFAULT_SLIPPAGE = 0.0015
+
+const emptySwapData: SwapData = {
+  exchange: Exchange.None,
+  path: [
+    '0x0000000000000000000000000000000000000000',
+    '0x0000000000000000000000000000000000000000',
+  ],
+  fees: [],
+  pool: '0x0000000000000000000000000000000000000000',
+}
 
 // FIXME:
 export interface ComponentSwapData {
@@ -90,23 +105,6 @@ interface WrappedToken {
 //   'function withdraw(uint256 assets, address receiver, address owner) returns (uint256)',
 // ]
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-const dai = DAI.address!
-const usdc = USDC.address!
-const usdt = USDT.address!
-/* eslint-enable @typescript-eslint/no-non-null-assertion */
-// const DEFAULT_SLIPPAGE = 0.0015
-
-const emptySwapData: SwapData = {
-  exchange: Exchange.None,
-  path: [
-    '0x0000000000000000000000000000000000000000',
-    '0x0000000000000000000000000000000000000000',
-  ],
-  fees: [],
-  pool: '0x0000000000000000000000000000000000000000',
-}
-
 // const isFCASH = (address: string) =>
 //   [
 //     '0x278039398A5eb29b6c2FB43789a38A84C6085266',
@@ -145,10 +143,9 @@ export async function getIssuanceComponentSwapData(): Promise<
   //       indexToken,
   //       indexTokenAmount
   //     )
-  //   const underlyingERC20sPromises: Promise<WrappedToken>[] =
-  //     issuanceComponents.map((component: string) =>
-  //       getUnderlyingErc20(component, provider)
-  //     )
+  const issuanceComponents = ['0x', '0x', '0x']
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) => getUnderlyingErc20(component))
   //   const buyAmountsPromises = issuanceComponents.map(
   //     (component: string, index: number) =>
   //       getAmountOfAssetToObtainShares(component, issuanceUnits[index], provider)
@@ -181,13 +178,15 @@ export async function getIssuanceComponentSwapData(): Promise<
   //     }
   //   })
   //   return swapData
-
-  const swapData: ComponentSwapData = {
-    underlyingERC20: usdc,
-    buyUnderlyingAmount: BigNumber.from(0),
-    dexData: emptySwapData,
-  }
-  return [swapData]
+  const wrappedTokens = underlyingERC20sPromises.map(() => {
+    const swapData: ComponentSwapData = {
+      underlyingERC20: usdc,
+      buyUnderlyingAmount: BigNumber.from(0),
+      dexData: emptySwapData,
+    }
+    return swapData
+  })
+  return wrappedTokens
 }
 
 export async function getRedemptionComponentSwapData(): Promise<
@@ -253,49 +252,24 @@ export async function getRedemptionComponentSwapData(): Promise<
   return [swapData]
 }
 
-async function getUnderlyingErc20(
-  token: string,
-  provider: JsonRpcProvider
-): Promise<WrappedToken | null> {
-  const IERC4262_ABI = [
-    'function asset() public view returns (address)',
-    'function decimals() public view returns (uint256)',
-  ]
-  const contract = new Contract(token, IERC4262_ABI, provider)
-  const underlyingERC20: string = await contract.asset()
-  const decimals: number = await contract.decimals()
-  switch (underlyingERC20.toLowerCase()) {
-    case dai.toLowerCase():
-      return {
-        address: token,
-        decimals,
-        underlyingErc20: {
-          address: dai,
-          decimals: 18,
-          symbol: DAI.symbol,
-        },
-      }
-    case usdc.toLowerCase():
-      return {
-        address: token,
-        decimals,
-        underlyingErc20: {
-          address: usdc,
-          decimals: 6,
-          symbol: USDC.symbol,
-        },
-      }
-    case usdt.toLowerCase():
-      return {
-        address: token,
-        decimals,
-        underlyingErc20: {
-          address: usdt,
-          decimals: 6,
-          symbol: USDT.symbol,
-        },
-      }
-    default:
-      return null
+async function getUnderlyingErc20(token: string): Promise<WrappedToken> {
+  // FIXME: pass in? or config externally?
+  const publicClient = createPublicClient({
+    chain: mainnet,
+    transport: http(process.env.MAINNET_ALCHEMY_API!),
+  })
+  const decimals: number = await publicClient.readContract({
+    address: token as Address,
+    abi: parseAbi(['function decimals() view returns (uint8)']),
+    functionName: 'decimals',
+  })
+  return {
+    address: token,
+    decimals,
+    underlyingErc20: {
+      address: usdc,
+      decimals: 6,
+      symbol: USDC.symbol,
+    },
   }
 }
