@@ -25,10 +25,6 @@ const indexToken = usdc.address
 const usdcAddress = usdc.address
 
 describe('WrappedTransactionBuilder()', () => {
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
-  })
-
   test('returns null for invalid request (no index token)', async () => {
     const buildRequest = getDefaultBuildRequest()
     buildRequest.indexToken = ''
@@ -85,7 +81,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  test('returns a tx for minting MMI (ERC20)', async () => {
+  test('returns a tx for USDCY MMI (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest()
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -104,7 +100,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for minting MMI (ETH)', async () => {
+  test('returns a tx for minting USDCY (ETH)', async () => {
     const buildRequest = getDefaultBuildRequest(true, eth, 'ETH')
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -123,7 +119,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
   })
 
-  test('returns a tx for redeeming MMI (ERC20)', async () => {
+  test('returns a tx for redeeming USDCY (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest(false)
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -142,7 +138,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for redeeming MMI (ETH)', async () => {
+  test('returns a tx for redeeming USDCY (ETH)', async () => {
     const buildRequest = getDefaultBuildRequest(false, eth, 'ETH')
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -172,7 +168,7 @@ function getDefaultBuildRequest(
   }
   return {
     isMinting,
-    indexToken: indexToken,
+    indexToken,
     inputOutputToken,
     indexTokenAmount: wei(1),
     inputOutputTokenAmount: BigNumber.from('16583822409709138541'),
