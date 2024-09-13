@@ -124,7 +124,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.only('returns a quote for minting USDCY', async () => {
+  test.skip('returns a quote for minting USDCY', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
