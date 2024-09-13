@@ -5,9 +5,11 @@ import {
   FlashMintHyEthTransactionBuilder,
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
+  FlashMintWrappedBuildRequest,
   FlashMintZeroExBuildRequest,
   LeveragedExtendedTransactionBuilder,
   LeveragedTransactionBuilder,
+  WrappedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -16,6 +18,7 @@ import { wei } from 'utils'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
+import { WrappedQuoteProvider } from '../flashmint/wrapped'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
 import { QuoteProvider, QuoteToken } from '../interfaces'
 import { SwapQuoteProvider } from '../swap'
@@ -192,6 +195,40 @@ export class FlashMintQuoteProvider
         const tx = await builder.build(txRequest)
         if (!tx) return null
         const { inputOutputTokenAmount } = leveragedExtendedQuote
+        return {
+          chainId,
+          contractType,
+          /* eslint-disable @typescript-eslint/no-non-null-assertion */
+          contract: tx.to!,
+          isMinting,
+          inputToken,
+          outputToken,
+          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
+          indexTokenAmount,
+          inputOutputAmount: inputOutputTokenAmount,
+          slippage,
+          tx,
+        }
+      }
+      case FlashMintContractType.wrapped: {
+        const wrappedQuoteProvider = new WrappedQuoteProvider(rpcUrl)
+        const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
+        if (!wrappedQuote) return null
+        const builder = new WrappedTransactionBuilder(rpcUrl)
+        const txRequest: FlashMintWrappedBuildRequest = {
+          isMinting,
+          indexToken: indexToken.address,
+          indexTokenAmount,
+          inputOutputToken: inputOutputToken.address,
+          inputOutputTokenSymbol: inputOutputToken.symbol,
+          inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
+          componentSwapData: wrappedQuote.componentSwapData,
+          componentWrapData: wrappedQuote.componentWrapData,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        const { inputOutputTokenAmount } = wrappedQuote
         return {
           chainId,
           contractType,

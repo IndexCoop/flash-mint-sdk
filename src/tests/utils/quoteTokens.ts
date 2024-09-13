@@ -12,6 +12,7 @@ import {
   MetaverseIndex,
   RETH,
   USDC,
+  USDCY,
   USDT,
   WETH,
   sETH2,
@@ -104,6 +105,13 @@ const usdc: QuoteToken = {
   symbol: USDC.symbol,
 }
 
+const usdcy: QuoteToken = {
+  address: USDCY.address!,
+  // FIXME: 18 or 6?
+  decimals: 18,
+  symbol: USDCY.symbol,
+}
+
 const usdt: QuoteToken = {
   address: USDT.address!,
   decimals: 6,
@@ -137,6 +145,7 @@ export const QuoteTokens = {
   seth2,
   steth,
   usdc,
+  usdcy,
   usdt,
   weth,
   wseth,

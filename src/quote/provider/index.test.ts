@@ -1,6 +1,6 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { ChainId } from 'constants/chains'
-import { FlashMintHyEthAddress } from 'constants/contracts'
+import { Contracts, FlashMintHyEthAddress } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import { getFlashMintLeveragedContractForToken, wei } from 'utils'
 
@@ -24,7 +24,7 @@ const rpcUrl = LocalhostProviderUrl
 const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
-const { eth, eth2x, hyeth, iceth, usdc } = QuoteTokens
+const { eth, eth2x, hyeth, iceth, usdc, usdcy } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -121,6 +121,38 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(FlashMintHyEthAddress)
+    expect(quote.tx.data?.length).toBeGreaterThan(0)
+  })
+
+  test.only('returns a quote for minting USDCY', async () => {
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: usdcy,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(
+      LocalhostProviderUrl,
+      IndexZeroExSwapQuoteProvider
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
+    const chainId = (await provider.getNetwork()).chainId
+    expect(quote.chainId).toEqual(chainId)
+    expect(quote.contractType).toEqual(FlashMintContractType.wrapped)
+    expect(quote.contract).toEqual(FlashMintWrappedAddress)
+    expect(quote.isMinting).toEqual(request.isMinting)
+    expect(quote.inputToken).toEqual(request.inputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.inputAmount).toEqual(quote.inputOutputAmount)
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    expect(quote.slippage).toEqual(request.slippage)
+    expect(quote.tx).not.toBeNull()
+    expect(quote.tx.to).toBe(FlashMintWrappedAddress)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
