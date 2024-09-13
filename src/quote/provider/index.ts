@@ -26,6 +26,7 @@ export enum FlashMintContractType {
   hyeth,
   leveraged,
   leveragedExtended,
+  wrapped,
   zeroEx,
 }
 

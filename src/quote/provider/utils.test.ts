@@ -14,6 +14,7 @@ import {
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
+  USDCY,
 } from 'constants/tokens'
 
 import { FlashMintContractType } from './'
@@ -125,5 +126,10 @@ describe('getContractType()', () => {
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
+  })
+
+  test('returns correct contract type for USDCY', async () => {
+    const contractType = getContractType(USDCY.symbol, ChainId.Mainnet)
+    expect(contractType).toBe(FlashMintContractType.wrapped)
   })
 })
