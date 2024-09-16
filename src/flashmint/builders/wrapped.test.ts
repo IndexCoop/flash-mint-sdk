@@ -16,12 +16,11 @@ import {
 const rpcUrl = LocalhostProviderUrl
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
-const { usdc } = QuoteTokens
+const { usdc, usdcy } = QuoteTokens
 
 const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-// FIXME: add address once token is available
-const indexToken = usdc.address
+const indexToken = usdcy.address
 const usdcAddress = usdc.address
 
 describe('WrappedTransactionBuilder()', () => {
