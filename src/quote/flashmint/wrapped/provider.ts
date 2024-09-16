@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ComponentSwapData, ComponentWrapData } from 'utils'
+import { ComponentSwapData, ComponentWrapData, getWrapData } from 'utils'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -39,7 +39,7 @@ export class WrappedQuoteProvider
       isMinting,
       slippage
     )
-    // const indexToken = isMinting ? outputToken : inputToken
+    const indexToken = isMinting ? outputToken : inputToken
     // const indexTokenSymbol = indexToken.symbol
     // const componentSwapData = isMinting
     //   ? await getIssuanceComponentSwapData(
@@ -58,7 +58,7 @@ export class WrappedQuoteProvider
     //       provider,
     //       zeroExApi
     //     )
-    // const componentWrapData = getWrapData(indexToken.symbol)
+    const componentWrapData = getWrapData(indexToken.symbol)
     // if (componentSwapData.length !== componentSwapData.length) return null
     // let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     // const contract = getFlashMintWrappedContract(provider)
@@ -83,16 +83,10 @@ export class WrappedQuoteProvider
     //   slippage,
     //   isMinting
     // )
-    // const quote: FlashMintWrappedQuote = {
-    //   componentSwapData,
-    //   componentWrapData,
-    //   indexTokenAmount,
-    //   inputOutputTokenAmount,
-    // }
     const quote: FlashMintWrappedQuote = {
       componentSwapData: [],
-      componentWrapData: [],
-      indexTokenAmount: BigNumber.from(0),
+      componentWrapData,
+      indexTokenAmount,
       inputOutputTokenAmount: BigNumber.from(0),
     }
     return quote
