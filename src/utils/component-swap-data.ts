@@ -1,11 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber'
-
-import { USDC } from 'constants/tokens'
-import { Exchange, SwapData } from 'utils/swap-data'
+import { Contract } from '@ethersproject/contracts'
 import { Address, createPublicClient, http, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
 
-// import { ZeroExApi } from './0x'
+import { USDC } from 'constants/tokens'
+import { getIssuanceModule } from 'utils/issuanceModules'
+import { getRpcProvider } from 'utils/rpc-provider'
+import { Exchange, SwapData } from 'utils/swap-data'
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 const usdc = USDC.address!
@@ -34,6 +35,12 @@ export interface ComponentSwapData {
   buyUnderlyingAmount: BigNumber
 }
 
+interface ComponentSwapDataRequest {
+  indexTokenSymbol: string
+  indexToken: string
+  indexTokenAmount: BigNumber
+}
+
 interface WrappedToken {
   address: string
   decimals: number
@@ -43,11 +50,6 @@ interface WrappedToken {
     symbol: string
   }
 }
-
-// const IssuanceAbi = [
-//   'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
-//   'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
-// ]
 
 // const erc4626Abi = [
 //   'constructor(address _morpho, address _morphoToken, address _lens, address _recipient)',
@@ -133,25 +135,44 @@ interface WrappedToken {
 //   return buyUnderlyingAmount.mul(multiplier).div(10000)
 //   }
 
-export async function getIssuanceComponentSwapData(): Promise<
-  ComponentSwapData[]
-> {
-  //   const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  //   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
-  //   const [issuanceComponents, issuanceUnits] =
-  //     await issuance.getRequiredComponentIssuanceUnits(
-  //       indexToken,
-  //       indexTokenAmount
-  //     )
-  const issuanceComponents = ['0x', '0x', '0x']
+interface IssuanceRequest extends ComponentSwapDataRequest {
+  inputToken: string
+}
+
+function getIssuanceContract(
+  indexTokenSymbol: string,
+  rpcUrl: string
+): Contract {
+  const abi = [
+    'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
+    'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
+  ]
+  const provider = getRpcProvider(rpcUrl)
+  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  return new Contract(issuanceModule.address, abi, provider)
+}
+
+export async function getIssuanceComponentSwapData(
+  request: IssuanceRequest,
+  rpcUrl: string
+): Promise<ComponentSwapData[]> {
+  const { indexTokenSymbol, indexToken, indexTokenAmount } = request
+  const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
+  const [issuanceComponents] = await issuance.getRequiredComponentIssuanceUnits(
+    indexToken,
+    indexTokenAmount
+  )
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
     issuanceComponents.map((component: string) => getUnderlyingErc20(component))
-  //   const buyAmountsPromises = issuanceComponents.map(
-  //     (component: string, index: number) =>
-  //       getAmountOfAssetToObtainShares(component, issuanceUnits[index], provider)
-  //   )
+  // TODO:
+  // const buyAmountsPromises = issuanceComponents.map(
+  //   (component: string, index: number) =>
+  //     getAmountOfAssetToObtainShares(component, issuanceUnits[index], provider)
+  // )
   //   const buyAmounts = await Promise.all(buyAmountsPromises)
-  //   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  console.log(wrappedTokens)
+  // TODO: get swap data
   //   const swaps: Promise<{ swapData: SwapData } | null>[] =
   //     issuanceComponents.map((_: string, index: number) => {
   //       const wrappedToken = wrappedTokens[index]
@@ -178,7 +199,7 @@ export async function getIssuanceComponentSwapData(): Promise<
   //     }
   //   })
   //   return swapData
-  const wrappedTokens = underlyingERC20sPromises.map(() => {
+  const componentSwapData = wrappedTokens.map(() => {
     const swapData: ComponentSwapData = {
       underlyingERC20: usdc,
       buyUnderlyingAmount: BigNumber.from(0),
@@ -186,30 +207,29 @@ export async function getIssuanceComponentSwapData(): Promise<
     }
     return swapData
   })
-  return wrappedTokens
+  return componentSwapData
 }
 
-export async function getRedemptionComponentSwapData(): Promise<
-  //   indexTokenSymbol: string,
-  //   indexToken: string,
-  //   outputToken: string,
-  //   indexTokenAmount: BigNumber,
-  //   provider: JsonRpcProvider
-  //   zeroExApi: ZeroExApi
-  ComponentSwapData[]
-> {
-  //   const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  //   const issuance = new Contract(issuanceModule.address, IssuanceAbi, provider)
-  //   const [issuanceComponents, issuanceUnits] =
-  //     await issuance.getRequiredComponentRedemptionUnits(
-  //       indexToken,
-  //       indexTokenAmount
-  //     )
-  //   const underlyingERC20sPromises: Promise<WrappedToken>[] =
-  //     issuanceComponents.map((component: string) =>
-  //       getUnderlyingErc20(component, provider)
-  //     )
-  //   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+interface RedemptionRequest extends ComponentSwapDataRequest {
+  outputToken: string
+}
+
+export async function getRedemptionComponentSwapData(
+  request: RedemptionRequest,
+  rpcUrl: string
+): Promise<ComponentSwapData[]> {
+  const { indexTokenSymbol, indexToken, indexTokenAmount } = request
+  const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
+  const [issuanceComponents] =
+    await issuance.getRequiredComponentRedemptionUnits(
+      indexToken,
+      indexTokenAmount
+    )
+  const underlyingERC20sPromises: Promise<WrappedToken>[] =
+    issuanceComponents.map((component: string) => getUnderlyingErc20(component))
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  console.log(wrappedTokens)
+  // TODO:
   //   const buyAmountsPromises = issuanceComponents.map(
   //     (component: string, index: number) =>
   //       getAmountOfAssetToObtainShares(
@@ -244,12 +264,15 @@ export async function getRedemptionComponentSwapData(): Promise<
   //       dexData,
   //     }
   //   })
-  const swapData: ComponentSwapData = {
-    underlyingERC20: usdc,
-    buyUnderlyingAmount: BigNumber.from(0),
-    dexData: emptySwapData,
-  }
-  return [swapData]
+  const componentSwapData = wrappedTokens.map(() => {
+    const swapData: ComponentSwapData = {
+      underlyingERC20: usdc,
+      buyUnderlyingAmount: BigNumber.from(0),
+      dexData: emptySwapData,
+    }
+    return swapData
+  })
+  return componentSwapData
 }
 
 async function getUnderlyingErc20(token: string): Promise<WrappedToken> {

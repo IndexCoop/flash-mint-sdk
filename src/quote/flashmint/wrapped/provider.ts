@@ -1,6 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ComponentSwapData, ComponentWrapData, getWrapData } from 'utils'
+import {
+  ComponentSwapData,
+  ComponentWrapData,
+  getIssuanceComponentSwapData,
+  getRedemptionComponentSwapData,
+  getWrapData,
+} from 'utils'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -40,26 +46,29 @@ export class WrappedQuoteProvider
       slippage
     )
     const indexToken = isMinting ? outputToken : inputToken
-    // const indexTokenSymbol = indexToken.symbol
-    // const componentSwapData = isMinting
-    //   ? await getIssuanceComponentSwapData(
-    //       indexTokenSymbol,
-    //       indexToken.address,
-    //       inputToken.address,
-    //       indexTokenAmount,
-    //       provider,
-    //       zeroExApi
-    //     )
-    //   : await getRedemptionComponentSwapData(
-    //       indexTokenSymbol,
-    //       indexToken.address,
-    //       outputToken.address,
-    //       indexTokenAmount,
-    //       provider,
-    //       zeroExApi
-    //     )
+    const indexTokenSymbol = indexToken.symbol
+    const componentSwapData = isMinting
+      ? await getIssuanceComponentSwapData(
+          {
+            indexTokenSymbol,
+            indexToken: indexToken.address,
+            inputToken: inputToken.address,
+            indexTokenAmount,
+          },
+          this.rpcUrl
+        )
+      : await getRedemptionComponentSwapData(
+          {
+            indexTokenSymbol,
+            indexToken: indexToken.address,
+            outputToken: outputToken.address,
+            indexTokenAmount,
+          },
+          this.rpcUrl
+        )
     const componentWrapData = getWrapData(indexToken.symbol)
-    // if (componentSwapData.length !== componentSwapData.length) return null
+    // FIXME: add check
+    // if (componentSwapData.length !== componentWrapData.length) return null
     // let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     // const contract = getFlashMintWrappedContract(provider)
     // if (isMinting) {
@@ -84,7 +93,7 @@ export class WrappedQuoteProvider
     //   isMinting
     // )
     const quote: FlashMintWrappedQuote = {
-      componentSwapData: [],
+      componentSwapData,
       componentWrapData,
       indexTokenAmount,
       inputOutputTokenAmount: BigNumber.from(0),
