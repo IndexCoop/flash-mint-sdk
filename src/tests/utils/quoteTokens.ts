@@ -107,7 +107,6 @@ const usdc: QuoteToken = {
 
 const usdcy: QuoteToken = {
   address: USDCY.address!,
-  // FIXME: 18 or 6?
   decimals: 18,
   symbol: USDCY.symbol,
 }
