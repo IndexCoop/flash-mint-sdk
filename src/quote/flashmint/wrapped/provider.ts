@@ -3,13 +3,15 @@ import { BigNumber } from '@ethersproject/bignumber'
 import {
   ComponentSwapData,
   ComponentWrapData,
+  getFlashMintWrappedContract,
   getIssuanceComponentSwapData,
   getRedemptionComponentSwapData,
   getWrapData,
+  slippageAdjustedTokenAmount,
 } from 'utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
-import { getRpcProvider } from 'utils/rpc-provider'
 
 export interface FlashMintWrappedQuoteRequest {
   isMinting: boolean
@@ -34,8 +36,6 @@ export class WrappedQuoteProvider
   async getQuote(
     request: FlashMintWrappedQuoteRequest
   ): Promise<FlashMintWrappedQuote | null> {
-    const provider = getRpcProvider(this.rpcUrl)
-    console.log(provider.connection.url)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
     console.log(
@@ -66,37 +66,40 @@ export class WrappedQuoteProvider
           },
           this.rpcUrl
         )
+    console.log(componentSwapData)
     const componentWrapData = getWrapData(indexToken.symbol)
     // FIXME: add check
     // if (componentSwapData.length !== componentWrapData.length) return null
-    // let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
-    // const contract = getFlashMintWrappedContract(provider)
-    // if (isMinting) {
-    //   estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
-    //     indexToken.address,
-    //     inputToken.address,
-    //     indexTokenAmount,
-    //     componentSwapData
-    //   )
-    // } else {
-    //   estimatedInputOutputAmount = await contract.callStatic.getRedeemExactSet(
-    //     indexToken.address,
-    //     outputToken.address,
-    //     indexTokenAmount,
-    //     componentSwapData
-    //   )
-    // }
-    // const inputOutputTokenAmount = slippageAdjustedTokenAmount(
-    //   estimatedInputOutputAmount,
-    //   isMinting ? inputToken.decimals : outputToken.decimals,
-    //   slippage,
-    //   isMinting
-    // )
+    let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
+    const provider = getRpcProvider(this.rpcUrl)
+    const contract = getFlashMintWrappedContract(provider)
+    if (isMinting) {
+      estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
+        indexToken.address,
+        inputToken.address,
+        indexTokenAmount,
+        componentSwapData
+      )
+    } else {
+      estimatedInputOutputAmount = await contract.callStatic.getRedeemExactSet(
+        indexToken.address,
+        outputToken.address,
+        indexTokenAmount,
+        componentSwapData
+      )
+    }
+    // FIXME: add slippage?
+    const inputOutputTokenAmount = slippageAdjustedTokenAmount(
+      estimatedInputOutputAmount,
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      slippage,
+      isMinting
+    )
     const quote: FlashMintWrappedQuote = {
       componentSwapData,
       componentWrapData,
       indexTokenAmount,
-      inputOutputTokenAmount: BigNumber.from(0),
+      inputOutputTokenAmount,
     }
     return quote
   }
