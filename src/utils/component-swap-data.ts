@@ -7,6 +7,7 @@ import { AddressZero } from 'constants/addresses'
 import { USDC } from 'constants/tokens'
 import { SwapQuote, SwapQuoteProvider } from 'quote'
 import { isSameAddress } from 'utils/addresses'
+import { createClient } from 'utils/clients'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, SwapData } from 'utils/swap-data'
@@ -155,7 +156,9 @@ export async function getIssuanceComponentSwapData(
     indexTokenAmount
   )
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
-    issuanceComponents.map((component: string) => getUnderlyingErc20(component))
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, chainId)
+    )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   // TODO:
   // const buyAmountsPromises = issuanceComponents.map(
@@ -211,7 +214,9 @@ export async function getRedemptionComponentSwapData(
       indexTokenAmount
     )
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
-    issuanceComponents.map((component: string) => getUnderlyingErc20(component))
+    issuanceComponents.map((component: string) =>
+      getUnderlyingErc20(component, chainId)
+    )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   // TODO: check google docs
   // const buyAmountsPromises = issuanceComponents.map(
@@ -280,12 +285,11 @@ function getIssuanceContract(
   return new Contract(issuanceModule.address, abi, provider)
 }
 
-async function getUnderlyingErc20(token: string): Promise<WrappedToken> {
-  // FIXME: pass in? or config externally?
-  const publicClient = createPublicClient({
-    chain: mainnet,
-    transport: http(process.env.MAINNET_ALCHEMY_API),
-  })
+async function getUnderlyingErc20(
+  token: string,
+  chainId: number
+): Promise<WrappedToken> {
+  const publicClient = createClient(chainId)!
   const decimals: number = await publicClient.readContract({
     address: token as Address,
     abi: parseAbi(['function decimals() view returns (uint8)']),
