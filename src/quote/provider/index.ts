@@ -186,8 +186,14 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.wrapped: {
-        const wrappedQuoteProvider = new WrappedQuoteProvider(rpcUrl)
-        const wrappedQuote = await wrappedQuoteProvider.getQuote(request)
+        const wrappedQuoteProvider = new WrappedQuoteProvider(
+          rpcUrl,
+          swapQuoteProvider
+        )
+        const wrappedQuote = await wrappedQuoteProvider.getQuote({
+          ...request,
+          chainId,
+        })
         if (!wrappedQuote) return null
         const builder = new WrappedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintWrappedBuildRequest = {

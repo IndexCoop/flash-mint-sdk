@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { SwapQuoteProvider } from 'quote/swap'
 import {
   ComponentSwapData,
   ComponentWrapData,
@@ -14,6 +15,7 @@ import { getRpcProvider } from 'utils/rpc-provider'
 import { QuoteProvider, QuoteToken } from '../../interfaces'
 
 export interface FlashMintWrappedQuoteRequest {
+  chainId: number
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
@@ -31,42 +33,47 @@ export interface FlashMintWrappedQuote {
 export class WrappedQuoteProvider
   implements QuoteProvider<FlashMintWrappedQuoteRequest, FlashMintWrappedQuote>
 {
-  constructor(private readonly rpcUrl: string) {}
+  constructor(
+    private readonly rpcUrl: string,
+    private readonly swapQuoteProvider: SwapQuoteProvider
+  ) {}
 
   async getQuote(
     request: FlashMintWrappedQuoteRequest
   ): Promise<FlashMintWrappedQuote | null> {
-    const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
-      request
-    console.log(
-      inputToken.symbol,
-      outputToken.symbol,
-      indexTokenAmount.toString(),
+    const {
+      chainId,
+      inputToken,
+      indexTokenAmount,
       isMinting,
-      slippage
-    )
+      outputToken,
+      slippage,
+    } = request
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
     const componentSwapData = isMinting
       ? await getIssuanceComponentSwapData(
           {
+            chainId,
             indexTokenSymbol,
             indexToken: indexToken.address,
             inputToken: inputToken.address,
             indexTokenAmount,
           },
-          this.rpcUrl
+          this.rpcUrl,
+          this.swapQuoteProvider
         )
       : await getRedemptionComponentSwapData(
           {
+            chainId,
             indexTokenSymbol,
             indexToken: indexToken.address,
             outputToken: outputToken.address,
             indexTokenAmount,
           },
-          this.rpcUrl
+          this.rpcUrl,
+          this.swapQuoteProvider
         )
-    console.log(componentSwapData)
     const componentWrapData = getWrapData(indexToken.symbol)
     // FIXME: add check
     // if (componentSwapData.length !== componentWrapData.length) return null

@@ -5,6 +5,7 @@ import { mainnet } from 'viem/chains'
 
 import { AddressZero } from 'constants/addresses'
 import { USDC } from 'constants/tokens'
+import { SwapQuote, SwapQuoteProvider } from 'quote'
 import { isSameAddress } from 'utils/addresses'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -32,6 +33,7 @@ export interface ComponentSwapData {
 }
 
 interface ComponentSwapDataRequest {
+  chainId: number
   indexTokenSymbol: string
   indexToken: string
   indexTokenAmount: BigNumber
@@ -137,9 +139,16 @@ interface IssuanceRequest extends ComponentSwapDataRequest {
 
 export async function getIssuanceComponentSwapData(
   request: IssuanceRequest,
-  rpcUrl: string
+  rpcUrl: string,
+  swapQuoteProvider: SwapQuoteProvider
 ): Promise<ComponentSwapData[]> {
-  const { indexTokenSymbol, indexToken, indexTokenAmount, inputToken } = request
+  const {
+    chainId,
+    indexTokenSymbol,
+    indexToken,
+    indexTokenAmount,
+    inputToken,
+  } = request
   const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
   const [issuanceComponents] = await issuance.getRequiredComponentIssuanceUnits(
     indexToken,
@@ -147,6 +156,7 @@ export async function getIssuanceComponentSwapData(
   )
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
     issuanceComponents.map((component: string) => getUnderlyingErc20(component))
+  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   // TODO:
   // const buyAmountsPromises = issuanceComponents.map(
   //   (component: string, index: number) =>
@@ -154,35 +164,22 @@ export async function getIssuanceComponentSwapData(
   // )
   //   const buyAmounts = await Promise.all(buyAmountsPromises)
   const buyAmounts = issuanceComponents.map(() => BigNumber.from(0))
-  const wrappedTokens = await Promise.all(underlyingERC20sPromises)
-  console.log(wrappedTokens)
-  // TODO: get swap data; add swap quote provider
-  const swaps: Promise<{ swapData: SwapData } | null>[] =
-    issuanceComponents.map((_: string, index: number) => {
+  const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
+    (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
       const underlyingERC20 = wrappedToken.underlyingErc20
-      console.log(
-        underlyingERC20.symbol === USDC.symbol,
-        underlyingERC20.symbol,
-        USDC.symbol
-      )
-      console.log(
-        isSameAddress(underlyingERC20.address, inputToken),
-        underlyingERC20.address,
-        inputToken
-      )
       if (isSameAddress(underlyingERC20.address, inputToken)) return null
-      // const buyUnderlyingAmount = buyAmounts[index]
-      // const mintParams = {
-      //   buyToken: underlyingERC20.address,
-      //   buyAmount: buyUnderlyingAmount,
-      //   sellToken: inputToken,
-      //   includedSources: 'Uniswap_V3',
-      // }
-      // TODO: add swap quote provider
-      return null
-    })
-  const swapData = await Promise.all(swaps)
+      return swapQuoteProvider.getSwapQuote({
+        chainId,
+        inputToken,
+        outputToken: underlyingERC20.address,
+        outputAmount: buyAmounts[index].toString(),
+        // TODO: needed for USDCY?
+        //   includedSources: 'Uniswap_V3',
+      })
+    }
+  )
+  const swapData = await Promise.all(swapPromises)
   return buildComponentSwapData(
     issuanceComponents,
     wrappedTokens,
@@ -197,10 +194,16 @@ interface RedemptionRequest extends ComponentSwapDataRequest {
 
 export async function getRedemptionComponentSwapData(
   request: RedemptionRequest,
-  rpcUrl: string
+  rpcUrl: string,
+  swapQuoteProvider: SwapQuoteProvider
 ): Promise<ComponentSwapData[]> {
-  const { indexTokenSymbol, indexToken, indexTokenAmount, outputToken } =
-    request
+  const {
+    chainId,
+    indexTokenSymbol,
+    indexToken,
+    indexTokenAmount,
+    outputToken,
+  } = request
   const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
   const [issuanceComponents] =
     await issuance.getRequiredComponentRedemptionUnits(
@@ -210,7 +213,6 @@ export async function getRedemptionComponentSwapData(
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
     issuanceComponents.map((component: string) => getUnderlyingErc20(component))
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
-  console.log(wrappedTokens)
   // TODO: check google docs
   // const buyAmountsPromises = issuanceComponents.map(
   //   (component: string, index: number) =>
@@ -223,24 +225,27 @@ export async function getRedemptionComponentSwapData(
   // )
   // const buyAmounts = await Promise.all(buyAmountsPromises)
   const buyAmounts = issuanceComponents.map(() => BigNumber.from(0))
-  const swaps = issuanceComponents.map((_: string, index: number) => {
-    const wrappedToken = wrappedTokens[index]
-    const underlyingERC20 = wrappedToken.underlyingErc20
-    if (isSameAddress(underlyingERC20.address, outputToken)) return null
-    // const buyUnderlyingAmount = buyAmounts[index]
-    // const redeemParams = {
-    //   buyToken: outputToken,
-    //   sellAmount: buyUnderlyingAmount,
-    //   sellToken: underlyingERC20.address,
-    //   includedSources: 'Uniswap_V3',
-    // }
-    return null
-  })
+  const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
+    (_: string, index: number) => {
+      const wrappedToken = wrappedTokens[index]
+      const underlyingERC20 = wrappedToken.underlyingErc20
+      if (isSameAddress(underlyingERC20.address, outputToken)) return null
+      return swapQuoteProvider.getSwapQuote({
+        chainId,
+        inputToken: underlyingERC20.address,
+        inputAmount: buyAmounts[index].toString(),
+        outputToken,
+        // TODO: needed for USDCY?
+        //   includedSources: 'Uniswap_V3',
+      })
+    }
+  )
+  const swapData = await Promise.all(swapPromises)
   return buildComponentSwapData(
     issuanceComponents,
     wrappedTokens,
     buyAmounts,
-    swaps
+    swapData
   )
 }
 
@@ -248,7 +253,7 @@ function buildComponentSwapData(
   issuanceComponents: string[],
   wrappedTokens: WrappedToken[],
   buyAmounts: BigNumber[],
-  swapDataResults: any
+  swapDataResults: (SwapQuote | null)[]
 ): ComponentSwapData[] {
   return issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]

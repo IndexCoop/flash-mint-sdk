@@ -6,11 +6,13 @@ import {
   getRedemptionComponentSwapData,
 } from 'utils/component-swap-data'
 import { wei } from 'utils/numbers'
-import { LocalhostProviderUrl } from 'tests/utils'
+import { IndexZeroExSwapQuoteProvider, LocalhostProviderUrl } from 'tests/utils'
 import { isSameAddress } from 'utils/addresses'
 import { Exchange } from 'utils/swap-data'
 
+const chainId = 1
 const rpcUrl = LocalhostProviderUrl
+const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 const indexTokenSymbol = USDCY.symbol
 const indexToken = USDCY.address!
@@ -20,12 +22,14 @@ describe('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token USDC', async () => {
     const componentSwapData = await getIssuanceComponentSwapData(
       {
+        chainId,
         indexTokenSymbol,
         indexToken,
         inputToken: usdc,
         indexTokenAmount: wei(1),
       },
-      rpcUrl
+      rpcUrl,
+      swapQuoteProvider
     )
     // FIXME: should be 5 for USDCY
     expect(componentSwapData.length).toBe(6)
@@ -80,12 +84,14 @@ describe('getRedemptionComponentSwapData()', () => {
   test('returns correct swap data based for output token USDC', async () => {
     const componentSwapData = await getRedemptionComponentSwapData(
       {
+        chainId,
         indexTokenSymbol,
         indexToken,
         outputToken: usdc,
         indexTokenAmount: wei(1),
       },
-      rpcUrl
+      rpcUrl,
+      swapQuoteProvider
     )
     // FIXME: should be 5 for USDCY
     expect(componentSwapData.length).toBe(6)
