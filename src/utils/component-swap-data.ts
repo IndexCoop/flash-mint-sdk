@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { Address, createPublicClient, http, parseAbi } from 'viem'
-import { mainnet } from 'viem/chains'
+import { Address, parseAbi } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
 import { USDC } from 'constants/tokens'
@@ -289,6 +288,7 @@ async function getUnderlyingErc20(
   token: string,
   chainId: number
 ): Promise<WrappedToken> {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const publicClient = createClient(chainId)!
   const decimals: number = await publicClient.readContract({
     address: token as Address,
