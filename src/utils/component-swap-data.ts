@@ -3,24 +3,20 @@ import { Contract } from '@ethersproject/contracts'
 import { Address, createPublicClient, http, parseAbi } from 'viem'
 import { mainnet } from 'viem/chains'
 
+import { AddressZero } from 'constants/addresses'
 import { USDC } from 'constants/tokens'
+import { isSameAddress } from 'utils/addresses'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, SwapData } from 'utils/swap-data'
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-const usdc = USDC.address!
-/* eslint-enable @typescript-eslint/no-non-null-assertion */
 // const DEFAULT_SLIPPAGE = 0.0015
 
 const emptySwapData: SwapData = {
   exchange: Exchange.None,
-  path: [
-    '0x0000000000000000000000000000000000000000',
-    '0x0000000000000000000000000000000000000000',
-  ],
+  path: [],
   fees: [],
-  pool: '0x0000000000000000000000000000000000000000',
+  pool: AddressZero,
 }
 
 // FIXME:
@@ -139,24 +135,11 @@ interface IssuanceRequest extends ComponentSwapDataRequest {
   inputToken: string
 }
 
-function getIssuanceContract(
-  indexTokenSymbol: string,
-  rpcUrl: string
-): Contract {
-  const abi = [
-    'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
-    'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
-  ]
-  const provider = getRpcProvider(rpcUrl)
-  const issuanceModule = getIssuanceModule(indexTokenSymbol)
-  return new Contract(issuanceModule.address, abi, provider)
-}
-
 export async function getIssuanceComponentSwapData(
   request: IssuanceRequest,
   rpcUrl: string
 ): Promise<ComponentSwapData[]> {
-  const { indexTokenSymbol, indexToken, indexTokenAmount } = request
+  const { indexTokenSymbol, indexToken, indexTokenAmount, inputToken } = request
   const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
   const [issuanceComponents] = await issuance.getRequiredComponentIssuanceUnits(
     indexToken,
@@ -170,44 +153,42 @@ export async function getIssuanceComponentSwapData(
   //     getAmountOfAssetToObtainShares(component, issuanceUnits[index], provider)
   // )
   //   const buyAmounts = await Promise.all(buyAmountsPromises)
+  const buyAmounts = issuanceComponents.map(() => BigNumber.from(0))
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   console.log(wrappedTokens)
-  // TODO: get swap data
-  //   const swaps: Promise<{ swapData: SwapData } | null>[] =
-  //     issuanceComponents.map((_: string, index: number) => {
-  //       const wrappedToken = wrappedTokens[index]
-  //       const underlyingERC20 = wrappedToken.underlyingErc20
-  //       const buyUnderlyingAmount = buyAmounts[index]
-  //       const mintParams = {
-  //         buyToken: underlyingERC20.address,
-  //         buyAmount: buyUnderlyingAmount,
-  //         sellToken: inputToken,
-  //         includedSources: 'Uniswap_V3',
-  //       }
-  //       return getSwapData(mintParams, 0.1, 1, zeroExApi)
-  //     })
-  //   const swapDataResults = await Promise.all(swaps)
-  //   const swapData = issuanceComponents.map((_: string, index: number) => {
-  //     const wrappedToken = wrappedTokens[index]
-  //     const underlyingERC20 = wrappedToken.underlyingErc20
-  //     const buyUnderlyingAmount = buyAmounts[index]
-  //     const dexData = swapDataResults[index]?.swapData ?? emptySwapData
-  //     return {
-  //       underlyingERC20: underlyingERC20.address,
-  //       buyUnderlyingAmount,
-  //       dexData,
-  //     }
-  //   })
-  //   return swapData
-  const componentSwapData = wrappedTokens.map(() => {
-    const swapData: ComponentSwapData = {
-      underlyingERC20: usdc,
-      buyUnderlyingAmount: BigNumber.from(0),
-      dexData: emptySwapData,
-    }
-    return swapData
-  })
-  return componentSwapData
+  // TODO: get swap data; add swap quote provider
+  const swaps: Promise<{ swapData: SwapData } | null>[] =
+    issuanceComponents.map((_: string, index: number) => {
+      const wrappedToken = wrappedTokens[index]
+      const underlyingERC20 = wrappedToken.underlyingErc20
+      console.log(
+        underlyingERC20.symbol === USDC.symbol,
+        underlyingERC20.symbol,
+        USDC.symbol
+      )
+      console.log(
+        isSameAddress(underlyingERC20.address, inputToken),
+        underlyingERC20.address,
+        inputToken
+      )
+      if (isSameAddress(underlyingERC20.address, inputToken)) return null
+      // const buyUnderlyingAmount = buyAmounts[index]
+      // const mintParams = {
+      //   buyToken: underlyingERC20.address,
+      //   buyAmount: buyUnderlyingAmount,
+      //   sellToken: inputToken,
+      //   includedSources: 'Uniswap_V3',
+      // }
+      // TODO: add swap quote provider
+      return null
+    })
+  const swapData = await Promise.all(swaps)
+  return buildComponentSwapData(
+    issuanceComponents,
+    wrappedTokens,
+    buyAmounts,
+    swapData
+  )
 }
 
 interface RedemptionRequest extends ComponentSwapDataRequest {
@@ -218,7 +199,8 @@ export async function getRedemptionComponentSwapData(
   request: RedemptionRequest,
   rpcUrl: string
 ): Promise<ComponentSwapData[]> {
-  const { indexTokenSymbol, indexToken, indexTokenAmount } = request
+  const { indexTokenSymbol, indexToken, indexTokenAmount, outputToken } =
+    request
   const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
   const [issuanceComponents] =
     await issuance.getRequiredComponentRedemptionUnits(
@@ -229,50 +211,68 @@ export async function getRedemptionComponentSwapData(
     issuanceComponents.map((component: string) => getUnderlyingErc20(component))
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   console.log(wrappedTokens)
-  // TODO:
-  //   const buyAmountsPromises = issuanceComponents.map(
-  //     (component: string, index: number) =>
-  //       getAmountOfAssetToObtainShares(
-  //         component,
-  //         issuanceUnits[index],
-  //         provider,
-  //         -DEFAULT_SLIPPAGE
-  //       )
-  //   )
-  //   const buyAmounts = await Promise.all(buyAmountsPromises)
-  //   const swaps = issuanceComponents.map((_: string, index: number) => {
-  //     const wrappedToken = wrappedTokens[index]
-  //     const underlyingERC20 = wrappedToken.underlyingErc20
-  //     const buyUnderlyingAmount = buyAmounts[index]
-  //     const redeemParams = {
-  //       buyToken: outputToken,
-  //       sellAmount: buyUnderlyingAmount,
-  //       sellToken: underlyingERC20.address,
-  //       includedSources: 'Uniswap_V3',
-  //     }
-  //     return getSwapData(redeemParams, 0.1, 1, zeroExApi)
-  //   })
-  //   const swapDataResults = await Promise.all(swaps)
-  //   const swapData = issuanceComponents.map((_: string, index: number) => {
-  //     const wrappedToken = wrappedTokens[index]
-  //     const underlyingERC20 = wrappedToken.underlyingErc20
-  //     const buyUnderlyingAmount = buyAmounts[index]
-  //     const dexData = swapDataResults[index]?.swapData ?? emptySwapData
-  //     return {
-  //       underlyingERC20: underlyingERC20.address,
-  //       buyUnderlyingAmount,
-  //       dexData,
-  //     }
-  //   })
-  const componentSwapData = wrappedTokens.map(() => {
-    const swapData: ComponentSwapData = {
-      underlyingERC20: usdc,
-      buyUnderlyingAmount: BigNumber.from(0),
-      dexData: emptySwapData,
-    }
-    return swapData
+  // TODO: check google docs
+  // const buyAmountsPromises = issuanceComponents.map(
+  //   (component: string, index: number) =>
+  //     getAmountOfAssetToObtainShares(
+  //       component,
+  //       issuanceUnits[index],
+  //       provider,
+  //       -DEFAULT_SLIPPAGE
+  //     )
+  // )
+  // const buyAmounts = await Promise.all(buyAmountsPromises)
+  const buyAmounts = issuanceComponents.map(() => BigNumber.from(0))
+  const swaps = issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const underlyingERC20 = wrappedToken.underlyingErc20
+    if (isSameAddress(underlyingERC20.address, outputToken)) return null
+    // const buyUnderlyingAmount = buyAmounts[index]
+    // const redeemParams = {
+    //   buyToken: outputToken,
+    //   sellAmount: buyUnderlyingAmount,
+    //   sellToken: underlyingERC20.address,
+    //   includedSources: 'Uniswap_V3',
+    // }
+    return null
   })
-  return componentSwapData
+  return buildComponentSwapData(
+    issuanceComponents,
+    wrappedTokens,
+    buyAmounts,
+    swaps
+  )
+}
+
+function buildComponentSwapData(
+  issuanceComponents: string[],
+  wrappedTokens: WrappedToken[],
+  buyAmounts: BigNumber[],
+  swapDataResults: any
+): ComponentSwapData[] {
+  return issuanceComponents.map((_: string, index: number) => {
+    const wrappedToken = wrappedTokens[index]
+    const buyUnderlyingAmount = buyAmounts[index]
+    const dexData = swapDataResults[index]?.swapData ?? emptySwapData
+    return {
+      underlyingERC20: wrappedToken.underlyingErc20.address,
+      buyUnderlyingAmount,
+      dexData,
+    }
+  })
+}
+
+function getIssuanceContract(
+  indexTokenSymbol: string,
+  rpcUrl: string
+): Contract {
+  const abi = [
+    'function getRequiredComponentIssuanceUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
+    'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
+  ]
+  const provider = getRpcProvider(rpcUrl)
+  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  return new Contract(issuanceModule.address, abi, provider)
 }
 
 async function getUnderlyingErc20(token: string): Promise<WrappedToken> {
@@ -290,7 +290,8 @@ async function getUnderlyingErc20(token: string): Promise<WrappedToken> {
     address: token,
     decimals,
     underlyingErc20: {
-      address: usdc,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      address: USDC.address!,
       decimals: 6,
       symbol: USDC.symbol,
     },

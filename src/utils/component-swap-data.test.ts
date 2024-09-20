@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { AddressZero } from 'constants/addresses'
 import { USDC, USDCY } from 'constants/tokens'
 import {
   getIssuanceComponentSwapData,
@@ -7,13 +8,13 @@ import {
 import { wei } from 'utils/numbers'
 import { LocalhostProviderUrl } from 'tests/utils'
 import { isSameAddress } from 'utils/addresses'
+import { Exchange } from 'utils/swap-data'
 
 const rpcUrl = LocalhostProviderUrl
 
 const indexTokenSymbol = USDCY.symbol
 const indexToken = USDCY.address!
 const usdc = USDC.address!
-// const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 describe('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token USDC', async () => {
@@ -32,31 +33,14 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
       )
+      // Should be empty as input token is equal to output token (underlying erc20)
+      const dexData = componentSwapData[i].dexData
+      expect(dexData.exchange).toEqual(Exchange.None)
+      expect(dexData.fees).toEqual([])
+      expect(dexData.path).toEqual([])
+      expect(dexData.pool).toEqual(AddressZero)
     }
-    // // Should be empty as input token is equal to output token
-    // expect(componentSwapData[0].dexData.exchange).toEqual(Exchange.None)
-    // expect(componentSwapData[0].dexData.path).toEqual([
-    //   zeroAddress,
-    //   zeroAddress,
-    // ])
-    // expect(componentSwapData[1].dexData.path).toEqual([inputToken, dai])
-    // expect(componentSwapData[2].dexData.path).toEqual([inputToken, usdt])
-    // expect(componentSwapData[3].dexData.path).toEqual([inputToken, usdt])
-    // expect(componentSwapData[4].dexData.path).toEqual([inputToken, dai])
-    // // Should be empty as input token is equal to output token
-    // expect(componentSwapData[5].dexData.exchange).toEqual(Exchange.None)
-    // expect(componentSwapData[5].dexData.path).toEqual([
-    //   zeroAddress,
-    //   zeroAddress,
-    // ])
-    // componentSwapData.forEach((swapData, index) => {
-    //   expect(swapData.buyUnderlyingAmount.gt(0)).toBe(true)
-    //   if (index > 0 && index < 5) {
-    //     expect(swapData.dexData.exchange).toEqual(Exchange.UniV3)
-    //     expect(swapData.dexData.fees.length).toBeGreaterThan(0)
-    //   }
-    //   expect(swapData.dexData.pool).toBe(zeroAddress)
-    // })
+    // fIXME: test for buy amounts
   })
 
   //   test('returns correct swap data based when input token is WETH', async () => {
@@ -109,37 +93,14 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
       )
+      // Should be empty as input token is equal to output token (underlying erc20)
+      const dexData = componentSwapData[i].dexData
+      expect(dexData.exchange).toEqual(Exchange.None)
+      expect(dexData.fees).toEqual([])
+      expect(dexData.path).toEqual([])
+      expect(dexData.pool).toEqual(AddressZero)
     }
-    //     expect(componentSwapData.length).toBe(6)
-    //     expect(componentSwapData[0].underlyingERC20.toLowerCase()).toBe(usdc)
-    //     expect(componentSwapData[1].underlyingERC20.toLowerCase()).toBe(dai)
-    //     expect(componentSwapData[2].underlyingERC20.toLowerCase()).toBe(usdt)
-    //     expect(componentSwapData[3].underlyingERC20.toLowerCase()).toBe(usdt)
-    //     expect(componentSwapData[4].underlyingERC20.toLowerCase()).toBe(dai)
-    //     expect(componentSwapData[5].underlyingERC20.toLowerCase()).toBe(usdc)
-    //     // Should be empty as input token is equal to output token
-    //     expect(componentSwapData[0].dexData.exchange).toEqual(Exchange.None)
-    //     expect(componentSwapData[0].dexData.path).toEqual([
-    //       zeroAddress,
-    //       zeroAddress,
-    //     ])
-    //     expect(componentSwapData[1].dexData.path).toEqual([dai, usdc])
-    //     expect(componentSwapData[2].dexData.path).toEqual([usdt, usdc])
-    //     expect(componentSwapData[3].dexData.path).toEqual([usdt, usdc])
-    //     expect(componentSwapData[4].dexData.path).toEqual([dai, usdc])
-    //     // Should be empty as input token is equal to output token
-    //     expect(componentSwapData[5].dexData.exchange).toEqual(Exchange.None)
-    //     expect(componentSwapData[5].dexData.path).toEqual([
-    //       zeroAddress,
-    //       zeroAddress,
-    //     ])
-    //     componentSwapData.forEach((swapData, index) => {
-    //       expect(swapData.buyUnderlyingAmount.gt(0)).toBe(true)
-    //       if (index > 0 && index < 5) {
-    //         expect(swapData.dexData.exchange).toEqual(Exchange.UniV3)
-    //         expect(swapData.dexData.fees.length).toBeGreaterThan(0)
-    //       }
-    //       expect(swapData.dexData.pool).toBe(zeroAddress)
+    // fIXME: test for buy amounts
   })
 })
 
