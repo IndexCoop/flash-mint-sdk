@@ -100,8 +100,7 @@ export async function getIssuanceComponentSwapData(
         inputToken,
         outputToken: underlyingERC20.address,
         outputAmount: amounts[index].toString(),
-        // TODO: needed for USDCY?
-        //   includedSources: 'Uniswap_V3',
+        sources: [Exchange.UniV3],
       })
     }
   )
@@ -157,8 +156,7 @@ export async function getRedemptionComponentSwapData(
         inputToken: underlyingERC20.address,
         inputAmount: amounts[index].toString(),
         outputToken,
-        // TODO: needed for USDCY?
-        //   includedSources: 'Uniswap_V3',
+        sources: [Exchange.UniV3],
       })
     }
   )
