@@ -21,21 +21,22 @@ export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
       integrationName: '',
       wrapData: ZERO_BYTES,
     },
-    {
-      integrationName: aaveV3WrapV2AdapterName,
-      wrapData: ZERO_BYTES,
-    },
-    {
-      integrationName: compoundV3WrapV2AdapterName,
-      wrapData: ZERO_BYTES,
-    },
-    {
-      integrationName: aaveV2WrapV2AdapterName,
-      wrapData: ZERO_BYTES,
-    },
-    {
-      integrationName: erc4626WrapV2AdapterName,
-      wrapData: ZERO_BYTES,
-    },
+    // TODO: update once rebalanced
+    // {
+    //   integrationName: aaveV3WrapV2AdapterName,
+    //   wrapData: ZERO_BYTES,
+    // },
+    // {
+    //   integrationName: compoundV3WrapV2AdapterName,
+    //   wrapData: ZERO_BYTES,
+    // },
+    // {
+    //   integrationName: aaveV2WrapV2AdapterName,
+    //   wrapData: ZERO_BYTES,
+    // },
+    // {
+    //   integrationName: erc4626WrapV2AdapterName,
+    //   wrapData: ZERO_BYTES,
+    // },
   ]
 }

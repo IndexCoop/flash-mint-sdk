@@ -13,27 +13,7 @@ const provider = LocalhostProviderUrl
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 describe('WrappedQuoteProvider()', () => {
-  test.only('returns a quote for minting icUSD', async () => {
-    const inputToken = usdc
-    const request: FlashMintWrappedQuoteRequest = {
-      chainId,
-      isMinting: true,
-      inputToken,
-      outputToken: indexToken,
-      indexTokenAmount: wei(1),
-      slippage: 0.5,
-    }
-    const quoteProvider = new WrappedQuoteProvider(provider, swapQuoteProvider)
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    // FIXME: test
-    // expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(5)
-  })
-
-  test('returns a quote for minting MMI w/ icUSD', async () => {
+  test('returns a quote for minting icUSD', async () => {
     const inputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
@@ -48,7 +28,8 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(6)
+    expect(quote.componentSwapData.length).toEqual(1)
+    expect(quote.componentWrapData.length).toEqual(1)
   })
 
   test('returns a quote for minting icUSD w/ WETH', async () => {
@@ -66,10 +47,11 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(6)
+    expect(quote.componentSwapData.length).toEqual(1)
+    expect(quote.componentWrapData.length).toEqual(1)
   })
 
-  test.only('returns a quote redeeming icUSD for USDC', async () => {
+  test('returns a quote redeeming icUSD for USDC', async () => {
     const outputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
@@ -83,10 +65,9 @@ describe('WrappedQuoteProvider()', () => {
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    // FIXME:
-    // expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(6)
-    expect(quote.componentWrapData.length).toEqual(5)
+    expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
+    expect(quote.componentSwapData.length).toEqual(1)
+    expect(quote.componentWrapData.length).toEqual(1)
   })
 
   test('returns a quote for redeeming icUSD for WETH', async () => {
@@ -104,6 +85,7 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(6)
+    expect(quote.componentSwapData.length).toEqual(1)
+    expect(quote.componentWrapData.length).toEqual(1)
   })
 })

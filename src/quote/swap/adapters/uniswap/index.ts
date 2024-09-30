@@ -35,7 +35,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
       isSameAddress(inputToken, EthAddress) ||
       isSameAddress(outputToken, EthAddress)
     ) {
-      // FIXME: remove for production, just for runnint tests and catching any of these cases
+      // FIXME: remove for production, just for running tests and catching any of these cases
       throw new Error('Error - using ETH instead of WETH')
     }
 

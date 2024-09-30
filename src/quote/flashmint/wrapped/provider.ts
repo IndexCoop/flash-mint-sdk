@@ -75,8 +75,7 @@ export class WrappedQuoteProvider
           this.swapQuoteProvider
         )
     const componentWrapData = getWrapData(indexToken.symbol)
-    // FIXME: add check
-    // if (componentSwapData.length !== componentWrapData.length) return null
+    if (componentSwapData.length !== componentWrapData.length) return null
     let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     const provider = getRpcProvider(this.rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
