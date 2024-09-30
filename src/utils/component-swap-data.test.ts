@@ -9,6 +9,7 @@ import { wei } from 'utils/numbers'
 import { IndexZeroExSwapQuoteProvider, LocalhostProviderUrl } from 'tests/utils'
 import { isSameAddress } from 'utils/addresses'
 import { Exchange } from 'utils/swap-data'
+import { BigNumber } from '@ethersproject/bignumber'
 
 const chainId = 1
 const rpcUrl = LocalhostProviderUrl
@@ -31,8 +32,8 @@ describe('getIssuanceComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    // FIXME: should be 5 for USDCY
-    expect(componentSwapData.length).toBe(6)
+    // TODO: update once rebalanced into components
+    expect(componentSwapData.length).toBe(1)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -44,7 +45,8 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
     }
-    // fIXME: test for buy amounts
+    // TODO: update once rebalanced into components
+    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
   })
 
   //   test('returns correct swap data based when input token is WETH', async () => {
@@ -93,8 +95,8 @@ describe('getRedemptionComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    // FIXME: should be 5 for USDCY
-    expect(componentSwapData.length).toBe(6)
+    // TODO: update once rebalanced into components
+    expect(componentSwapData.length).toBe(1)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -106,7 +108,8 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
     }
-    // fIXME: test for buy amounts
+    // TODO: update once rebalanced into components
+    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
   })
 })
 

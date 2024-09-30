@@ -214,7 +214,7 @@ async function getAmount(
     return assets
   } catch {
     // TODO: apply slippage to issuance units amount (for all none erc4262)
-    return BigInt(0)
+    return issuanceUnits
   }
   // const isFCASH = (address: string) =>
   //   [
