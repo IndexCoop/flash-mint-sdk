@@ -103,10 +103,8 @@ export const RealWorldAssetIndex: Token = {
   symbol: 'RWA',
 }
 
-export const USDCY: Token = {
-  ...getIndexTokenData('USDCY', 1)!,
-  // FIXME: delete; just for testing
-  address: '0xc30FBa978743a43E736fc32FBeEd364b8A2039cD',
+export const TheUSDCYieldIndex: Token = {
+  ...getIndexTokenData('icUSD', 1)!,
 }
 
 // Other

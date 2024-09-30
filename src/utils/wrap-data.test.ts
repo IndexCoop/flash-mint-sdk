@@ -6,8 +6,8 @@ describe('getWrapData()', () => {
     expect(wrapData.length).toBe(0)
   })
 
-  test.only('returns correct wrap data for USDCY', async () => {
-    const wrapData = getWrapData('USDCY')
+  test.only('returns correct wrap data for icUSD', async () => {
+    const wrapData = getWrapData('icUSD')
     expect(wrapData.length).toBe(5)
     expect(wrapData[0].integrationName).toBe('')
     expect(wrapData[1].integrationName).toBe('Aave_V3_Wrap_V2_Adapter')

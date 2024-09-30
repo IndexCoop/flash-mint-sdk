@@ -16,11 +16,11 @@ import {
 const rpcUrl = LocalhostProviderUrl
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
-const { usdc, usdcy } = QuoteTokens
+const { icusd, usdc } = QuoteTokens
 
 const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = usdcy.address
+const indexToken = icusd.address
 const usdcAddress = usdc.address
 
 describe('WrappedTransactionBuilder()', () => {
@@ -80,7 +80,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  test('returns a tx for USDCY MMI (ERC20)', async () => {
+  test('returns a tx for icUSD MMI (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest()
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -99,7 +99,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for minting USDCY (ETH)', async () => {
+  test('returns a tx for minting icUSD (ETH)', async () => {
     const buildRequest = getDefaultBuildRequest(true, eth, 'ETH')
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -118,7 +118,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
   })
 
-  test('returns a tx for redeeming USDCY (ERC20)', async () => {
+  test('returns a tx for redeeming icUSD (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest(false)
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
@@ -137,7 +137,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for redeeming USDCY (ETH)', async () => {
+  test('returns a tx for redeeming icUSD (ETH)', async () => {
     const buildRequest = getDefaultBuildRequest(false, eth, 'ETH')
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)

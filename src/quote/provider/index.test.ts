@@ -24,7 +24,7 @@ const rpcUrl = LocalhostProviderUrl
 const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
-const { eth, eth2x, hyeth, iceth, usdc, usdcy } = QuoteTokens
+const { eth, eth2x, hyeth, iceth, icusd, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
@@ -124,11 +124,11 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.skip('returns a quote for minting USDCY', async () => {
+  test.skip('returns a quote for minting icUSD', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
-      outputToken: usdcy,
+      outputToken: icusd,
       indexTokenAmount: wei(1),
       slippage: 0.5,
     }

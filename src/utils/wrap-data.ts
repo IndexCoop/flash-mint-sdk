@@ -1,4 +1,4 @@
-import { USDCY } from 'constants/tokens'
+import { TheUSDCYieldIndex } from 'constants/tokens'
 
 export interface ComponentWrapData {
   // wrap adapter integration name as listed in the IntegrationRegistry for the wrapModule
@@ -15,7 +15,7 @@ const erc4626WrapV2AdapterName = 'ERC4626_Wrap_V2_Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
-  if (tokenSymbol !== USDCY.symbol) return []
+  if (tokenSymbol !== TheUSDCYieldIndex.symbol) return []
   return [
     {
       integrationName: '',

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AddressZero } from 'constants/addresses'
-import { USDC, USDCY } from 'constants/tokens'
+import { TheUSDCYieldIndex, USDC } from 'constants/tokens'
 import {
   getIssuanceComponentSwapData,
   getRedemptionComponentSwapData,
@@ -14,8 +14,8 @@ const chainId = 1
 const rpcUrl = LocalhostProviderUrl
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
-const indexTokenSymbol = USDCY.symbol
-const indexToken = USDCY.address!
+const indexTokenSymbol = TheUSDCYieldIndex.symbol
+const indexToken = TheUSDCYieldIndex.address!
 const usdc = USDC.address!
 
 describe('getIssuanceComponentSwapData()', () => {

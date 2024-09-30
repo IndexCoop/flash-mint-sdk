@@ -20,7 +20,7 @@ import {
   InterestCompoundingETHIndex,
   MetaverseIndex,
   RealWorldAssetIndex,
-  USDCY,
+  TheUSDCYieldIndex,
 } from 'constants/tokens'
 
 import {
@@ -81,7 +81,7 @@ export function getContractType(
   if (token === HighYieldETHIndex.symbol) {
     return FlashMintContractType.hyeth
   }
-  if (token === USDCY.symbol) {
+  if (token === TheUSDCYieldIndex.symbol) {
     return FlashMintContractType.wrapped
   }
   if (

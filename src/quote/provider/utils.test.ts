@@ -15,7 +15,7 @@ import {
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
-  USDCY,
+  TheUSDCYieldIndex,
 } from 'constants/tokens'
 import { QuoteTokens } from 'tests/utils'
 import { wei } from 'utils'
@@ -23,14 +23,14 @@ import { wei } from 'utils'
 import { FlashMintContractType, FlashMintQuoteRequest } from './'
 import { buildQuoteResponse, getContractType } from './utils'
 
-const { usdc, usdcy } = QuoteTokens
+const { icusd, usdc } = QuoteTokens
 
 describe('buildQuoteResponse()', () => {
   test('returns correct quote response object', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
-      outputToken: usdcy,
+      outputToken: icusd,
       indexTokenAmount: wei(1),
       slippage: 0.1,
     }
@@ -52,7 +52,7 @@ describe('buildQuoteResponse()', () => {
       contract: Contracts[ChainId.Mainnet].FlashMintWrapped,
       isMinting: true,
       inputToken: usdc,
-      outputToken: usdcy,
+      outputToken: icusd,
       inputAmount: quoteAmount,
       outputAmount: request.indexTokenAmount,
       indexTokenAmount: request.indexTokenAmount,
@@ -171,8 +171,11 @@ describe('getContractType()', () => {
     expect(contractType).toBe(FlashMintContractType.leveraged)
   })
 
-  test('returns correct contract type for USDCY', async () => {
-    const contractType = getContractType(USDCY.symbol, ChainId.Mainnet)
+  test('returns correct contract type for icUSD', async () => {
+    const contractType = getContractType(
+      TheUSDCYieldIndex.symbol,
+      ChainId.Mainnet
+    )
     expect(contractType).toBe(FlashMintContractType.wrapped)
   })
 })

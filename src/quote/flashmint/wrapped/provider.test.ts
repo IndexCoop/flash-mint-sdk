@@ -6,14 +6,14 @@ import {
 import { wei } from 'utils/numbers'
 import { FlashMintWrappedQuoteRequest, WrappedQuoteProvider } from '.'
 
-const { usdc, usdcy, weth } = QuoteTokens
-const indexToken = usdcy
+const { icusd, usdc, weth } = QuoteTokens
+const indexToken = icusd
 const chainId = 1
 const provider = LocalhostProviderUrl
 const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 describe('WrappedQuoteProvider()', () => {
-  test.only('returns a quote for minting USDCY', async () => {
+  test.only('returns a quote for minting icUSD', async () => {
     const inputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
@@ -33,7 +33,7 @@ describe('WrappedQuoteProvider()', () => {
     expect(quote.componentWrapData.length).toEqual(5)
   })
 
-  test('returns a quote for minting MMI w/ USDC', async () => {
+  test('returns a quote for minting MMI w/ icUSD', async () => {
     const inputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
@@ -51,7 +51,7 @@ describe('WrappedQuoteProvider()', () => {
     expect(quote.componentSwapData.length).toEqual(6)
   })
 
-  test('returns a quote for minting MMI w/ WETH', async () => {
+  test('returns a quote for minting icUSD w/ WETH', async () => {
     const inputToken = weth
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
@@ -69,7 +69,7 @@ describe('WrappedQuoteProvider()', () => {
     expect(quote.componentSwapData.length).toEqual(6)
   })
 
-  test.only('returns a quote redeeming USDCY for USDC', async () => {
+  test.only('returns a quote redeeming icUSD for USDC', async () => {
     const outputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
@@ -89,7 +89,7 @@ describe('WrappedQuoteProvider()', () => {
     expect(quote.componentWrapData.length).toEqual(5)
   })
 
-  test('returns a quote for redeeming MMI for WETH', async () => {
+  test('returns a quote for redeeming icUSD for WETH', async () => {
     const outputToken = weth
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
