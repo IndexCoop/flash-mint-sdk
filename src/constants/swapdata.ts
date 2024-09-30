@@ -1,4 +1,4 @@
-/* eslint-disable  @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Exchange } from 'utils'
 import { ETH, InterestCompoundingETHIndex, stETH } from './tokens'
 

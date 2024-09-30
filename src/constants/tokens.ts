@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { getIndexTokenData } from '@indexcoop/tokenlists'
+
 export interface Token {
   symbol: string
   address?: string
@@ -98,6 +101,10 @@ export const MetaverseIndex: Token = {
 export const RealWorldAssetIndex: Token = {
   address: '0x7f5f1A44dd6f88cCb54Fe879e144dF644A4aDa24',
   symbol: 'RWA',
+}
+
+export const TheUSDCYieldIndex: Token = {
+  ...getIndexTokenData('icUSD', 1)!,
 }
 
 // Other
