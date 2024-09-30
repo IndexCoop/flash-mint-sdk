@@ -8,10 +8,10 @@ export interface ComponentWrapData {
 }
 
 // FIXME: check adapter names
-const aaveV2WrapV2AdapterName = 'Aave_V2_Wrap_V2_Adapter'
-const aaveV3WrapV2AdapterName = 'Aave_V3_Wrap_V2_Adapter'
-const compoundV3WrapV2AdapterName = 'Compound_V3_USDC_Wrap_V2_Adapter'
-const erc4626WrapV2AdapterName = 'ERC4626_Wrap_V2_Adapter'
+// const aaveV2WrapV2AdapterName = 'Aave_V2_Wrap_V2_Adapter'
+// const aaveV3WrapV2AdapterName = 'Aave_V3_Wrap_V2_Adapter'
+// const compoundV3WrapV2AdapterName = 'Compound_V3_USDC_Wrap_V2_Adapter'
+// const erc4626WrapV2AdapterName = 'ERC4626_Wrap_V2_Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getWrapData(tokenSymbol: string): ComponentWrapData[] {

@@ -9,7 +9,6 @@ import { wei } from 'utils/numbers'
 import { IndexZeroExSwapQuoteProvider, LocalhostProviderUrl } from 'tests/utils'
 import { isSameAddress } from 'utils/addresses'
 import { Exchange } from 'utils/swap-data'
-import { BigNumber } from '@ethersproject/bignumber'
 
 const chainId = 1
 const rpcUrl = LocalhostProviderUrl
