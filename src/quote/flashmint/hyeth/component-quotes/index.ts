@@ -51,6 +51,7 @@ export class ComponentQuotesProvider {
       '0x1c085195437738d73d75DC64bC5A3E098b7f93b1',
       '0x6ee2b5E19ECBa773a352E5B21415Dc419A700d1d',
       '0xf7906F274c174A52d444175729E3fa98f9bde285',
+      '0x7aa68E84bCD8d1B4C9e10B1e565DB993f68a3E09',
     ]
     return pendleTokens.some((pendleToken) =>
       isAddressEqual(pendleToken, token as Address)
