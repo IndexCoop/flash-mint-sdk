@@ -16,7 +16,6 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   ExchangeIssuanceZeroExMainnetAddress,
   ExchangeIssuanceZeroExPolygonAddress,
-  FlashMintHyEthAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
   FlashMintZeroExMainnetAddress,
@@ -73,7 +72,7 @@ export const getFlashMintLeveragedContract = (
 export const getFlashMintHyEthContract = (
   signerOrProvider: Signer | Provider | undefined
 ): Contract => {
-  const contractAddress = FlashMintHyEthAddress
+  const contractAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
   return new Contract(contractAddress, FLASHMINT_HYETH_ABI, signerOrProvider)
 }
 

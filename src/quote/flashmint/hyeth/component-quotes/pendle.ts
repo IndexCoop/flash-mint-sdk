@@ -4,7 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 
 import FLASHMINT_HYETH_ABI from 'constants/abis/FlashMintHyEth.json'
 import { AddressZero } from 'constants/addresses'
-import { FlashMintHyEthAddress } from 'constants/contracts'
+import { Contracts } from 'constants/contracts'
 import { WETH } from 'constants/tokens'
 import { SwapQuoteProvider } from 'quote/swap'
 import { isSameAddress } from 'utils/addresses'
@@ -21,6 +21,7 @@ export class PendleQuoteProvider {
 
   getFlashMintHyEth(): Contract {
     const provider = getRpcProvider(this.rpcUrl)
+    const FlashMintHyEthAddress = Contracts[1].FlashMintHyEthV3
     return new Contract(FlashMintHyEthAddress, FLASHMINT_HYETH_ABI, provider)
   }
 

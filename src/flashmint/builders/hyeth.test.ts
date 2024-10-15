@@ -1,7 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { EthAddress } from 'constants/addresses'
-import { FlashMintHyEthAddress } from 'constants/contracts'
+import { ChainId } from 'constants/chains'
+import { Contracts } from 'constants/contracts'
 import {
   LocalhostProvider,
   LocalhostProviderUrl,
@@ -22,6 +23,7 @@ const rpcUrl = LocalhostProviderUrl
 
 const { hyeth, usdc, weth } = QuoteTokens
 
+const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const eth = EthAddress
 const indexToken = hyeth
 
