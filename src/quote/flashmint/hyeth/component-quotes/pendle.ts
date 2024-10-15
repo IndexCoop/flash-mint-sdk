@@ -52,34 +52,43 @@ export class PendleQuoteProvider {
     position: bigint,
     inputToken: string
   ): Promise<bigint | null> {
-    const outputToken = this.weth
-    const fmHyEth = this.getFlashMintHyEth()
-    const market = await fmHyEth.pendleMarkets(component)
-    const marketData = await fmHyEth.pendleMarketData(market)
-    const ptContract = this.getPtContract(component)
-    const sy = await ptContract.SY()
-    const syContract = this.getSyContract(sy)
-    const routerContract = this.getRouterStatic(this.routerStaticMainnet)
-    const assetRate: BigNumber = await routerContract.getPtToAssetRate(market)
-    let ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
-    const syAmountPreview: BigNumber = await syContract.previewDeposit(
-      AddressZero,
-      ethAmount
-    )
-    if (syAmountPreview.toBigInt() < position) {
-      ethAmount =
-        (ethAmount * marketData.exchangeRateFactor.toBigInt()) /
-        BigInt('1000000000000000000')
+    try {
+      const outputToken = this.weth
+      const fmHyEth = this.getFlashMintHyEth()
+      const market = await fmHyEth.pendleMarkets(component)
+      const marketData = await fmHyEth.pendleMarketData(market)
+      console.log(marketData)
+      const ptContract = this.getPtContract(component)
+      const sy = await ptContract.SY()
+      const syContract = this.getSyContract(sy)
+      const routerContract = this.getRouterStatic(this.routerStaticMainnet)
+      const assetRate: BigNumber = await routerContract.getPtToAssetRate(market)
+      let ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
+      console.log(component, syContract.address, ethAmount.toString())
+      const syAmountPreview: BigNumber = await syContract.previewDeposit(
+        AddressZero,
+        ethAmount
+      )
+      if (syAmountPreview.toBigInt() < position) {
+        ethAmount =
+          (ethAmount * marketData.exchangeRateFactor.toBigInt()) /
+          BigInt('1000000000000000000')
+      }
+      if (isSameAddress(inputToken, outputToken)) return ethAmount
+      const quote = await this.swapQuoteProvider.getSwapQuote({
+        chainId: 1,
+        inputToken,
+        outputToken,
+        outputAmount: ethAmount.toString(),
+      })
+      if (!quote) return null
+      console.log('quote', component, quote.inputAmount)
+      return BigInt(quote.inputAmount)
+    } catch (error) {
+      console.log(component)
+      console.error(error)
+      return null
     }
-    if (isSameAddress(inputToken, outputToken)) return ethAmount
-    const quote = await this.swapQuoteProvider.getSwapQuote({
-      chainId: 1,
-      inputToken,
-      outputToken,
-      outputAmount: ethAmount.toString(),
-    })
-    if (!quote) return null
-    return BigInt(quote.inputAmount)
   }
 
   async getWithdrawQuote(
