@@ -46,7 +46,7 @@ export class FlashMintHyEthTransactionBuilder
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenAmount = isMinting ? outputTokenAmount : inputTokenAmount
     const contract = getFlashMintHyEthContract(provider)
-    let componentsSwapData = swapData.map((componentSwapData) => {
+    const componentsSwapData = swapData.map((componentSwapData) => {
       return {
         ...componentSwapData,
         poolIds: [],
