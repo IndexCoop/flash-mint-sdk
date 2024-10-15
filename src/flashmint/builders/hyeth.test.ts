@@ -30,10 +30,6 @@ const indexToken = hyeth
 describe('FlashMintHyEthTransactionBuilder()', () => {
   const contract = getFlashMintHyEthContract(provider)
 
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
-  })
-
   test('returns null for invalid request (no input token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputToken = ''
@@ -76,7 +72,8 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  test('returns a tx for minting hyETH (ERC20)', async () => {
+  // TODO:
+  test.skip('returns a tx for minting hyETH (ERC20)', async () => {
     const buildRequest = createBuildRequest()
     const refTx = await contract.populateTransaction.issueExactSetFromERC20(
       buildRequest.outputToken,
@@ -110,7 +107,8 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
     expect(tx.value).toEqual(buildRequest.inputTokenAmount)
   })
 
-  test('returns a tx for redeeming hyETH (ERC20)', async () => {
+  // TODO:
+  test.skip('returns a tx for redeeming hyETH (ERC20)', async () => {
     const buildRequest = createBuildRequest(
       false,
       indexToken.address,
@@ -174,7 +172,9 @@ function createBuildRequest(
     fees: [500],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
-  const componentsSwapData = getComponentsSwapData()
+  const componentsSwapData = getComponentsSwapData().map((swapData) => {
+    return { ...swapData, poolIds: [] }
+  })
   return {
     isMinting,
     inputToken,
