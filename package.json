@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "build:watch": "npm run build -- --watch src",
-    "hardhat": "npx hardhat node",
+    "hardhat": "npx hardhat node --verbose",
     "hardhat:arbitrum": "npx hardhat node --config hardhat.arbitrum.config.js --port 8548",
     "hardhat:base": "npx hardhat node --config hardhat.base.config.js --port 8453",
     "lint": "prettier -c . && eslint ./src",
