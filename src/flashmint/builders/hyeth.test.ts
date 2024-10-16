@@ -72,8 +72,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  // TODO:
-  test.skip('returns a tx for minting hyETH (ERC20)', async () => {
+  test('returns a tx for minting hyETH (ERC20)', async () => {
     const buildRequest = createBuildRequest()
     const refTx = await contract.populateTransaction.issueExactSetFromERC20(
       buildRequest.outputToken,
@@ -107,8 +106,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
     expect(tx.value).toEqual(buildRequest.inputTokenAmount)
   })
 
-  // TODO:
-  test.skip('returns a tx for redeeming hyETH (ERC20)', async () => {
+  test('returns a tx for redeeming hyETH (ERC20)', async () => {
     const buildRequest = createBuildRequest(
       false,
       indexToken.address,
@@ -164,12 +162,14 @@ function createBuildRequest(
     exchange: Exchange.UniV3,
     path: [usdc.address, weth.address],
     fees: [500],
+    poolIds: [],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
   const swapDataEthToInputOutputToken = {
     exchange: Exchange.UniV3,
     path: [weth.address, usdc.address],
     fees: [500],
+    poolIds: [],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
   const componentsSwapData = getComponentsSwapData().map((swapData) => {
