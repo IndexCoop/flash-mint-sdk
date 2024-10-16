@@ -2,6 +2,9 @@ import { ChainId } from 'constants/chains'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Contracts: { [key: number]: any } = {
+  [ChainId.Mainnet]: {
+    FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
+  },
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
     FlashMintLeveragedExtended: '0xc6b3B4624941287bB7BdD8255302c1b337e42194',
@@ -13,9 +16,6 @@ export const Contracts: { [key: number]: any } = {
 }
 
 // Index Protocol
-export const FlashMintHyEthAddress =
-  '0x940ECB16416fE52856e8653B2958Bfd556aA6A7E'
-
 export const FlashMintLeveragedAddress =
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
 

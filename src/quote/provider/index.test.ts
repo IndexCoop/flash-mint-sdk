@@ -1,6 +1,6 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { ChainId } from 'constants/chains'
-import { FlashMintHyEthAddress } from 'constants/contracts'
+import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import {
   getFlashMintLeveragedContractForToken,
@@ -28,6 +28,7 @@ const rpcUrl = LocalhostProviderUrl
 const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
+const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const { dseth, eth, eth2x, hyeth, iceth, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
