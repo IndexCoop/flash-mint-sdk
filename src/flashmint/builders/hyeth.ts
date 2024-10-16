@@ -32,7 +32,7 @@ export class FlashMintHyEthTransactionBuilder
     if (!this.isValidRequest(request)) return null
     const provider = getRpcProvider(this.rpcUrl)
     const {
-      componentsSwapData: swapData,
+      componentsSwapData: componentSwapDataRequest,
       inputToken,
       inputTokenSymbol,
       inputTokenAmount,
@@ -40,18 +40,20 @@ export class FlashMintHyEthTransactionBuilder
       outputTokenSymbol,
       outputTokenAmount,
       isMinting,
-      swapDataInputTokenToEth,
-      swapDataEthToInputOutputToken,
+      swapDataInputTokenToEth: swapDataInputTokenToEthRequest,
+      swapDataEthToInputOutputToken: swapDataEthToInputOutputTokenRequest,
     } = request
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenAmount = isMinting ? outputTokenAmount : inputTokenAmount
     const contract = getFlashMintHyEthContract(provider)
-    const componentsSwapData = swapData.map((componentSwapData) => {
-      return {
-        ...componentSwapData,
-        poolIds: [],
+    const componentsSwapData = componentSwapDataRequest.map(
+      (componentSwapData) => {
+        return {
+          ...componentSwapData,
+          poolIds: [],
+        }
       }
-    })
+    )
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
         return await contract.populateTransaction.issueExactSetFromETH(
@@ -61,6 +63,14 @@ export class FlashMintHyEthTransactionBuilder
           { value: inputTokenAmount }
         )
       } else {
+        const swapDataInputTokenToEth = {
+          ...swapDataInputTokenToEthRequest!,
+          poolIds: [],
+        }
+        const swapDataEthToInputOutputToken = {
+          ...swapDataEthToInputOutputTokenRequest,
+          poolIds: [],
+        }
         return await contract.populateTransaction.issueExactSetFromERC20(
           indexToken,
           indexTokenAmount,
@@ -80,6 +90,10 @@ export class FlashMintHyEthTransactionBuilder
           componentsSwapData
         )
       } else {
+        const swapDataEthToInputOutputToken = {
+          ...swapDataEthToInputOutputTokenRequest,
+          poolIds: [],
+        }
         return await contract.populateTransaction.redeemExactSetForERC20(
           indexToken,
           indexTokenAmount,
