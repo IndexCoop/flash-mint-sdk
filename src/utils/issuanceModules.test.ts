@@ -61,7 +61,7 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   })
 
   test('returns debt issuance module v2 for icUSD', () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address
+    const expectedModule = Contracts[ChainId.Mainnet].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(TheUSDCYieldIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)

@@ -47,7 +47,7 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
+    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000010')
   })
 
   test('returns correct swap data based when input token is WETH', async () => {
@@ -80,7 +80,7 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
+    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000010')
   })
 })
 
@@ -112,7 +112,7 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
+    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('999990')
   })
 
   test('returns correct swap data when output token is WETH', async () => {
@@ -145,6 +145,6 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
+    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('999990')
   })
 })

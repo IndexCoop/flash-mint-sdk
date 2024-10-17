@@ -65,11 +65,15 @@ export function getIssuanceModule(
         isDebtIssuance: true,
       }
     case GitcoinStakedETHIndex.symbol:
-    case TheUSDCYieldIndex.symbol:
     case wsETH2.symbol:
       return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
     case InterestCompoundingETHIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
+    case TheUSDCYieldIndex.symbol:
+      return {
+        address: Contracts[ChainId.Mainnet].DebtIssuanceModuleV3,
+        isDebtIssuance: true,
+      }
     default:
       return { address: BasicIssuanceModuleAddress, isDebtIssuance: false }
   }
