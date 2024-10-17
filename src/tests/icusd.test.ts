@@ -9,8 +9,7 @@ import {
 
 const { eth, icusd, usdc } = QuoteTokens
 
-// TOOD: activate once FMWrapped contract is ready
-describe.skip('icUSD (mainnet)', () => {
+describe('icUSD (mainnet)', () => {
   const indexToken = icusd
   const signer = SignerAccount4
   let factory: TestFactory
