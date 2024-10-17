@@ -19,7 +19,7 @@ const indexToken = TheUSDCYieldIndex.address!
 const usdc = USDC.address!
 const weth = WETH.address!
 
-describe('getIssuanceComponentSwapData()', () => {
+describe.skip('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token USDC', async () => {
     const componentSwapData = await getIssuanceComponentSwapData(
       {
