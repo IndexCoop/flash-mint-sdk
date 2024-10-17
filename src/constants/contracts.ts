@@ -4,7 +4,7 @@ import { ChainId } from 'constants/chains'
 export const Contracts: { [key: number]: any } = {
   [ChainId.Mainnet]: {
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
-    FlashMintWrapped: '0x5C0D0a9a0c3A0a5B591496fF894686893b69FaA2',
+    FlashMintWrapped: '0x7ddE626dE8CE73229838B5c2F9A71bc7ac207801',
   },
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
