@@ -9,13 +9,6 @@ module.exports = {
       forking: {
         url: process.env.ARBITRUM_ALCHEMY_API,
       },
-      chains: {
-        42161: {
-          hardforkHistory: {
-            cancun: 0,
-          },
-        },
-      },
     },
   },
 }
