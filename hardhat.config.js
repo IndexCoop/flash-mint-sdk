@@ -14,6 +14,13 @@ module.exports = {
       forking: {
         url: process.env.MAINNET_ALCHEMY_API,
       },
+      chains: {
+        1: {
+          hardforkHistory: {
+            cancun: 0,
+          },
+        },
+      },
     },
   },
 }
