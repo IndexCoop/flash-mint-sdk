@@ -179,9 +179,13 @@ function buildComponentSwapData(
   return issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
     const buyUnderlyingAmount = buyAmounts[index]
-    const dexData = swapDataResults[index]?.swapData
+    const swapData = swapDataResults[index]?.swapData
+    const dexData: SwapDataV3 = swapData
       ? {
-          ...swapDataResults[index]?.swapData,
+          exchange: swapData.exchange,
+          path: swapData.path,
+          fees: swapData.fees,
+          pool: swapData.pool,
           poolIds: [],
         }
       : emptySwapData
