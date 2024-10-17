@@ -9,20 +9,21 @@ import { isSameAddress } from 'utils/addresses'
 import { createClient } from 'utils/clients'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, SwapData } from 'utils/swap-data'
+import { Exchange, SwapDataV3 } from 'utils/swap-data'
 
 // const DEFAULT_SLIPPAGE = 0.0015
 
-const emptySwapData: SwapData = {
+const emptySwapData: SwapDataV3 = {
   exchange: Exchange.None,
   path: [],
   fees: [],
   pool: AddressZero,
+  poolIds: [],
 }
 
 export interface ComponentSwapData {
   underlyingERC20: string
-  dexData: SwapData
+  dexData: SwapDataV3
   // ONLY relevant for issue, not used for redeem:
   // amount that has to be bought of the unwrapped token version (to cover required wrapped component amounts for issuance)
   // this amount has to be computed beforehand through the exchange rate of wrapped component <> unwrapped component
@@ -178,7 +179,12 @@ function buildComponentSwapData(
   return issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
     const buyUnderlyingAmount = buyAmounts[index]
-    const dexData = swapDataResults[index]?.swapData ?? emptySwapData
+    const dexData = swapDataResults[index]?.swapData
+      ? {
+          ...swapDataResults[index]?.swapData,
+          poolIds: [],
+        }
+      : emptySwapData
     return {
       underlyingERC20: wrappedToken.underlyingErc20.address,
       buyUnderlyingAmount,

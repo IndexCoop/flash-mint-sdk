@@ -44,6 +44,7 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.fees).toEqual([])
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
+      expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
     expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
@@ -76,6 +77,7 @@ describe('getIssuanceComponentSwapData()', () => {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       ])
       expect(dexData.pool).toEqual(AddressZero)
+      expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
     expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
@@ -107,6 +109,7 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.fees).toEqual([])
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
+      expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
     expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
@@ -139,6 +142,7 @@ describe('getRedemptionComponentSwapData()', () => {
         '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       ])
       expect(dexData.pool).toEqual(AddressZero)
+      expect(dexData.poolIds).toEqual([])
     }
     // TODO: update once rebalanced into components
     expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000000')
