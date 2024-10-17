@@ -64,6 +64,7 @@ export class FlashMintHyEthTransactionBuilder
         )
       } else {
         const swapDataInputTokenToEth = {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           ...swapDataInputTokenToEthRequest!,
           poolIds: [],
         }
