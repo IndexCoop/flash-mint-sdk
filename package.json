@@ -1,6 +1,6 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
-  "version": "3.3.2",
+  "version": "3.7.1",
   "description": "The FlashMintSDK of the Index Coop.",
   "engines": {
     "node": ">=18"
@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "build:watch": "npm run build -- --watch src",
-    "hardhat": "npx hardhat node",
+    "hardhat": "npx hardhat node --verbose",
     "hardhat:arbitrum": "npx hardhat node --config hardhat.arbitrum.config.js --port 8548",
     "hardhat:base": "npx hardhat node --config hardhat.base.config.js --port 8453",
     "lint": "prettier -c . && eslint ./src",
@@ -86,7 +86,7 @@
     "@ethersproject/contracts": "^5.6.2",
     "@ethersproject/providers": "^5.6.8",
     "@ethersproject/units": "^5.6.1",
-    "@indexcoop/tokenlists": "^1.57.0",
+    "@indexcoop/tokenlists": "^1.58.0",
     "@lifi/sdk": "3.0.0-beta.1",
     "@uniswap/sdk-core": "^5.3.1",
     "@uniswap/v3-sdk": "^3.13.1",

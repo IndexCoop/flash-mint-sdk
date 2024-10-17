@@ -1,7 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { EthAddress } from 'constants/addresses'
-import { FlashMintHyEthAddress } from 'constants/contracts'
+import { ChainId } from 'constants/chains'
+import { Contracts } from 'constants/contracts'
 import {
   LocalhostProvider,
   LocalhostProviderUrl,
@@ -22,15 +23,12 @@ const rpcUrl = LocalhostProviderUrl
 
 const { hyeth, usdc, weth } = QuoteTokens
 
+const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const eth = EthAddress
 const indexToken = hyeth
 
 describe('FlashMintHyEthTransactionBuilder()', () => {
   const contract = getFlashMintHyEthContract(provider)
-
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
-  })
 
   test('returns null for invalid request (no input token)', async () => {
     const buildRequest = createBuildRequest()
@@ -164,15 +162,19 @@ function createBuildRequest(
     exchange: Exchange.UniV3,
     path: [usdc.address, weth.address],
     fees: [500],
+    poolIds: [],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
   const swapDataEthToInputOutputToken = {
     exchange: Exchange.UniV3,
     path: [weth.address, usdc.address],
     fees: [500],
+    poolIds: [],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
-  const componentsSwapData = getComponentsSwapData()
+  const componentsSwapData = getComponentsSwapData().map((swapData) => {
+    return { ...swapData, poolIds: [] }
+  })
   return {
     isMinting,
     inputToken,
