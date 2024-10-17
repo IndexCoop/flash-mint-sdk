@@ -7,7 +7,7 @@ import {
   wei,
 } from './utils'
 
-const { eth, icusd, usdc } = QuoteTokens
+const { icusd, usdc } = QuoteTokens
 
 describe('icUSD (mainnet)', () => {
   const indexToken = icusd
@@ -40,7 +40,7 @@ describe('icUSD (mainnet)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: usdc,
       indexTokenAmount: wei('1'),
       slippage: 0.5,
     })
