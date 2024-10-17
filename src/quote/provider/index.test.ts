@@ -25,7 +25,7 @@ const provider = LocalhostProvider
 const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
 
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
-const { dseth, eth, eth2x, hyeth, iceth, usdc } = QuoteTokens
+const { eth, eth2x, hyeth, iceth, icusd, usdc } = QuoteTokens
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
