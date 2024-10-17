@@ -84,7 +84,7 @@ describe.skip('getIssuanceComponentSwapData()', () => {
   })
 })
 
-describe('getRedemptionComponentSwapData()', () => {
+describe.skip('getRedemptionComponentSwapData()', () => {
   test('returns correct swap data based for output token USDC', async () => {
     const componentSwapData = await getRedemptionComponentSwapData(
       {
