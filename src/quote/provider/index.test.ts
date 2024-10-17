@@ -125,7 +125,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.skip('returns a quote for minting icUSD', async () => {
+  test('returns a quote for minting icUSD', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
@@ -221,8 +221,9 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.inputAmount).toEqual(quote.indexTokenAmount)
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputAmount).toEqual(request.indexTokenAmount)
+    expect(quote.outputAmount).toEqual(quote.inputOutputAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
@@ -265,6 +266,38 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(contract.address)
+    expect(quote.tx.data?.length).toBeGreaterThan(0)
+  })
+
+  test('returns a quote for redeeming icUSD', async () => {
+    const request: FlashMintQuoteRequest = {
+      isMinting: false,
+      inputToken: icusd,
+      outputToken: usdc,
+      indexTokenAmount: wei(1),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(
+      LocalhostProviderUrl,
+      IndexZeroExSwapQuoteProvider
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
+    const chainId = (await provider.getNetwork()).chainId
+    expect(quote.chainId).toEqual(chainId)
+    expect(quote.contractType).toEqual(FlashMintContractType.wrapped)
+    expect(quote.contract).toEqual(FlashMintWrappedAddress)
+    expect(quote.isMinting).toEqual(request.isMinting)
+    expect(quote.inputToken).toEqual(request.inputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.inputAmount).toEqual(request.indexTokenAmount)
+    expect(quote.outputAmount).toEqual(quote.inputOutputAmount)
+    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    expect(quote.slippage).toEqual(request.slippage)
+    expect(quote.tx).not.toBeNull()
+    expect(quote.tx.to).toBe(FlashMintWrappedAddress)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 })
