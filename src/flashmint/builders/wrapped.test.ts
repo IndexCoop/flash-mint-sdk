@@ -16,12 +16,10 @@ import {
 const rpcUrl = LocalhostProviderUrl
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
-const { icusd, usdc } = QuoteTokens
-
 const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = icusd.address
-const usdcAddress = usdc.address
+const indexToken = QuoteTokens.icusd.address
+const usdcAddress = QuoteTokens.usdc.address
 
 describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no index token)', async () => {
@@ -185,6 +183,7 @@ function getDefaultBuildRequest(
           ],
           fees: [3000, 3000],
           pool: '0x0000000000000000000000000000000000000000',
+          poolIds: [],
         },
       },
       {
@@ -199,6 +198,7 @@ function getDefaultBuildRequest(
           ],
           fees: [3000, 3000],
           pool: '0x0000000000000000000000000000000000000000',
+          poolIds: [],
         },
       },
       {
@@ -213,6 +213,7 @@ function getDefaultBuildRequest(
           ],
           fees: [3000, 3000],
           pool: '0x0000000000000000000000000000000000000000',
+          poolIds: [],
         },
       },
       {
@@ -227,6 +228,7 @@ function getDefaultBuildRequest(
           ],
           fees: [3000, 3000],
           pool: '0x0000000000000000000000000000000000000000',
+          poolIds: [],
         },
       },
       {
@@ -241,6 +243,7 @@ function getDefaultBuildRequest(
           ],
           fees: [3000, 3000],
           pool: '0x0000000000000000000000000000000000000000',
+          poolIds: [],
         },
       },
       {
@@ -255,6 +258,7 @@ function getDefaultBuildRequest(
           ],
           fees: [3000, 3000],
           pool: '0x0000000000000000000000000000000000000000',
+          poolIds: [],
         },
       },
     ],
