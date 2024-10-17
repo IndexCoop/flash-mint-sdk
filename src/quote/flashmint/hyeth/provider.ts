@@ -1,7 +1,9 @@
+import { BigNumber } from '@ethersproject/bignumber'
+
 import { WETH } from 'constants/tokens'
 import { QuoteProvider, QuoteToken } from 'quote/interfaces'
 import { SwapQuoteProvider } from 'quote/swap'
-import { SwapData } from 'utils'
+import { slippageAdjustedTokenAmount, SwapData } from 'utils'
 
 import { ComponentQuotesProvider } from './component-quotes'
 import { getRequiredComponents } from './issuance'
@@ -80,10 +82,19 @@ export class FlashMintHyEthQuoteProvider
       outputToken
     )
     if (!quoteResult) return null
-    const inputOutputTokenAmount = quoteResult.inputOutputTokenAmount
+    const inputOutputTokenAmount = slippageAdjustedTokenAmount(
+      BigNumber.from(quoteResult.inputOutputTokenAmount.toString()),
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      slippage,
+      isMinting
+    )
+    console.log(
+      inputOutputTokenAmount.toString(),
+      quoteResult.inputOutputTokenAmount.toString()
+    )
     return {
       indexTokenAmount,
-      inputOutputTokenAmount,
+      inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
       componentsSwapData,
       swapDataInputTokenToEth,
       swapDataEthToInputOutputToken,
