@@ -9,6 +9,13 @@ module.exports = {
       forking: {
         url: process.env.BASE_ALCHEMY_API,
       },
+      chains: {
+        8453: {
+          hardforkHistory: {
+            cancun: 0,
+          },
+        },
+      },
     },
   },
 }

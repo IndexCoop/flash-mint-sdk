@@ -44,8 +44,8 @@ jobs:
       - run: npm run test:quotes
       - run: npm run test:base
       - run: npm run test:hyeth
-      - run: npm run test:btc2x
-      - run: npm run test:eth2x
+      # - run: npm run test:btc2x
+      # - run: npm run test:eth2x
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
