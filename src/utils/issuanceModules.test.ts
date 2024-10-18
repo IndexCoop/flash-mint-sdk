@@ -19,6 +19,7 @@ import {
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   HighYieldETHIndex,
+  TheUSDCYieldIndex,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
@@ -55,6 +56,13 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for hyETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(HighYieldETHIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for icUSD', () => {
+    const expectedModule = Contracts[ChainId.Mainnet].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(TheUSDCYieldIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

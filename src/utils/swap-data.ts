@@ -1,5 +1,5 @@
-// The order here has to be exactly the same as in the `DEXAdapter``
-// https://github.com/IndexCoop/index-coop-smart-contracts/blob/317dfb677e9738fc990cf69d198358065e8cb595/contracts/exchangeIssuance/DEXAdapter.sol#L53
+// The order here has to be exactly the same as in the `DEXAdapter`
+// https://github.com/IndexCoop/index-coop-smart-contracts/blob/master/contracts/exchangeIssuance/DEXAdapterV3.sol#L54
 export enum Exchange {
   None,
   Quickswap,
@@ -14,4 +14,12 @@ export interface SwapData {
   path: string[]
   fees: number[]
   pool: string
+}
+
+export interface SwapDataV3 {
+  exchange: Exchange
+  path: string[]
+  fees: number[]
+  pool: string
+  poolIds: string[]
 }

@@ -36,6 +36,7 @@
     "test:eth2x": "npm test src/tests/eth2x.test.ts",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
     "test:iceth": "npm test src/tests/iceth",
+    "test:icusd": "npm test src/tests/icusd.test.ts",
     "test:watch": "jest --watch"
   },
   "keywords": [

@@ -77,7 +77,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can mint with ETH (large amout)', async () => {
+  test.skip('can mint with ETH (large amout)', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,

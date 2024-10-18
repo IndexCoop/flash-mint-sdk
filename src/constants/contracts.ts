@@ -3,7 +3,9 @@ import { ChainId } from 'constants/chains'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Contracts: { [key: number]: any } = {
   [ChainId.Mainnet]: {
+    DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
+    FlashMintWrapped: '0x7ddE626dE8CE73229838B5c2F9A71bc7ac207801',
   },
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',

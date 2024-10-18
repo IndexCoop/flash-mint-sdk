@@ -5,9 +5,11 @@ import {
   FlashMintHyEthTransactionBuilder,
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
+  FlashMintWrappedBuildRequest,
   FlashMintZeroExBuildRequest,
   LeveragedExtendedTransactionBuilder,
   LeveragedTransactionBuilder,
+  WrappedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -16,16 +18,18 @@ import { wei } from 'utils'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
+import { WrappedQuoteProvider } from '../flashmint/wrapped'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
 import { QuoteProvider, QuoteToken } from '../interfaces'
 import { SwapQuoteProvider } from '../swap'
 
-import { getContractType } from './utils'
+import { buildQuoteResponse, getContractType } from './utils'
 
 export enum FlashMintContractType {
   hyeth,
   leveraged,
   leveragedExtended,
+  wrapped,
   zeroEx,
 }
 
@@ -112,21 +116,13 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
-        return {
+        return buildQuoteResponse(
+          request,
           chainId,
           contractType,
-          /* eslint-disable @typescript-eslint/no-non-null-assertion */
-          contract: tx.to!,
-          isMinting,
-          inputToken,
-          outputToken,
-          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
-          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
-          indexTokenAmount,
-          inputOutputAmount: inputOutputTokenAmount,
-          slippage,
-          tx,
-        }
+          inputOutputTokenAmount,
+          tx
+        )
       }
       case FlashMintContractType.leveraged: {
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
@@ -149,22 +145,13 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
-        const { inputOutputTokenAmount } = leveragedQuote
-        return {
+        return buildQuoteResponse(
+          request,
           chainId,
           contractType,
-          /* eslint-disable @typescript-eslint/no-non-null-assertion */
-          contract: tx.to!,
-          isMinting,
-          inputToken,
-          outputToken,
-          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
-          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
-          indexTokenAmount,
-          inputOutputAmount: inputOutputTokenAmount,
-          slippage,
-          tx,
-        }
+          leveragedQuote.inputOutputTokenAmount,
+          tx
+        )
       }
       case FlashMintContractType.leveragedExtended: {
         const leverageExtendedQuoteProvider =
@@ -190,22 +177,44 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
-        const { inputOutputTokenAmount } = leveragedExtendedQuote
-        return {
+        return buildQuoteResponse(
+          request,
           chainId,
           contractType,
-          /* eslint-disable @typescript-eslint/no-non-null-assertion */
-          contract: tx.to!,
+          leveragedExtendedQuote.inputOutputTokenAmount,
+          tx
+        )
+      }
+      case FlashMintContractType.wrapped: {
+        const wrappedQuoteProvider = new WrappedQuoteProvider(
+          rpcUrl,
+          swapQuoteProvider
+        )
+        const wrappedQuote = await wrappedQuoteProvider.getQuote({
+          ...request,
+          chainId,
+        })
+        if (!wrappedQuote) return null
+        const builder = new WrappedTransactionBuilder(rpcUrl)
+        const txRequest: FlashMintWrappedBuildRequest = {
           isMinting,
-          inputToken,
-          outputToken,
-          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
-          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
+          indexToken: indexToken.address,
           indexTokenAmount,
-          inputOutputAmount: inputOutputTokenAmount,
-          slippage,
-          tx,
+          inputOutputToken: inputOutputToken.address,
+          inputOutputTokenSymbol: inputOutputToken.symbol,
+          inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
+          componentSwapData: wrappedQuote.componentSwapData,
+          componentWrapData: wrappedQuote.componentWrapData,
         }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return buildQuoteResponse(
+          request,
+          chainId,
+          contractType,
+          wrappedQuote.inputOutputTokenAmount,
+          tx
+        )
       }
       case FlashMintContractType.zeroEx: {
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
@@ -227,22 +236,13 @@ export class FlashMintQuoteProvider
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
-        const { inputOutputTokenAmount } = zeroExQuote
-        return {
+        return buildQuoteResponse(
+          request,
           chainId,
           contractType,
-          /* eslint-disable @typescript-eslint/no-non-null-assertion */
-          contract: tx.to!,
-          isMinting,
-          inputToken,
-          outputToken,
-          inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
-          outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
-          indexTokenAmount,
-          inputOutputAmount: inputOutputTokenAmount,
-          slippage,
-          tx,
-        }
+          zeroExQuote.inputOutputTokenAmount,
+          tx
+        )
       }
       default:
         return null
