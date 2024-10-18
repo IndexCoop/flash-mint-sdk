@@ -1,17 +1,20 @@
 import { TheUSDCYieldIndex } from 'constants/tokens'
 
+enum IntegrationName {
+  aaveV2WrapV2AdapterName = 'AaveV2WrapV2Adapter',
+  aaveV3WrapV2AdapterName = 'AaveV3WrapV2Adapter',
+  compoundV3UsdcWrapV2AdapterName = 'CompoundV3WrapV2Adapter',
+  erc4626WrapV2AdapterName = 'ERC4626WrapV2Adapter',
+  wrapModuleV2ContractName = 'WrapModuleV2',
+}
+
 export interface ComponentWrapData {
   // wrap adapter integration name as listed in the IntegrationRegistry for the wrapModule
-  integrationName: string
+  integrationName: IntegrationName | ''
   // optional wrapData passed to the wrapAdapter
   wrapData: string
 }
 
-// FIXME: check adapter names
-// const aaveV2WrapV2AdapterName = 'Aave_V2_Wrap_V2_Adapter'
-// const aaveV3WrapV2AdapterName = 'Aave_V3_Wrap_V2_Adapter'
-// const compoundV3WrapV2AdapterName = 'Compound_V3_USDC_Wrap_V2_Adapter'
-// const erc4626WrapV2AdapterName = 'ERC4626_Wrap_V2_Adapter'
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
