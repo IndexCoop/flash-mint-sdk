@@ -1,11 +1,11 @@
 import { TheUSDCYieldIndex } from 'constants/tokens'
 
 enum IntegrationName {
-  aaveV2WrapV2AdapterName = 'AaveV2WrapV2Adapter',
-  aaveV3WrapV2AdapterName = 'AaveV3WrapV2Adapter',
-  compoundV3UsdcWrapV2AdapterName = 'CompoundV3WrapV2Adapter',
-  erc4626WrapV2AdapterName = 'ERC4626WrapV2Adapter',
-  wrapModuleV2ContractName = 'WrapModuleV2',
+  aaveV2WrapV2Adapter = 'AaveV2WrapV2Adapter',
+  aaveV3WrapV2Adapter = 'AaveV3WrapV2Adapter',
+  compoundV3UsdcWrapV2Adapter = 'CompoundV3WrapV2Adapter',
+  erc4626WrapV2Adapter = 'ERC4626WrapV2Adapter',
+  wrapModuleV2Contract = 'WrapModuleV2',
 }
 
 export interface ComponentWrapData {
