@@ -94,7 +94,6 @@ export class WrappedQuoteProvider
         componentSwapData
       )
     }
-    // FIXME: add slippage?
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
       estimatedInputOutputAmount,
       isMinting ? inputToken.decimals : outputToken.decimals,
