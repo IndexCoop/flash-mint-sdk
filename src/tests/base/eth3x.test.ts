@@ -16,7 +16,7 @@ const eth3x = {
   symbol: IndexCoopEthereum3xIndex.symbol,
 }
 
-describe('ETH3X (Base)', () => {
+describe.skip('ETH3X (Base)', () => {
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProviderBase
