@@ -1,4 +1,5 @@
 import { ChainId } from 'constants/chains'
+import { Contracts } from 'constants/contracts'
 import {
   BanklessBEDIndex,
   DefiPulseIndex,
@@ -14,10 +15,53 @@ import {
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
+  TheUSDCYieldIndex,
 } from 'constants/tokens'
+import { QuoteTokens } from 'tests/utils'
+import { wei } from 'utils'
 
-import { FlashMintContractType } from './'
-import { getContractType } from './utils'
+import { FlashMintContractType, FlashMintQuoteRequest } from './'
+import { buildQuoteResponse, getContractType } from './utils'
+
+const { icusd, usdc } = QuoteTokens
+
+describe('buildQuoteResponse()', () => {
+  test('returns correct quote response object', async () => {
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: icusd,
+      indexTokenAmount: wei(1),
+      slippage: 0.1,
+    }
+    const quoteAmount = wei(100, 6)
+    const tx = {
+      to: Contracts[ChainId.Mainnet].FlashMintWrapped,
+      value: wei(1),
+    }
+    const response = buildQuoteResponse(
+      request,
+      1,
+      FlashMintContractType.wrapped,
+      quoteAmount,
+      tx
+    )
+    expect(response).toEqual({
+      chainId: 1,
+      contractType: FlashMintContractType.wrapped,
+      contract: Contracts[ChainId.Mainnet].FlashMintWrapped,
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: icusd,
+      inputAmount: quoteAmount,
+      outputAmount: request.indexTokenAmount,
+      indexTokenAmount: request.indexTokenAmount,
+      inputOutputAmount: quoteAmount,
+      slippage: 0.1,
+      tx,
+    })
+  })
+})
 
 describe('getContractType()', () => {
   test('returns correct contract type for leveraged arbitrum tokens', async () => {
@@ -125,5 +169,13 @@ describe('getContractType()', () => {
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
+  })
+
+  test('returns correct contract type for icUSD', async () => {
+    const contractType = getContractType(
+      TheUSDCYieldIndex.symbol,
+      ChainId.Mainnet
+    )
+    expect(contractType).toBe(FlashMintContractType.wrapped)
   })
 })

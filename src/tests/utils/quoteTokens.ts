@@ -11,6 +11,7 @@ import {
   InterestCompoundingETHIndex,
   MetaverseIndex,
   RETH,
+  TheUSDCYieldIndex,
   USDC,
   USDT,
   WETH,
@@ -74,6 +75,12 @@ const iceth: QuoteToken = {
   address: InterestCompoundingETHIndex.address!,
 }
 
+const icusd: QuoteToken = {
+  address: TheUSDCYieldIndex.address!,
+  decimals: 18,
+  symbol: TheUSDCYieldIndex.symbol,
+}
+
 const mvi: QuoteToken = {
   address: MetaverseIndex.address!,
   decimals: 18,
@@ -132,6 +139,7 @@ export const QuoteTokens = {
   gtcETH,
   hyeth,
   iceth,
+  icusd,
   mvi,
   reth,
   seth2,

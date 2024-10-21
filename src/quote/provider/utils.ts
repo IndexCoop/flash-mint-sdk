@@ -1,3 +1,6 @@
+import { BigNumber } from '@ethersproject/bignumber'
+import { TransactionRequest } from '@ethersproject/abstract-provider'
+
 import { ChainId } from 'constants/chains'
 import {
   BanklessBEDIndex,
@@ -17,9 +20,40 @@ import {
   InterestCompoundingETHIndex,
   MetaverseIndex,
   RealWorldAssetIndex,
+  TheUSDCYieldIndex,
 } from 'constants/tokens'
 
-import { FlashMintContractType } from './index'
+import {
+  FlashMintContractType,
+  FlashMintQuote,
+  FlashMintQuoteRequest,
+} from './index'
+
+export function buildQuoteResponse(
+  request: FlashMintQuoteRequest,
+  chainId: number,
+  contractType: FlashMintContractType,
+  inputOutputTokenAmount: BigNumber, // quote amount
+  tx: TransactionRequest
+): FlashMintQuote {
+  const { isMinting, indexTokenAmount, inputToken, outputToken, slippage } =
+    request
+  return {
+    chainId,
+    contractType,
+    /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+    contract: tx.to!,
+    isMinting,
+    inputToken,
+    outputToken,
+    inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+    outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
+    indexTokenAmount,
+    inputOutputAmount: inputOutputTokenAmount,
+    slippage,
+    tx,
+  }
+}
 
 // Returns contract type for token or null if not supported
 export function getContractType(
@@ -46,6 +80,9 @@ export function getContractType(
   }
   if (token === HighYieldETHIndex.symbol) {
     return FlashMintContractType.hyeth
+  }
+  if (token === TheUSDCYieldIndex.symbol) {
+    return FlashMintContractType.wrapped
   }
   if (
     token === BanklessBEDIndex.symbol ||

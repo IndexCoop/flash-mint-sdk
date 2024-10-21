@@ -43,6 +43,7 @@ jobs:
       - run: npm run test:builders
       - run: npm run test:quotes
       - run: npm run test:base
+      - run: npm run test:icusd
       - run: npm run test:hyeth
       # - run: npm run test:btc2x
       # - run: npm run test:eth2x
