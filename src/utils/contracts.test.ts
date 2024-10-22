@@ -32,6 +32,7 @@ import {
   getFlashMintLeveragedContractForToken,
   getFlashMintHyEthContract,
   getFlashMintWrappedContract,
+  getFlashMintNavContract,
 } from './contracts'
 
 describe('getExchangeIssuanceLeveragedContractAddress()', () => {
@@ -136,6 +137,20 @@ describe('getFlashMintLeveragedContractForToken()', () => {
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+  })
+})
+
+describe('getFlashMintNavContract()', () => {
+  test('returns correct contract', async () => {
+    const expectedAddress = Contracts[ChainId.Mainnet].FlashMintNav
+    const contract = getFlashMintNavContract(undefined)
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getIssueAmount).toBeDefined()
+    expect(contract.functions.getRedeemAmountOut).toBeDefined()
+    expect(contract.functions.issueSetFromExactERC20).toBeDefined()
+    expect(contract.functions.issueSetFromExactETH).toBeDefined()
     expect(contract.functions.redeemExactSetForERC20).toBeDefined()
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
