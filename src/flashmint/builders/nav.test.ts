@@ -49,7 +49,7 @@ describe('FlashMintNavTransactionBuilder()', () => {
 
   test('returns null for invalid request (inputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
-    buildRequest.indexTokenAmount = BigNumber.from(0)
+    buildRequest.outputTokenAmount = BigNumber.from(0)
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
@@ -57,7 +57,7 @@ describe('FlashMintNavTransactionBuilder()', () => {
 
   test('returns null for invalid request (outputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
-    buildRequest.inputOutputTokenAmount = BigNumber.from(0)
+    buildRequest.inputTokenAmount = BigNumber.from(0)
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
@@ -140,9 +140,9 @@ describe('FlashMintNavTransactionBuilder()', () => {
     const indexToken = buildRequest.outputToken
     const refTx = await contract.populateTransaction.issueSetFromExactERC20(
       indexToken,
-      buildRequest.indexTokenAmount,
+      buildRequest.outputTokenAmount,
       buildRequest.inputToken,
-      buildRequest.inputOutputTokenAmount,
+      buildRequest.inputTokenAmount,
       buildRequest.reserveAssetSwapData
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
@@ -157,16 +157,16 @@ describe('FlashMintNavTransactionBuilder()', () => {
     const indexToken = buildRequest.outputToken
     const refTx = await contract.populateTransaction.issueSetFromExactETH(
       indexToken,
-      buildRequest.indexTokenAmount,
+      buildRequest.outputTokenAmount,
       buildRequest.reserveAssetSwapData,
-      { value: buildRequest.inputOutputTokenAmount }
+      { value: buildRequest.inputTokenAmount }
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintNavAddress)
     expect(tx.data).toEqual(refTx.data)
-    expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
+    expect(tx.value).toEqual(buildRequest.inputTokenAmount)
   })
 
   test('returns a tx for redeeming icUSD (ERC20)', async () => {
@@ -179,9 +179,9 @@ describe('FlashMintNavTransactionBuilder()', () => {
     )
     const refTx = await contract.populateTransaction.redeemExactSetForERC20(
       buildRequest.inputToken,
-      buildRequest.indexTokenAmount,
+      buildRequest.inputTokenAmount,
       buildRequest.outputToken,
-      buildRequest.inputOutputTokenAmount,
+      buildRequest.outputTokenAmount,
       buildRequest.reserveAssetSwapData
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
@@ -201,8 +201,8 @@ describe('FlashMintNavTransactionBuilder()', () => {
     )
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.inputToken,
-      buildRequest.indexTokenAmount,
-      buildRequest.inputOutputTokenAmount,
+      buildRequest.inputTokenAmount,
+      buildRequest.outputTokenAmount,
       buildRequest.reserveAssetSwapData
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
@@ -240,8 +240,8 @@ function createBuildRequest(
     inputTokenSymbol,
     outputToken,
     outputTokenSymbol,
-    indexTokenAmount: wei(1),
-    inputOutputTokenAmount: BigNumber.from(194235680),
+    inputTokenAmount: BigNumber.from(194235680),
+    outputTokenAmount: wei(1),
     reserveAssetSwapData: isMinting ? inputSwapData : outputSwapData,
   }
 }

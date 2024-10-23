@@ -14,8 +14,8 @@ export interface FlashMintNavBuildRequest {
   inputTokenSymbol: string
   outputToken: string
   outputTokenSymbol: string
-  indexTokenAmount: BigNumber
-  inputOutputTokenAmount: BigNumber
+  inputTokenAmount: BigNumber
+  outputTokenAmount: BigNumber
   reserveAssetSwapData: SwapDataV3
 }
 
@@ -31,15 +31,16 @@ export class FlashMintNavTransactionBuilder
     const provider = getRpcProvider(this.rpcUrl)
     const {
       inputToken,
+      inputTokenAmount,
       inputTokenSymbol,
-      indexTokenAmount,
-      inputOutputTokenAmount,
       outputToken,
+      outputTokenAmount,
       outputTokenSymbol,
       isMinting,
       reserveAssetSwapData,
     } = request
     const contract = getFlashMintNavContract(provider)
+    const indexTokenAmount = isMinting ? outputTokenAmount : inputTokenAmount
     if (isMinting) {
       const inputTokenIsEth = inputTokenSymbol === 'ETH'
       if (inputTokenIsEth) {
@@ -47,14 +48,14 @@ export class FlashMintNavTransactionBuilder
           outputToken,
           indexTokenAmount, // _minSetTokenAmount
           reserveAssetSwapData,
-          { value: inputOutputTokenAmount }
+          { value: inputTokenAmount }
         )
       } else {
         return await contract.populateTransaction.issueSetFromExactERC20(
           outputToken,
           indexTokenAmount, // _minSetTokenAmount
           inputToken,
-          inputOutputTokenAmount, // _maxAmountInputToken
+          inputTokenAmount, // _maxAmountInputToken
           reserveAssetSwapData
         )
       }
@@ -64,7 +65,7 @@ export class FlashMintNavTransactionBuilder
         return await contract.populateTransaction.redeemExactSetForETH(
           inputToken,
           indexTokenAmount,
-          inputOutputTokenAmount, // _minEthAmount
+          outputTokenAmount, // _minEthAmount
           reserveAssetSwapData
         )
       } else {
@@ -72,7 +73,7 @@ export class FlashMintNavTransactionBuilder
           inputToken,
           indexTokenAmount,
           outputToken,
-          inputOutputTokenAmount, // _minOutputTokenAmount
+          outputTokenAmount, // _minOutputTokenAmount
           reserveAssetSwapData
         )
       }
@@ -100,16 +101,16 @@ export class FlashMintNavTransactionBuilder
       inputTokenSymbol,
       outputToken,
       outputTokenSymbol,
-      indexTokenAmount,
-      inputOutputTokenAmount,
+      inputTokenAmount,
+      outputTokenAmount,
       reserveAssetSwapData,
     } = request
     if (isEmptyString(inputToken)) return false
     if (isEmptyString(outputToken)) return false
     if (isEmptyString(inputTokenSymbol)) return false
     if (isEmptyString(outputTokenSymbol)) return false
-    if (isInvalidAmount(indexTokenAmount)) return false
-    if (isInvalidAmount(inputOutputTokenAmount)) return false
+    if (isInvalidAmount(inputTokenAmount)) return false
+    if (isInvalidAmount(outputTokenAmount)) return false
     if (!this.isValidSwapData(reserveAssetSwapData)) return false
     return true
   }
