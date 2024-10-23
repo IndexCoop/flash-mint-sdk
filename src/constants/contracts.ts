@@ -3,6 +3,7 @@ import { ChainId } from 'constants/chains'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Contracts: { [key: number]: any } = {
   [ChainId.Mainnet]: {
+    CustomOracleNavIssuanceModule: '0x2344674B23aD076908FD2396373CfE9cd48A1ba3',
     DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
     FlashMintNav: '0x62F160391d2f1e3a176f32F51ADE6Ed8BB2ea1cf',
