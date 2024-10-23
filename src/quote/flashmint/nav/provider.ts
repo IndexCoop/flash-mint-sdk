@@ -104,7 +104,7 @@ export class FlashMintNavQuoteProvider
       )
     } else {
       estimatedInputOutputAmount = await contract.callStatic.getRedeemAmountOut(
-        outputToken.address,
+        inputToken.address,
         inputTokenAmount,
         outputToken.address,
         reserveAssetSwapData
