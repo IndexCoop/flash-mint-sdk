@@ -16,13 +16,12 @@ describe('FlashMintNavQuoteProvider()', () => {
   const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
   test('returns a quote for minting icUSD', async () => {
-    const inputToken = usdc
     const request: FlashMintNavQuoteRequest = {
       chainId,
       isMinting: true,
-      inputToken,
-      outputToken: indexToken,
-      inputTokenAmount: wei(10, 6),
+      inputToken: usdc,
+      outputToken: icusd,
+      inputTokenAmount: wei(100, 6),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintNavQuoteProvider(
@@ -43,12 +42,11 @@ describe('FlashMintNavQuoteProvider()', () => {
   })
 
   test('returns a quote for minting icUSD w/ WETH', async () => {
-    const inputToken = weth
     const request: FlashMintNavQuoteRequest = {
       chainId,
       isMinting: true,
-      inputToken,
-      outputToken: indexToken,
+      inputToken: weth,
+      outputToken: icusd,
       inputTokenAmount: wei(1),
       slippage: 0.5,
     }
@@ -65,12 +63,11 @@ describe('FlashMintNavQuoteProvider()', () => {
   })
 
   test('returns a quote redeeming icUSD for USDC', async () => {
-    const outputToken = usdc
     const request: FlashMintNavQuoteRequest = {
       chainId,
       isMinting: false,
       inputToken: indexToken,
-      outputToken,
+      outputToken: usdc,
       inputTokenAmount: wei(1),
       slippage: 0.5,
     }
@@ -91,14 +88,12 @@ describe('FlashMintNavQuoteProvider()', () => {
     })
   })
 
-  // TODO:
-  test.skip('returns a quote for redeeming icUSD for WETH', async () => {
-    const outputToken = weth
+  test('returns a quote for redeeming icUSD for WETH', async () => {
     const request: FlashMintNavQuoteRequest = {
       chainId,
       isMinting: false,
       inputToken: indexToken,
-      outputToken,
+      outputToken: weth,
       inputTokenAmount: wei(1),
       slippage: 0.5,
     }
