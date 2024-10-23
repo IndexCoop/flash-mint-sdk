@@ -58,7 +58,6 @@ export class FlashMintNavQuoteProvider
       chainId,
       inputToken: isMinting ? inputToken.address : usdc,
       outputToken: isMinting ? usdc : outputToken.address,
-      // TODO:
       inputAmount: inputTokenAmount.toString(),
       // TODO:
       // sources: [Exchange.UniV3],
