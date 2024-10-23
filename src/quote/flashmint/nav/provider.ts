@@ -60,7 +60,7 @@ export class FlashMintNavQuoteProvider
       outputToken: isMinting ? usdc : outputToken.address,
       inputAmount: inputTokenAmount.toString(),
       // TODO:
-      // sources: [Exchange.UniV3],
+      sources: [Exchange.UniV3],
       slippage,
     }
     console.log(swapQuoteRequest)
