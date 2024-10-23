@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { Address } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
 import { USDC } from 'constants/tokens'
@@ -13,6 +14,7 @@ import {
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
+import { getReserveAssetInputAmount } from './utils'
 
 export interface FlashMintNavQuoteRequest {
   chainId: number
@@ -49,8 +51,7 @@ export class FlashMintNavQuoteProvider
       outputToken,
       slippage,
     } = request
-
-    const indexToken = isMinting ? outputToken : inputToken
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const usdc = USDC.address!
 
     const swapQuoteRequest = {
@@ -75,8 +76,16 @@ export class FlashMintNavQuoteProvider
     if (
       !isSameAddress(swapQuoteRequest.inputToken, swapQuoteRequest.outputToken)
     ) {
+      if (!isMinting) {
+        const indexToken = isMinting ? outputToken.address : inputToken.address
+        const reserveAssetInputAmount = await getReserveAssetInputAmount(
+          indexToken as Address,
+          usdc as Address,
+          inputTokenAmount.toBigInt()
+        )
+        swapQuoteRequest.inputAmount = reserveAssetInputAmount.toString()
+      }
       const res = await this.swapQuoteProvider.getSwapQuote(swapQuoteRequest)
-      console.log(res)
       if (!res?.swapData) return null
       reserveAssetSwapData = {
         ...res.swapData,
@@ -89,14 +98,14 @@ export class FlashMintNavQuoteProvider
     const contract = getFlashMintNavContract(provider)
     if (isMinting) {
       estimatedInputOutputAmount = await contract.callStatic.getIssueAmount(
-        indexToken.address,
+        outputToken.address,
         inputToken.address,
         inputTokenAmount,
         reserveAssetSwapData
       )
     } else {
       estimatedInputOutputAmount = await contract.callStatic.getRedeemAmountOut(
-        indexToken.address,
+        outputToken.address,
         inputTokenAmount,
         outputToken.address,
         reserveAssetSwapData
