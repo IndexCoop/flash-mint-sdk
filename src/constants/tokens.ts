@@ -53,6 +53,10 @@ export const HighYieldETHIndex: Token = {
   symbol: 'hyETH',
 }
 
+export const ic21: Token = {
+  ...getIndexTokenData('ic21', 1)!,
+}
+
 export const IndexCoopBitcoin2xIndex: Token = {
   address: '0xD2AC55cA3Bbd2Dd1e9936eC640dCb4b745fDe759',
   addressArbitrum: '0xeb5bE62e6770137beaA0cC712741165C594F59D7',
