@@ -85,25 +85,25 @@ export class FlashMintNavQuoteProvider
         swapQuoteRequest.inputAmount = reserveAssetInputAmount.toString()
       }
       const res = await this.swapQuoteProvider.getSwapQuote(swapQuoteRequest)
-      if (!res?.swapData) return null
+      if (!res || !res?.swapData) return null
       reserveAssetSwapData = {
         ...res.swapData,
         poolIds: [],
       }
     }
 
-    let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
+    let estimatedOutputAmount: BigNumber = BigNumber.from(0)
     const provider = getRpcProvider(this.rpcUrl)
     const contract = getFlashMintNavContract(provider)
     if (isMinting) {
-      estimatedInputOutputAmount = await contract.callStatic.getIssueAmount(
+      estimatedOutputAmount = await contract.callStatic.getIssueAmount(
         outputToken.address,
         inputToken.address,
         inputTokenAmount,
         reserveAssetSwapData
       )
     } else {
-      estimatedInputOutputAmount = await contract.callStatic.getRedeemAmountOut(
+      estimatedOutputAmount = await contract.callStatic.getRedeemAmountOut(
         inputToken.address,
         inputTokenAmount,
         outputToken.address,
@@ -111,7 +111,7 @@ export class FlashMintNavQuoteProvider
       )
     }
     const outputTokenAmount = slippageAdjustedTokenAmount(
-      estimatedInputOutputAmount,
+      estimatedOutputAmount,
       isMinting ? outputToken.decimals : inputToken.decimals,
       slippage,
       isMinting
