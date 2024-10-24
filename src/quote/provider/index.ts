@@ -171,9 +171,10 @@ export class FlashMintQuoteProvider
           swapDataDebtCollateral: leveragedExtendedQuote.swapDataDebtCollateral,
           swapDataInputOutputToken: leveragedExtendedQuote.swapDataPaymentToken,
           swapDataInputTokenForETH:
-            leveragedExtendedQuote.swapDataDebtCollateral, // TODO: check
-          priceEstimateInflator: wei(0.9), // TODO: For the price estimate inflator, increasing it towards 1.0 (but always slightly less) should reduce gas costs but can also lead to revertions.
-          maxDust: wei(0.00001), // TODO: maxDust = 0.01 % * inputTokenAmount
+            leveragedExtendedQuote.swapDataDebtCollateral,
+          // Below not used for now
+          priceEstimateInflator: wei(0.9), // For the price estimate inflator, increasing it towards 1.0 (but always slightly less) should reduce gas costs but can also lead to revertions.
+          maxDust: wei(0.00001), // maxDust = 0.01 % * inputTokenAmount
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
