@@ -11,6 +11,7 @@ import {
   ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   HighYieldETHIndex,
+  ic21,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -90,6 +91,7 @@ export function getContractType(
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||
     token === GitcoinStakedETHIndex.symbol ||
+    token === ic21.symbol ||
     token === MetaverseIndex.symbol ||
     token === RealWorldAssetIndex.symbol
   )
