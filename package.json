@@ -37,6 +37,7 @@
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
     "test:iceth": "npm test src/tests/iceth",
     "test:icusd": "npm test src/tests/icusd.test.ts",
+    "test:ic21": "npm test src/tests/ic21.test.ts",
     "test:watch": "jest --watch"
   },
   "keywords": [
