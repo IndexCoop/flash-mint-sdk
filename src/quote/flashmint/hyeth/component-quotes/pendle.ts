@@ -57,14 +57,12 @@ export class PendleQuoteProvider {
       const fmHyEth = this.getFlashMintHyEth()
       const market = await fmHyEth.pendleMarkets(component)
       const marketData = await fmHyEth.pendleMarketData(market)
-      console.log(marketData)
       const ptContract = this.getPtContract(component)
       const sy = await ptContract.SY()
       const syContract = this.getSyContract(sy)
       const routerContract = this.getRouterStatic(this.routerStaticMainnet)
       const assetRate: BigNumber = await routerContract.getPtToAssetRate(market)
       let ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
-      console.log(component, syContract.address, ethAmount.toString())
       const syAmountPreview: BigNumber = await syContract.previewDeposit(
         AddressZero,
         ethAmount
@@ -82,7 +80,6 @@ export class PendleQuoteProvider {
         outputAmount: ethAmount.toString(),
       })
       if (!quote) return null
-      console.log('quote', component, quote.inputAmount)
       return BigInt(quote.inputAmount)
     } catch (error) {
       console.log(component)

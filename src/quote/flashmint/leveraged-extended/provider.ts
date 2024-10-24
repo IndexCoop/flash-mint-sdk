@@ -52,7 +52,6 @@ export class LeveragedExtendedQuoteProvider
     const sources = [Exchange.Sushiswap, Exchange.UniV3]
     const network = await provider.getNetwork()
     const chainId = network.chainId
-    console.log('chainId:', chainId)
     const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
       indexTokenAmount,
