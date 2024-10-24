@@ -58,4 +58,26 @@ describe('ic21 (mainnet)', () => {
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
     await factory.executeTx()
   })
+
+  test('can redeem to ETH', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: ic21,
+      outputToken: eth,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
+
+  test('can redeem to USDC', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: ic21,
+      outputToken: usdc,
+      indexTokenAmount: wei('1'),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
 })
