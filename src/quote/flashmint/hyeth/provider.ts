@@ -88,10 +88,6 @@ export class FlashMintHyEthQuoteProvider
       slippage,
       isMinting
     )
-    console.log(
-      inputOutputTokenAmount.toString(),
-      quoteResult.inputOutputTokenAmount.toString()
-    )
     return {
       indexTokenAmount,
       inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),

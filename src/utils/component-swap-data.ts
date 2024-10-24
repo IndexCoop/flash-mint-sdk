@@ -85,16 +85,6 @@ export async function getIssuanceComponentSwapData(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
       const underlyingERC20 = wrappedToken.underlyingErc20
-      console.log(
-        underlyingERC20.symbol === USDC.symbol,
-        underlyingERC20.symbol,
-        USDC.symbol
-      )
-      console.log(
-        isSameAddress(underlyingERC20.address, inputToken),
-        underlyingERC20.address,
-        inputToken
-      )
       if (isSameAddress(underlyingERC20.address, inputToken)) return null
       return swapQuoteProvider.getSwapQuote({
         chainId,
@@ -146,7 +136,6 @@ export async function getRedemptionComponentSwapData(
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts = await Promise.all(amountPromises)
-  console.log(wrappedTokens)
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
