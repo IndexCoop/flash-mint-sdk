@@ -57,6 +57,7 @@ export function getIssuanceModule(
     case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
     case HighYieldETHIndex.symbol:
+    case 'ic21':
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case RealWorldAssetIndex.symbol:

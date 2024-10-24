@@ -69,6 +69,12 @@ const hyeth = {
   symbol: HighYieldETHIndex.symbol,
 }
 
+const ic21: QuoteToken = {
+  symbol: 'ic21',
+  decimals: 18,
+  address: '0x1B5E16C5b20Fb5EE87C61fE9Afe735Cca3B21A65',
+}
+
 const iceth: QuoteToken = {
   symbol: InterestCompoundingETHIndex.symbol,
   decimals: 18,
@@ -138,6 +144,7 @@ export const QuoteTokens = {
   eth2x,
   gtcETH,
   hyeth,
+  ic21,
   iceth,
   icusd,
   mvi,

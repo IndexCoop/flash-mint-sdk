@@ -90,6 +90,7 @@ export function getContractType(
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||
     token === GitcoinStakedETHIndex.symbol ||
+    token === 'ic21' ||
     token === MetaverseIndex.symbol ||
     token === RealWorldAssetIndex.symbol
   )
