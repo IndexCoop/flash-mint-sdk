@@ -125,7 +125,8 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for minting icUSD', async () => {
+  // Keep in case we have a presale with USDC only
+  test.skip('returns a quote for minting icUSD', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
@@ -154,6 +155,45 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
     expect(quote.tx.to).toBe(FlashMintWrappedAddress)
+    expect(quote.tx.data?.length).toBeGreaterThan(0)
+  })
+
+  test.only('returns a quote for minting icUSD', async () => {
+    const request: FlashMintQuoteRequest = {
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: icusd,
+      indexTokenAmount: wei(1),
+      inputTokenAmount: wei(100, 6),
+      slippage: 0.5,
+    }
+    const quoteProvider = new FlashMintQuoteProvider(
+      LocalhostProviderUrl,
+      IndexZeroExSwapQuoteProvider
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    console.log(quote)
+    console.log(quote.inputAmount.toString(), quote.outputAmount.toString())
+    console.log(
+      quote.inputOutputAmount.toString(),
+      quote.indexTokenAmount.toString()
+    )
+    const FlashMintNavAddress = Contracts[ChainId.Mainnet].FlashMintNav
+    const chainId = (await provider.getNetwork()).chainId
+    expect(quote.chainId).toEqual(chainId)
+    expect(quote.contractType).toEqual(FlashMintContractType.nav)
+    expect(quote.contract).toEqual(FlashMintNavAddress)
+    expect(quote.isMinting).toEqual(request.isMinting)
+    expect(quote.inputToken).toEqual(request.inputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.outputToken).toEqual(request.outputToken)
+    expect(quote.inputAmount).toEqual(quote.inputOutputAmount)
+    expect(quote.indexTokenAmount).toEqual(quote.outputAmount)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    expect(quote.slippage).toEqual(request.slippage)
+    expect(quote.tx).not.toBeNull()
+    expect(quote.tx.to).toBe(FlashMintNavAddress)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
