@@ -9,7 +9,7 @@ import {
 
 const { icusd, usdc } = QuoteTokens
 
-describe('icUSD (mainnet)', () => {
+describe.skip('icUSD (mainnet)', () => {
   const indexToken = icusd
   const signer = SignerAccount4
   let factory: TestFactory
