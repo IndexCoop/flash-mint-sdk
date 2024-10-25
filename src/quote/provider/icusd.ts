@@ -1,8 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { FlashMintNavTransactionBuilder } from 'flashmint/builders/nav'
+import {
+  FlashMintNavTransactionBuilder,
+  FlashMintWrappedBuildRequest,
+  WrappedTransactionBuilder,
+} from 'flashmint'
 
 import { FlashMintNavQuoteProvider } from '../flashmint/nav'
+import { WrappedQuoteProvider } from '../flashmint/wrapped'
 import { QuoteProvider, QuoteToken } from '../interfaces'
 import {
   FlashMintContractType,
@@ -35,8 +40,10 @@ export class IcUsdQuoteRouter
     if (request.isMinting) {
       return await this.getFlashMintNavQuote(request)
     } else {
-      // TODO:
-      return null
+      // TODO: balanceOf USDC for icUSD * Factor (~ 0.8)
+      const useFlashMintNav = false
+      if (useFlashMintNav) return await this.getFlashMintNavQuote(request)
+      return await this.getFlashMintWrappedQuote(request)
     }
   }
 
@@ -68,6 +75,42 @@ export class IcUsdQuoteRouter
       chainId,
       FlashMintContractType.nav,
       isMinting ? fmNavQuote.inputTokenAmount : fmNavQuote.outputTokenAmount,
+      tx
+    )
+  }
+
+  private async getFlashMintWrappedQuote(request: IcUsdQuoteRequest) {
+    const { chainId, indexTokenAmount, inputToken, isMinting, outputToken } =
+      request
+    const indexToken = isMinting ? outputToken : inputToken
+    const inputOutputToken = isMinting ? inputToken : outputToken
+    const wrappedQuoteProvider = new WrappedQuoteProvider(
+      this.rpcUrl,
+      this.swapQuoteProvider
+    )
+    const wrappedQuote = await wrappedQuoteProvider.getQuote({
+      ...request,
+      chainId,
+    })
+    if (!wrappedQuote) return null
+    const builder = new WrappedTransactionBuilder(this.rpcUrl)
+    const txRequest: FlashMintWrappedBuildRequest = {
+      isMinting,
+      indexToken: indexToken.address,
+      indexTokenAmount,
+      inputOutputToken: inputOutputToken.address,
+      inputOutputTokenSymbol: inputOutputToken.symbol,
+      inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
+      componentSwapData: wrappedQuote.componentSwapData,
+      componentWrapData: wrappedQuote.componentWrapData,
+    }
+    const tx = await builder.build(txRequest)
+    if (!tx) return null
+    return buildQuoteResponse(
+      request,
+      chainId,
+      FlashMintContractType.wrapped,
+      wrappedQuote.inputOutputTokenAmount,
       tx
     )
   }

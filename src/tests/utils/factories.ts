@@ -5,7 +5,7 @@ import { Wallet } from '@ethersproject/wallet'
 import {
   FlashMintQuote,
   FlashMintQuoteProvider,
-  QuoteToken,
+  FlashMintQuoteRequest,
   SwapQuoteProvider,
 } from 'quote'
 
@@ -102,13 +102,7 @@ export class TestFactory {
     await this.txFactory.testRedeeming(this.quote, gasLimit)
   }
 
-  async fetchQuote(config: {
-    inputToken: QuoteToken
-    outputToken: QuoteToken
-    indexTokenAmount: BigNumber
-    isMinting: boolean
-    slippage: number
-  }): Promise<FlashMintQuote> {
+  async fetchQuote(config: FlashMintQuoteRequest): Promise<FlashMintQuote> {
     const quote = await this.quoteProvider.getQuote(config)
     expect(quote).toBeDefined()
     if (!quote) fail()

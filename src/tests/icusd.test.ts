@@ -23,6 +23,7 @@ describe.skip('icUSD (mainnet)', () => {
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1'),
+      inputTokenAmount: wei(100, 6),
       slippage: 0.5,
     })
     const usdcWhale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
@@ -42,6 +43,7 @@ describe.skip('icUSD (mainnet)', () => {
       inputToken: indexToken,
       outputToken: usdc,
       indexTokenAmount: wei('1'),
+      inputTokenAmount: wei(100, 6),
       slippage: 0.5,
     })
     await factory.executeTx()
