@@ -15,6 +15,7 @@ import {
   USDC,
   USDT,
   WETH,
+  ic21 as IndexCoopLargeCapIndex,
   sETH2,
   stETH,
   wsETH2,
@@ -67,6 +68,12 @@ const hyeth = {
   address: HighYieldETHIndex.address!,
   decimals: 18,
   symbol: HighYieldETHIndex.symbol,
+}
+
+const ic21: QuoteToken = {
+  symbol: IndexCoopLargeCapIndex.symbol,
+  decimals: 18,
+  address: IndexCoopLargeCapIndex.address!,
 }
 
 const iceth: QuoteToken = {
@@ -138,6 +145,7 @@ export const QuoteTokens = {
   eth2x,
   gtcETH,
   hyeth,
+  ic21,
   iceth,
   icusd,
   mvi,
