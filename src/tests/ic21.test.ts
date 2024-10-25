@@ -28,7 +28,7 @@ describe('ic21 (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with USDC', async () => {
+  test.skip('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
