@@ -112,9 +112,12 @@ export class FlashMintNavQuoteProvider
     }
     const outputTokenAmount = slippageAdjustedTokenAmount(
       estimatedOutputAmount,
-      isMinting ? outputToken.decimals : inputToken.decimals,
+      outputToken.decimals,
       slippage,
-      isMinting
+      // Usually, this function is used to have either input/output amount slippage
+      // adjusted but since FlastMintNav only uses an input amount, we always have
+      // the output amount as result. So we always want to substract slippage.
+      false
     )
     return {
       inputTokenAmount,
