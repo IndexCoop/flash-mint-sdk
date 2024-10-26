@@ -42,19 +42,23 @@ export class IcUsdQuoteRouter
   ) {}
 
   async getQuote(request: IcUsdQuoteRequest): Promise<FlashMintQuote | null> {
+    // TODO: remove in production; for testing only
+    if (request.isMinting) {
+      return await this.getFlashMintWrappedQuote(request)
+    }
     if (request.isMinting) {
       return await this.getFlashMintNavQuote(request)
     } else {
       const { chainId, indexTokenAmount, inputTokenAmount } = request
-      const usdcInputAmount = await getExpectedReserveRedeemQuantity(
-        this.icUsd.address as Address,
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        indexTokenAmount.toBigInt()
-      )
       const usdcBalance = await getUsdcBalance(
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         this.icUsd.address as Address,
         chainId
+      )
+      const usdcInputAmount = await getExpectedReserveRedeemQuantity(
+        this.icUsd.address as Address,
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        indexTokenAmount.toBigInt()
       )
       console.log(usdcBalance.toString(), 'USDC')
       // 80% of the USDC balance of icUSD
