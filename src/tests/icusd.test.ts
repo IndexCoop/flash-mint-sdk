@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { Address, formatUnits } from 'viem'
 
 import { getUsdcBalance } from 'utils/erc20'
@@ -33,8 +34,8 @@ describe('icUSD (mainnet)', () => {
       inputToken: usdc,
       outputToken: indexToken,
       // Index token amount will be ignored for minting
-      indexTokenAmount: wei('1'),
-      inputTokenAmount: wei(formatUnits(inputAmountGreaterThreshold, 6)),
+      indexTokenAmount: wei(formatUnits(inputAmountGreaterThreshold, 6)),
+      inputTokenAmount: BigNumber.from(inputAmountGreaterThreshold.toString()),
       slippage: 0.5,
     })
     const usdcWhale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
