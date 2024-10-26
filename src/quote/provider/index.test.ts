@@ -316,6 +316,9 @@ describe('FlashMintQuoteProvider()', () => {
       inputToken: icusd,
       outputToken: usdc,
       indexTokenAmount: wei(1),
+      // Note that input token amount is essential to determine here if the test
+      // fails or not. For example larger amounts might return FlashMintWrapped instead of (FMNav)
+      inputTokenAmount: wei(1),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -324,11 +327,11 @@ describe('FlashMintQuoteProvider()', () => {
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
-    const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
+    const FlashMintNavAddress = Contracts[ChainId.Mainnet].FlashMintNav
     const chainId = (await provider.getNetwork()).chainId
     expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.wrapped)
-    expect(quote.contract).toEqual(FlashMintWrappedAddress)
+    expect(quote.contractType).toEqual(FlashMintContractType.nav)
+    expect(quote.contract).toEqual(FlashMintNavAddress)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -338,7 +341,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMintWrappedAddress)
+    expect(quote.tx.to).toBe(FlashMintNavAddress)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 })
