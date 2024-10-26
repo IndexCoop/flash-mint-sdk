@@ -1,12 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { TheUSDCYieldIndex } from 'constants/tokens'
 import {
   FlashMintNavTransactionBuilder,
   FlashMintWrappedBuildRequest,
   WrappedTransactionBuilder,
 } from 'flashmint'
 import { createClient } from 'utils/clients'
-import { parseAbi } from 'viem'
+import { getExpectedReserveRedeemQuantity } from 'utils/custom-oracle-nav-issuance-module'
+import { Address, parseAbi } from 'viem'
 
 import { FlashMintNavQuoteProvider } from '../flashmint/nav'
 import { WrappedQuoteProvider } from '../flashmint/wrapped'
@@ -33,6 +35,7 @@ export interface IcUsdQuoteRequest extends FlashMintQuoteRequest {
 export class IcUsdQuoteRouter
   implements QuoteProvider<IcUsdQuoteRequest, FlashMintQuote>
 {
+  icUsd = TheUSDCYieldIndex
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
@@ -42,12 +45,29 @@ export class IcUsdQuoteRouter
     if (request.isMinting) {
       return await this.getFlashMintNavQuote(request)
     } else {
-      const { chainId, inputTokenAmount } = request
+      const { chainId, indexTokenAmount, inputTokenAmount } = request
+      const usdcInputAmount = await getExpectedReserveRedeemQuantity(
+        this.icUsd.address as Address,
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        indexTokenAmount.toBigInt()
+      )
       const usdcBalance = await this.getUsdcBalance(chainId)
       console.log(usdcBalance.toString(), 'USDC')
       // 80% of the USDC balance of icUSD
       const threshold = (usdcBalance * 80n) / 100n
-      const useFlashMintNav = inputTokenAmount.toBigInt() < threshold
+      const useFlashMintNav = usdcInputAmount < threshold
+      console.log(
+        'useFlashMintNav',
+        useFlashMintNav,
+        inputTokenAmount.toString(),
+        '->',
+        usdcInputAmount.toString(),
+        'usdcInputAmount',
+        threshold.toString(),
+        'threshold',
+        usdcBalance.toString(),
+        'icUSD USD balance'
+      )
       if (useFlashMintNav) return await this.getFlashMintNavQuote(request)
       return await this.getFlashMintWrappedQuote(request)
     }
