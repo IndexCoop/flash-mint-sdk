@@ -11,10 +11,10 @@ import {
   slippageAdjustedTokenAmount,
   SwapDataV3,
 } from 'utils'
+import { getExpectedReserveRedeemQuantity } from 'utils/custom-oracle-nav-issuance-module'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
-import { getReserveAssetInputAmount } from './utils'
 
 export interface FlashMintNavQuoteRequest {
   chainId: number
@@ -77,12 +77,15 @@ export class FlashMintNavQuoteProvider
     ) {
       if (!isMinting) {
         const indexToken = isMinting ? outputToken.address : inputToken.address
-        const reserveAssetInputAmount = await getReserveAssetInputAmount(
+        // When redeeming we need to swap the reserve asset (USDC) for the user's
+        // chosen output token (ex. WETH). So the `inputAmount` determines how
+        // much USDC we need to swap into WETH.
+        const usdcAmountToSwap = await getExpectedReserveRedeemQuantity(
           indexToken as Address,
           usdc as Address,
           inputTokenAmount.toBigInt()
         )
-        swapQuoteRequest.inputAmount = reserveAssetInputAmount.toString()
+        swapQuoteRequest.inputAmount = usdcAmountToSwap.toString()
       }
       const res = await this.swapQuoteProvider.getSwapQuote(swapQuoteRequest)
       if (!res || !res?.swapData) return null

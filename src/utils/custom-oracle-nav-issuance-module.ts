@@ -4,7 +4,7 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { createClient } from 'utils/clients'
 
-export async function getReserveAssetInputAmount(
+export async function getExpectedReserveRedeemQuantity(
   indexToken: Address,
   reserveAsset: Address,
   indexTokenAmount: bigint
