@@ -5,6 +5,8 @@ import {
   FlashMintWrappedBuildRequest,
   WrappedTransactionBuilder,
 } from 'flashmint'
+import { createClient } from 'utils/clients'
+import { parseAbi } from 'viem'
 
 import { FlashMintNavQuoteProvider } from '../flashmint/nav'
 import { WrappedQuoteProvider } from '../flashmint/wrapped'
@@ -40,11 +42,29 @@ export class IcUsdQuoteRouter
     if (request.isMinting) {
       return await this.getFlashMintNavQuote(request)
     } else {
-      // TODO: balanceOf USDC for icUSD * Factor (~ 0.8)
-      const useFlashMintNav = false
+      const { chainId, inputTokenAmount } = request
+      const usdcBalance = await this.getUsdcBalance(chainId)
+      console.log(usdcBalance.toString(), 'USDC')
+      // 80% of the USDC balance of icUSD
+      const threshold = (usdcBalance * 80n) / 100n
+      const useFlashMintNav = inputTokenAmount.toBigInt() < threshold
       if (useFlashMintNav) return await this.getFlashMintNavQuote(request)
       return await this.getFlashMintWrappedQuote(request)
     }
+  }
+
+  private async getUsdcBalance(chainId: number) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const publicClient = createClient(chainId)!
+    const amount: bigint = (await publicClient.readContract({
+      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      abi: parseAbi([
+        'function balanceOf(address account) view returns (uint256)',
+      ]),
+      functionName: 'balanceOf',
+      args: ['0x54EE8A49155F701F0d5Ff088CD36fbBF1a5B9f44'],
+    })) as bigint
+    return amount
   }
 
   private async getFlashMintNavQuote(request: IcUsdQuoteRequest) {

@@ -9,7 +9,7 @@ import {
 
 const { icusd, usdc } = QuoteTokens
 
-describe.skip('icUSD (mainnet)', () => {
+describe('icUSD (mainnet)', () => {
   const indexToken = icusd
   const signer = SignerAccount4
   let factory: TestFactory
@@ -43,7 +43,7 @@ describe.skip('icUSD (mainnet)', () => {
       inputToken: indexToken,
       outputToken: usdc,
       indexTokenAmount: wei('1'),
-      inputTokenAmount: wei(100, 6),
+      inputTokenAmount: wei(1),
       slippage: 0.5,
     })
     await factory.executeTx()
