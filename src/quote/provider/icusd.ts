@@ -9,7 +9,7 @@ import {
   WrappedTransactionBuilder,
 } from 'flashmint'
 import { getExpectedReserveRedeemQuantity } from 'utils/custom-oracle-nav-issuance-module'
-import { getUsdcBalance } from 'utils/erc20'
+import { getBalanceOf } from 'utils/erc20'
 
 import { FlashMintNavQuoteProvider } from '../flashmint/nav'
 import { WrappedQuoteProvider } from '../flashmint/wrapped'
@@ -55,7 +55,7 @@ export class IcUsdQuoteRouter
     if (request.isMinting) {
       return await this.getFlashMintNavQuote(request)
     } else {
-      const usdcBalance = await getUsdcBalance(
+      const usdcBalance = await getBalanceOf(
         usdc.address,
         icUsd.address as Address,
         chainId

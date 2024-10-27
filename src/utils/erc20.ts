@@ -1,7 +1,7 @@
 import { Address, parseAbi } from 'viem'
 import { createClient } from './clients'
 
-export async function getUsdcBalance(
+export async function getBalanceOf(
   token: Address,
   account: Address,
   chainId: number

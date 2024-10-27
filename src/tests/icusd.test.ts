@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Address, formatUnits } from 'viem'
 
-import { getUsdcBalance } from 'utils/erc20'
+import { getBalanceOf } from 'utils/erc20'
 import {
   getMainnetTestFactory,
   QuoteTokens,
@@ -22,7 +22,7 @@ describe('icUSD (mainnet)', () => {
   })
 
   test('can mint with USDC', async () => {
-    const usdcBalance = await getUsdcBalance(
+    const usdcBalance = await getBalanceOf(
       usdc.address as Address,
       indexToken.address as Address,
       1
@@ -63,7 +63,7 @@ describe('icUSD (mainnet)', () => {
   })
 
   test('can redeem to USDC (via FMWrapped)', async () => {
-    const usdcBalance = await getUsdcBalance(
+    const usdcBalance = await getBalanceOf(
       usdc.address as Address,
       indexToken.address as Address,
       1
