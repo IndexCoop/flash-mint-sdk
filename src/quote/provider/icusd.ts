@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { Address } from 'viem'
 
 import { TheUSDCYieldIndex } from 'constants/tokens'
@@ -35,13 +36,18 @@ export interface IcUsdQuoteRequest extends FlashMintQuoteRequest {
 export class IcUsdQuoteRouter
   implements QuoteProvider<IcUsdQuoteRequest, FlashMintQuote>
 {
-  icUsd = TheUSDCYieldIndex
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider
   ) {}
 
   async getQuote(request: IcUsdQuoteRequest): Promise<FlashMintQuote | null> {
+    const { chainId, indexTokenAmount, inputTokenAmount } = request
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
+    const icUsd = getTokenByChainAndSymbol(chainId, 'icUSD')
+    if (!usdc || !icUsd) {
+      throw new Error(`icUSD not supported on chainId: ${chainId}`)
+    }
     // TODO: remove in production; for testing only
     if (request.isMinting) {
       return await this.getFlashMintWrappedQuote(request)
@@ -49,15 +55,14 @@ export class IcUsdQuoteRouter
     if (request.isMinting) {
       return await this.getFlashMintNavQuote(request)
     } else {
-      const { chainId, indexTokenAmount, inputTokenAmount } = request
       const usdcBalance = await getUsdcBalance(
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        this.icUsd.address as Address,
+        usdc.address,
+        icUsd.address as Address,
         chainId
       )
       const usdcInputAmount = await getExpectedReserveRedeemQuantity(
-        this.icUsd.address as Address,
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        icUsd.address as Address,
+        usdc.address,
         indexTokenAmount.toBigInt()
       )
       console.log(usdcBalance.toString(), 'USDC')
