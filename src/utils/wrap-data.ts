@@ -1,5 +1,6 @@
 import { TheUSDCYieldIndex } from 'constants/tokens'
 
+// https://github.com/IndexCoop/index-deployments/pull/299/files#diff-dbc080e96cf11ca994e727d3b77db7b178aa38a33d24d82850e934c018e4d545
 enum IntegrationName {
   aaveV2WrapV2Adapter = 'AaveV2WrapV2Adapter',
   aaveV3WrapV2Adapter = 'AaveV3WrapV2Adapter',
@@ -21,25 +22,24 @@ export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
   if (tokenSymbol !== TheUSDCYieldIndex.symbol) return []
   return [
     {
-      integrationName: '',
+      integrationName: IntegrationName.aaveV3WrapV2Adapter,
       wrapData: ZERO_BYTES,
     },
-    // TODO: update once rebalanced
-    // {
-    //   integrationName: aaveV3WrapV2AdapterName,
-    //   wrapData: ZERO_BYTES,
-    // },
-    // {
-    //   integrationName: compoundV3WrapV2AdapterName,
-    //   wrapData: ZERO_BYTES,
-    // },
-    // {
-    //   integrationName: aaveV2WrapV2AdapterName,
-    //   wrapData: ZERO_BYTES,
-    // },
-    // {
-    //   integrationName: erc4626WrapV2AdapterName,
-    //   wrapData: ZERO_BYTES,
-    // },
+    {
+      integrationName: IntegrationName.compoundV3UsdcWrapV2Adapter,
+      wrapData: ZERO_BYTES,
+    },
+    {
+      integrationName: IntegrationName.erc4626WrapV2Adapter,
+      wrapData: ZERO_BYTES,
+    },
+    {
+      integrationName: IntegrationName.erc4626WrapV2Adapter,
+      wrapData: ZERO_BYTES,
+    },
+    {
+      integrationName: IntegrationName.erc4626WrapV2Adapter,
+      wrapData: ZERO_BYTES,
+    },
   ]
 }
