@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { Address, parseAbi } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
-import { USDC } from 'constants/tokens'
 import { SwapQuote, SwapQuoteProvider } from 'quote'
 import { isSameAddress } from 'utils/addresses'
 import { createClient } from 'utils/clients'
@@ -65,7 +65,7 @@ export async function getIssuanceComponentSwapData(
     indexTokenAmount,
     inputToken,
   } = request
-  const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
+  const issuance = getIssuanceContract(chainId, indexTokenSymbol, rpcUrl)
   const [issuanceComponents, issuanceUnits] =
     await issuance.getRequiredComponentIssuanceUnits(
       indexToken,
@@ -120,7 +120,7 @@ export async function getRedemptionComponentSwapData(
     indexTokenAmount,
     outputToken,
   } = request
-  const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
+  const issuance = getIssuanceContract(chainId, indexTokenSymbol, rpcUrl)
   const [issuanceComponents, issuanceUnits] =
     await issuance.getRequiredComponentRedemptionUnits(
       indexToken,
@@ -239,6 +239,7 @@ async function getAmount(
 }
 
 function getIssuanceContract(
+  chainId: number,
   indexTokenSymbol: string,
   rpcUrl: string
 ): Contract {
@@ -247,7 +248,7 @@ function getIssuanceContract(
     'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
   ]
   const provider = getRpcProvider(rpcUrl)
-  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
   return new Contract(issuanceModule.address, abi, provider)
 }
 
@@ -262,14 +263,15 @@ async function getUnderlyingErc20(
     abi: parseAbi(['function decimals() view returns (uint8)']),
     functionName: 'decimals',
   })
+  const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
   return {
     address: token,
     decimals,
     underlyingErc20: {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
+      address: usdc.address,
+      decimals: usdc.decimals,
+      symbol: usdc.symbol,
     },
   }
 }
