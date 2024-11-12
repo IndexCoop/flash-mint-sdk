@@ -1,5 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
+import { ChainId } from 'constants/chains'
+
 export interface Token {
   symbol: string
   address?: string
@@ -107,7 +109,8 @@ export const RealWorldAssetIndex: Token = {
 }
 
 export const TheUSDCYieldIndex: Token = {
-  ...getTokenByChainAndSymbol(1, 'icUSD'),
+  ...getTokenByChainAndSymbol(ChainId.Mainnet, 'icUSD'),
+  addressBase: getTokenByChainAndSymbol(ChainId.Base, 'icUSD').address,
 }
 
 // Other
