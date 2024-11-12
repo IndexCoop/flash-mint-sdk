@@ -172,7 +172,7 @@ describe('FlashMintNavTransactionBuilder()', () => {
   test('returns a tx for redeeming icUSD (ERC20)', async () => {
     const buildRequest = createBuildRequest(
       false,
-      TheUSDCYieldIndex.addressArbitrum!,
+      TheUSDCYieldIndex.address!,
       TheUSDCYieldIndex.symbol,
       usdcAddress,
       'USDC'
