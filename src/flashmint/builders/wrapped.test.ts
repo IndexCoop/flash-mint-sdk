@@ -164,6 +164,7 @@ function getDefaultBuildRequest(
     wrapData: ZERO_BYTES,
   }
   return {
+    chainId: ChainId.Base,
     isMinting,
     indexToken,
     inputOutputToken,

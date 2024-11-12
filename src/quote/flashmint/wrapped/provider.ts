@@ -78,7 +78,7 @@ export class WrappedQuoteProvider
     if (componentSwapData.length !== componentWrapData.length) return null
     let estimatedInputOutputAmount: BigNumber = BigNumber.from(0)
     const provider = getRpcProvider(this.rpcUrl)
-    const contract = getFlashMintWrappedContract(provider)
+    const contract = getFlashMintWrappedContract(provider, chainId)
     if (isMinting) {
       estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
         indexToken.address,

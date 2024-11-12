@@ -11,6 +11,7 @@ import { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintWrappedBuildRequest {
+  chainId: number
   isMinting: boolean
   indexToken: string
   inputOutputToken: string
@@ -34,6 +35,7 @@ export class WrappedTransactionBuilder
     if (!isValidRequest) return null
     const provider = getRpcProvider(this.rpcUrl)
     const {
+      chainId,
       componentSwapData,
       componentWrapData,
       indexToken,
@@ -44,7 +46,7 @@ export class WrappedTransactionBuilder
       isMinting,
     } = request
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
-    const contract = getFlashMintWrappedContract(provider)
+    const contract = getFlashMintWrappedContract(provider, chainId)
     let tx: PopulatedTransaction | null = null
     if (isMinting) {
       if (inputOutputTokenIsEth) {

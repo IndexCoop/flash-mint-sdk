@@ -220,6 +220,7 @@ export class FlashMintQuoteProvider
         if (!wrappedQuote) return null
         const builder = new WrappedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintWrappedBuildRequest = {
+          chainId,
           isMinting,
           indexToken: indexToken.address,
           indexTokenAmount,

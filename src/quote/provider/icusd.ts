@@ -2,7 +2,6 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { Address } from 'viem'
 
-import { TheUSDCYieldIndex } from 'constants/tokens'
 import {
   FlashMintNavTransactionBuilder,
   FlashMintWrappedBuildRequest,
@@ -134,6 +133,7 @@ export class IcUsdQuoteRouter
     if (!wrappedQuote) return null
     const builder = new WrappedTransactionBuilder(this.rpcUrl)
     const txRequest: FlashMintWrappedBuildRequest = {
+      chainId,
       isMinting,
       indexToken: indexToken.address,
       indexTokenAmount,
