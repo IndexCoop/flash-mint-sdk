@@ -263,12 +263,12 @@ async function getUnderlyingErc20(
     abi: parseAbi(['function decimals() view returns (uint8)']),
     functionName: 'decimals',
   })
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
   return {
     address: token,
     decimals,
     underlyingErc20: {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       address: usdc.address,
       decimals: usdc.decimals,
       symbol: usdc.symbol,
