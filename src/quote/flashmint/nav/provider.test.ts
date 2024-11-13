@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { AddressZero } from 'constants/addresses'
 import {
   IndexZeroExSwapQuoteProvider,
@@ -8,7 +10,6 @@ import { wei } from 'utils/numbers'
 import { Exchange, isSameAddress } from 'utils'
 
 import { FlashMintNavQuoteRequest, FlashMintNavQuoteProvider } from './provider'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 describe('FlashMintNavQuoteProvider()', () => {
   const { usdc, weth } = QuoteTokens
