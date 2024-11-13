@@ -51,10 +51,10 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    expect(componentSwapData[0].buyUnderlyingAmount.gt(BigNumber.from(0))).toBe(
-      true
-    )
   })
 
   test('returns correct swap data based when input token is WETH', async () => {
@@ -81,10 +81,10 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.path[dexData.path.length - 1]).toEqual(usdc.toLowerCase())
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    expect(componentSwapData[0].buyUnderlyingAmount.gt(BigNumber.from(0))).toBe(
-      true
-    )
   })
 })
 
@@ -113,10 +113,10 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    expect(componentSwapData[0].buyUnderlyingAmount.gt(BigNumber.from(0))).toBe(
-      true
-    )
   })
 
   test('returns correct swap data when output token is WETH', async () => {
@@ -142,9 +142,9 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.path).toEqual([usdc.toLowerCase(), weth])
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    expect(componentSwapData[0].buyUnderlyingAmount.gt(BigNumber.from(0))).toBe(
-      true
-    )
   })
 })

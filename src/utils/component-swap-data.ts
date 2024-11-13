@@ -82,7 +82,7 @@ export async function getIssuanceComponentSwapData(
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   console.log(wrappedTokens)
-  const amounts = await Promise.all(amountPromises)
+  const amounts: bigint[] = await Promise.all(amountPromises)
   console.log(amounts.map((amount) => amount.toString()))
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
@@ -165,12 +165,12 @@ export async function getRedemptionComponentSwapData(
 function buildComponentSwapData(
   issuanceComponents: string[],
   wrappedTokens: WrappedToken[],
-  buyAmounts: BigNumber[],
+  buyAmounts: bigint[],
   swapDataResults: (SwapQuote | null)[]
 ): ComponentSwapData[] {
   return issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
-    const buyUnderlyingAmount = buyAmounts[index]
+    const buyUnderlyingAmount = BigNumber.from(buyAmounts[index].toString())
     const swapData = swapDataResults[index]?.swapData
     const dexData: SwapDataV3 = swapData
       ? {
