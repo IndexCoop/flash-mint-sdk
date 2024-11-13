@@ -6,12 +6,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
-import { WETH } from 'constants/tokens'
 import { IndexSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
-import { TestFactory } from './factories'
 export { wei } from 'utils/numbers'
+import { TestFactory } from './factories'
 
 export * from './factories'
 export { QuoteTokens } from './quoteTokens'
@@ -283,9 +283,13 @@ export async function balanceOf(
 }
 
 // WETH
-export async function wrapETH(amount: BigNumber, signer: Wallet) {
+export async function wrapETH(
+  amount: BigNumber,
+  signer: Wallet,
+  chainId: number = ChainId.Mainnet
+) {
   const abi = ['function deposit() public payable']
-  const WETH9 = WETH.address!
+  const WETH9 = getTokenByChainAndSymbol(chainId, 'WETH')!.address
   const contract = new Contract(WETH9, abi, signer)
   const depositTokenInTx = await contract.deposit({
     gasLimit: 50_000,

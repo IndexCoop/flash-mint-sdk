@@ -75,12 +75,15 @@ export async function getIssuanceComponentSwapData(
     issuanceComponents.map((component: string) =>
       getUnderlyingErc20(component, chainId)
     )
+  const units = issuanceUnits.map((unit: BigNumber) => unit.toString())
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
-      getAmount(component, issuanceUnits[index], chainId)
+      getAmount(true, component, BigInt(units[index]), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
+  console.log(wrappedTokens)
   const amounts = await Promise.all(amountPromises)
+  console.log(amounts.map((amount) => amount.toString()))
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
@@ -132,7 +135,7 @@ export async function getRedemptionComponentSwapData(
     )
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
-      getAmount(component, issuanceUnits[index], chainId)
+      getAmount(false, component, issuanceUnits[index].toBigInt(), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts = await Promise.all(amountPromises)
@@ -187,6 +190,7 @@ function buildComponentSwapData(
 }
 
 async function getAmount(
+  isMinting: boolean,
   component: Address,
   issuanceUnits: bigint,
   chainId: number
@@ -207,35 +211,30 @@ async function getAmount(
       functionName: 'convertToAssets',
       args: [issuanceUnits],
     })) as bigint
-    return assets
-  } catch {
-    // TODO: apply slippage to issuance units amount (for all none erc4262)
-    return issuanceUnits
+    const preview: bigint = (await publicClient.readContract({
+      address: component as Address,
+      abi: parseAbi(erc4626Abi),
+      functionName: isMinting ? 'previewMint' : 'previewRedeem',
+      args: [issuanceUnits],
+    })) as bigint
+    console.log(
+      'assets:',
+      assets.toString(),
+      'preview:',
+      preview.toString(),
+      'issuanceUnits:',
+      issuanceUnits.toString()
+    )
+    return preview
+  } catch (error) {
+    // console.log(error)
+    // apply slippage to issuance units amount (for all none erc4262)
+    if (isMinting) {
+      return (issuanceUnits * BigInt(101)) / BigInt(100)
+    } else {
+      return (issuanceUnits * BigInt(99)) / BigInt(100)
+    }
   }
-  // const isFCASH = (address: string) =>
-  //   [
-  //     '0x278039398A5eb29b6c2FB43789a38A84C6085266',
-  //     '0xe09B1968851478f20a43959d8a212051367dF01A',
-  //   ].includes(address)
-  // const getAmountOfAssetToObtainShares = async () =>
-  //   component: string,
-  //   shares: BigNumber,
-  //   provider: JsonRpcProvider
-  //   slippage = DEFAULT_SLIPPAGE // 1 = 1%
-  //   {
-  //   const componentContract = new Contract(component, erc4626Abi, provider)
-  //   // Convert slippage to a BigNumber, do rounding to avoid weird JS precision loss
-  //   const defaultSlippageBN = BigNumber.from(Math.round(slippage * 10000))
-  //   // if FCASH, increase slippage x3
-  //   const slippageBigNumber = isFCASH(component)
-  //     ? defaultSlippageBN.mul(3)
-  //     : defaultSlippageBN
-  //   // Calculate the multiplier (1 + slippage)
-  //   const multiplier = BigNumber.from(10000).add(slippageBigNumber)
-  //   const buyUnderlyingAmount: BigNumber =
-  //     await componentContract.convertToAssets(shares)
-  //   return buyUnderlyingAmount.mul(multiplier).div(10000)
-  //   }
 }
 
 function getIssuanceContract(
