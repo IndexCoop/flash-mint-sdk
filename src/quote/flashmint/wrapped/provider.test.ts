@@ -74,8 +74,7 @@ describe('WrappedQuoteProvider()', () => {
     expect(quote.componentWrapData.length).toEqual(5)
   })
 
-  // FIXME:
-  test.skip('returns a quote for redeeming icUSD for WETH', async () => {
+  test('returns a quote for redeeming icUSD for WETH', async () => {
     const outputToken = weth
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
