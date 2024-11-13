@@ -8,11 +8,12 @@ import { wei } from 'utils/numbers'
 import { Exchange, isSameAddress } from 'utils'
 
 import { FlashMintNavQuoteRequest, FlashMintNavQuoteProvider } from './provider'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 describe('FlashMintNavQuoteProvider()', () => {
-  const { icusd, usdc, weth } = QuoteTokens
-  const indexToken = icusd
+  const { usdc, weth } = QuoteTokens
   const chainId = 1
+  const indexToken = getTokenByChainAndSymbol(chainId, 'icUSD')
   const provider = LocalhostProviderUrl
   const swapQuoteProvider = IndexZeroExSwapQuoteProvider
 
@@ -21,7 +22,7 @@ describe('FlashMintNavQuoteProvider()', () => {
       chainId,
       isMinting: true,
       inputToken: usdc,
-      outputToken: icusd,
+      outputToken: indexToken,
       inputTokenAmount: wei(100, 6),
       slippage: 0.5,
     }
@@ -47,7 +48,7 @@ describe('FlashMintNavQuoteProvider()', () => {
       chainId,
       isMinting: true,
       inputToken: weth,
-      outputToken: icusd,
+      outputToken: indexToken,
       inputTokenAmount: wei(1),
       slippage: 0.5,
     }
