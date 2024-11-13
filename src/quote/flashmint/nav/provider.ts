@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { Address } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
-import { USDC } from 'constants/tokens'
 import { SwapQuoteProvider } from 'quote/swap'
 import {
   Exchange,
@@ -52,7 +52,7 @@ export class FlashMintNavQuoteProvider
       slippage,
     } = request
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const usdc = USDC.address!
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!.address
 
     const swapQuoteRequest = {
       chainId,
@@ -81,6 +81,7 @@ export class FlashMintNavQuoteProvider
         // chosen output token (ex. WETH). So the `inputAmount` determines how
         // much USDC we need to swap into WETH.
         const usdcAmountToSwap = await getExpectedReserveRedeemQuantity(
+          chainId,
           indexToken as Address,
           usdc as Address,
           inputTokenAmount.toBigInt()
