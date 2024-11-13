@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import { LocalhostProviderUrl, QuoteTokens } from 'tests/utils'
+import { LocalhostProviderUrlBase } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -12,14 +12,16 @@ import {
   FlashMintWrappedBuildRequest,
   WrappedTransactionBuilder,
 } from './wrapped'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-const rpcUrl = LocalhostProviderUrl
+const rpcUrl = LocalhostProviderUrlBase
 const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
-const FlashMintWrappedAddress = Contracts[ChainId.Mainnet].FlashMintWrapped
+const chainId = ChainId.Base
+const FlashMintWrappedAddress = Contracts[chainId].FlashMintWrapped
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = QuoteTokens.icusd.address
-const usdcAddress = QuoteTokens.usdc.address
+const indexToken = getTokenByChainAndSymbol(chainId, 'icUSD').address
+const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 
 describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no index token)', async () => {
@@ -78,7 +80,7 @@ describe('WrappedTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  test('returns a tx for icUSD MMI (ERC20)', async () => {
+  test('returns a tx for icUSD (ERC20)', async () => {
     const buildRequest = getDefaultBuildRequest()
     const provider = getRpcProvider(rpcUrl)
     const contract = getFlashMintWrappedContract(provider)
