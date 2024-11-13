@@ -196,14 +196,14 @@ async function getAmount(
     const publicClient = createClient(chainId)!
     const erc4626Abi = [
       'function convertToAssets(uint256 shares) view returns (uint256 assets)',
-      'function previewDeposit(uint256 assets) view returns (uint256)',
-      'function previewMint(uint256 shares) view returns (uint256)',
-      'function previewRedeem(uint256 shares) view returns (uint256)',
-      'function previewWithdraw(uint256 assets) view returns (uint256)',
+      'function previewDeposit(uint256 assets) view returns (uint256 assets)',
+      'function previewMint(uint256 shares) view returns (uint256 assets)',
+      'function previewRedeem(uint256 shares) view returns (uint256 assets)',
+      'function previewWithdraw(uint256 assets) view returns (uint256 assets)',
     ]
     const assets: bigint = (await publicClient.readContract({
       address: component as Address,
-      abi: erc4626Abi,
+      abi: parseAbi(erc4626Abi),
       functionName: 'convertToAssets',
       args: [issuanceUnits],
     })) as bigint

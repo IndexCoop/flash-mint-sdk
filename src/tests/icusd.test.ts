@@ -36,7 +36,7 @@ describe('icUSD (mainnet)', () => {
     await transferFromWhale(
       usdcWhale,
       factory.getSigner().address,
-      wei('100000', quote.inputToken.decimals),
+      wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
       factory.getProvider()
     )
@@ -64,7 +64,7 @@ describe('icUSD (mainnet)', () => {
     await transferFromWhale(
       usdcWhale,
       factory.getSigner().address,
-      wei('100000', quote.inputToken.decimals),
+      wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
       factory.getProvider()
     )

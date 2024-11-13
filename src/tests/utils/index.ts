@@ -7,6 +7,7 @@ import { Contract } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
+import { ChainId } from 'constants/chains'
 import { WETH } from 'constants/tokens'
 import { IndexSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
 import { TestFactory } from './factories'
@@ -33,6 +34,17 @@ export const LocalhostProviderArbitrum = new JsonRpcProvider(
 export const LocalhostProviderBase = new JsonRpcProvider(
   LocalhostProviderUrlBase
 )
+
+export function getLocalHostProviderUrl(chainId: number) {
+  switch (chainId) {
+    case ChainId.Arbitrum:
+      return 'http://127.0.0.1:8548/'
+    case ChainId.Base:
+      return 'http://127.0.0.1:8453/'
+    default:
+      return 'http://127.0.0.1:8545/'
+  }
+}
 
 // Pre-configured TestFactories
 export function getArbitrumTestFactory(
@@ -176,6 +188,26 @@ export const IndexZeroExSwapQuoteProviderBase = new ZeroExSwapQuoteProvider(
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
   '/base/swap/v1/quote'
 )
+
+function get0xSwapPathOverride(chainId: number) {
+  switch (chainId) {
+    case ChainId.Arbitrum:
+      return '/arbitrum/swap/v1/quote'
+    case ChainId.Base:
+      return '/base/swap/v1/quote'
+    default:
+      return '/mainnet/swap/v1/quote'
+  }
+}
+
+export function getZeroExSwapQuoteProvider(chainId: number) {
+  return new ZeroExSwapQuoteProvider(
+    index0xApiBaseUrl,
+    '',
+    { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+    get0xSwapPathOverride(chainId)
+  )
+}
 
 // Balance
 
