@@ -94,6 +94,7 @@ export class WrappedQuoteProvider
         componentSwapData
       )
     }
+    // Apply slippage to the quote amount (minting: inputToken, redeeming: outputToken)
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
       estimatedInputOutputAmount,
       isMinting ? inputToken.decimals : outputToken.decimals,

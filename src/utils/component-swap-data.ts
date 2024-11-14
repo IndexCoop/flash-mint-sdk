@@ -219,9 +219,9 @@ async function getAmount(
   } catch {
     // Apply slippage to issuance units amount (for all none erc4262)
     if (isMinting) {
-      return (issuanceUnits * BigInt(101)) / BigInt(100)
+      return (issuanceUnits * BigInt(1005)) / BigInt(1000)
     } else {
-      return (issuanceUnits * BigInt(99)) / BigInt(100)
+      return (issuanceUnits * BigInt(995)) / BigInt(1000)
     }
   }
 }
