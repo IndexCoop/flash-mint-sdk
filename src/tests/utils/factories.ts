@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChainId } from 'constants/chains'
 import { IndexSwapQuoteProvider } from 'quote'
 import {
