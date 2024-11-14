@@ -5,16 +5,11 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import { getFlashMintLeveragedContractForToken, wei } from 'utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 import {
-  IndexZeroExSwapQuoteProvider,
-  IndexZeroExSwapQuoteProviderArbitrum,
-  IndexZeroExSwapQuoteProviderBase,
-  LocalhostProvider,
-  LocalhostProviderArbitrum,
-  LocalhostProviderUrl,
-  LocalhostProviderUrlArbitrum,
-  LocalhostProviderUrlBase,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
   QuoteTokens,
 } from 'tests/utils'
 
@@ -24,9 +19,10 @@ import {
   FlashMintQuoteRequest,
 } from '.'
 
-const rpcUrl = LocalhostProviderUrl
-const provider = LocalhostProvider
-const zeroexSwapQuoteProvider = IndexZeroExSwapQuoteProvider
+const chainId = ChainId.Mainnet
+const rpcUrl = getLocalHostProviderUrl(chainId)
+const provider = getRpcProvider(rpcUrl)
+const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const { eth, eth2x, hyeth, iceth, usdc } = QuoteTokens
@@ -56,7 +52,8 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for minting ETH2X', async () => {
-    const arbitrumProvider = LocalhostProviderArbitrum
+    const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
+    const arbitrumProvider = getRpcProvider(rpcUrl)
     const inputToken = usdc
     const outputToken = {
       address: IndexCoopEthereum2xIndex.addressArbitrum!,
@@ -76,8 +73,8 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      LocalhostProviderUrlArbitrum,
-      IndexZeroExSwapQuoteProviderArbitrum
+      rpcUrl,
+      getZeroExSwapQuoteProvider(ChainId.Arbitrum)
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -107,8 +104,8 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      LocalhostProviderUrl,
-      IndexZeroExSwapQuoteProvider
+      rpcUrl,
+      zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -140,8 +137,8 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      LocalhostProviderUrlBase,
-      IndexZeroExSwapQuoteProviderBase
+      getLocalHostProviderUrl(chainId),
+      getZeroExSwapQuoteProvider(chainId)
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -169,7 +166,8 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming ETH2X', async () => {
-    const arbitrumProvider = LocalhostProviderArbitrum
+    const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
+    const arbitrumProvider = getRpcProvider(rpcUrl)
     const inputToken = {
       address: IndexCoopEthereum2xIndex.addressArbitrum!,
       decimals: eth2x.decimals,
@@ -189,8 +187,8 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      LocalhostProviderUrlArbitrum,
-      IndexZeroExSwapQuoteProviderArbitrum
+      rpcUrl,
+      getZeroExSwapQuoteProvider(ChainId.Arbitrum)
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -220,8 +218,8 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      LocalhostProviderUrl,
-      IndexZeroExSwapQuoteProvider
+      rpcUrl,
+      zeroexSwapQuoteProvider
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -293,8 +291,8 @@ describe('FlashMintQuoteProvider()', () => {
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
-      LocalhostProviderUrlBase,
-      IndexZeroExSwapQuoteProviderBase
+      getLocalHostProviderUrl(chainId),
+      getZeroExSwapQuoteProvider(chainId)
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()

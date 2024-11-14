@@ -2,8 +2,8 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import {
-  IndexZeroExSwapQuoteProviderBase,
-  LocalhostProviderUrlBase,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
 } from 'tests/utils'
 import { wei } from 'utils/numbers'
 
@@ -13,8 +13,8 @@ const chainId = ChainId.Base
 const indexToken = getTokenByChainAndSymbol(chainId, 'icUSD')
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 const weth = getTokenByChainAndSymbol(chainId, 'WETH')
-const provider = LocalhostProviderUrlBase
-const swapQuoteProvider = IndexZeroExSwapQuoteProviderBase
+const provider = getLocalHostProviderUrl(chainId)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 describe('WrappedQuoteProvider()', () => {
   test('returns a quote for minting icUSD', async () => {

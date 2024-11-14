@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import { LocalhostProviderUrlBase } from 'tests/utils'
+import { getLocalHostProviderUrl } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -14,14 +14,14 @@ import {
 } from './wrapped'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-const rpcUrl = LocalhostProviderUrlBase
-const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
-
 const chainId = ChainId.Base
+const rpcUrl = getLocalHostProviderUrl(chainId)
+
 const FlashMintWrappedAddress = Contracts[chainId].FlashMintWrapped
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const indexToken = getTokenByChainAndSymbol(chainId, 'icUSD').address
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
+const ZERO_BYTES = '0x0000000000000000000000000000000000000000'
 
 describe('WrappedTransactionBuilder()', () => {
   test('returns null for invalid request (no index token)', async () => {

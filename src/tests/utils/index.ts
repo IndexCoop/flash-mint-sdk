@@ -9,13 +9,13 @@ import { Wallet } from '@ethersproject/wallet'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
-import { IndexSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
+import { ZeroExSwapQuoteProvider } from 'quote'
 export { wei } from 'utils/numbers'
-import { TestFactory } from './factories'
 
 export * from './factories'
 export { QuoteTokens } from './quoteTokens'
 export * from './lido'
+export * from './test-factory'
 export * from './uniswap'
 
 // Alchemy
@@ -24,14 +24,15 @@ export const AlchemyProviderUrlArbitrum = process.env.ARBITRUM_ALCHEMY_API!
 export const AlchemyProvider = new JsonRpcProvider(AlchemyProviderUrl, 1)
 
 // Hardhat
+// Try avoiding these single consts in the future and rather use convenience functions below
 export const LocalhostProviderUrl = 'http://127.0.0.1:8545/'
-export const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
-export const LocalhostProviderUrlBase = 'http://127.0.0.1:8453/'
 export const LocalhostProvider = new JsonRpcProvider(LocalhostProviderUrl)
+const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
   LocalhostProviderUrlArbitrum
 )
 
+// Try to use these more together with the `getRpcProvider` util function
 export function getLocalHostProviderUrl(chainId: number) {
   switch (chainId) {
     case ChainId.Arbitrum:
@@ -41,42 +42,6 @@ export function getLocalHostProviderUrl(chainId: number) {
     default:
       return 'http://127.0.0.1:8545/'
   }
-}
-
-// Pre-configured TestFactories
-export function getArbitrumTestFactory(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrlArbitrum
-) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderArbitrum)
-}
-export function getArbitrumTestFactoryUniswap(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrlArbitrum
-) {
-  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
-
-export function getBaseTestFactory(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrlBase
-) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderBase)
-}
-
-export function getMainnetTestFactory(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrl
-) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProvider)
-}
-export function getMainnetTestFactoryUniswap(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrl
-) {
-  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 
 export function getSignerAccount(num = 0, provider: JsonRpcProvider) {
@@ -170,20 +135,6 @@ export const IndexZeroExSwapQuoteProvider = new ZeroExSwapQuoteProvider(
   '',
   { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
   '/mainnet/swap/v1/quote'
-)
-
-export const IndexZeroExSwapQuoteProviderArbitrum = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/arbitrum/swap/v1/quote'
-)
-
-export const IndexZeroExSwapQuoteProviderBase = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/base/swap/v1/quote'
 )
 
 function get0xSwapPathOverride(chainId: number) {
