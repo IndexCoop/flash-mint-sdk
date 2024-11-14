@@ -1,4 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+import { ChainId } from 'constants/chains'
 import {
   collateralDebtSwapData,
   debtCollateralSwapData,
@@ -7,15 +8,15 @@ import {
 } from 'constants/swapdata'
 import { wei } from 'utils/numbers'
 import {
-  IndexZeroExSwapQuoteProvider,
-  LocalhostProviderUrl,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
   QuoteTokens,
 } from 'tests/utils'
 
 import { LeveragedQuoteProvider } from './provider'
 
-const rpcUrl = LocalhostProviderUrl
-const swapQuoteProvider = IndexZeroExSwapQuoteProvider
+const rpcUrl = getLocalHostProviderUrl(ChainId.Mainnet)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
 
 const { eth, iceth } = QuoteTokens
 

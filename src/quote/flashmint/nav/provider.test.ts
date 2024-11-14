@@ -1,9 +1,10 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { AddressZero } from 'constants/addresses'
+import { ChainId } from 'constants/chains'
 import {
-  IndexZeroExSwapQuoteProvider,
-  LocalhostProviderUrl,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
   QuoteTokens,
 } from 'tests/utils'
 import { wei } from 'utils/numbers'
@@ -15,8 +16,8 @@ describe('FlashMintNavQuoteProvider()', () => {
   const { usdc, weth } = QuoteTokens
   const chainId = 1
   const indexToken = getTokenByChainAndSymbol(chainId, 'icUSD')
-  const provider = LocalhostProviderUrl
-  const swapQuoteProvider = IndexZeroExSwapQuoteProvider
+  const provider = getLocalHostProviderUrl(ChainId.Mainnet)
+  const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
 
   test('returns a quote for minting icUSD', async () => {
     const request: FlashMintNavQuoteRequest = {
