@@ -5,12 +5,7 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { noopSwapData } from 'constants/swapdata'
-import {
-  LocalhostProviderArbitrum,
-  LocalhostProviderBase,
-  LocalhostProviderUrlArbitrum,
-  LocalhostProviderUrlBase,
-} from 'tests/utils'
+import { getLocalHostProviderUrl } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { Exchange } from 'utils'
@@ -19,11 +14,12 @@ import {
   FlashMintLeveragedExtendedBuildRequest,
   LeveragedExtendedTransactionBuilder,
 } from './leveraged-extended'
+import { getRpcProvider } from 'utils/rpc-provider'
 
-const provider = LocalhostProviderArbitrum
-const providerBase = LocalhostProviderBase
-const rpcUrl = LocalhostProviderUrlArbitrum
-const rpcUrlBase = LocalhostProviderUrlBase
+const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
+const rpcUrlBase = getLocalHostProviderUrl(ChainId.Base)
+const provider = getRpcProvider(rpcUrl)
+const providerBase = getRpcProvider(rpcUrlBase)
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'

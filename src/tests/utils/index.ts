@@ -31,9 +31,6 @@ export const LocalhostProvider = new JsonRpcProvider(LocalhostProviderUrl)
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
   LocalhostProviderUrlArbitrum
 )
-export const LocalhostProviderBase = new JsonRpcProvider(
-  LocalhostProviderUrlBase
-)
 
 export function getLocalHostProviderUrl(chainId: number) {
   switch (chainId) {
