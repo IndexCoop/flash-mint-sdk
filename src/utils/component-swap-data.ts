@@ -200,17 +200,9 @@ async function getAmount(
     const publicClient = createClient(chainId)!
     const erc4626Abi = [
       'function convertToAssets(uint256 shares) view returns (uint256 assets)',
-      'function previewDeposit(uint256 assets) view returns (uint256 assets)',
       'function previewMint(uint256 shares) view returns (uint256 assets)',
       'function previewRedeem(uint256 shares) view returns (uint256 assets)',
-      'function previewWithdraw(uint256 assets) view returns (uint256 assets)',
     ]
-    const assets: bigint = (await publicClient.readContract({
-      address: component as Address,
-      abi: parseAbi(erc4626Abi),
-      functionName: 'convertToAssets',
-      args: [issuanceUnits],
-    })) as bigint
     const preview: bigint = (await publicClient.readContract({
       address: component as Address,
       abi: parseAbi(erc4626Abi),
@@ -218,17 +210,14 @@ async function getAmount(
       args: [issuanceUnits],
     })) as bigint
     console.log(
-      'assets:',
-      assets.toString(),
       'preview:',
       preview.toString(),
       'issuanceUnits:',
       issuanceUnits.toString()
     )
     return preview
-  } catch (error) {
-    // console.log(error)
-    // apply slippage to issuance units amount (for all none erc4262)
+  } catch {
+    // Apply slippage to issuance units amount (for all none erc4262)
     if (isMinting) {
       return (issuanceUnits * BigInt(101)) / BigInt(100)
     } else {

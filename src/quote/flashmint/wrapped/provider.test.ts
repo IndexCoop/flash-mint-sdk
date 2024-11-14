@@ -17,7 +17,7 @@ const provider = getLocalHostProviderUrl(chainId)
 const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 describe('WrappedQuoteProvider()', () => {
-  test('returns a quote for minting icUSD', async () => {
+  test('returns a quote for minting icUSD w/ USDC', async () => {
     const inputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
       chainId,
