@@ -38,7 +38,6 @@ describe('getIssuanceComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    console.log(componentSwapData)
     expect(componentSwapData.length).toBe(5)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(

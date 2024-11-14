@@ -81,9 +81,7 @@ export async function getIssuanceComponentSwapData(
       getAmount(true, component, BigInt(units[index]), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
-  console.log(wrappedTokens)
   const amounts: bigint[] = await Promise.all(amountPromises)
-  console.log(amounts.map((amount) => amount.toString()))
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
@@ -209,12 +207,6 @@ async function getAmount(
       functionName: isMinting ? 'previewMint' : 'previewRedeem',
       args: [issuanceUnits],
     })) as bigint
-    console.log(
-      'preview:',
-      preview.toString(),
-      'issuanceUnits:',
-      issuanceUnits.toString()
-    )
     return preview
   } catch {
     // Apply slippage to issuance units amount (for all none erc4262)

@@ -63,7 +63,6 @@ export class FlashMintNavQuoteProvider
       sources: [Exchange.UniV3],
       slippage,
     }
-    console.log(swapQuoteRequest)
 
     let reserveAssetSwapData: SwapDataV3 = {
       exchange: Exchange.None,

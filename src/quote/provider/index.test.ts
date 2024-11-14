@@ -142,12 +142,6 @@ describe('FlashMintQuoteProvider()', () => {
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
-    console.log(quote)
-    console.log(quote.inputAmount.toString(), quote.outputAmount.toString())
-    console.log(
-      quote.inputOutputAmount.toString(),
-      quote.indexTokenAmount.toString()
-    )
     const FlashMintNavAddress = Contracts[chainId].FlashMintWrapped
     expect(quote.chainId).toEqual(chainId)
     expect(quote.contractType).toEqual(FlashMintContractType.wrapped)

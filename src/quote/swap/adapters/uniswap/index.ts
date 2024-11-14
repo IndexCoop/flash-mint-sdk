@@ -115,7 +115,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         },
       }
     } catch (error) {
-      console.log('Error getting Uniswap swap quote:')
+      console.warn('Error getting Uniswap swap quote:')
       console.log(error)
       return null
     }
