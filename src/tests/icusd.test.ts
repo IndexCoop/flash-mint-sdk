@@ -64,6 +64,26 @@ describe('icUSD (Base)', () => {
     await factory.executeTx()
   })
 
+  test('can mint with DAI', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: getTokenByChainAndSymbol(chainId, 'DAI'),
+      outputToken: indexToken,
+      indexTokenAmount: wei(1),
+      // Irrelevant - as right now we don't use FlashMintNav
+      inputTokenAmount: BigNumber.from(0),
+      slippage: 0.5,
+    })
+    await transferFromWhale(
+      '0x9646D8F3F59bd7882237eE0EE1c00d483552397D',
+      factory.getSigner().address,
+      wei('10000', quote.inputToken.decimals),
+      quote.inputToken.address,
+      factory.getProvider()
+    )
+    await factory.executeTx()
+  })
+
   test('can redeem to USDC', async () => {
     await factory.fetchQuote({
       isMinting: false,
