@@ -168,6 +168,18 @@ describe('getFlashMintWrappedContract()', () => {
     expect(contract.functions.redeemExactSetForERC20).toBeDefined()
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
   })
+
+  test('returns correct contract for Base', async () => {
+    const expectedAddress = Contracts[ChainId.Base].FlashMintWrapped
+    const contract = getFlashMintWrappedContract(undefined, ChainId.Base)
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getIssueExactSet).toBeDefined()
+    expect(contract.functions.getRedeemExactSet).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+  })
 })
 
 describe('getExchangeIssuanceZeroExContractAddress()', () => {

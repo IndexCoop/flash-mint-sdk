@@ -203,18 +203,17 @@ export const getFlashMintNavContract = (
 }
 
 /**
- * Returns an instance of a FlasthMintWrapped contract (mainnet only).
+ * Returns an instance of a FlasthMintWrapped contract.
  * @param signerOrProvider A signer or provider.
+ * @param chainId A supported chainId.
  * @returns An instance of a FlasthMintWrapped contract.
  */
 export const getFlashMintWrappedContract = (
-  signerOrProvider: Signer | Provider | undefined
+  signerOrProvider: Signer | Provider | undefined,
+  chainId: number = ChainId.Mainnet
 ): Contract => {
-  return new Contract(
-    Contracts[ChainId.Mainnet].FlashMintWrapped,
-    FLASHMINT_WRAPPED_ABI,
-    signerOrProvider
-  )
+  const contractAddress = Contracts[chainId].FlashMintWrapped
+  return new Contract(contractAddress, FLASHMINT_WRAPPED_ABI, signerOrProvider)
 }
 
 export function getExchangeIssuanceZeroExContractAddress(

@@ -81,7 +81,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
         swapData,
       }
     } catch (error) {
-      console.log('Error getting LiFi swap quote:')
+      console.warn('Error getting LiFi swap quote:')
       console.log(error)
       return null
     }

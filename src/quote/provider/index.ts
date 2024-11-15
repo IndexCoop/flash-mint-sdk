@@ -1,6 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { TheUSDCYieldIndex } from 'constants/tokens'
 import {
   FlashMintHyEthTransactionBuilder,
   FlashMintLeveragedBuildRequest,
@@ -23,12 +24,14 @@ import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
 import { QuoteProvider, QuoteToken } from '../interfaces'
 import { SwapQuoteProvider } from '../swap'
 
+import { IcUsdQuoteRouter } from './icusd'
 import { buildQuoteResponse, getContractType } from './utils'
 
 export enum FlashMintContractType {
   hyeth,
   leveraged,
   leveragedExtended,
+  nav,
   wrapped,
   zeroEx,
 }
@@ -38,6 +41,7 @@ export interface FlashMintQuoteRequest {
   inputToken: QuoteToken
   outputToken: QuoteToken
   indexTokenAmount: BigNumber
+  inputTokenAmount?: BigNumber
   slippage: number
 }
 
@@ -69,12 +73,30 @@ export class FlashMintQuoteProvider
   ): Promise<FlashMintQuote | null> {
     const { rpcUrl, swapQuoteProvider } = this
     const provider = getRpcProvider(rpcUrl)
-    const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
-      request
+    const {
+      indexTokenAmount,
+      inputTokenAmount,
+      inputToken,
+      isMinting,
+      outputToken,
+      slippage,
+    } = request
     const indexToken = isMinting ? outputToken : inputToken
     const inputOutputToken = isMinting ? inputToken : outputToken
     const network = await provider.getNetwork()
     const chainId = network.chainId
+    // As icUSD needs custom routing we return early using the custom router
+    if (indexToken.symbol === TheUSDCYieldIndex.symbol) {
+      if (!inputTokenAmount) {
+        throw new Error('Must set `inputTokenAmount` for icUSD quote request')
+      }
+      const icUsdRouter = new IcUsdQuoteRouter(rpcUrl, swapQuoteProvider)
+      return await icUsdRouter.getQuote({
+        ...request,
+        chainId,
+        inputTokenAmount,
+      })
+    }
     const contractType = getContractType(indexToken.symbol, chainId)
     if (contractType === null) {
       throw new Error('Index token not supported')
@@ -198,6 +220,7 @@ export class FlashMintQuoteProvider
         if (!wrappedQuote) return null
         const builder = new WrappedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintWrappedBuildRequest = {
+          chainId,
           isMinting,
           indexToken: indexToken.address,
           indexTokenAmount,

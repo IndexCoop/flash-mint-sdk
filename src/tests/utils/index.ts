@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'dotenv/config'
+import { JsonRpcProvider } from '@ethersproject/providers'
 
-import { BigNumber } from '@ethersproject/bignumber'
-import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
-
-import { WETH } from 'constants/tokens'
-import { IndexSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
-import { TestFactory } from './factories'
+import { ChainId } from 'constants/chains'
+import { ZeroExSwapQuoteProvider } from 'quote'
 export { wei } from 'utils/numbers'
 
+export * from './erc20'
 export * from './factories'
 export { QuoteTokens } from './quoteTokens'
 export * from './lido'
+export * from './signers'
+export * from './test-factory'
 export * from './uniswap'
+export * from './weth'
 
 // Alchemy
 export const AlchemyProviderUrl = process.env.MAINNET_ALCHEMY_API!
@@ -23,241 +21,43 @@ export const AlchemyProviderUrlArbitrum = process.env.ARBITRUM_ALCHEMY_API!
 export const AlchemyProvider = new JsonRpcProvider(AlchemyProviderUrl, 1)
 
 // Hardhat
+// Try avoiding these single consts in the future and rather use convenience functions below
 export const LocalhostProviderUrl = 'http://127.0.0.1:8545/'
-export const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
-export const LocalhostProviderUrlBase = 'http://127.0.0.1:8453/'
 export const LocalhostProvider = new JsonRpcProvider(LocalhostProviderUrl)
+const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
   LocalhostProviderUrlArbitrum
 )
-export const LocalhostProviderBase = new JsonRpcProvider(
-  LocalhostProviderUrlBase
-)
 
-// Pre-configured TestFactories
-export function getArbitrumTestFactory(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrlArbitrum
-) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderArbitrum)
-}
-export function getArbitrumTestFactoryUniswap(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrlArbitrum
-) {
-  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
-
-export function getBaseTestFactory(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrlBase
-) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProviderBase)
-}
-
-export function getMainnetTestFactory(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrl
-) {
-  return new TestFactory(rpcUrl, signer, IndexZeroExSwapQuoteProvider)
-}
-export function getMainnetTestFactoryUniswap(
-  signer: any,
-  rpcUrl: string = LocalhostProviderUrl
-) {
-  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
-
-export function getSignerAccount(num = 0, provider: JsonRpcProvider) {
-  let privateKey =
-    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'
-  switch (num) {
-    case 1:
-      privateKey =
-        '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d'
-      break
-    case 2:
-      privateKey =
-        '0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6'
-      break
-    case 3:
-      privateKey =
-        '0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6'
-      break
-    case 4:
-      privateKey =
-        '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a'
-      break
-    case 5:
-      privateKey =
-        '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba'
-      break
+// Try to use these more together with the `getRpcProvider` util function
+export function getLocalHostProviderUrl(chainId: number) {
+  switch (chainId) {
+    case ChainId.Arbitrum:
+      return 'http://127.0.0.1:8548/'
+    case ChainId.Base:
+      return 'http://127.0.0.1:8453/'
+    default:
+      return 'http://127.0.0.1:8545/'
   }
-  return new Wallet(privateKey, provider)
 }
 
-// Hardhat Account #0
-export const SignerAccount0 = new Wallet(
-  '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-  LocalhostProvider
-)
-
-// Hardhat Account #1
-export const SignerAccount1 = new Wallet(
-  '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
-  LocalhostProvider
-)
-
-// Hardhat Account #2
-export const SignerAccount2 = new Wallet(
-  '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a',
-  LocalhostProvider
-)
-
-// Hardhat Account #3
-export const SignerAccount3 = new Wallet(
-  '0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6',
-  LocalhostProvider
-)
-
-// Hardhat Account #4
-export const SignerAccount4 = new Wallet(
-  '0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a',
-  LocalhostProvider
-)
-
-// Hardhat Account #5
-export const SignerAccount5 = new Wallet(
-  '0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba',
-  LocalhostProvider
-)
-
-// Hardhat Account #17
-export const SignerAccount17 = new Wallet(
-  '0x689af8efa8c651a91ad287602527f3af2fe9f6501a7ac4b061667b5a93e037fd',
-  LocalhostProvider
-)
-
-export async function resetHardhat(
-  provider: JsonRpcProvider,
-  blockNumber: number
-) {
-  await provider.send('hardhat_reset', [
-    {
-      forking: {
-        jsonRpcUrl: process.env.MAINNET_ALCHEMY_API!,
-        blockNumber,
-      },
-    },
-  ])
-}
-
-// ZeroExApi
-const index0xApiBaseUrl = process.env.INDEX_0X_API
-export const IndexZeroExSwapQuoteProvider = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/mainnet/swap/v1/quote'
-)
-
-export const IndexZeroExSwapQuoteProviderArbitrum = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/arbitrum/swap/v1/quote'
-)
-
-export const IndexZeroExSwapQuoteProviderBase = new ZeroExSwapQuoteProvider(
-  index0xApiBaseUrl,
-  '',
-  { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-  '/base/swap/v1/quote'
-)
-
-// Balance
-
-export async function transferFromWhale(
-  whale: string,
-  to: string,
-  amount: BigNumber,
-  erc20Address: string,
-  provider: JsonRpcProvider
-) {
-  const signer = await provider.getSigner(whale)
-  const contract = createERC20Contract(erc20Address, signer)
-  const balance = await contract.balanceOf(whale)
-  if (balance.lt(amount)) {
-    throw new Error(
-      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}: ${balance}`
-    )
+function get0xSwapPathOverride(chainId: number) {
+  switch (chainId) {
+    case ChainId.Arbitrum:
+      return '/arbitrum/swap/v1/quote'
+    case ChainId.Base:
+      return '/base/swap/v1/quote'
+    default:
+      return '/mainnet/swap/v1/quote'
   }
-  await provider.send('hardhat_impersonateAccount', [whale])
-  const transferTx = await contract.transfer(to, amount, {
-    gasLimit: 100_000,
-  })
-  await transferTx.wait()
-  await provider.send('hardhat_stopImpersonatingAccount', [whale])
 }
 
-// ERC20
-export function createERC20Contract(
-  erc20Address: string,
-  providerOrSigner: JsonRpcProvider | JsonRpcSigner | Wallet
-): Contract {
-  const abi = [
-    // Read-Only Functions
-    'function allowance(address account, address spender) external view returns (uint)',
-    'function balanceOf(address owner) view returns (uint256)',
-    'function decimals() view returns (uint8)',
-    'function symbol() view returns (string)',
-    // Authenticated Functions
-    'function approve(address spender, uint rawAmount) external returns (bool)',
-    'function transfer(address to, uint amount) returns (bool)',
-  ]
-  return new Contract(erc20Address, abi, providerOrSigner)
-}
-
-export async function approveErc20(
-  erc20Address: string,
-  spender: string,
-  amount: BigNumber,
-  signer: Wallet
-) {
-  const contract = createERC20Contract(erc20Address, signer)
-  const approveTx = await contract.approve(spender, amount, {
-    gasLimit: 100_000,
-  })
-  await approveTx.wait()
-}
-
-export async function allowanceOf(
-  erc20Address: string,
-  spender: string,
-  signer: Wallet
-): Promise<BigNumber> {
-  const contract = createERC20Contract(erc20Address, signer)
-  return await contract.allowance(signer.address, spender)
-}
-
-export async function balanceOf(
-  signer: Wallet,
-  erc20Address: string
-): Promise<BigNumber> {
-  const contract = createERC20Contract(erc20Address, signer)
-  return await contract.balanceOf(signer.address)
-}
-
-// WETH
-export async function wrapETH(amount: BigNumber, signer: Wallet) {
-  const abi = ['function deposit() public payable']
-  const WETH9 = WETH.address!
-  const contract = new Contract(WETH9, abi, signer)
-  const depositTokenInTx = await contract.deposit({
-    gasLimit: 50_000,
-    value: amount,
-  })
-  await depositTokenInTx.wait()
+export function getZeroExSwapQuoteProvider(chainId: number) {
+  const index0xApiBaseUrl = process.env.INDEX_0X_API
+  return new ZeroExSwapQuoteProvider(
+    index0xApiBaseUrl,
+    '',
+    { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
+    get0xSwapPathOverride(chainId)
+  )
 }

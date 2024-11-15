@@ -1,13 +1,15 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+import { ChainId } from 'constants/chains'
 import { IndexCoopEthereum3xIndex } from 'constants/tokens'
 import {
   getBaseTestFactory,
+  getLocalHostProviderUrl,
   getSignerAccount,
-  LocalhostProviderBase,
   QuoteTokens,
   TestFactory,
   wei,
 } from 'tests/utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 const { eth } = QuoteTokens
 const eth3x = {
@@ -19,7 +21,7 @@ const eth3x = {
 describe.skip('ETH3X (Base)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProviderBase
+    const provider = getRpcProvider(getLocalHostProviderUrl(ChainId.Base))
     const signer = getSignerAccount(2, provider)
     factory = getBaseTestFactory(signer)
   })

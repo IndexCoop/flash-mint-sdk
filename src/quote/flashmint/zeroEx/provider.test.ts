@@ -1,16 +1,17 @@
 import 'dotenv/config'
 
+import { ChainId } from 'constants/chains'
 import {
-  IndexZeroExSwapQuoteProvider,
-  LocalhostProviderUrl,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
   QuoteTokens,
 } from 'tests/utils'
 import { wei } from 'utils'
 
 import { ZeroExQuoteProvider } from './provider'
 
-const rpcUrl = LocalhostProviderUrl
-const swapQuoteProvider = IndexZeroExSwapQuoteProvider
+const rpcUrl = getLocalHostProviderUrl(ChainId.Mainnet)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
 
 const { dpi, dseth, eth, mvi } = QuoteTokens
 

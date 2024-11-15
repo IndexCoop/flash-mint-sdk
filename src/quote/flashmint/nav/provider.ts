@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { Address } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
-import { USDC } from 'constants/tokens'
 import { SwapQuoteProvider } from 'quote/swap'
 import {
   Exchange,
@@ -11,10 +11,10 @@ import {
   slippageAdjustedTokenAmount,
   SwapDataV3,
 } from 'utils'
+import { getExpectedReserveRedeemQuantity } from 'utils/custom-oracle-nav-issuance-module'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { QuoteProvider, QuoteToken } from '../../interfaces'
-import { getReserveAssetInputAmount } from './utils'
 
 export interface FlashMintNavQuoteRequest {
   chainId: number
@@ -52,7 +52,7 @@ export class FlashMintNavQuoteProvider
       slippage,
     } = request
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const usdc = USDC.address!
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!.address
 
     const swapQuoteRequest = {
       chainId,
@@ -63,7 +63,6 @@ export class FlashMintNavQuoteProvider
       sources: [Exchange.UniV3],
       slippage,
     }
-    console.log(swapQuoteRequest)
 
     let reserveAssetSwapData: SwapDataV3 = {
       exchange: Exchange.None,
@@ -77,12 +76,16 @@ export class FlashMintNavQuoteProvider
     ) {
       if (!isMinting) {
         const indexToken = isMinting ? outputToken.address : inputToken.address
-        const reserveAssetInputAmount = await getReserveAssetInputAmount(
+        // When redeeming we need to swap the reserve asset (USDC) for the user's
+        // chosen output token (ex. WETH). So the `inputAmount` determines how
+        // much USDC we need to swap into WETH.
+        const usdcAmountToSwap = await getExpectedReserveRedeemQuantity(
+          chainId,
           indexToken as Address,
           usdc as Address,
           inputTokenAmount.toBigInt()
         )
-        swapQuoteRequest.inputAmount = reserveAssetInputAmount.toString()
+        swapQuoteRequest.inputAmount = usdcAmountToSwap.toString()
       }
       const res = await this.swapQuoteProvider.getSwapQuote(swapQuoteRequest)
       if (!res || !res?.swapData) return null
@@ -112,9 +115,12 @@ export class FlashMintNavQuoteProvider
     }
     const outputTokenAmount = slippageAdjustedTokenAmount(
       estimatedOutputAmount,
-      isMinting ? outputToken.decimals : inputToken.decimals,
+      outputToken.decimals,
       slippage,
-      isMinting
+      // Usually, this function is used to have either input/output amount slippage
+      // adjusted but since FlastMintNav only uses an input amount, we always have
+      // the output amount as result. So we always want to substract slippage.
+      false
     )
     return {
       inputTokenAmount,
