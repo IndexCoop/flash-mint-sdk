@@ -17,6 +17,7 @@ const provider = getLocalHostProviderUrl(chainId)
 const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 describe('WrappedQuoteProvider()', () => {
+  const expectedSwapDataLength = 8
   test('returns a quote for minting icUSD w/ USDC', async () => {
     const inputToken = usdc
     const request: FlashMintWrappedQuoteRequest = {
@@ -32,8 +33,8 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(5)
-    expect(quote.componentWrapData.length).toEqual(5)
+    expect(quote.componentSwapData.length).toEqual(expectedSwapDataLength)
+    expect(quote.componentWrapData.length).toEqual(expectedSwapDataLength)
   })
 
   test('returns a quote for minting icUSD w/ WETH', async () => {
@@ -51,8 +52,8 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(5)
-    expect(quote.componentWrapData.length).toEqual(5)
+    expect(quote.componentSwapData.length).toEqual(expectedSwapDataLength)
+    expect(quote.componentWrapData.length).toEqual(expectedSwapDataLength)
   })
 
   test('returns a quote redeeming icUSD for USDC', async () => {
@@ -70,8 +71,8 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(5)
-    expect(quote.componentWrapData.length).toEqual(5)
+    expect(quote.componentSwapData.length).toEqual(expectedSwapDataLength)
+    expect(quote.componentWrapData.length).toEqual(expectedSwapDataLength)
   })
 
   test('returns a quote for redeeming icUSD for WETH', async () => {
@@ -89,7 +90,7 @@ describe('WrappedQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toEqual(true)
-    expect(quote.componentSwapData.length).toEqual(5)
-    expect(quote.componentWrapData.length).toEqual(5)
+    expect(quote.componentSwapData.length).toEqual(expectedSwapDataLength)
+    expect(quote.componentWrapData.length).toEqual(expectedSwapDataLength)
   })
 })
