@@ -1,23 +1,29 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AddressZero } from 'constants/addresses'
-import { TheUSDCYieldIndex, USDC, WETH } from 'constants/tokens'
+import { ChainId } from 'constants/chains'
+
 import {
   getIssuanceComponentSwapData,
   getRedemptionComponentSwapData,
 } from 'utils/component-swap-data'
 import { wei } from 'utils/numbers'
-import { IndexZeroExSwapQuoteProvider, LocalhostProviderUrl } from 'tests/utils'
+import {
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
+} from 'tests/utils'
 import { isSameAddress } from 'utils/addresses'
 import { Exchange } from 'utils/swap-data'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { BigNumber } from '@ethersproject/bignumber'
 
-const chainId = 1
-const rpcUrl = LocalhostProviderUrl
-const swapQuoteProvider = IndexZeroExSwapQuoteProvider
+const chainId = ChainId.Base
+const rpcUrl = getLocalHostProviderUrl(chainId)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
-const indexTokenSymbol = TheUSDCYieldIndex.symbol
-const indexToken = TheUSDCYieldIndex.address!
-const usdc = USDC.address!
-const weth = WETH.address!
+const icUsd = getTokenByChainAndSymbol(chainId, 'icUSD')
+const indexTokenSymbol = icUsd.symbol
+const indexToken = icUsd.address
+const usdc = getTokenByChainAndSymbol(chainId, 'USDC').address
+const weth = getTokenByChainAndSymbol(chainId, 'WETH').address
 
 describe('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token USDC', async () => {
@@ -32,8 +38,7 @@ describe('getIssuanceComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    // TODO: update once rebalanced into components
-    expect(componentSwapData.length).toBe(1)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -45,9 +50,10 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000010')
   })
 
   test('returns correct swap data based when input token is WETH', async () => {
@@ -62,25 +68,22 @@ describe('getIssuanceComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    // TODO: update once rebalanced into components
-    expect(componentSwapData.length).toBe(1)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
       )
-      // Should be empty as input token is equal to output token (underlying erc20)
       const dexData = componentSwapData[i].dexData
       expect(dexData.exchange).toEqual(Exchange.UniV3)
       expect(dexData.fees.length).toBeGreaterThan(0)
-      expect(dexData.path).toEqual([
-        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      ])
+      expect(dexData.path[0]).toEqual(weth)
+      expect(dexData.path[dexData.path.length - 1]).toEqual(usdc.toLowerCase())
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('1000010')
   })
 })
 
@@ -97,8 +100,7 @@ describe('getRedemptionComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    // TODO: update once rebalanced into components
-    expect(componentSwapData.length).toBe(1)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -110,9 +112,10 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.path).toEqual([])
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('999990')
   })
 
   test('returns correct swap data when output token is WETH', async () => {
@@ -127,24 +130,20 @@ describe('getRedemptionComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    // TODO: update once rebalanced into components
-    expect(componentSwapData.length).toBe(1)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
       )
-      // Should be empty as input token is equal to output token (underlying erc20)
       const dexData = componentSwapData[i].dexData
       expect(dexData.exchange).toEqual(Exchange.UniV3)
       expect(dexData.fees.length).toBeGreaterThan(0)
-      expect(dexData.path).toEqual([
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-        '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      ])
+      expect(dexData.path).toEqual([usdc.toLowerCase(), weth])
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
+      expect(
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+      ).toBe(true)
     }
-    // TODO: update once rebalanced into components
-    expect(componentSwapData[0].buyUnderlyingAmount.toString()).toBe('999990')
   })
 })

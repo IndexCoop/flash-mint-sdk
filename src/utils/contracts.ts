@@ -7,6 +7,7 @@ import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZer
 import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
+import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
@@ -187,18 +188,32 @@ export const getFlashMintLeveragedContractForToken = (
 }
 
 /**
- * Returns an instance of a FlasthMintWrapped contract (mainnet only).
+ * Returns an instance of a FlashMintNav contract (mainnet only).
  * @param signerOrProvider A signer or provider.
- * @returns An instance of a FlasthMintWrapped contract.
+ * @returns An instance of a FlashMintNav contract.
  */
-export const getFlashMintWrappedContract = (
+export const getFlashMintNavContract = (
   signerOrProvider: Signer | Provider | undefined
 ): Contract => {
   return new Contract(
-    Contracts[ChainId.Mainnet].FlashMintWrapped,
-    FLASHMINT_WRAPPED_ABI,
+    Contracts[ChainId.Mainnet].FlashMintNav,
+    FLASHMINT_NAV_ABI,
     signerOrProvider
   )
+}
+
+/**
+ * Returns an instance of a FlasthMintWrapped contract.
+ * @param signerOrProvider A signer or provider.
+ * @param chainId A supported chainId.
+ * @returns An instance of a FlasthMintWrapped contract.
+ */
+export const getFlashMintWrappedContract = (
+  signerOrProvider: Signer | Provider | undefined,
+  chainId: number = ChainId.Mainnet
+): Contract => {
+  const contractAddress = Contracts[chainId].FlashMintWrapped
+  return new Contract(contractAddress, FLASHMINT_WRAPPED_ABI, signerOrProvider)
 }
 
 export function getExchangeIssuanceZeroExContractAddress(

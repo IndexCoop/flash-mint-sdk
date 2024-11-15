@@ -31,7 +31,7 @@ export async function getLeveragedTokenData(
       isIssuance
     )
   } catch (error) {
-    // TODO: should this just always fail cause it means there is something wrongly configured?
+    // Should this just always fail cause it means there is something wrongly configured?
     console.error('Error getting leveraged token data', error)
     return null
   }

@@ -1,23 +1,21 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
+import { ChainId } from 'constants/chains'
 import { noopSwapData } from 'constants/swapdata'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
 
 import {
-  IndexZeroExSwapQuoteProviderArbitrum,
-  IndexZeroExSwapQuoteProviderBase,
-  LocalhostProviderUrlArbitrum,
-  LocalhostProviderUrlBase,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
   QuoteTokens,
 } from 'tests/utils'
 
 import { LeveragedExtendedQuoteProvider } from './provider'
-
-const rpcUrl = LocalhostProviderUrlArbitrum
-const rpcUrlBase = LocalhostProviderUrlBase
-const swapQuoteProvider = IndexZeroExSwapQuoteProviderArbitrum
-const swapQuoteProviderBase = IndexZeroExSwapQuoteProviderBase
+const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
+const rpcUrlBase = getLocalHostProviderUrl(ChainId.Base)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Arbitrum)
+const swapQuoteProviderBase = getZeroExSwapQuoteProvider(ChainId.Base)
 
 const { eth, usdc } = QuoteTokens
 

@@ -3,8 +3,10 @@ import { ChainId } from 'constants/chains'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Contracts: { [key: number]: any } = {
   [ChainId.Mainnet]: {
+    CustomOracleNavIssuanceModule: '0x2344674B23aD076908FD2396373CfE9cd48A1ba3',
     DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
+    FlashMintNav: '0x62F160391d2f1e3a176f32F51ADE6Ed8BB2ea1cf',
     FlashMintWrapped: '0x7ddE626dE8CE73229838B5c2F9A71bc7ac207801',
   },
   [ChainId.Arbitrum]: {
@@ -14,6 +16,7 @@ export const Contracts: { [key: number]: any } = {
   [ChainId.Base]: {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
     FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
+    FlashMintWrapped: '0xb929Ca7279B193d2B5428eED0AB685ECA9Ed567A',
   },
 }
 

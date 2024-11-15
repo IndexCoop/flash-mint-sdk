@@ -1,20 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AddressZero, EthAddress } from 'constants/addresses'
+import { ChainId } from 'constants/chains'
 import { noopSwapData } from 'constants/swapdata'
 import { USDC, WETH } from 'constants/tokens'
 import { wei } from 'utils/numbers'
 import { Exchange } from 'utils'
 
 import {
-  IndexZeroExSwapQuoteProvider,
-  LocalhostProviderUrl,
+  getLocalHostProviderUrl,
+  getZeroExSwapQuoteProvider,
   QuoteTokens,
 } from 'tests/utils'
 
 import { FlashMintHyEthQuoteProvider } from './provider'
 
-const rpcUrl = LocalhostProviderUrl
-const swapQuoteProvider = IndexZeroExSwapQuoteProvider
+const rpcUrl = getLocalHostProviderUrl(ChainId.Mainnet)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
 
 const { eth, hyeth, usdc, weth } = QuoteTokens
 const indexToken = hyeth

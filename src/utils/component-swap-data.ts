@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { Address, parseAbi } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
-import { USDC } from 'constants/tokens'
 import { SwapQuote, SwapQuoteProvider } from 'quote'
 import { isSameAddress } from 'utils/addresses'
 import { createClient } from 'utils/clients'
@@ -65,7 +65,7 @@ export async function getIssuanceComponentSwapData(
     indexTokenAmount,
     inputToken,
   } = request
-  const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
+  const issuance = getIssuanceContract(chainId, indexTokenSymbol, rpcUrl)
   const [issuanceComponents, issuanceUnits] =
     await issuance.getRequiredComponentIssuanceUnits(
       indexToken,
@@ -75,26 +75,17 @@ export async function getIssuanceComponentSwapData(
     issuanceComponents.map((component: string) =>
       getUnderlyingErc20(component, chainId)
     )
+  const units = issuanceUnits.map((unit: BigNumber) => unit.toString())
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
-      getAmount(component, issuanceUnits[index], chainId)
+      getAmount(true, component, BigInt(units[index]), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
-  const amounts = await Promise.all(amountPromises)
+  const amounts: bigint[] = await Promise.all(amountPromises)
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
       const underlyingERC20 = wrappedToken.underlyingErc20
-      console.log(
-        underlyingERC20.symbol === USDC.symbol,
-        underlyingERC20.symbol,
-        USDC.symbol
-      )
-      console.log(
-        isSameAddress(underlyingERC20.address, inputToken),
-        underlyingERC20.address,
-        inputToken
-      )
       if (isSameAddress(underlyingERC20.address, inputToken)) return null
       return swapQuoteProvider.getSwapQuote({
         chainId,
@@ -130,7 +121,7 @@ export async function getRedemptionComponentSwapData(
     indexTokenAmount,
     outputToken,
   } = request
-  const issuance = getIssuanceContract(indexTokenSymbol, rpcUrl)
+  const issuance = getIssuanceContract(chainId, indexTokenSymbol, rpcUrl)
   const [issuanceComponents, issuanceUnits] =
     await issuance.getRequiredComponentRedemptionUnits(
       indexToken,
@@ -142,11 +133,10 @@ export async function getRedemptionComponentSwapData(
     )
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
-      getAmount(component, issuanceUnits[index], chainId)
+      getAmount(false, component, issuanceUnits[index].toBigInt(), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts = await Promise.all(amountPromises)
-  console.log(wrappedTokens)
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
@@ -173,12 +163,12 @@ export async function getRedemptionComponentSwapData(
 function buildComponentSwapData(
   issuanceComponents: string[],
   wrappedTokens: WrappedToken[],
-  buyAmounts: BigNumber[],
+  buyAmounts: bigint[],
   swapDataResults: (SwapQuote | null)[]
 ): ComponentSwapData[] {
   return issuanceComponents.map((_: string, index: number) => {
     const wrappedToken = wrappedTokens[index]
-    const buyUnderlyingAmount = buyAmounts[index]
+    const buyUnderlyingAmount = BigNumber.from(buyAmounts[index].toString())
     const swapData = swapDataResults[index]?.swapData
     const dexData: SwapDataV3 = swapData
       ? {
@@ -198,6 +188,7 @@ function buildComponentSwapData(
 }
 
 async function getAmount(
+  isMinting: boolean,
   component: Address,
   issuanceUnits: bigint,
   chainId: number
@@ -207,49 +198,31 @@ async function getAmount(
     const publicClient = createClient(chainId)!
     const erc4626Abi = [
       'function convertToAssets(uint256 shares) view returns (uint256 assets)',
-      'function previewDeposit(uint256 assets) view returns (uint256)',
-      'function previewMint(uint256 shares) view returns (uint256)',
-      'function previewRedeem(uint256 shares) view returns (uint256)',
-      'function previewWithdraw(uint256 assets) view returns (uint256)',
+      'function previewMint(uint256 shares) view returns (uint256 assets)',
+      'function previewRedeem(uint256 shares) view returns (uint256 assets)',
     ]
-    const assets: bigint = (await publicClient.readContract({
+    const preview: bigint = (await publicClient.readContract({
       address: component as Address,
-      abi: erc4626Abi,
-      functionName: 'convertToAssets',
+      abi: parseAbi(erc4626Abi),
+      functionName: isMinting ? 'previewMint' : 'previewRedeem',
       args: [issuanceUnits],
     })) as bigint
-    return assets
+    return preview
   } catch {
-    // TODO: apply slippage to issuance units amount (for all none erc4262)
-    return issuanceUnits
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
+    if (isAddressEqual(component, usdc)) return issuanceUnits
+    // Apply slippage to issuance units amount (for all none erc4262)
+    if (isMinting) {
+      return (issuanceUnits * BigInt(1005)) / BigInt(1000)
+    } else {
+      return (issuanceUnits * BigInt(995)) / BigInt(1000)
+    }
   }
-  // const isFCASH = (address: string) =>
-  //   [
-  //     '0x278039398A5eb29b6c2FB43789a38A84C6085266',
-  //     '0xe09B1968851478f20a43959d8a212051367dF01A',
-  //   ].includes(address)
-  // const getAmountOfAssetToObtainShares = async () =>
-  //   component: string,
-  //   shares: BigNumber,
-  //   provider: JsonRpcProvider
-  //   slippage = DEFAULT_SLIPPAGE // 1 = 1%
-  //   {
-  //   const componentContract = new Contract(component, erc4626Abi, provider)
-  //   // Convert slippage to a BigNumber, do rounding to avoid weird JS precision loss
-  //   const defaultSlippageBN = BigNumber.from(Math.round(slippage * 10000))
-  //   // if FCASH, increase slippage x3
-  //   const slippageBigNumber = isFCASH(component)
-  //     ? defaultSlippageBN.mul(3)
-  //     : defaultSlippageBN
-  //   // Calculate the multiplier (1 + slippage)
-  //   const multiplier = BigNumber.from(10000).add(slippageBigNumber)
-  //   const buyUnderlyingAmount: BigNumber =
-  //     await componentContract.convertToAssets(shares)
-  //   return buyUnderlyingAmount.mul(multiplier).div(10000)
-  //   }
 }
 
 function getIssuanceContract(
+  chainId: number,
   indexTokenSymbol: string,
   rpcUrl: string
 ): Contract {
@@ -258,7 +231,7 @@ function getIssuanceContract(
     'function getRequiredComponentRedemptionUnits(address _setToken, uint256 _quantity) external view returns (address[] memory, uint256[] memory, uint256[] memory)',
   ]
   const provider = getRpcProvider(rpcUrl)
-  const issuanceModule = getIssuanceModule(indexTokenSymbol)
+  const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
   return new Contract(issuanceModule.address, abi, provider)
 }
 
@@ -273,14 +246,15 @@ async function getUnderlyingErc20(
     abi: parseAbi(['function decimals() view returns (uint8)']),
     functionName: 'decimals',
   })
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
   return {
     address: token,
     decimals,
     underlyingErc20: {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      address: USDC.address!,
-      decimals: 6,
-      symbol: USDC.symbol,
+      address: usdc.address,
+      decimals: usdc.decimals,
+      symbol: usdc.symbol,
     },
   }
 }

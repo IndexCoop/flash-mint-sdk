@@ -1,5 +1,8 @@
 import axios from 'axios'
-import { getTokenData, getTokenDataByAddress } from '@indexcoop/tokenlists'
+import {
+  getTokenByChainAndAddress,
+  getTokenByChainAndSymbol,
+} from '@indexcoop/tokenlists'
 import { Token } from '@uniswap/sdk-core'
 
 import { AddressZero, EthAddress } from 'constants/addresses'
@@ -12,7 +15,7 @@ import { Exchange, isSameAddress } from 'utils'
 
 function changeToWethIfNecessary(token: string, chainId: number): string {
   if (isSameAddress(token, EthAddress)) {
-    const weth = getTokenData('WETH', chainId)
+    const weth = getTokenByChainAndSymbol(chainId, 'WETH')
     return weth?.address ?? token
   }
   return token
@@ -43,9 +46,9 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
       throw new Error('Error - either input or output amount must be set')
     }
 
-    const weth = getTokenData('WETH', chainId)
-    const inputTokenData = getTokenDataByAddress(inputToken, chainId)
-    const outputTokenData = getTokenDataByAddress(outputToken, chainId)
+    const weth = getTokenByChainAndSymbol(chainId, 'WETH')
+    const inputTokenData = getTokenByChainAndAddress(chainId, inputToken)
+    const outputTokenData = getTokenByChainAndAddress(chainId, outputToken)
 
     if (!inputTokenData || !outputTokenData || !weth) {
       throw new Error('Error - either input or output token is invalid')
@@ -112,7 +115,7 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProvider {
         },
       }
     } catch (error) {
-      console.log('Error getting Uniswap swap quote:')
+      console.warn('Error getting Uniswap swap quote:')
       console.log(error)
       return null
     }

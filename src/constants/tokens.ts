@@ -1,5 +1,6 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getIndexTokenData } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
+import { ChainId } from 'constants/chains'
 
 export interface Token {
   symbol: string
@@ -54,7 +55,7 @@ export const HighYieldETHIndex: Token = {
 }
 
 export const ic21: Token = {
-  ...getIndexTokenData('ic21', 1)!,
+  ...getTokenByChainAndSymbol(1, 'ic21'),
 }
 
 export const IndexCoopBitcoin2xIndex: Token = {
@@ -108,7 +109,8 @@ export const RealWorldAssetIndex: Token = {
 }
 
 export const TheUSDCYieldIndex: Token = {
-  ...getIndexTokenData('icUSD', 1)!,
+  ...getTokenByChainAndSymbol(ChainId.Mainnet, 'icUSD'),
+  addressBase: getTokenByChainAndSymbol(ChainId.Base, 'icUSD').address,
 }
 
 // Other
