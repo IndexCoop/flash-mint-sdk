@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { Address, parseAbi } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
@@ -209,6 +209,9 @@ async function getAmount(
     })) as bigint
     return preview
   } catch {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
+    if (isAddressEqual(component, usdc)) return issuanceUnits
     // Apply slippage to issuance units amount (for all none erc4262)
     if (isMinting) {
       return (issuanceUnits * BigInt(1005)) / BigInt(1000)

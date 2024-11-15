@@ -38,7 +38,7 @@ describe('getIssuanceComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    expect(componentSwapData.length).toBe(5)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -68,7 +68,7 @@ describe('getIssuanceComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    expect(componentSwapData.length).toBe(5)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -100,7 +100,7 @@ describe('getRedemptionComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    expect(componentSwapData.length).toBe(5)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
@@ -130,7 +130,7 @@ describe('getRedemptionComponentSwapData()', () => {
       rpcUrl,
       swapQuoteProvider
     )
-    expect(componentSwapData.length).toBe(5)
+    expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
         true
