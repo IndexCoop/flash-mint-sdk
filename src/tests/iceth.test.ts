@@ -24,7 +24,7 @@ describe('icETH (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: iceth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -36,7 +36,7 @@ describe('icETH (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: iceth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -47,7 +47,7 @@ describe('icETH (mainnet)', () => {
       isMinting: false,
       inputToken: iceth,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx(BigNumber.from(5_000_000))
@@ -58,7 +58,7 @@ describe('icETH (mainnet)', () => {
       isMinting: true,
       inputToken: weth,
       outputToken: iceth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
@@ -71,7 +71,7 @@ describe('icETH (mainnet)', () => {
       isMinting: true,
       inputToken: weth,
       outputToken: iceth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
@@ -83,7 +83,7 @@ describe('icETH (mainnet)', () => {
       isMinting: false,
       inputToken: iceth,
       outputToken: weth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()

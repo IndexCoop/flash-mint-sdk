@@ -21,7 +21,7 @@ describe('ETH2X (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: eth2x,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -33,7 +33,7 @@ describe('ETH2X (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: eth2x,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -44,7 +44,7 @@ describe('ETH2X (mainnet)', () => {
       isMinting: false,
       inputToken: eth2x,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -56,7 +56,7 @@ describe('ETH2X (mainnet)', () => {
       isMinting: false,
       inputToken: eth2x,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

@@ -1,3 +1,6 @@
+import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import {
@@ -23,7 +26,8 @@ import { wei } from 'utils'
 import { FlashMintContractType, FlashMintQuoteRequest } from './'
 import { buildQuoteResponse, getContractType } from './utils'
 
-const { icusd, usdc } = QuoteTokens
+const { usdc } = QuoteTokens
+const icusd = getTokenByChainAndSymbol(ChainId.Base, 'icUSD')
 
 describe('buildQuoteResponse()', () => {
   test('returns correct quote response object', async () => {
@@ -31,7 +35,7 @@ describe('buildQuoteResponse()', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: icusd,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.1,
     }
     const quoteAmount = wei(100, 6)
@@ -54,8 +58,8 @@ describe('buildQuoteResponse()', () => {
       inputToken: usdc,
       outputToken: icusd,
       inputAmount: quoteAmount,
-      outputAmount: request.indexTokenAmount,
-      indexTokenAmount: request.indexTokenAmount,
+      outputAmount: BigNumber.from(request.indexTokenAmount),
+      indexTokenAmount: BigNumber.from(request.indexTokenAmount),
       inputOutputAmount: quoteAmount,
       slippage: 0.1,
       tx,

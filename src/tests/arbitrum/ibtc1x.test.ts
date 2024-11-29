@@ -29,7 +29,7 @@ describe('iBTC1X (Arbitrum)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: ibtc1x,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -40,7 +40,7 @@ describe('iBTC1X (Arbitrum)', () => {
       isMinting: false,
       inputToken: ibtc1x,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

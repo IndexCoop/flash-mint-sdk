@@ -31,9 +31,9 @@ describe('icUSD (Base)', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       // Irrelevant - as right now we don't use FlashMintNav
-      inputTokenAmount: BigNumber.from(0),
+      inputTokenAmount: '0',
       slippage: 0.5,
     })
     await transferFromWhale(
@@ -51,9 +51,9 @@ describe('icUSD (Base)', () => {
       isMinting: true,
       inputToken: weth,
       outputToken: indexToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       // Irrelevant - as right now we don't use FlashMintNav
-      inputTokenAmount: BigNumber.from(0),
+      inputTokenAmount: '0',
       slippage: 0.5,
     })
     await wrapETH(
@@ -69,9 +69,9 @@ describe('icUSD (Base)', () => {
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(chainId, 'DAI'),
       outputToken: indexToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       // Irrelevant - as right now we don't use FlashMintNav
-      inputTokenAmount: BigNumber.from(0),
+      inputTokenAmount: '0',
       slippage: 0.5,
     })
     await transferFromWhale(
@@ -90,8 +90,8 @@ describe('icUSD (Base)', () => {
       inputToken: indexToken,
       outputToken: usdc,
       // In case of redeeming input and index token amount are the same
-      indexTokenAmount: wei('1'),
-      inputTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -103,8 +103,8 @@ describe('icUSD (Base)', () => {
       inputToken: indexToken,
       outputToken: weth,
       // In case of redeeming input and index token amount are the same
-      indexTokenAmount: wei('1'),
-      inputTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
