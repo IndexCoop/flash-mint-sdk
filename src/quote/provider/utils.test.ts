@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
@@ -57,8 +58,8 @@ describe('buildQuoteResponse()', () => {
       inputToken: usdc,
       outputToken: icusd,
       inputAmount: quoteAmount,
-      outputAmount: request.indexTokenAmount,
-      indexTokenAmount: request.indexTokenAmount,
+      outputAmount: BigNumber.from(request.indexTokenAmount),
+      indexTokenAmount: BigNumber.from(request.indexTokenAmount),
       inputOutputAmount: quoteAmount,
       slippage: 0.1,
       tx,
