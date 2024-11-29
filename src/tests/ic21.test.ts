@@ -22,7 +22,7 @@ describe('ic21 (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: ic21,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -33,7 +33,7 @@ describe('ic21 (mainnet)', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: ic21,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     const usdcWhale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
@@ -52,7 +52,7 @@ describe('ic21 (mainnet)', () => {
       isMinting: true,
       inputToken: weth,
       outputToken: ic21,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
@@ -64,7 +64,7 @@ describe('ic21 (mainnet)', () => {
       isMinting: false,
       inputToken: ic21,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -75,7 +75,7 @@ describe('ic21 (mainnet)', () => {
       isMinting: false,
       inputToken: ic21,
       outputToken: usdc,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

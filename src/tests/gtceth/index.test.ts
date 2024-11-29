@@ -22,7 +22,7 @@ describe.skip('gtcETH (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: gtcETH,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

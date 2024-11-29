@@ -107,7 +107,7 @@ export class TestFactory {
     expect(quote).toBeDefined()
     if (!quote) fail()
     expect(quote.isMinting).toEqual(config.isMinting)
-    expect(quote.indexTokenAmount).toEqual(config.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(config.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     this.quote = quote
     return quote

@@ -40,8 +40,8 @@ export interface FlashMintQuoteRequest {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
-  indexTokenAmount: BigNumber
-  inputTokenAmount?: BigNumber
+  indexTokenAmount: string
+  inputTokenAmount?: string
   slippage: number
 }
 
@@ -73,14 +73,9 @@ export class FlashMintQuoteProvider
   ): Promise<FlashMintQuote | null> {
     const { rpcUrl, swapQuoteProvider } = this
     const provider = getRpcProvider(rpcUrl)
-    const {
-      indexTokenAmount,
-      inputTokenAmount,
-      inputToken,
-      isMinting,
-      outputToken,
-      slippage,
-    } = request
+    const { inputToken, inputTokenAmount, isMinting, outputToken, slippage } =
+      request
+    const indexTokenAmount = BigNumber.from(request.indexTokenAmount)
     const indexToken = isMinting ? outputToken : inputToken
     const inputOutputToken = isMinting ? inputToken : outputToken
     const network = await provider.getNetwork()
@@ -151,7 +146,10 @@ export class FlashMintQuoteProvider
           rpcUrl,
           swapQuoteProvider
         )
-        const leveragedQuote = await leveragedQuoteProvider.getQuote(request)
+        const leveragedQuote = await leveragedQuoteProvider.getQuote({
+          ...request,
+          indexTokenAmount,
+        })
         if (!leveragedQuote) return null
         const builder = new LeveragedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedBuildRequest = {
@@ -179,7 +177,10 @@ export class FlashMintQuoteProvider
         const leverageExtendedQuoteProvider =
           new LeveragedExtendedQuoteProvider(rpcUrl, swapQuoteProvider)
         const leveragedExtendedQuote =
-          await leverageExtendedQuoteProvider.getQuote(request)
+          await leverageExtendedQuoteProvider.getQuote({
+            ...request,
+            indexTokenAmount,
+          })
         if (!leveragedExtendedQuote) return null
         const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedExtendedBuildRequest = {
@@ -216,6 +217,7 @@ export class FlashMintQuoteProvider
         const wrappedQuote = await wrappedQuoteProvider.getQuote({
           ...request,
           chainId,
+          indexTokenAmount,
         })
         if (!wrappedQuote) return null
         const builder = new WrappedTransactionBuilder(rpcUrl)
@@ -245,7 +247,10 @@ export class FlashMintQuoteProvider
           rpcUrl,
           swapQuoteProvider
         )
-        const zeroExQuote = await zeroExQuoteProvider.getQuote(request)
+        const zeroExQuote = await zeroExQuoteProvider.getQuote({
+          ...request,
+          indexTokenAmount,
+        })
         if (!zeroExQuote) return null
         const builder = new ZeroExTransactionBuilder(rpcUrl)
         const txRequest: FlashMintZeroExBuildRequest = {

@@ -62,7 +62,7 @@ const quote = await quoteProvider.getQuote({
   isMinting: true,
   inputToken,
   outputToken,
-  indexTokenAmount: wei(1),
+  indexTokenAmount: wei(1).toString(),
   slippage: 0.1,
 })
 ```

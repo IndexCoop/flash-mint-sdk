@@ -26,7 +26,7 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: indexToken,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -38,7 +38,7 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
@@ -58,7 +58,7 @@ describe('hyETH', () => {
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -71,7 +71,7 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: indexToken,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -82,7 +82,7 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: indexToken,
-      indexTokenAmount: wei('550'),
+      indexTokenAmount: wei('550').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -93,7 +93,7 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
@@ -112,7 +112,7 @@ describe('hyETH', () => {
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     const whale = '0x6e2C509D522d47F509E1a6D75682E6AbBC38B362'
@@ -131,7 +131,7 @@ describe('hyETH', () => {
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
-      indexTokenAmount: wei('200'),
+      indexTokenAmount: wei('200').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -142,7 +142,7 @@ describe('hyETH', () => {
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     const whale = '0x6e2C509D522d47F509E1a6D75682E6AbBC38B362'

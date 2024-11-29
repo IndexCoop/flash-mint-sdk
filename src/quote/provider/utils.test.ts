@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import {
@@ -23,7 +25,8 @@ import { wei } from 'utils'
 import { FlashMintContractType, FlashMintQuoteRequest } from './'
 import { buildQuoteResponse, getContractType } from './utils'
 
-const { icusd, usdc } = QuoteTokens
+const { usdc } = QuoteTokens
+const icusd = getTokenByChainAndSymbol(ChainId.Base, 'icUSD')
 
 describe('buildQuoteResponse()', () => {
   test('returns correct quote response object', async () => {
@@ -31,7 +34,7 @@ describe('buildQuoteResponse()', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: icusd,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.1,
     }
     const quoteAmount = wei(100, 6)

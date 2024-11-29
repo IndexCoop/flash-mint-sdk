@@ -26,7 +26,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -37,7 +37,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: eth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -48,7 +48,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: weth,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await wrapETH(quote.inputOutputAmount, factory.getSigner())
@@ -60,7 +60,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: weth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -71,7 +71,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: reth,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     const rethWhale = '0x7d6149aD9A573A6E2Ca6eBf7D4897c1B766841B4'
@@ -90,7 +90,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: reth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -101,7 +101,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: seth2,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     // ETH / sETH2
@@ -126,7 +126,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: seth2,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -137,7 +137,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: steth,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await addLiquidityToLido(wei('2'), factory.getSigner())
@@ -149,7 +149,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: steth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -160,7 +160,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
@@ -179,7 +179,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: usdc,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -190,7 +190,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: true,
       inputToken: wseth,
       outputToken: dseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     const signer = factory.getSigner()
@@ -205,7 +205,7 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: wseth,
-      indexTokenAmount: wei('0.1'),
+      indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
     await factory.executeTx()

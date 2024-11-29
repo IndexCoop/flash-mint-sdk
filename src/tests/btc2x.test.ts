@@ -21,7 +21,7 @@ describe('BTC2X (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: btc2x,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -33,7 +33,7 @@ describe('BTC2X (mainnet)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: btc2x,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -44,7 +44,7 @@ describe('BTC2X (mainnet)', () => {
       isMinting: false,
       inputToken: btc2x,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

@@ -29,7 +29,7 @@ describe('ETH3X (Arbitrum)', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: eth3x,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -40,7 +40,7 @@ describe('ETH3X (Arbitrum)', () => {
       isMinting: false,
       inputToken: eth3x,
       outputToken: eth,
-      indexTokenAmount: wei('1'),
+      indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

@@ -21,9 +21,9 @@ export interface IcUsdQuoteRequest extends FlashMintQuoteRequest {
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
-  indexTokenAmount: BigNumber
+  indexTokenAmount: string
   // FlashMintNav always needs the input amount
-  inputTokenAmount: BigNumber
+  inputTokenAmount: string
   slippage: number
 }
 
@@ -98,8 +98,8 @@ export class IcUsdQuoteRouter
   // }
 
   private async getFlashMintWrappedQuote(request: IcUsdQuoteRequest) {
-    const { chainId, indexTokenAmount, inputToken, isMinting, outputToken } =
-      request
+    const { chainId, inputToken, isMinting, outputToken } = request
+    const indexTokenAmount = BigNumber.from(request.indexTokenAmount)
     const indexToken = isMinting ? outputToken : inputToken
     const inputOutputToken = isMinting ? inputToken : outputToken
     const wrappedQuoteProvider = new WrappedQuoteProvider(
@@ -109,6 +109,7 @@ export class IcUsdQuoteRouter
     const wrappedQuote = await wrappedQuoteProvider.getQuote({
       ...request,
       chainId,
+      indexTokenAmount,
     })
     if (!wrappedQuote) return null
     const builder = new WrappedTransactionBuilder(this.rpcUrl)
