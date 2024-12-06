@@ -73,11 +73,16 @@ describe('getContractType()', () => {
       IndexCoopBitcoin2xIndex.symbol,
       ChainId.Arbitrum
     )
+    const btc2xEthContractType = getContractType('BTC2xETH', ChainId.Arbitrum)
     const btc3xContractType = getContractType(
       IndexCoopBitcoin3xIndex.symbol,
       ChainId.Arbitrum
     )
     const eth2xContractType = getContractType(
+      IndexCoopEthereum2xIndex.symbol,
+      ChainId.Arbitrum
+    )
+    const eth2xBtcContractType = getContractType(
       IndexCoopEthereum2xIndex.symbol,
       ChainId.Arbitrum
     )
@@ -94,8 +99,10 @@ describe('getContractType()', () => {
       ChainId.Arbitrum
     )
     expect(btc2xContractType).toBe(FlashMintContractType.leveragedExtended)
+    expect(btc2xEthContractType).toBe(FlashMintContractType.leveragedExtended)
     expect(btc3xContractType).toBe(FlashMintContractType.leveragedExtended)
     expect(eth2xContractType).toBe(FlashMintContractType.leveragedExtended)
+    expect(eth2xBtcContractType).toBe(FlashMintContractType.leveragedExtended)
     expect(eth3xContractType).toBe(FlashMintContractType.leveragedExtended)
     expect(ibtc1xContractType).toBe(FlashMintContractType.leveragedExtended)
     expect(ieth1xContractType).toBe(FlashMintContractType.leveragedExtended)
