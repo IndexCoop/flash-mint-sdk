@@ -333,6 +333,27 @@ describe('BTC2X', () => {
   })
 })
 
+describe('BTC2xETH', () => {
+  test('return correct contract for token - arbitrum', async () => {
+    const chainId = ChainId.Arbitrum
+    const contract = getFlashMintLeveragedContractForToken(
+      'BTC2xETH',
+      undefined,
+      chainId
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedExtended
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
+
 describe('BTC3X', () => {
   test('return correct contract for token - arbitrum', async () => {
     const chainId = ChainId.Arbitrum
@@ -392,6 +413,27 @@ describe('ETH2X', () => {
     const chainId = ChainId.Base
     const contract = getFlashMintLeveragedContractForToken(
       IndexCoopEthereum2xIndex.symbol,
+      undefined,
+      chainId
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedExtended
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
+
+describe('ETH2xBTC', () => {
+  test('return correct contract for token - arbitrum', async () => {
+    const chainId = ChainId.Arbitrum
+    const contract = getFlashMintLeveragedContractForToken(
+      'ETH2xBTC',
       undefined,
       chainId
     )

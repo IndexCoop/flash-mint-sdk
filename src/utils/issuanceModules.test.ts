@@ -33,6 +33,13 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
 
+  test('returns debt issuance module v2 for BTC2xETH', () => {
+    const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule('BTC2xETH', ChainId.Arbitrum)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
   test('returns debt issuance module v2 for dsETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
@@ -43,6 +50,13 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for ETH2X', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(IndexCoopEthereum2xIndex.symbol)
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v2 for ETH2xBTC', () => {
+    const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule('ETH2xBTC', ChainId.Arbitrum)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
