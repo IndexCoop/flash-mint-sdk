@@ -82,10 +82,7 @@ describe('getContractType()', () => {
       IndexCoopEthereum2xIndex.symbol,
       ChainId.Arbitrum
     )
-    const eth2xBtcContractType = getContractType(
-      IndexCoopEthereum2xIndex.symbol,
-      ChainId.Arbitrum
-    )
+    const eth2xBtcContractType = getContractType('ETH2xBTC', ChainId.Arbitrum)
     const eth3xContractType = getContractType(
       IndexCoopEthereum3xIndex.symbol,
       ChainId.Arbitrum
