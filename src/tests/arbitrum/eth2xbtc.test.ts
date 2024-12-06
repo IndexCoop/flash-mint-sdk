@@ -9,9 +9,9 @@ import {
   wei,
 } from 'tests/utils'
 
-describe('BTC2xETH (Arbitrum)', () => {
+describe('ETH2xBTC (Arbitrum)', () => {
   const { eth } = QuoteTokens
-  const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')
+  const eth2xBtc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2xBTC')
   let factory: TestFactory
   beforeEach(async () => {
     const provider = LocalhostProviderArbitrum
@@ -23,7 +23,7 @@ describe('BTC2xETH (Arbitrum)', () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
-      outputToken: btc2xEth,
+      outputToken: eth2xBtc,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
@@ -33,7 +33,7 @@ describe('BTC2xETH (Arbitrum)', () => {
   test('can redeem with ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
-      inputToken: btc2xEth,
+      inputToken: eth2xBtc,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
