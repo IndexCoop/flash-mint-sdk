@@ -1,6 +1,7 @@
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
@@ -150,7 +151,11 @@ export const getFlashMintLeveragedContractForToken = (
   chainId: ChainId = ChainId.Polygon
 ): Contract => {
   if (chainId === ChainId.Arbitrum) {
+    const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')
+    const eth2xBtc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2xBTC')
     switch (token) {
+      case btc2xEth.symbol:
+      case eth2xBtc.symbol:
       case IndexCoopBitcoin2xIndex.symbol:
       case IndexCoopEthereum2xIndex.symbol:
       case IndexCoopBitcoin3xIndex.symbol:

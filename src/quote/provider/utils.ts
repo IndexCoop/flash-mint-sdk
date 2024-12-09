@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionRequest } from '@ethersproject/abstract-provider'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import {
@@ -62,7 +63,11 @@ export function getContractType(
   chainId: number
 ): FlashMintContractType | null {
   if (chainId === ChainId.Arbitrum) {
+    const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')
+    const eth2xBtc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2xBTC')
     switch (token) {
+      case btc2xEth.symbol:
+      case eth2xBtc.symbol:
       case IndexCoopBitcoin2xIndex.symbol:
       case IndexCoopBitcoin3xIndex.symbol:
       case IndexCoopEthereum2xIndex.symbol:
