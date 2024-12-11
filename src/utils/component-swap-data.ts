@@ -208,9 +208,9 @@ async function getAmount(
       args: [issuanceUnits],
     })) as bigint
     if (isMinting) {
-      return (preview * BigInt(10001)) / BigInt(10000)
+      return (preview * BigInt(1001)) / BigInt(1000)
     } else {
-      return (preview * BigInt(9999)) / BigInt(10000)
+      return (preview * BigInt(999)) / BigInt(1000)
     }
   } catch {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
