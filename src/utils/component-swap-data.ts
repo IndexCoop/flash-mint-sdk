@@ -207,7 +207,11 @@ async function getAmount(
       functionName: isMinting ? 'previewMint' : 'previewRedeem',
       args: [issuanceUnits],
     })) as bigint
-    return preview
+    if (isMinting) {
+      return (preview * BigInt(10001)) / BigInt(10000)
+    } else {
+      return (preview * BigInt(9999)) / BigInt(10000)
+    }
   } catch {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
