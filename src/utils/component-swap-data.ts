@@ -76,12 +76,14 @@ export async function getIssuanceComponentSwapData(
       getUnderlyingErc20(component, chainId)
     )
   const units = issuanceUnits.map((unit: BigNumber) => unit.toString())
+  console.log({issuanceComponents, units, indexTokenAmount: indexTokenAmount.toString()})
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
       getAmount(true, component, BigInt(units[index]), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts: bigint[] = await Promise.all(amountPromises)
+  console.log({indexTokenAmount: indexTokenAmount.toString(), amounts});
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
@@ -201,6 +203,7 @@ async function getAmount(
       'function previewMint(uint256 shares) view returns (uint256 assets)',
       'function previewRedeem(uint256 shares) view returns (uint256 assets)',
     ]
+    // console.log('gettingPreview for', {component})
     const preview: bigint = (await publicClient.readContract({
       address: component as Address,
       abi: parseAbi(erc4626Abi),
