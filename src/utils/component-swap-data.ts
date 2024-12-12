@@ -210,21 +210,16 @@ async function getAmount(
       functionName: isMinting ? 'previewMint' : 'previewRedeem',
       args: [issuanceUnits],
     })) as bigint
-    if (isMinting) {
-      return (preview * BigInt(1001)) / BigInt(1000)
-    } else {
-      return (preview * BigInt(999)) / BigInt(1000)
-    }
+    const previewWithSlippage = isMinting ? preview * BigInt(1001) / BigInt(1000) : preview * BigInt(999) / BigInt(1000)
+    console.log({component, issuanceUnits, preview, previewWithSlippage})
+    return previewWithSlippage
   } catch {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
     if (isAddressEqual(component, usdc)) return issuanceUnits
-    // Apply slippage to issuance units amount (for all none erc4262)
-    if (isMinting) {
-      return (issuanceUnits * BigInt(1005)) / BigInt(1000)
-    } else {
-      return (issuanceUnits * BigInt(995)) / BigInt(1000)
-    }
+    const issuanceUnitsWithSlippage = isMinting ? (issuanceUnits * BigInt(1005)) / BigInt(1000) : (issuanceUnits * BigInt(995)) / BigInt(1000)
+    console.log({component, issuanceUnits, issuanceUnitsWithSlippage})
+    return issuanceUnitsWithSlippage
   }
 }
 
