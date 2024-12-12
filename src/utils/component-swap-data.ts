@@ -76,14 +76,12 @@ export async function getIssuanceComponentSwapData(
       getUnderlyingErc20(component, chainId)
     )
   const units = issuanceUnits.map((unit: BigNumber) => unit.toString())
-  console.log({issuanceComponents, units, indexTokenAmount: indexTokenAmount.toString()})
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
       getAmount(true, component, BigInt(units[index]), chainId)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts: bigint[] = await Promise.all(amountPromises)
-  console.log({indexTokenAmount: indexTokenAmount.toString(), amounts});
   const swapPromises: Promise<SwapQuote | null>[] = issuanceComponents.map(
     (_: string, index: number) => {
       const wrappedToken = wrappedTokens[index]
@@ -203,22 +201,23 @@ async function getAmount(
       'function previewMint(uint256 shares) view returns (uint256 assets)',
       'function previewRedeem(uint256 shares) view returns (uint256 assets)',
     ]
-    // console.log('gettingPreview for', {component})
     const preview: bigint = (await publicClient.readContract({
       address: component as Address,
       abi: parseAbi(erc4626Abi),
       functionName: isMinting ? 'previewMint' : 'previewRedeem',
       args: [issuanceUnits],
     })) as bigint
-    const previewWithSlippage = isMinting ? preview * BigInt(1001) / BigInt(1000) : preview * BigInt(999) / BigInt(1000)
-    console.log({component, issuanceUnits, preview, previewWithSlippage})
+    const previewWithSlippage = isMinting
+      ? (preview * BigInt(1001)) / BigInt(1000)
+      : (preview * BigInt(999)) / BigInt(1000)
     return previewWithSlippage
   } catch {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const usdc = getTokenByChainAndSymbol(chainId, 'USDC')!
     if (isAddressEqual(component, usdc)) return issuanceUnits
-    const issuanceUnitsWithSlippage = isMinting ? (issuanceUnits * BigInt(1005)) / BigInt(1000) : (issuanceUnits * BigInt(995)) / BigInt(1000)
-    console.log({component, issuanceUnits, issuanceUnitsWithSlippage})
+    const issuanceUnitsWithSlippage = isMinting
+      ? (issuanceUnits * BigInt(1005)) / BigInt(1000)
+      : (issuanceUnits * BigInt(995)) / BigInt(1000)
     return issuanceUnitsWithSlippage
   }
 }
