@@ -32,7 +32,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
       - run: npm ci
-      # - run: npm run lint
+      - run: npm run lint
       - run: npm run build --if-present
       - run: npm run hardhat:arbitrum &
       - run: npm run hardhat:base &
