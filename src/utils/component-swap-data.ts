@@ -6,7 +6,7 @@ import { Address, parseAbi } from 'viem'
 import { AddressZero } from 'constants/addresses'
 import { SwapQuote, SwapQuoteProvider } from 'quote'
 import { isSameAddress } from 'utils/addresses'
-import { createClient } from 'utils/clients'
+import { createClientWithUrl } from 'utils/clients'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, SwapDataV3 } from 'utils/swap-data'
@@ -73,12 +73,12 @@ export async function getIssuanceComponentSwapData(
     )
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
     issuanceComponents.map((component: string) =>
-      getUnderlyingErc20(component, chainId)
+      getUnderlyingErc20(component, chainId, rpcUrl)
     )
   const units = issuanceUnits.map((unit: BigNumber) => unit.toString())
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
-      getAmount(true, component, BigInt(units[index]), chainId)
+      getAmount(true, component, BigInt(units[index]), chainId, rpcUrl)
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts: bigint[] = await Promise.all(amountPromises)
@@ -129,11 +129,17 @@ export async function getRedemptionComponentSwapData(
     )
   const underlyingERC20sPromises: Promise<WrappedToken>[] =
     issuanceComponents.map((component: string) =>
-      getUnderlyingErc20(component, chainId)
+      getUnderlyingErc20(component, chainId, rpcUrl)
     )
   const amountPromises = issuanceComponents.map(
     (component: Address, index: number) =>
-      getAmount(false, component, issuanceUnits[index].toBigInt(), chainId)
+      getAmount(
+        false,
+        component,
+        issuanceUnits[index].toBigInt(),
+        chainId,
+        rpcUrl
+      )
   )
   const wrappedTokens = await Promise.all(underlyingERC20sPromises)
   const amounts = await Promise.all(amountPromises)
@@ -191,11 +197,12 @@ async function getAmount(
   isMinting: boolean,
   component: Address,
   issuanceUnits: bigint,
-  chainId: number
+  chainId: number,
+  rpcUrl: string
 ): Promise<bigint> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const publicClient = createClient(chainId)!
+    const publicClient = createClientWithUrl(chainId, rpcUrl)!
     const erc4626Abi = [
       'function convertToAssets(uint256 shares) view returns (uint256 assets)',
       'function previewMint(uint256 shares) view returns (uint256 assets)',
@@ -238,10 +245,11 @@ function getIssuanceContract(
 
 async function getUnderlyingErc20(
   token: string,
-  chainId: number
+  chainId: number,
+  rpcUrl: string
 ): Promise<WrappedToken> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const publicClient = createClient(chainId)!
+  const publicClient = createClientWithUrl(chainId, rpcUrl)!
   const decimals: number = await publicClient.readContract({
     address: token as Address,
     abi: parseAbi(['function decimals() view returns (uint8)']),

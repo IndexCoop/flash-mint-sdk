@@ -16,3 +16,17 @@ export function createClient(chainId: number) {
     transport: http(process.env.MAINNET_ALCHEMY_API),
   })
 }
+
+export function createClientWithUrl(chainId: number, rpcUrl: string) {
+  if (chainId === ChainId.Base) {
+    return createPublicClient({
+      chain: base,
+      transport: http(rpcUrl),
+    })
+  }
+  if (chainId !== ChainId.Mainnet) return null
+  return createPublicClient({
+    chain: mainnet,
+    transport: http(rpcUrl),
+  })
+}
