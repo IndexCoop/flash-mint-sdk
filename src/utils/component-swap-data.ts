@@ -208,8 +208,8 @@ async function getAmount(
       args: [issuanceUnits],
     })) as bigint
     const previewWithSlippage = isMinting
-      ? (preview * BigInt(1001)) / BigInt(1000)
-      : (preview * BigInt(999)) / BigInt(1000)
+      ? (preview * BigInt(10001)) / BigInt(10000)
+      : (preview * BigInt(9999)) / BigInt(10000)
     return previewWithSlippage
   } catch {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
