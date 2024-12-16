@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { Address, isAddressEqual } from 'viem'
+import { isAddressEqual } from '@indexcoop/tokenlists'
+import { Address } from 'viem'
 
 import { SwapQuoteProvider } from 'quote/swap'
 import { slippageAdjustedTokenAmount } from 'utils'
@@ -40,9 +41,13 @@ export class ComponentQuotesProvider {
   }
 
   isMorpho(token: string) {
-    return isAddressEqual(
-      token as Address,
-      '0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0'
+    const morphoTokens: Address[] = [
+      '0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0',
+      // new morpho vault, soon to be the only component
+      '0xc554929a61d862F2741077F8aafa147479c0b308',
+    ]
+    return morphoTokens.some((morphoVault) =>
+      isAddressEqual(morphoVault, token as Address)
     )
   }
 
@@ -79,6 +84,10 @@ export class ComponentQuotesProvider {
       const index = i
       const component = components[index]
       const amount = positions[index].toBigInt()
+
+      if (isAddressEqual(component, this.wethAddress)) {
+        quotePromises.push(Promise.resolve(amount))
+      }
 
       if (this.isAcross(component)) {
         const acrossQuoteProvider = new AcrossQuoteProvider(
