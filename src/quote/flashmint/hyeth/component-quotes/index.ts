@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { Address, isAddressEqual } from 'viem'
+import { isAddressEqual } from '@indexcoop/tokenlists'
+import { Address } from 'viem'
 
 import { SwapQuoteProvider } from 'quote/swap'
 import { slippageAdjustedTokenAmount } from 'utils'
@@ -83,6 +84,10 @@ export class ComponentQuotesProvider {
       const index = i
       const component = components[index]
       const amount = positions[index].toBigInt()
+
+      if (isAddressEqual(component, this.wethAddress)) {
+        quotePromises.push(Promise.resolve(amount))
+      }
 
       if (this.isAcross(component)) {
         const acrossQuoteProvider = new AcrossQuoteProvider(
