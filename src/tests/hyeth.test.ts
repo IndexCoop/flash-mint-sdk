@@ -108,21 +108,13 @@ describe('hyETH', () => {
   })
 
   test.only('can redeem to ETH', async () => {
-    const quote = await factory.fetchQuote({
+    await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    const whale = '0x6e2C509D522d47F509E1a6D75682E6AbBC38B362'
-    await transferFromWhale(
-      whale,
-      factory.getSigner().address,
-      quote.indexTokenAmount,
-      quote.inputToken.address,
-      factory.getProvider()
-    )
     await factory.executeTx()
   })
 
