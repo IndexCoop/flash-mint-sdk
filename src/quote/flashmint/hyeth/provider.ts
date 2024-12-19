@@ -47,7 +47,6 @@ export class FlashMintHyEthQuoteProvider
   ): Promise<FlashMintHyEthQuote | null> {
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
-    const componentsSwapData = getComponentsSwapData()
     // Only relevant for minting ERC-20's
     const swapDataInputTokenToEth = isMinting
       ? getInputTokenToEthSwapData(inputToken)
@@ -60,6 +59,8 @@ export class FlashMintHyEthQuoteProvider
       request,
       this.rpcUrl
     )
+
+    const componentsSwapData = getComponentsSwapData(components)
 
     if (componentsSwapData.length !== components.length) return null
 

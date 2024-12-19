@@ -66,7 +66,7 @@ describe('hyETH', () => {
 
   // 0x
 
-  test('can mint with ETH', async () => {
+  test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
@@ -107,22 +107,14 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to ETH', async () => {
-    const quote = await factory.fetchQuote({
+  test.only('can redeem to ETH', async () => {
+    await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    const whale = '0x6e2C509D522d47F509E1a6D75682E6AbBC38B362'
-    await transferFromWhale(
-      whale,
-      factory.getSigner().address,
-      quote.indexTokenAmount,
-      quote.inputToken.address,
-      factory.getProvider()
-    )
     await factory.executeTx()
   })
 

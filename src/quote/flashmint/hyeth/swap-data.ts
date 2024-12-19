@@ -5,8 +5,8 @@ import { ETH, WETH } from 'constants/tokens'
 import { QuoteToken } from 'quote/interfaces'
 import { Exchange, SwapData } from 'utils'
 
-export function getComponentsSwapData(): SwapData[] {
-  return [noopSwapData, noopSwapData, noopSwapData, noopSwapData, noopSwapData]
+export function getComponentsSwapData(components: string[]): SwapData[] {
+  return components.map(() => noopSwapData)
 }
 
 export function getEthToInputOutputTokenSwapData(

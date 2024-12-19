@@ -39,7 +39,7 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: true,
       inputToken,
       outputToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -69,7 +69,7 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: true,
       inputToken,
       outputToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -87,7 +87,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.outputToken).toEqual(request.outputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
     expect(quote.inputAmount).toEqual(quote.inputOutputAmount)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
@@ -100,7 +100,7 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: hyeth,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -118,7 +118,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.outputToken).toEqual(request.outputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
     expect(quote.inputAmount).toEqual(quote.inputOutputAmount)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
@@ -132,8 +132,8 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(chainId, 'USDC'),
       outputToken: getTokenByChainAndSymbol(chainId, 'icUSD'),
-      indexTokenAmount: wei(1),
-      inputTokenAmount: wei(100, 6),
+      indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(100, 6).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -177,7 +177,7 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: false,
       inputToken,
       outputToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -193,9 +193,9 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.inputAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.outputAmount).toEqual(quote.inputOutputAmount)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
@@ -208,7 +208,7 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: false,
       inputToken: hyeth,
       outputToken: usdc,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -224,8 +224,8 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.inputAmount).toEqual(request.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(request.indexTokenAmount)
+    expect(quote.inputAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.outputAmount).toEqual(quote.inputOutputAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
@@ -246,7 +246,7 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: false,
       inputToken,
       outputToken,
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -262,9 +262,9 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.inputAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.outputAmount).toEqual(quote.inputOutputAmount)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
@@ -278,10 +278,10 @@ describe('FlashMintQuoteProvider()', () => {
       isMinting: false,
       inputToken: getTokenByChainAndSymbol(chainId, 'icUSD'),
       outputToken: getTokenByChainAndSymbol(chainId, 'USDC'),
-      indexTokenAmount: wei(1),
+      indexTokenAmount: wei(1).toString(),
       // Note that input token amount is essential to determine here if the test
       // fails or not. For example larger amounts might return FlashMintWrapped instead of (FMNav)
-      inputTokenAmount: wei(1),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -297,9 +297,9 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
-    expect(quote.inputAmount).toEqual(request.indexTokenAmount)
+    expect(quote.inputAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.outputAmount).toEqual(quote.inputOutputAmount)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.indexTokenAmount.toString()).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
