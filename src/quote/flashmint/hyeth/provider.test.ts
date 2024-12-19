@@ -47,6 +47,8 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
+      noopSwapData,
+      noopSwapData,
     ]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
@@ -74,6 +76,8 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     const componentSwapDataIssue = [
+      noopSwapData,
+      noopSwapData,
       noopSwapData,
       noopSwapData,
       noopSwapData,
@@ -131,6 +135,8 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
+      noopSwapData,
+      noopSwapData,
       // {
       //   exchange: Exchange.UniV3,
       //   fees: [500],
@@ -183,6 +189,8 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       noopSwapData,
       noopSwapData,
       noopSwapData,
+      noopSwapData,
+      noopSwapData,
       // {
       //   exchange: Exchange.UniV3,
       //   fees: [500],
@@ -216,6 +224,8 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     const componentSwapDataRedeem = [
+      noopSwapData,
+      noopSwapData,
       noopSwapData,
       noopSwapData,
       noopSwapData,
