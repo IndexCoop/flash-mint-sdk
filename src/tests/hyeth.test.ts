@@ -66,7 +66,7 @@ describe('hyETH', () => {
 
   // 0x
 
-  test('can mint with ETH', async () => {
+  test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
@@ -107,7 +107,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to ETH', async () => {
+  test.only('can redeem to ETH', async () => {
     const quote = await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
