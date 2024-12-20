@@ -7,6 +7,7 @@ import {
   TestFactory,
   transferFromWhale,
   wei,
+  wrapETH,
 } from './utils'
 
 describe('hyETH', () => {
@@ -31,6 +32,18 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
+  test.skip('can mint with WETH', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: getTokenByChainAndSymbol(chainId, 'WETH'),
+      outputToken: indexToken,
+      indexTokenAmount: wei('3').toString(),
+      slippage: 0.5,
+    })
+    await wrapETH(quote.inputAmount, factory.getSigner(), chainId)
+    await factory.executeTx()
+  })
+
   test.skip('can mint with ETH (large amout)', async () => {
     await factory.fetchQuote({
       isMinting: true,
@@ -42,7 +55,7 @@ describe('hyETH', () => {
     await factory.executeTx()
   })
 
-  test.skip('can mint with USDC', async () => {
+  test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
