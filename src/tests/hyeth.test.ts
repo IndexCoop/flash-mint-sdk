@@ -1,6 +1,7 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
+  balanceOf,
   getMainnetTestFactory,
-  getMainnetTestFactoryUniswap,
   QuoteTokens,
   SignerAccount4,
   TestFactory,
@@ -8,70 +9,23 @@ import {
   wei,
 } from './utils'
 
-const { eth, hyeth, usdc } = QuoteTokens
-
 describe('hyETH', () => {
-  const indexToken = hyeth
-  const signer = SignerAccount4
+  const chainId = 1
+  const { eth } = QuoteTokens
+  const indexToken = getTokenByChainAndSymbol(chainId, 'hyETH')
+  const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   let factory: TestFactory
   beforeEach(async () => {
+    const signer = SignerAccount4
     factory = getMainnetTestFactory(signer)
   })
 
-  // IndexSwapQuoteProvider
-
-  test.skip('can mint with ETH (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
+  test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
       outputToken: indexToken,
-      indexTokenAmount: wei('1').toString(),
-      slippage: 0.5,
-    })
-    await factory.executeTx()
-  })
-
-  test.skip('can mint with USDC (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
-    const quote = await factory.fetchQuote({
-      isMinting: true,
-      inputToken: usdc,
-      outputToken: indexToken,
-      indexTokenAmount: wei('1').toString(),
-      slippage: 0.5,
-    })
-    const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
-    await transferFromWhale(
-      whale,
-      factory.getSigner().address,
-      wei('100000', quote.inputToken.decimals),
-      quote.inputToken.address,
-      factory.getProvider()
-    )
-    await factory.executeTx()
-  })
-
-  test.skip('can redeem to ETH (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
-    await factory.fetchQuote({
-      isMinting: false,
-      inputToken: indexToken,
-      outputToken: eth,
-      indexTokenAmount: wei('1').toString(),
-      slippage: 0.5,
-    })
-    await factory.executeTx()
-  })
-
-  // 0x
-
-  test.only('can mint with ETH', async () => {
-    await factory.fetchQuote({
-      isMinting: true,
-      inputToken: eth,
-      outputToken: indexToken,
-      indexTokenAmount: wei('1').toString(),
+      indexTokenAmount: wei('3').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -104,10 +58,15 @@ describe('hyETH', () => {
       quote.inputToken.address,
       factory.getProvider()
     )
+    const usdcBalance = await balanceOf(
+      factory.getSigner(),
+      quote.inputToken.address
+    )
+    console.log('usdc balance:', usdcBalance.toString())
     await factory.executeTx()
   })
 
-  test.only('can redeem to ETH', async () => {
+  test('can redeem to ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
@@ -130,21 +89,13 @@ describe('hyETH', () => {
   })
 
   test('can redeem to USDC', async () => {
-    const quote = await factory.fetchQuote({
+    await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    const whale = '0x6e2C509D522d47F509E1a6D75682E6AbBC38B362'
-    await transferFromWhale(
-      whale,
-      factory.getSigner().address,
-      quote.indexTokenAmount,
-      quote.inputToken.address,
-      factory.getProvider()
-    )
     await factory.executeTx()
   })
 })
