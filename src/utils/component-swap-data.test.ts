@@ -138,7 +138,8 @@ describe('getRedemptionComponentSwapData()', () => {
       const dexData = componentSwapData[i].dexData
       expect(dexData.exchange).toEqual(Exchange.UniV3)
       expect(dexData.fees.length).toBeGreaterThan(0)
-      expect(dexData.path).toEqual([usdc.toLowerCase(), weth])
+      expect(dexData.path[0]).toEqual(usdc.toLowerCase())
+      expect(dexData.path[1]).toEqual(weth)
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
       expect(

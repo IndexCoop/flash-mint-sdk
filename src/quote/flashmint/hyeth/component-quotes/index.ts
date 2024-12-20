@@ -86,7 +86,12 @@ export class ComponentQuotesProvider {
       const amount = positions[index].toBigInt()
 
       if (isAddressEqual(component, this.wethAddress)) {
-        quotePromises.push(Promise.resolve(amount))
+        if (
+          isAddressEqual(inputTokenAddress, this.wethAddress) ||
+          isAddressEqual(outputTokenAddress, this.wethAddress)
+        ) {
+          quotePromises.push(Promise.resolve(amount))
+        }
       }
 
       if (this.isAcross(component)) {
