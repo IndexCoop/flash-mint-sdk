@@ -13,7 +13,7 @@ module.exports = {
       chainId: 1,
       forking: {
         url: process.env.MAINNET_ALCHEMY_API,
-        blockNumber: 21037088,
+        blockNumber: 21442190,
       },
       chains: {
         1: {

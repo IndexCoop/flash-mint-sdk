@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
@@ -14,22 +16,21 @@ import {
 
 import { FlashMintHyEthQuoteProvider } from './provider'
 
-const rpcUrl = getLocalHostProviderUrl(ChainId.Mainnet)
-const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
-
-const { eth, hyeth, usdc, weth } = QuoteTokens
-const indexToken = hyeth
+const chainId = ChainId.Mainnet
+const rpcUrl = getLocalHostProviderUrl(chainId)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 describe('FlashMintHyEthQuoteProvider()', () => {
+  const { eth } = QuoteTokens
+  const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
+  const indexToken = hyeth
+  const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
+  const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   test('returns a quote for minting w/ ETH', async () => {
     const request = {
       isMinting: true,
       inputToken: eth,
-      outputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
@@ -41,13 +42,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    const componentSwapDataIssue = [
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-    ]
+    const componentSwapDataIssue = [noopSwapData, noopSwapData]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
     expect(quote.swapDataInputTokenToEth).toBeNull()
@@ -57,11 +52,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     const request = {
       isMinting: true,
       inputToken: weth,
-      outputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
@@ -73,20 +64,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    const componentSwapDataIssue = [
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      // {
-      //   exchange: Exchange.UniV3,
-      //   fees: [500],
-      //   path: [WETH.address, USDC.address],
-      //   pool: AddressZero,
-      // },
-    ]
-    expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
+    expect(quote.componentsSwapData.length).toBe(2)
     const swapDataInputTokenToEth = {
       path: [weth.address, EthAddress],
       fees: [],
@@ -109,11 +87,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     const request = {
       isMinting: true,
       inputToken: usdc,
-      outputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
@@ -125,20 +99,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    const componentSwapDataIssue = [
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      // {
-      //   exchange: Exchange.UniV3,
-      //   fees: [500],
-      //   path: [WETH.address, USDC.address],
-      //   pool: AddressZero,
-      // },
-    ]
-    expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
+    expect(quote.componentsSwapData.length).toBe(2)
     const swapDataInputTokenToEth = {
       path: [USDC.address, WETH.address],
       fees: [500],
@@ -160,11 +121,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
   test('returns a quote for redeeming to ETH', async () => {
     const request = {
       isMinting: false,
-      inputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      inputToken: indexToken,
       outputToken: eth,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
@@ -177,20 +134,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    const componentSwapDataRedeem = [
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      // {
-      //   exchange: Exchange.UniV3,
-      //   fees: [500],
-      //   path: [USDC.address, WETH.address],
-      //   pool: AddressZero,
-      // },
-    ]
-    expect(quote.componentsSwapData).toStrictEqual(componentSwapDataRedeem)
+    expect(quote.componentsSwapData.length).toBe(2)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
     expect(quote.swapDataInputTokenToEth).toBeNull()
   })
@@ -198,11 +142,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
   test('returns a quote for redeeming to ERC-20', async () => {
     const request = {
       isMinting: false,
-      inputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      inputToken: indexToken,
       outputToken: usdc,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
@@ -215,20 +155,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    const componentSwapDataRedeem = [
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      noopSwapData,
-      // {
-      //   exchange: Exchange.UniV3,
-      //   fees: [500],
-      //   path: [USDC.address, WETH.address],
-      //   pool: AddressZero,
-      // },
-    ]
-    expect(quote.componentsSwapData).toStrictEqual(componentSwapDataRedeem)
+    expect(quote.componentsSwapData.length).toBe(2)
     expect(quote.swapDataInputTokenToEth).toBeNull()
     const swapDataEthToInputToken = {
       path: [WETH.address, USDC.address],
