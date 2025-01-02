@@ -3,7 +3,6 @@ import {
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
-  GitcoinStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
@@ -43,12 +42,6 @@ const eth2x: QuoteToken = {
   symbol: IndexCoopEthereum2xIndex.symbol!,
   decimals: 18,
   address: IndexCoopEthereum2xIndex.address!,
-}
-
-const gtcETH = {
-  address: GitcoinStakedETHIndex.address!,
-  decimals: 18,
-  symbol: GitcoinStakedETHIndex.symbol,
 }
 
 const hyeth = {
@@ -93,7 +86,6 @@ export const QuoteTokens = {
   dseth,
   eth,
   eth2x,
-  gtcETH,
   hyeth,
   iceth,
   mvi,

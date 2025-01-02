@@ -11,7 +11,6 @@ import {
   BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
   IndexCoopEthereum2xIndex,
@@ -55,13 +54,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for ETH2xBTC', () => {
     const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule('ETH2xBTC', ChainId.Arbitrum)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for gtcETH', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

@@ -7,7 +7,6 @@ import {
   BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  GitcoinStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -120,14 +119,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for dsETH', async () => {
     const contractType = getContractType(
       DiversifiedStakedETHIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for gtcETH', async () => {
-    const contractType = getContractType(
-      GitcoinStakedETHIndex.symbol,
       ChainId.Mainnet
     )
     expect(contractType).toBe(FlashMintContractType.zeroEx)

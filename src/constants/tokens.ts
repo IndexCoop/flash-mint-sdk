@@ -34,11 +34,6 @@ export const DiversifiedStakedETHIndex: Token = {
   symbol: 'dsETH',
 }
 
-export const GitcoinStakedETHIndex: Token = {
-  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
-  symbol: 'gtcETH',
-}
-
 export const HighYieldETHIndex: Token = {
   address: '0xc4506022Fb8090774E8A628d5084EED61D9B99Ee',
   symbol: 'hyETH',

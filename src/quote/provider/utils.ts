@@ -8,7 +8,6 @@ import {
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  GitcoinStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -92,7 +91,6 @@ export function getContractType(
     token === CoinDeskEthTrendIndex.symbol ||
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||
-    token === GitcoinStakedETHIndex.symbol ||
     token === MetaverseIndex.symbol ||
     token === RealWorldAssetIndex.symbol
   )
