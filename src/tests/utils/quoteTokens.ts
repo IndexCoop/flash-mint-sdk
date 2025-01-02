@@ -11,7 +11,6 @@ import {
   MetaverseIndex,
   USDC,
   WETH,
-  ic21 as IndexCoopLargeCapIndex,
   stETH,
 } from 'constants/tokens'
 import { QuoteToken } from 'quote/interfaces'
@@ -58,12 +57,6 @@ const hyeth = {
   symbol: HighYieldETHIndex.symbol,
 }
 
-const ic21: QuoteToken = {
-  symbol: IndexCoopLargeCapIndex.symbol,
-  decimals: 18,
-  address: IndexCoopLargeCapIndex.address!,
-}
-
 const iceth: QuoteToken = {
   symbol: InterestCompoundingETHIndex.symbol,
   decimals: 18,
@@ -102,7 +95,6 @@ export const QuoteTokens = {
   eth2x,
   gtcETH,
   hyeth,
-  ic21,
   iceth,
   mvi,
   steth,

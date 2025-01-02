@@ -3,7 +3,6 @@ import {
   BasicIssuanceModuleAddress,
   BasicIssuanceModulePolygonAddress,
   Contracts,
-  DebtIssuanceModuleAddress,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
@@ -18,7 +17,6 @@ import {
   HighYieldETHIndex,
   RealWorldAssetIndex,
   TheUSDCYieldIndex,
-  ic21,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -52,7 +50,6 @@ export function getIssuanceModule(
     case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
     case HighYieldETHIndex.symbol:
-    case ic21.symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
     case RealWorldAssetIndex.symbol:
