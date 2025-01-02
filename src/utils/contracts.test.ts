@@ -239,7 +239,7 @@ describe('getFlashMintZeroExContract()', () => {
 })
 
 describe('getFlashMintZeroExContractForToken()', () => {
-  test('returns Index Protocol for dsETH, gtcETH and wsETH2', async () => {
+  test('returns Index Protocol for dsETH and wsETH2', async () => {
     const expectedAddress = FlashMintZeroExMainnetAddress
     const contract = getFlashMintZeroExContractForToken(
       DiversifiedStakedETHIndex.symbol,
