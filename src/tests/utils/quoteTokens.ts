@@ -10,7 +10,6 @@ import {
   InterestCompoundingETHIndex,
   MetaverseIndex,
   USDC,
-  USDT,
   WETH,
   ic21 as IndexCoopLargeCapIndex,
   sETH2,
@@ -97,12 +96,6 @@ const usdc: QuoteToken = {
   symbol: USDC.symbol,
 }
 
-const usdt: QuoteToken = {
-  address: USDT.address!,
-  decimals: 6,
-  symbol: USDT.symbol,
-}
-
 const weth: QuoteToken = {
   address: WETH.address!,
   decimals: 18,
@@ -129,7 +122,6 @@ export const QuoteTokens = {
   seth2,
   steth,
   usdc,
-  usdt,
   weth,
   wseth,
 }

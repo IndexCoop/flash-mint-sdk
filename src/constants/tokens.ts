@@ -142,11 +142,6 @@ export const USDC: Token = {
   addressBase: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 }
 
-export const USDT: Token = {
-  symbol: 'USDT',
-  address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-}
-
 export const WETH: Token = {
   symbol: 'WETH',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
