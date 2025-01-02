@@ -1,6 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import {
-  DAI,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   ETH,
@@ -25,12 +24,6 @@ const btc2x: QuoteToken = {
   address: IndexCoopBitcoin2xIndex.address!,
   decimals: 18,
   symbol: IndexCoopBitcoin2xIndex.symbol,
-}
-
-const dai: QuoteToken = {
-  address: DAI.address!,
-  decimals: 18,
-  symbol: DAI.symbol,
 }
 
 const dpi: QuoteToken = {
@@ -131,7 +124,6 @@ const wseth: QuoteToken = {
 
 export const QuoteTokens = {
   btc2x,
-  dai,
   dpi,
   dseth,
   eth,
