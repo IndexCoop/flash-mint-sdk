@@ -17,7 +17,6 @@ import {
   IndexCoopInverseEthereumIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
-  RealWorldAssetIndex,
   TheUSDCYieldIndex,
 } from 'constants/tokens'
 
@@ -91,8 +90,7 @@ export function getContractType(
     token === CoinDeskEthTrendIndex.symbol ||
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||
-    token === MetaverseIndex.symbol ||
-    token === RealWorldAssetIndex.symbol
+    token === MetaverseIndex.symbol
   )
     return FlashMintContractType.zeroEx
   if (

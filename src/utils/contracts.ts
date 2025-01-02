@@ -32,7 +32,6 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
-  RealWorldAssetIndex,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -259,7 +258,6 @@ export const getFlashMintZeroExContractForToken = (
   switch (token) {
     case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
-    case RealWorldAssetIndex.symbol:
     case 'wsETH2':
       return new Contract(
         FlashMintZeroExMainnetAddress,

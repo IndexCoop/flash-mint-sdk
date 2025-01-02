@@ -84,11 +84,6 @@ export const MetaverseIndex: Token = {
   symbol: 'MVI',
 }
 
-export const RealWorldAssetIndex: Token = {
-  address: '0x7f5f1A44dd6f88cCb54Fe879e144dF644A4aDa24',
-  symbol: 'RWA',
-}
-
 export const TheUSDCYieldIndex: Token = {
   ...getTokenByChainAndSymbol(ChainId.Mainnet, 'icUSD'),
   addressBase: getTokenByChainAndSymbol(ChainId.Base, 'icUSD').address,
