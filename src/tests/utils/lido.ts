@@ -3,14 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { Wallet } from '@ethersproject/wallet'
 
-import { stETH, wstETH } from 'constants/tokens'
-
-import { approveErc20 } from '.'
-
 const LIDO = '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84'
-
-const stEthAddress = stETH.address!
-const wsthEthAddress = wstETH.address!
 
 export async function addLiquidityToLido(amount: BigNumber, signer: Wallet) {
   const contract = new Contract(LIDO, LIDO_ABI, signer)
@@ -24,13 +17,6 @@ export async function addLiquidityToLido(amount: BigNumber, signer: Wallet) {
   })
 }
 
-export async function wrapStEth(amount: BigNumber, signer: Wallet) {
-  await approveErc20(stEthAddress, wsthEthAddress, amount, signer)
-  const contract = new Contract(wsthEthAddress, WSTETH_ABI, signer)
-  const gasEstimate = await contract.estimateGas.wrap(amount)
-  await contract.wrap(amount, { gasLimit: gasEstimate })
-}
-
 const LIDO_ABI = [
   {
     constant: false,
@@ -39,18 +25,6 @@ const LIDO_ABI = [
     outputs: [{ name: '', type: 'uint256' }],
     payable: true,
     stateMutability: 'payable',
-    type: 'function',
-  },
-]
-
-const WSTETH_ABI = [
-  {
-    inputs: [
-      { internalType: 'uint256', name: '_stETHAmount', type: 'uint256' },
-    ],
-    name: 'wrap',
-    outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-    stateMutability: 'nonpayable',
     type: 'function',
   },
 ]

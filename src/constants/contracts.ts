@@ -33,7 +33,6 @@ export const FlashMintZeroExMainnetAddress =
 export const IndexDebtIssuanceModuleV2Address =
   '0xa0a98EB7Af028BE00d04e46e1316808A62a8fd59'
 
-// Used by cdETI and icRETH only at the moment
 export const IndexDebtIssuanceModuleV2Address_v2 =
   '0x04b59F9F09750C044D7CfbC177561E409085f0f3'
 
@@ -44,14 +43,8 @@ export const BasicIssuanceModuleAddress =
 export const BasicIssuanceModulePolygonAddress =
   '0x38E5462BBE6A72F79606c1A0007468aA4334A92b'
 
-export const DebtIssuanceModuleAddress =
-  '0x39F024d621367C044BacE2bf0Fb15Fb3612eCB92'
-
 export const DebtIssuanceModuleV2Address =
   '0x69a592D2129415a4A1d1b1E309C17051B7F28d57'
-
-export const DebtIssuanceModuleV2PolygonAddress =
-  '0xf2dC2f456b98Af9A6bEEa072AF152a7b0EaA40C9'
 
 export const ExchangeIssuanceLeveragedMainnetAddress =
   '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1'

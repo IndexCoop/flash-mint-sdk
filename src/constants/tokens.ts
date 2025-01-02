@@ -18,11 +18,6 @@ export const BanklessBEDIndex: Token = {
   symbol: 'BED',
 }
 
-export const BTC2xFlexibleLeverageIndex: Token = {
-  address: '0x0B498ff89709d3838a063f1dFA463091F9801c2b',
-  symbol: 'BTC2x-FLI',
-}
-
 export const CoinDeskEthTrendIndex: Token = {
   address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
   symbol: 'cdETI',
@@ -39,23 +34,9 @@ export const DiversifiedStakedETHIndex: Token = {
   symbol: 'dsETH',
 }
 
-export const ETH2xFlexibleLeverageIndex: Token = {
-  address: '0xAa6E8127831c9DE45ae56bB1b0d4D4Da6e5665BD',
-  symbol: 'ETH2x-FLI',
-}
-
-export const GitcoinStakedETHIndex: Token = {
-  address: '0x36c833Eed0D376f75D1ff9dFDeE260191336065e',
-  symbol: 'gtcETH',
-}
-
 export const HighYieldETHIndex: Token = {
   address: '0xc4506022Fb8090774E8A628d5084EED61D9B99Ee',
   symbol: 'hyETH',
-}
-
-export const ic21: Token = {
-  ...getTokenByChainAndSymbol(1, 'ic21'),
 }
 
 export const IndexCoopBitcoin2xIndex: Token = {
@@ -103,22 +84,12 @@ export const MetaverseIndex: Token = {
   symbol: 'MVI',
 }
 
-export const RealWorldAssetIndex: Token = {
-  address: '0x7f5f1A44dd6f88cCb54Fe879e144dF644A4aDa24',
-  symbol: 'RWA',
-}
-
 export const TheUSDCYieldIndex: Token = {
   ...getTokenByChainAndSymbol(ChainId.Mainnet, 'icUSD'),
   addressBase: getTokenByChainAndSymbol(ChainId.Base, 'icUSD').address,
 }
 
 // Other
-
-export const DAI: Token = {
-  symbol: 'DAI',
-  address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-}
 
 export const ETH: Token = {
   symbol: 'ETH',
@@ -128,16 +99,6 @@ export const ETH: Token = {
 export const MATIC: Token = {
   symbol: 'MATIC',
   addressPolygon: '0x0000000000000000000000000000000000001010',
-}
-
-export const RETH: Token = {
-  symbol: 'rETH',
-  address: '0xae78736Cd615f374D3085123A210448E74Fc6393',
-}
-
-export const sETH2: Token = {
-  symbol: 'sETH2',
-  address: '0xFe2e637202056d30016725477c5da089Ab0A043A',
 }
 
 export const stETH: Token = {
@@ -152,11 +113,6 @@ export const USDC: Token = {
   addressBase: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
 }
 
-export const USDT: Token = {
-  symbol: 'USDT',
-  address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-}
-
 export const WETH: Token = {
   symbol: 'WETH',
   address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
@@ -164,14 +120,4 @@ export const WETH: Token = {
   addressBase: '0x4200000000000000000000000000000000000006',
   addressOptimism: '0x4200000000000000000000000000000000000006',
   addressPolygon: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-}
-
-export const wsETH2: Token = {
-  symbol: 'wsETH2',
-  address: '0x5dA21D9e63F1EA13D34e48B7223bcc97e3ecD687',
-}
-
-export const wstETH: Token = {
-  symbol: 'wstETH',
-  address: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0',
 }

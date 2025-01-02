@@ -12,8 +12,6 @@ import {
 import {
   DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
-  wsETH2,
-  GitcoinStakedETHIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum3xIndex,
@@ -241,7 +239,7 @@ describe('getFlashMintZeroExContract()', () => {
 })
 
 describe('getFlashMintZeroExContractForToken()', () => {
-  test('returns Index Protocol for dsETH, gtcETH and wsETH2', async () => {
+  test('returns Index Protocol for dsETH and wsETH2', async () => {
     const expectedAddress = FlashMintZeroExMainnetAddress
     const contract = getFlashMintZeroExContractForToken(
       DiversifiedStakedETHIndex.symbol,
@@ -256,26 +254,7 @@ describe('getFlashMintZeroExContractForToken()', () => {
     expect(contract.functions.redeemExactSetForETH).toBeDefined()
     expect(contract.functions.redeemExactSetForToken).toBeDefined()
 
-    const gtcEthContract = getFlashMintZeroExContractForToken(
-      GitcoinStakedETHIndex.symbol,
-      undefined,
-      1
-    )
-    expect(gtcEthContract.address).toEqual(expectedAddress)
-    expect(gtcEthContract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(
-      gtcEthContract.functions.getRequiredRedemptionComponents
-    ).toBeDefined()
-    expect(gtcEthContract.functions.issueExactSetFromETH).toBeDefined()
-    expect(gtcEthContract.functions.issueExactSetFromToken).toBeDefined()
-    expect(gtcEthContract.functions.redeemExactSetForETH).toBeDefined()
-    expect(gtcEthContract.functions.redeemExactSetForToken).toBeDefined()
-
-    const contract2 = getFlashMintZeroExContractForToken(
-      wsETH2.symbol,
-      undefined,
-      1
-    )
+    const contract2 = getFlashMintZeroExContractForToken('wsETH2', undefined, 1)
     expect(contract2.address).toEqual(expectedAddress)
     expect(contract2.functions.getRequiredIssuanceComponents).toBeDefined()
     expect(contract2.functions.getRequiredRedemptionComponents).toBeDefined()

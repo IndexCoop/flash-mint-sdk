@@ -11,16 +11,13 @@ import {
   BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
-  wsETH2,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   HighYieldETHIndex,
   TheUSDCYieldIndex,
-  ic21,
 } from 'constants/tokens'
 
 import { getIssuanceModule } from './issuanceModules'
@@ -61,23 +58,9 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
 
-  test('returns debt issuance module v2 for gtcETH', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(GitcoinStakedETHIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
   test('returns debt issuance module v2 for hyETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule(HighYieldETHIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for ic21', () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
-    const issuanceModule = getIssuanceModule(ic21.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
@@ -91,7 +74,7 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
 
   test('returns debt issuance module v2 for wsETH2', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(wsETH2.symbol)
+    const issuanceModule = getIssuanceModule('wsETH2')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

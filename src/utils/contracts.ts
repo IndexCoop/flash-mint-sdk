@@ -24,11 +24,7 @@ import {
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
 import {
-  BTC2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
-  wsETH2,
-  GitcoinStakedETHIndex,
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
@@ -36,8 +32,6 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
-  RealWorldAssetIndex,
-  ic21,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
@@ -181,9 +175,6 @@ export const getFlashMintLeveragedContractForToken = (
     return getIndexFlashMintLeveragedContract(signerOrProvider)
   }
   switch (token) {
-    case BTC2xFlexibleLeverageIndex.symbol:
-    case ETH2xFlexibleLeverageIndex.symbol:
-      return getFlashMintLeveragedForCompoundContract(signerOrProvider)
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
       return getIndexFlashMintLeveragedContract(signerOrProvider)
@@ -267,10 +258,7 @@ export const getFlashMintZeroExContractForToken = (
   switch (token) {
     case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
-    case GitcoinStakedETHIndex.symbol:
-    case ic21.symbol:
-    case RealWorldAssetIndex.symbol:
-    case wsETH2.symbol:
+    case 'wsETH2':
       return new Contract(
         FlashMintZeroExMainnetAddress,
         FLASHMINT_ZEROEX_ABI,
