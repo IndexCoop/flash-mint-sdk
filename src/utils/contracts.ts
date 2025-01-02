@@ -27,7 +27,6 @@ import {
   BTC2xFlexibleLeverageIndex,
   ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
-  wsETH2,
   GitcoinStakedETHIndex,
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
@@ -270,7 +269,7 @@ export const getFlashMintZeroExContractForToken = (
     case GitcoinStakedETHIndex.symbol:
     case ic21.symbol:
     case RealWorldAssetIndex.symbol:
-    case wsETH2.symbol:
+    case 'wsETH2':
       return new Contract(
         FlashMintZeroExMainnetAddress,
         FLASHMINT_ZEROEX_ABI,

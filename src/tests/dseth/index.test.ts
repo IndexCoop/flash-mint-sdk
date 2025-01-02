@@ -1,7 +1,6 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   addLiquidityToLido,
-  balanceOf,
   getMainnetTestFactory,
   QuoteTokens,
   SignerAccount3,
@@ -12,7 +11,7 @@ import {
   wrapETH,
 } from '../utils'
 
-const { dseth, eth, seth2, steth, usdc, weth } = QuoteTokens
+const { dseth, eth, steth, usdc, weth } = QuoteTokens
 
 describe('dsETH (mainnet)', () => {
   let factory: TestFactory
@@ -99,7 +98,7 @@ describe('dsETH (mainnet)', () => {
   test('minting with sETH2', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
-      inputToken: seth2,
+      inputToken: getTokenByChainAndSymbol(1, 'sETH2'),
       outputToken: dseth,
       indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
@@ -125,7 +124,7 @@ describe('dsETH (mainnet)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: dseth,
-      outputToken: seth2,
+      outputToken: getTokenByChainAndSymbol(1, 'sETH2'),
       indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })

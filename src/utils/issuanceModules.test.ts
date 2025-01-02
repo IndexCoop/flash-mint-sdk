@@ -14,7 +14,6 @@ import {
   GitcoinStakedETHIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
-  wsETH2,
   IndexCoopEthereum2xIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -91,7 +90,7 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
 
   test('returns debt issuance module v2 for wsETH2', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(wsETH2.symbol)
+    const issuanceModule = getIssuanceModule('wsETH2')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

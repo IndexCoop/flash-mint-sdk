@@ -12,9 +12,7 @@ import {
   USDC,
   WETH,
   ic21 as IndexCoopLargeCapIndex,
-  sETH2,
   stETH,
-  wsETH2,
 } from 'constants/tokens'
 import { QuoteToken } from 'quote/interfaces'
 
@@ -78,12 +76,6 @@ const mvi: QuoteToken = {
   symbol: MetaverseIndex.symbol,
 }
 
-const seth2: QuoteToken = {
-  address: sETH2.address!,
-  decimals: 18,
-  symbol: sETH2.symbol,
-}
-
 const steth: QuoteToken = {
   address: stETH.address!,
   decimals: 18,
@@ -102,12 +94,6 @@ const weth: QuoteToken = {
   symbol: WETH.symbol,
 }
 
-const wseth: QuoteToken = {
-  address: wsETH2.address!,
-  decimals: 18,
-  symbol: wsETH2.symbol,
-}
-
 export const QuoteTokens = {
   btc2x,
   dpi,
@@ -119,9 +105,7 @@ export const QuoteTokens = {
   ic21,
   iceth,
   mvi,
-  seth2,
   steth,
   usdc,
   weth,
-  wseth,
 }

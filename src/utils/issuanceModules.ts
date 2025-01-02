@@ -13,7 +13,6 @@ import {
   ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
-  wsETH2,
   GitcoinStakedETHIndex,
   CoinDeskEthTrendIndex,
   IndexCoopEthereum2xIndex,
@@ -67,7 +66,7 @@ export function getIssuanceModule(
         isDebtIssuance: true,
       }
     case GitcoinStakedETHIndex.symbol:
-    case wsETH2.symbol:
+    case 'wsETH2':
       return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
     case InterestCompoundingETHIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
