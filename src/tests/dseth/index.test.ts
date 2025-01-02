@@ -10,10 +10,9 @@ import {
   transferFromWhale,
   wei,
   wrapETH,
-  wrapStEth,
 } from '../utils'
 
-const { dseth, eth, seth2, steth, usdc, weth, wseth } = QuoteTokens
+const { dseth, eth, seth2, steth, usdc, weth } = QuoteTokens
 
 describe('dsETH (mainnet)', () => {
   let factory: TestFactory
@@ -180,32 +179,6 @@ describe('dsETH (mainnet)', () => {
       isMinting: false,
       inputToken: dseth,
       outputToken: usdc,
-      indexTokenAmount: wei('0.1').toString(),
-      slippage: 1,
-    })
-    await factory.executeTx()
-  })
-
-  test.skip('minting with wstETH', async () => {
-    await factory.fetchQuote({
-      isMinting: true,
-      inputToken: wseth,
-      outputToken: dseth,
-      indexTokenAmount: wei('0.1').toString(),
-      slippage: 1,
-    })
-    const signer = factory.getSigner()
-    await addLiquidityToLido(wei('2'), signer)
-    const balance = await balanceOf(signer, steth.address)
-    await wrapStEth(balance, signer)
-    await factory.executeTx()
-  })
-
-  test.skip('redeeming to wstETH', async () => {
-    await factory.fetchQuote({
-      isMinting: false,
-      inputToken: dseth,
-      outputToken: wseth,
       indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
