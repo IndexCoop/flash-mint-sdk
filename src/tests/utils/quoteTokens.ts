@@ -9,7 +9,6 @@ import {
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
   MetaverseIndex,
-  RETH,
   USDC,
   USDT,
   WETH,
@@ -80,12 +79,6 @@ const mvi: QuoteToken = {
   symbol: MetaverseIndex.symbol,
 }
 
-const reth: QuoteToken = {
-  address: RETH.address!,
-  decimals: 18,
-  symbol: RETH.symbol,
-}
-
 const seth2: QuoteToken = {
   address: sETH2.address!,
   decimals: 18,
@@ -133,7 +126,6 @@ export const QuoteTokens = {
   ic21,
   iceth,
   mvi,
-  reth,
   seth2,
   steth,
   usdc,
