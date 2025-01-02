@@ -7,7 +7,6 @@ import {
   BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
@@ -137,14 +136,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for MVI', async () => {
     const contractType = getContractType(MetaverseIndex.symbol, ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for ETH2x-FLI', async () => {
-    const contractType = getContractType(
-      ETH2xFlexibleLeverageIndex.symbol,
-      ChainId.Mainnet
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
   })
 
   test('returns correct contract type for BTC2X (mainnet)', async () => {

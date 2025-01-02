@@ -5,11 +5,9 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import {
   BanklessBEDIndex,
-  BTC2xFlexibleLeverageIndex,
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  ETH2xFlexibleLeverageIndex,
   GitcoinStakedETHIndex,
   HighYieldETHIndex,
   ic21,
@@ -102,8 +100,6 @@ export function getContractType(
   )
     return FlashMintContractType.zeroEx
   if (
-    token === BTC2xFlexibleLeverageIndex.symbol ||
-    token === ETH2xFlexibleLeverageIndex.symbol ||
     token === IndexCoopBitcoin2xIndex.symbol ||
     token === IndexCoopEthereum2xIndex.symbol ||
     token === InterestCompoundingETHIndex.symbol

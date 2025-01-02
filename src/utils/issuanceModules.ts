@@ -9,8 +9,6 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
 import {
-  BTC2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   InterestCompoundingETHIndex,
   GitcoinStakedETHIndex,
@@ -51,9 +49,6 @@ export function getIssuanceModule(
     }
   // Mainnet
   switch (tokenSymbol) {
-    case BTC2xFlexibleLeverageIndex.symbol:
-    case ETH2xFlexibleLeverageIndex.symbol:
-      return { address: DebtIssuanceModuleAddress, isDebtIssuance: true }
     case CoinDeskEthTrendIndex.symbol:
     case DiversifiedStakedETHIndex.symbol:
     case HighYieldETHIndex.symbol:

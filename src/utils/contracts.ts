@@ -24,8 +24,6 @@ import {
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
 import {
-  BTC2xFlexibleLeverageIndex,
-  ETH2xFlexibleLeverageIndex,
   DiversifiedStakedETHIndex,
   GitcoinStakedETHIndex,
   CoinDeskEthTrendIndex,
@@ -180,9 +178,6 @@ export const getFlashMintLeveragedContractForToken = (
     return getIndexFlashMintLeveragedContract(signerOrProvider)
   }
   switch (token) {
-    case BTC2xFlexibleLeverageIndex.symbol:
-    case ETH2xFlexibleLeverageIndex.symbol:
-      return getFlashMintLeveragedForCompoundContract(signerOrProvider)
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
       return getIndexFlashMintLeveragedContract(signerOrProvider)
