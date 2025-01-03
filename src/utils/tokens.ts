@@ -1,9 +1,9 @@
 import { ChainId } from '../constants/chains'
-import { Token } from '../constants/tokens'
+import type { Token } from '../constants/tokens'
 
 export function getAddressForToken(
   token: Token,
-  chainId: number | undefined
+  chainId: number | undefined,
 ): string | undefined {
   switch (chainId) {
     case ChainId.Arbitrum:

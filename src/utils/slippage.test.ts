@@ -11,7 +11,7 @@ describe('slippageAdjustedTokenAmount()', () => {
       wei(100),
       18,
       slippagePercentage,
-      isMinting
+      isMinting,
     )
     const result = formatUnits(adjustedAmount).toLocaleString().substring(0, 5)
     expect(result).toEqual('100.5')
@@ -24,7 +24,7 @@ describe('slippageAdjustedTokenAmount()', () => {
       wei(100),
       18,
       slippagePercentage,
-      isMinting
+      isMinting,
     )
     const result = formatUnits(adjustedAmount).toLocaleString().substring(0, 4)
     expect(result).toEqual('99.5')

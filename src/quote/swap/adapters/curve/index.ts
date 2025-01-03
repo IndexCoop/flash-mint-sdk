@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
-import {
+import type {
+  SwapQuote,
   SwapQuoteProvider,
   SwapQuoteRequest,
-  SwapQuote,
 } from 'quote/swap/interfaces'
 import { getRpcProvider } from 'utils/rpc-provider'
 

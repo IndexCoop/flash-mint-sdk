@@ -6,9 +6,9 @@ import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
 
 import {
+  QuoteTokens,
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
-  QuoteTokens,
 } from 'tests/utils'
 
 import { LeveragedExtendedQuoteProvider } from './provider'
@@ -40,7 +40,7 @@ describe('LeveragedQuoteProvider()', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -50,10 +50,10 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
   })
 
@@ -73,7 +73,7 @@ describe('LeveragedQuoteProvider()', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -83,10 +83,10 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
   })
 
@@ -106,7 +106,7 @@ describe('LeveragedQuoteProvider()', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -116,10 +116,10 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     const swapDataOutputToken = noopSwapData
     noopSwapData.path = [
@@ -145,7 +145,7 @@ describe('LeveragedQuoteProvider()', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -155,10 +155,10 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     const swapDataOutputToken = noopSwapData
     noopSwapData.path = [
@@ -186,7 +186,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrlBase,
-      swapQuoteProviderBase
+      swapQuoteProviderBase,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -196,10 +196,10 @@ describe('LeveragedQuoteProvider() - Base', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
   })
 
@@ -223,7 +223,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrlBase,
-      swapQuoteProviderBase
+      swapQuoteProviderBase,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -233,10 +233,10 @@ describe('LeveragedQuoteProvider() - Base', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
   })
 
@@ -256,7 +256,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrlBase,
-      swapQuoteProviderBase
+      swapQuoteProviderBase,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -266,10 +266,10 @@ describe('LeveragedQuoteProvider() - Base', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     const swapDataOutputToken = noopSwapData
     noopSwapData.path = [
@@ -295,7 +295,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     }
     const quoteProvider = new LeveragedExtendedQuoteProvider(
       rpcUrlBase,
-      swapQuoteProviderBase
+      swapQuoteProviderBase,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -305,10 +305,10 @@ describe('LeveragedQuoteProvider() - Base', () => {
     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
     expect(
-      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(USDC.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     expect(
-      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path)
+      pathContains(WETH.addressBase!, quote.swapDataDebtCollateral.path),
     ).toBe(true)
     const swapDataOutputToken = noopSwapData
     noopSwapData.path = [

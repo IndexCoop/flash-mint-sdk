@@ -13,16 +13,16 @@ import {
   MATIC,
   stETH,
 } from 'constants/tokens'
+import { Exchange, type SwapData } from 'utils'
 import {
+  type LeveragedTokenData,
   getLeveragedTokenData,
-  LeveragedTokenData,
 } from 'utils/leveraged-token-data'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
-import { Exchange, SwapData } from 'utils'
 
-import { QuoteProvider, QuoteToken } from '../../interfaces'
-import { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
+import type { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
 
 export interface FlashMintLeveragedQuoteRequest {
   isMinting: boolean
@@ -45,11 +45,11 @@ export class LeveragedQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintLeveragedQuoteRequest
+    request: FlashMintLeveragedQuoteRequest,
   ): Promise<FlashMintLeveragedQuote | null> {
     const provider = getRpcProvider(this.rpcUrl)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
@@ -66,7 +66,7 @@ export class LeveragedQuoteProvider
       indexTokenSymbol,
       isMinting,
       chainId,
-      provider
+      provider,
     )
     if (leveragedTokenData === null) return null
     const debtCollateralResult = isMinting
@@ -74,13 +74,13 @@ export class LeveragedQuoteProvider
           leveragedTokenData,
           sources,
           slippage,
-          chainId
+          chainId,
         )
       : await this.getSwapDataCollateralToDebt(
           leveragedTokenData,
           sources,
           slippage,
-          chainId
+          chainId,
         )
     if (!debtCollateralResult) return null
     const { collateralObtainedOrSold } = debtCollateralResult
@@ -93,16 +93,16 @@ export class LeveragedQuoteProvider
     }
     // Relevant when issuing
     const collateralShortfall = leveragedTokenData.collateralAmount.sub(
-      collateralObtainedOrSold
+      collateralObtainedOrSold,
     )
     // Relevant when redeeming
     const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
-      collateralObtainedOrSold
+      collateralObtainedOrSold,
     )
     const inputOutputTokenAddress = getPaymentTokenAddress(
       isMinting ? inputToken : outputToken,
       isMinting,
-      chainId
+      chainId,
     )
     const { swapDataPaymentToken, paymentTokenAmount } =
       await this.getSwapDataAndPaymentTokenAmount(
@@ -114,7 +114,7 @@ export class LeveragedQuoteProvider
         isMinting,
         slippage,
         sources,
-        chainId
+        chainId,
       )
 
     const estimatedInputOutputAmount = paymentTokenAmount
@@ -125,7 +125,7 @@ export class LeveragedQuoteProvider
       estimatedInputOutputAmount,
       inputOuputTokenDecimals,
       slippage,
-      isMinting
+      isMinting,
     )
     return {
       indexTokenAmount,
@@ -141,7 +141,7 @@ export class LeveragedQuoteProvider
     leveragedTokenData: LeveragedTokenData,
     includeSources: Exchange[],
     slippage: number,
-    chainId: number
+    chainId: number,
   ) {
     const quoteRequest: SwapQuoteRequest = {
       chainId,
@@ -167,7 +167,7 @@ export class LeveragedQuoteProvider
     leveragedTokenData: LeveragedTokenData,
     includeSources: Exchange[],
     slippage: number,
-    chainId: number
+    chainId: number,
   ) {
     const quoteRequest: SwapQuoteRequest = {
       chainId,
@@ -196,7 +196,7 @@ export class LeveragedQuoteProvider
     isMinting: boolean,
     slippage: number,
     includeSources: Exchange[],
-    chainId: number
+    chainId: number,
   ): Promise<{
     swapDataPaymentToken: SwapData
     paymentTokenAmount: BigNumber
@@ -267,7 +267,7 @@ function getSourcesToInclude(isIcEth: boolean): Exchange[] {
 function getPaymentTokenAddress(
   paymentToken: QuoteToken,
   isMinting: boolean,
-  chainId: number
+  chainId: number,
 ): string {
   if (paymentToken.symbol === ETH.symbol) {
     return 'ETH'

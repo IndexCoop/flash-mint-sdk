@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ExchangeIssuanceLeveragedMainnetAddress } from 'constants/contracts'
 import {
   collateralDebtSwapData,
@@ -11,10 +12,9 @@ import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import {
-  FlashMintLeveragedBuildRequest,
+  type FlashMintLeveragedBuildRequest,
   LeveragedTransactionBuilder,
 } from './leveraged'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 const chainId = 1
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -25,7 +25,7 @@ describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
     indexToken.symbol,
     getTestRpcProvider(chainId),
-    chainId
+    chainId,
   )
   const rpcUrl = getLocalHostProviderUrl(chainId)
 
@@ -135,7 +135,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.inputOutputToken,
       buildRequest.inputOutputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataPaymentToken
+      buildRequest.swapDataPaymentToken,
     )
     const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -151,7 +151,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.indexTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataPaymentToken,
-      { value: buildRequest.inputOutputTokenAmount }
+      { value: buildRequest.inputOutputTokenAmount },
     )
     const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -169,7 +169,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.inputOutputToken,
       buildRequest.inputOutputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataPaymentToken
+      buildRequest.swapDataPaymentToken,
     )
     const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -185,7 +185,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.indexTokenAmount,
       buildRequest.inputOutputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataPaymentToken
+      buildRequest.swapDataPaymentToken,
     )
     const builder = new LeveragedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -198,7 +198,7 @@ describe('LeveragedTransactionBuilder()', () => {
 function createBuildRequest(
   isMinting = true,
   inputOutputToken: string = usdcAddress,
-  inputOutputTokenSymbol = 'USDC'
+  inputOutputTokenSymbol = 'USDC',
 ): FlashMintLeveragedBuildRequest {
   return {
     isMinting,

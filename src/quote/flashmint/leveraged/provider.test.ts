@@ -5,15 +5,15 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import { wei } from 'utils/numbers'
 import {
+  QuoteTokens,
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
-  QuoteTokens,
 } from 'tests/utils'
+import { wei } from 'utils/numbers'
 
-import { LeveragedQuoteProvider } from './provider'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { LeveragedQuoteProvider } from './provider'
 
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
@@ -39,10 +39,10 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
     expect(quote.swapDataDebtCollateral).toStrictEqual(
-      debtCollateralSwapData[indexToken.symbol]
+      debtCollateralSwapData[indexToken.symbol],
     )
     expect(quote.swapDataPaymentToken).toStrictEqual(
-      inputSwapData[indexToken.symbol]['ETH']
+      inputSwapData[indexToken.symbol]['ETH'],
     )
   })
 
@@ -62,10 +62,10 @@ describe('LeveragedQuoteProvider()', () => {
     expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
     expect(quote.swapDataDebtCollateral).toStrictEqual(
-      collateralDebtSwapData[indexToken.symbol]
+      collateralDebtSwapData[indexToken.symbol],
     )
     expect(quote.swapDataPaymentToken).toStrictEqual(
-      outputSwapData[indexToken.symbol]['ETH']
+      outputSwapData[indexToken.symbol]['ETH'],
     )
   })
 })

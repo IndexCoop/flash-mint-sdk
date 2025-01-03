@@ -3,18 +3,18 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { noopSwapData } from 'constants/swapdata'
+import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import { getLocalHostProviderUrl } from 'tests/utils'
+import { Exchange } from 'utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
-import { Exchange } from 'utils'
 
+import { getRpcProvider } from 'utils/rpc-provider'
 import {
-  FlashMintLeveragedExtendedBuildRequest,
+  type FlashMintLeveragedExtendedBuildRequest,
   LeveragedExtendedTransactionBuilder,
 } from './leveraged-extended'
-import { getRpcProvider } from 'utils/rpc-provider'
 
 const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
 const rpcUrlBase = getLocalHostProviderUrl(ChainId.Base)
@@ -33,12 +33,12 @@ describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
     IndexCoopEthereum2xIndex.symbol,
     provider,
-    ChainId.Arbitrum
+    ChainId.Arbitrum,
   )
   const contractBase = getFlashMintLeveragedContractForToken(
     IndexCoopEthereum2xIndex.symbol,
     providerBase,
-    ChainId.Base
+    ChainId.Base,
   )
 
   beforeEach((): void => {
@@ -154,7 +154,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataInputOutputToken
+      buildRequest.swapDataInputOutputToken,
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -171,7 +171,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      { value: buildRequest.inputTokenAmount }
+      { value: buildRequest.inputTokenAmount },
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -187,7 +187,7 @@ describe('LeveragedTransactionBuilder()', () => {
       IndexCoopEthereum2xIndex.addressArbitrum!,
       IndexCoopEthereum2xIndex.symbol,
       usdcAddress,
-      'USDC'
+      'USDC',
     )
     const refTx = await contract.populateTransaction.redeemExactSetForERC20(
       buildRequest.inputToken,
@@ -195,7 +195,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.outputToken,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataInputOutputToken
+      buildRequest.swapDataInputOutputToken,
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -210,14 +210,14 @@ describe('LeveragedTransactionBuilder()', () => {
       IndexCoopEthereum2xIndex.addressArbitrum!,
       IndexCoopEthereum2xIndex.symbol,
       eth,
-      'ETH'
+      'ETH',
     )
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataInputOutputToken
+      buildRequest.swapDataInputOutputToken,
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -232,7 +232,7 @@ describe('LeveragedTransactionBuilder()', () => {
       eth,
       'ETH',
       IndexCoopEthereum2xIndex.addressBase!,
-      IndexCoopEthereum2xIndex.symbol
+      IndexCoopEthereum2xIndex.symbol,
     )
     const indexToken = buildRequest.outputToken
     const refTx = await contractBase.populateTransaction.issueExactSetFromETH(
@@ -240,7 +240,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      { value: buildRequest.inputTokenAmount }
+      { value: buildRequest.inputTokenAmount },
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrlBase)
     const tx = await builder.build(buildRequest)
@@ -256,7 +256,7 @@ describe('LeveragedTransactionBuilder()', () => {
       IndexCoopEthereum2xIndex.addressBase!,
       IndexCoopEthereum2xIndex.symbol,
       usdcAddress,
-      'USDC'
+      'USDC',
     )
     const refTx = await contractBase.populateTransaction.redeemExactSetForERC20(
       buildRequest.inputToken,
@@ -264,7 +264,7 @@ describe('LeveragedTransactionBuilder()', () => {
       buildRequest.outputToken,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataInputOutputToken
+      buildRequest.swapDataInputOutputToken,
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrlBase)
     const tx = await builder.build(buildRequest)
@@ -279,14 +279,14 @@ describe('LeveragedTransactionBuilder()', () => {
       IndexCoopEthereum2xIndex.addressBase!,
       IndexCoopEthereum2xIndex.symbol,
       eth,
-      'ETH'
+      'ETH',
     )
     const refTx = await contractBase.populateTransaction.redeemExactSetForETH(
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
-      buildRequest.swapDataInputOutputToken
+      buildRequest.swapDataInputOutputToken,
     )
     const builder = new LeveragedExtendedTransactionBuilder(rpcUrlBase)
     const tx = await builder.build(buildRequest)
@@ -301,7 +301,7 @@ function createBuildRequest(
   inputToken: string = usdcAddress,
   inputTokenSymbol = 'USDC',
   outputToken: string = IndexCoopEthereum2xIndex.addressArbitrum!,
-  outputTokenSymbol: string = IndexCoopEthereum2xIndex.symbol
+  outputTokenSymbol: string = IndexCoopEthereum2xIndex.symbol,
 ): FlashMintLeveragedExtendedBuildRequest {
   const collateralDebtSwapData = {
     exchange: Exchange.UniV3,

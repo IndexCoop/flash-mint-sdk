@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { SwapQuote, SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
+import type { SwapQuote, SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
 import { Exchange } from 'utils'
 
-import { QuoteToken } from '../../interfaces'
+import type { QuoteToken } from '../../interfaces'
 
 export type ComponentQuotesResult = {
   componentQuotes: string[]
@@ -14,7 +14,7 @@ export class ComponentsQuoteProvider {
     readonly chainId: number,
     readonly slippage: number,
     readonly wethAddress: string,
-    readonly swapQuoteProvider: SwapQuoteProvider
+    readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   /**
@@ -34,7 +34,7 @@ export class ComponentsQuoteProvider {
     positions: BigNumber[],
     isMinting: boolean,
     inputToken: QuoteToken,
-    outputToken: QuoteToken
+    outputToken: QuoteToken,
   ): Promise<ComponentQuotesResult | null> {
     if (components.length === 0 || positions.length === 0) return null
     if (components.length !== positions.length) return null
@@ -77,13 +77,13 @@ export class ComponentsQuoteProvider {
 
     const resultsWithNull = await Promise.all(quotePromises)
     const results: SwapQuote[] = resultsWithNull.filter(
-      (e): e is Exclude<typeof e, null> => e !== null
+      (e): e is Exclude<typeof e, null> => e !== null,
     )
     if (results.length !== resultsWithNull.length) return null
     const componentQuotes = results.map((result) => result.callData)
     const inputOutputTokenAmount = results
       .map((result) =>
-        BigNumber.from(isMinting ? result.inputAmount : result.outputAmount)
+        BigNumber.from(isMinting ? result.inputAmount : result.outputAmount),
       )
       .reduce((prevValue, currValue) => {
         return currValue.add(prevValue)

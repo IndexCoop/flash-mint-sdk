@@ -2,12 +2,12 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import {
+  QuoteTokens,
+  type TestFactory,
   getMainnetTestFactory,
   getMainnetTestFactoryUniswap,
   getSignerAccount,
   getTestRpcProvider,
-  QuoteTokens,
-  TestFactory,
   wei,
   wrapETH,
 } from './utils'

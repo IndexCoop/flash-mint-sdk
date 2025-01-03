@@ -5,13 +5,13 @@ import { AddressZero, EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import { noopSwapData } from 'constants/swapdata'
 import { USDC, WETH } from 'constants/tokens'
-import { wei } from 'utils/numbers'
 import { Exchange } from 'utils'
+import { wei } from 'utils/numbers'
 
 import {
+  QuoteTokens,
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
-  QuoteTokens,
 } from 'tests/utils'
 
 import { FlashMintHyEthQuoteProvider } from './provider'
@@ -36,7 +36,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -58,7 +58,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -79,7 +79,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       exchange: Exchange.None,
     }
     expect(quote.swapDataEthToInputOutputToken).toStrictEqual(
-      swapDataEthToInputToken
+      swapDataEthToInputToken,
     )
   })
 
@@ -93,7 +93,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -114,7 +114,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       exchange: Exchange.UniV3,
     }
     expect(quote.swapDataEthToInputOutputToken).toStrictEqual(
-      swapDataEthToInputToken
+      swapDataEthToInputToken,
     )
   })
 
@@ -128,7 +128,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -149,7 +149,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -164,7 +164,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       exchange: Exchange.UniV3,
     }
     expect(quote.swapDataEthToInputOutputToken).toStrictEqual(
-      swapDataEthToInputToken
+      swapDataEthToInputToken,
     )
   })
 })

@@ -10,7 +10,7 @@ import { TestFactory } from 'tests/utils/factory'
 // Pre-configured TestFactories
 export function getArbitrumTestFactory(
   signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Arbitrum)
+  rpcUrl: string = getLocalHostProviderUrl(ChainId.Arbitrum),
 ) {
   const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Arbitrum)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
@@ -18,7 +18,7 @@ export function getArbitrumTestFactory(
 
 export function getBaseTestFactory(
   signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Base)
+  rpcUrl: string = getLocalHostProviderUrl(ChainId.Base),
 ) {
   const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Base)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
@@ -26,7 +26,7 @@ export function getBaseTestFactory(
 
 export function getMainnetTestFactory(
   signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Mainnet)
+  rpcUrl: string = getLocalHostProviderUrl(ChainId.Mainnet),
 ) {
   const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
@@ -34,7 +34,7 @@ export function getMainnetTestFactory(
 
 export function getMainnetTestFactoryUniswap(
   signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Mainnet)
+  rpcUrl: string = getLocalHostProviderUrl(ChainId.Mainnet),
 ) {
   const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)

@@ -37,8 +37,8 @@ describe('CurveSwapQuoteProvider', () => {
     expect(
       isAddressEqual(
         quote.swapData?.path[quote.swapData.path.length - 1],
-        steth
-      )
+        steth,
+      ),
     ).toBe(true)
     expect(quote.swapData?.pool).toBe(curvePool)
     // expect(quote.callData).not.toBe('0x')
@@ -63,8 +63,8 @@ describe('CurveSwapQuoteProvider', () => {
     expect(
       isAddressEqual(
         quote.swapData?.path[quote.swapData.path.length - 1],
-        steth
-      )
+        steth,
+      ),
     ).toBe(true)
     expect(quote.swapData?.pool).toBe(curvePool)
     // expect(quote.callData).not.toBe('0x')

@@ -1,4 +1,4 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import { Wallet } from '@ethersproject/wallet'
 
 export { wei } from 'utils/numbers'

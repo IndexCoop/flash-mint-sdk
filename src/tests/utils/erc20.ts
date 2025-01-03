@@ -1,13 +1,13 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
+import type { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
+import type { Wallet } from '@ethersproject/wallet'
 
 export { wei } from 'utils/numbers'
 
 export function createERC20Contract(
   erc20Address: string,
-  providerOrSigner: JsonRpcProvider | JsonRpcSigner | Wallet
+  providerOrSigner: JsonRpcProvider | JsonRpcSigner | Wallet,
 ): Contract {
   const abi = [
     // Read-Only Functions
@@ -26,7 +26,7 @@ export async function approveErc20(
   erc20Address: string,
   spender: string,
   amount: BigNumber,
-  signer: Wallet
+  signer: Wallet,
 ) {
   const contract = createERC20Contract(erc20Address, signer)
   const approveTx = await contract.approve(spender, amount, {
@@ -38,7 +38,7 @@ export async function approveErc20(
 export async function allowanceOf(
   erc20Address: string,
   spender: string,
-  signer: Wallet
+  signer: Wallet,
 ): Promise<BigNumber> {
   const contract = createERC20Contract(erc20Address, signer)
   return await contract.allowance(signer.address, spender)
@@ -46,7 +46,7 @@ export async function allowanceOf(
 
 export async function balanceOf(
   signer: Wallet,
-  erc20Address: string
+  erc20Address: string,
 ): Promise<BigNumber> {
   const contract = createERC20Contract(erc20Address, signer)
   return await contract.balanceOf(signer.address)
@@ -57,14 +57,14 @@ export async function transferFromWhale(
   to: string,
   amount: BigNumber,
   erc20Address: string,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
 ) {
   const signer = await provider.getSigner(whale)
   const contract = createERC20Contract(erc20Address, signer)
   const balance = await contract.balanceOf(whale)
   if (balance.lt(amount)) {
     throw new Error(
-      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}: ${balance}`
+      `Not enough balance to steal ${amount} ${erc20Address} from ${whale}: ${balance}`,
     )
   }
   await provider.send('hardhat_impersonateAccount', [whale])

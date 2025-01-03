@@ -1,16 +1,16 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
+import { Exchange, type SwapData } from 'utils'
 import {
+  type LeveragedTokenData,
   getLeveragedTokenData,
-  LeveragedTokenData,
 } from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
-import { Exchange, SwapData } from 'utils'
 
-import { QuoteProvider, QuoteToken } from '../../interfaces'
-import { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
 import { getRpcProvider } from 'utils/rpc-provider'
+import type { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
 
 export interface FlashMintLeveragedExtendedQuoteRequest {
   isMinting: boolean
@@ -38,11 +38,11 @@ export class LeveragedExtendedQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintLeveragedExtendedQuoteRequest
+    request: FlashMintLeveragedExtendedQuoteRequest,
   ): Promise<FlashMintLeveragedExtendedQuote | null> {
     const provider = getRpcProvider(this.rpcUrl)
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
@@ -58,7 +58,7 @@ export class LeveragedExtendedQuoteProvider
       indexTokenSymbol,
       isMinting,
       chainId,
-      provider
+      provider,
     )
     if (leveragedTokenData === null) return null
     const debtCollateralResult = isMinting
@@ -66,28 +66,28 @@ export class LeveragedExtendedQuoteProvider
           leveragedTokenData,
           sources,
           slippage,
-          chainId
+          chainId,
         )
       : await this.getSwapDataCollateralToDebt(
           leveragedTokenData,
           sources,
           slippage,
-          chainId
+          chainId,
         )
     if (!debtCollateralResult) return null
     const { collateralObtainedOrSold } = debtCollateralResult
     const { swapDataDebtCollateral } = debtCollateralResult
     // Relevant when issuing
     const collateralShortfall = leveragedTokenData.collateralAmount.sub(
-      collateralObtainedOrSold
+      collateralObtainedOrSold,
     )
     // Relevant when redeeming
     const leftoverCollateral = leveragedTokenData.collateralAmount.sub(
-      collateralObtainedOrSold
+      collateralObtainedOrSold,
     )
     const inputOutputTokenAddress = getPaymentTokenAddress(
       isMinting ? inputToken.address : outputToken.address,
-      isMinting ? inputToken.symbol : outputToken.symbol
+      isMinting ? inputToken.symbol : outputToken.symbol,
     )
     const { swapDataPaymentToken, paymentTokenAmount } =
       await this.getSwapDataAndPaymentTokenAmount(
@@ -99,7 +99,7 @@ export class LeveragedExtendedQuoteProvider
         isMinting,
         slippage,
         sources,
-        chainId
+        chainId,
       )
 
     const estimatedInputOutputAmount = paymentTokenAmount
@@ -110,7 +110,7 @@ export class LeveragedExtendedQuoteProvider
       estimatedInputOutputAmount,
       inputOuputTokenDecimals,
       slippage,
-      isMinting
+      isMinting,
     )
     return {
       inputTokenAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
@@ -128,7 +128,7 @@ export class LeveragedExtendedQuoteProvider
     leveragedTokenData: LeveragedTokenData,
     includeSources: Exchange[],
     slippage: number,
-    chainId: number
+    chainId: number,
   ) {
     const quoteRequest: SwapQuoteRequest = {
       chainId,
@@ -154,7 +154,7 @@ export class LeveragedExtendedQuoteProvider
     leveragedTokenData: LeveragedTokenData,
     includeSources: Exchange[],
     slippage: number,
-    chainId: number
+    chainId: number,
   ) {
     const quoteRequest: SwapQuoteRequest = {
       chainId,
@@ -183,7 +183,7 @@ export class LeveragedExtendedQuoteProvider
     isMinting: boolean,
     slippage: number,
     includeSources: Exchange[],
-    chainId: number
+    chainId: number,
   ): Promise<{
     swapDataPaymentToken: SwapData
     paymentTokenAmount: BigNumber
@@ -237,7 +237,7 @@ export class LeveragedExtendedQuoteProvider
 
 function getPaymentTokenAddress(
   paymentTokenAddress: string,
-  paymentTokenSymbol: string
+  paymentTokenSymbol: string,
 ): string {
   if (paymentTokenSymbol === ETH.symbol) {
     return 'ETH'

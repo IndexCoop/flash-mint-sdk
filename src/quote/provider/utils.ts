@@ -1,5 +1,5 @@
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { TransactionRequest } from '@ethersproject/abstract-provider'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
@@ -22,8 +22,8 @@ import {
 
 import {
   FlashMintContractType,
-  FlashMintQuote,
-  FlashMintQuoteRequest,
+  type FlashMintQuote,
+  type FlashMintQuoteRequest,
 } from './index'
 
 export function buildQuoteResponse(
@@ -31,7 +31,7 @@ export function buildQuoteResponse(
   chainId: number,
   contractType: FlashMintContractType,
   inputOutputTokenAmount: BigNumber, // quote amount
-  tx: TransactionRequest
+  tx: TransactionRequest,
 ): FlashMintQuote {
   const { isMinting, inputToken, outputToken, slippage } = request
   const indexTokenAmount = BigNumber.from(request.indexTokenAmount)
@@ -55,7 +55,7 @@ export function buildQuoteResponse(
 // Returns contract type for token or null if not supported
 export function getContractType(
   token: string,
-  chainId: number
+  chainId: number,
 ): FlashMintContractType | null {
   if (chainId === ChainId.Arbitrum) {
     const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')

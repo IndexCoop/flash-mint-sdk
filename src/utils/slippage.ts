@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 
 import { wei } from '../utils/numbers'
 
@@ -13,7 +13,7 @@ export function slippageAdjustedTokenAmount(
   tokenAmount: BigNumber,
   tokenDecimals: number,
   slippage: number,
-  isMinting: boolean
+  isMinting: boolean,
 ): BigNumber {
   if (isMinting) {
     return tokenAmount

@@ -2,18 +2,18 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import {
-  FlashMintWrappedBuildRequest,
+  type FlashMintWrappedBuildRequest,
   WrappedTransactionBuilder,
 } from 'flashmint'
 
 import { WrappedQuoteProvider } from '../flashmint/wrapped'
-import { QuoteProvider, QuoteToken } from '../interfaces'
+import type { QuoteProvider, QuoteToken } from '../interfaces'
 import {
   FlashMintContractType,
-  FlashMintQuote,
-  FlashMintQuoteRequest,
+  type FlashMintQuote,
+  type FlashMintQuoteRequest,
 } from '../provider'
-import { SwapQuoteProvider } from '../swap'
+import type { SwapQuoteProvider } from '../swap'
 import { buildQuoteResponse } from './utils'
 
 export interface IcUsdQuoteRequest extends FlashMintQuoteRequest {
@@ -32,7 +32,7 @@ export class IcUsdQuoteRouter
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(request: IcUsdQuoteRequest): Promise<FlashMintQuote | null> {
@@ -104,7 +104,7 @@ export class IcUsdQuoteRouter
     const inputOutputToken = isMinting ? inputToken : outputToken
     const wrappedQuoteProvider = new WrappedQuoteProvider(
       this.rpcUrl,
-      this.swapQuoteProvider
+      this.swapQuoteProvider,
     )
     const wrappedQuote = await wrappedQuoteProvider.getQuote({
       ...request,
@@ -131,7 +131,7 @@ export class IcUsdQuoteRouter
       chainId,
       FlashMintContractType.wrapped,
       wrappedQuote.inputOutputTokenAmount,
-      tx
+      tx,
     )
   }
 }

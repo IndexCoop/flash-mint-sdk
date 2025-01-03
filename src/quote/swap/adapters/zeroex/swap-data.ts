@@ -1,14 +1,14 @@
+import { Exchange, type SwapData } from 'utils'
 import { decodePool, extractPoolFees } from 'utils/UniswapPath'
-import { Exchange, SwapData } from 'utils'
 
-import {
+import type {
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
   ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 
 export const getSwapData = async (
-  zeroExQuote: ZeroExApiSwapResponse | null
+  zeroExQuote: ZeroExApiSwapResponse | null,
 ) => {
   if (!zeroExQuote) return null
   return swapDataFrom0xQuote(zeroExQuote)
@@ -48,7 +48,7 @@ export function get0xEchangeKey(exchange: Exchange): string {
 }
 
 export function swapDataFrom0xQuote(
-  zeroExQuote: ZeroExApiSwapResponse
+  zeroExQuote: ZeroExApiSwapResponse,
 ): SwapData | null {
   if (
     zeroExQuote === undefined ||
@@ -109,7 +109,7 @@ function swapDataFromCurve(order: ZeroExApiSwapResponseOrder): SwapData | null {
 }
 
 function swapDataFromSushi(
-  order: ZeroExApiSwapResponseOrderSushi
+  order: ZeroExApiSwapResponseOrderSushi,
 ): SwapData | null {
   const fillData = order.fillData
   if (!fillData) return null

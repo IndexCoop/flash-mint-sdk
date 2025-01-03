@@ -3,7 +3,7 @@
 const ADDR_SIZE = 40
 const FEE_SIZE = 6 // 0001f47
 
-const hexToDecimal = (hex: string) => parseInt(hex, 16)
+const hexToDecimal = (hex: string) => Number.parseInt(hex, 16)
 
 /**
  * Returns tokens and fees for pool
