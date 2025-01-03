@@ -5,7 +5,7 @@ import {
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
 } from 'tests/utils'
-import { TestFactory } from 'tests/utils/test-factory'
+import { TestFactory } from 'tests/utils/factory'
 
 // Pre-configured TestFactories
 export function getArbitrumTestFactory(
@@ -13,14 +13,6 @@ export function getArbitrumTestFactory(
   rpcUrl: string = getLocalHostProviderUrl(ChainId.Arbitrum)
 ) {
   const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Arbitrum)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
-
-export function getArbitrumTestFactoryUniswap(
-  signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Arbitrum)
-) {
-  const swapQuoteProvider = new IndexSwapQuoteProvider(rpcUrl)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 

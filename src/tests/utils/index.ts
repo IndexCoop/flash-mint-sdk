@@ -8,10 +8,10 @@ export { wei } from 'utils/numbers'
 
 export * from './erc20'
 export * from './factories'
+export * from './factory'
 export { QuoteTokens } from './quoteTokens'
 export * from './lido'
 export * from './signers'
-export * from './test-factory'
 export * from './uniswap'
 export * from './weth'
 
