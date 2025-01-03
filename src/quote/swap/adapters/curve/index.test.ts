@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ETH, stETH, WETH } from 'constants/tokens'
-import { AlchemyProviderUrl } from 'tests/utils'
 
-import { CurveSwapQuoteProvider } from './'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
+import { ETH } from 'constants/tokens'
+import { getAlchemyProviderUrl } from 'tests/utils'
 import { Exchange } from 'utils'
 
-const rpcUrl = AlchemyProviderUrl
+import { CurveSwapQuoteProvider } from './'
+
+const chainId = 1
+const rpcUrl = getAlchemyProviderUrl(chainId)
 
 // ETH/stETH
 const curvePool = '0xdc24316b9ae028f1497c275eb9192a3ea0f67022'
 const eth = ETH.address!
-const steth = stETH.address!
-const weth = WETH.address!
+const steth = getTokenByChainAndSymbol(chainId, 'stETH').address
+const weth = getTokenByChainAndSymbol(chainId, 'WETH').address
 const ONE = '1000000000000000000'
 
 describe('CurveSwapQuoteProvider', () => {

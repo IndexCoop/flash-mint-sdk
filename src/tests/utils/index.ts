@@ -16,11 +16,6 @@ export * from './signers'
 export * from './uniswap'
 export * from './weth'
 
-// Alchemy
-export const AlchemyProviderUrl = process.env.MAINNET_ALCHEMY_API!
-export const AlchemyProviderUrlArbitrum = process.env.ARBITRUM_ALCHEMY_API!
-export const AlchemyProvider = new JsonRpcProvider(AlchemyProviderUrl, 1)
-
 // Hardhat
 // Try avoiding these single consts in the future and rather use convenience functions below
 export const LocalhostProviderUrl = 'http://127.0.0.1:8545/'

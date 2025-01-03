@@ -2,13 +2,13 @@
 import { EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import { USDC, WETH } from 'constants/tokens'
-import { AlchemyProviderUrl, AlchemyProviderUrlArbitrum } from 'tests/utils'
+import { getAlchemyProviderUrl } from 'tests/utils'
 
 import { UniswapSwapQuoteProvider } from './'
 import { Exchange } from 'utils'
 
-const rpcUrl = AlchemyProviderUrl
-const rpcUrlArbitrum = AlchemyProviderUrlArbitrum
+const rpcUrl = getAlchemyProviderUrl(ChainId.Mainnet)
+const rpcUrlArbitrum = getAlchemyProviderUrl(ChainId.Arbitrum)
 
 const weth = WETH.address!
 const usdc = USDC.address!
