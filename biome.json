@@ -37,6 +37,7 @@
     "formatter": {
       "indentStyle": "space",
       "indentWidth": 2,
+      "quoteProperties": "preserve",
       "quoteStyle": "single",
       "semicolons": "asNeeded"
     }
