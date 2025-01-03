@@ -3,7 +3,7 @@ import { ChainId } from 'constants/chains'
 import {
   getArbitrumTestFactory,
   getSignerAccount,
-  LocalhostProviderArbitrum,
+  getTestRpcProvider,
   QuoteTokens,
   TestFactory,
   wei,
@@ -14,8 +14,7 @@ describe('BTC2xETH (Arbitrum)', () => {
   const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProviderArbitrum
-    const signer = getSignerAccount(3, provider)
+    const signer = getSignerAccount(3, getTestRpcProvider(ChainId.Arbitrum))
     factory = getArbitrumTestFactory(signer)
   })
 

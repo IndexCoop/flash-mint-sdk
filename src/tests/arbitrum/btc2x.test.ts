@@ -1,26 +1,22 @@
-/* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { IndexCoopBitcoin2xIndex } from 'constants/tokens'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { ChainId } from 'constants/chains'
 import {
   getArbitrumTestFactory,
   getSignerAccount,
-  LocalhostProviderArbitrum,
+  getTestRpcProvider,
   QuoteTokens,
   TestFactory,
   wei,
 } from 'tests/utils'
 
+const chainId = ChainId.Arbitrum
+const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
 const { eth } = QuoteTokens
-const btc2x = {
-  address: IndexCoopBitcoin2xIndex.addressArbitrum!,
-  decimals: 18,
-  symbol: IndexCoopBitcoin2xIndex.symbol,
-}
 
 describe('BTC2X (Arbitrum)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProviderArbitrum
-    const signer = getSignerAccount(3, provider)
+    const signer = getSignerAccount(3, getTestRpcProvider(chainId))
     factory = getArbitrumTestFactory(signer)
   })
 
