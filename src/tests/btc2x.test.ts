@@ -3,9 +3,10 @@ import {
   getMainnetTestFactoryUniswap,
   QuoteTokens,
   SignerAccount4,
-  TestFactory,
   wei,
 } from './utils'
+
+import type { TestFactory } from './utils'
 
 const { btc2x, eth } = QuoteTokens
 
