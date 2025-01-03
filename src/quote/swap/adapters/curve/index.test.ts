@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 
 import { ETH } from 'constants/tokens'
 import { getAlchemyProviderUrl } from 'tests/utils'
@@ -33,8 +33,13 @@ describe('CurveSwapQuoteProvider', () => {
     expect(quote.swapData?.exchange).toBe(Exchange.Curve)
     expect(quote.swapData?.path.length).toBe(2)
     expect(quote.swapData?.fees.length).toBe(0)
-    expect(quote.swapData?.path[0]).toEqual(weth)
-    expect(quote.swapData?.path[quote.swapData.path.length - 1]).toEqual(steth)
+    expect(isAddressEqual(quote.swapData?.path[0], weth)).toBe(true)
+    expect(
+      isAddressEqual(
+        quote.swapData?.path[quote.swapData.path.length - 1],
+        steth
+      )
+    ).toBe(true)
     expect(quote.swapData?.pool).toBe(curvePool)
     // expect(quote.callData).not.toBe('0x')
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
@@ -54,8 +59,13 @@ describe('CurveSwapQuoteProvider', () => {
     expect(quote.swapData?.exchange).toBe(Exchange.Curve)
     expect(quote.swapData?.path.length).toBe(2)
     expect(quote.swapData?.fees.length).toBe(0)
-    expect(quote.swapData?.path[0]).toEqual(weth)
-    expect(quote.swapData?.path[quote.swapData.path.length - 1]).toEqual(steth)
+    expect(isAddressEqual(quote.swapData?.path[0], weth)).toBe(true)
+    expect(
+      isAddressEqual(
+        quote.swapData?.path[quote.swapData.path.length - 1],
+        steth
+      )
+    ).toBe(true)
     expect(quote.swapData?.pool).toBe(curvePool)
     // expect(quote.callData).not.toBe('0x')
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)

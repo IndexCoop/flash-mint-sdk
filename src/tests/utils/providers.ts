@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import 'dotenv/config'
+
 import { ChainId } from 'constants/chains'
 import { getRpcProvider } from 'utils/rpc-provider'
 
