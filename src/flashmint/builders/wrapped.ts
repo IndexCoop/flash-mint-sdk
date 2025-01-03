@@ -1,13 +1,13 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
-import { PopulatedTransaction } from '@ethersproject/contracts'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { BigNumber } from '@ethersproject/bignumber'
+import type { PopulatedTransaction } from '@ethersproject/contracts'
 
-import { ComponentSwapData } from 'utils/component-swap-data'
+import type { ComponentSwapData } from 'utils/component-swap-data'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { ComponentWrapData } from 'utils/wrap-data'
+import type { ComponentWrapData } from 'utils/wrap-data'
 
-import { TransactionBuilder } from './interface'
+import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintWrappedBuildRequest {
@@ -29,7 +29,7 @@ export class WrappedTransactionBuilder
   constructor(private readonly rpcUrl: string) {}
 
   async build(
-    request: FlashMintWrappedBuildRequest
+    request: FlashMintWrappedBuildRequest,
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
@@ -55,7 +55,7 @@ export class WrappedTransactionBuilder
           indexTokenAmount,
           componentSwapData,
           componentWrapData,
-          { value: inputOutputTokenAmount }
+          { value: inputOutputTokenAmount },
         )
       } else {
         tx = await contract.populateTransaction.issueExactSetFromERC20(
@@ -64,7 +64,7 @@ export class WrappedTransactionBuilder
           indexTokenAmount,
           inputOutputTokenAmount, // _maxAmountInputToken
           componentSwapData,
-          componentWrapData
+          componentWrapData,
         )
       }
     } else {
@@ -74,7 +74,7 @@ export class WrappedTransactionBuilder
           indexTokenAmount,
           inputOutputTokenAmount, // _minOutputReceive
           componentSwapData,
-          componentWrapData
+          componentWrapData,
         )
       } else {
         tx = await contract.populateTransaction.redeemExactSetForERC20(
@@ -83,7 +83,7 @@ export class WrappedTransactionBuilder
           indexTokenAmount,
           inputOutputTokenAmount, // _minOutputReceive
           componentSwapData,
-          componentWrapData
+          componentWrapData,
         )
       }
     }

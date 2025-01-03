@@ -1,12 +1,12 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
 import FLASHMINT_HYETH_ABI from 'constants/abis/FlashMintHyEth.json'
 import { AddressZero } from 'constants/addresses'
 import { Contracts } from 'constants/contracts'
 import { WETH } from 'constants/tokens'
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import { isSameAddress } from 'utils/addresses'
 import { getRpcProvider } from 'utils/rpc-provider'
 
@@ -16,7 +16,7 @@ export class PendleQuoteProvider {
 
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   getFlashMintHyEth(): Contract {
@@ -50,7 +50,7 @@ export class PendleQuoteProvider {
   async getDepositQuote(
     component: string,
     position: bigint,
-    inputToken: string
+    inputToken: string,
   ): Promise<bigint | null> {
     try {
       const outputToken = this.weth
@@ -65,7 +65,7 @@ export class PendleQuoteProvider {
       let ethAmount = (position * assetRate.toBigInt()) / BigInt(1e18)
       const syAmountPreview: BigNumber = await syContract.previewDeposit(
         AddressZero,
-        ethAmount
+        ethAmount,
       )
       if (syAmountPreview.toBigInt() < position) {
         ethAmount =
@@ -91,7 +91,7 @@ export class PendleQuoteProvider {
   async getWithdrawQuote(
     component: string,
     position: bigint,
-    outputToken: string
+    outputToken: string,
   ): Promise<bigint | null> {
     const inputToken = this.weth
     const fmHyEth = this.getFlashMintHyEth()

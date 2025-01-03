@@ -1,12 +1,12 @@
 // The order here has to be exactly the same as in the `DEXAdapter`
 // https://github.com/IndexCoop/index-coop-smart-contracts/blob/master/contracts/exchangeIssuance/DEXAdapterV3.sol#L54
 export enum Exchange {
-  None,
-  Quickswap,
-  Sushiswap,
-  UniV3,
-  Curve,
-  BalancerV2,
+  None = 0,
+  Quickswap = 1,
+  Sushiswap = 2,
+  UniV3 = 3,
+  Curve = 4,
+  BalancerV2 = 5,
 }
 
 export interface SwapData {

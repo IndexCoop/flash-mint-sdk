@@ -1,13 +1,13 @@
-import { Provider } from '@ethersproject/abstract-provider'
-import { Signer } from '@ethersproject/abstract-signer'
+import type { Provider } from '@ethersproject/abstract-provider'
+import type { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
 import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
-import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
+import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
@@ -24,18 +24,18 @@ import {
   FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
 import {
-  DiversifiedStakedETHIndex,
   CoinDeskEthTrendIndex,
-  IndexCoopEthereum2xIndex,
+  DiversifiedStakedETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
+  IndexCoopEthereum2xIndex,
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
 } from '../constants/tokens'
 
 export function getExchangeIssuanceLeveragedContractAddress(
-  chainId: number = ChainId.Mainnet
+  chainId: number = ChainId.Mainnet,
 ): string {
   if (chainId === ChainId.Polygon)
     return ExchangeIssuanceLeveragedPolygonAddress
@@ -53,13 +53,13 @@ export function getExchangeIssuanceLeveragedContractAddress(
  */
 export const getFlashMintLeveragedContract = (
   signerOrProvider: Signer | Provider | undefined,
-  chainId: number = ChainId.Polygon
+  chainId: number = ChainId.Polygon,
 ): Contract => {
   const contractAddress = getExchangeIssuanceLeveragedContractAddress(chainId)
   return new Contract(
     contractAddress,
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
-    signerOrProvider
+    signerOrProvider,
   )
 }
 
@@ -68,7 +68,7 @@ export const getFlashMintLeveragedContract = (
  * Currently, only Mainnet is supported.
  */
 export const getFlashMintHyEthContract = (
-  signerOrProvider: Signer | Provider | undefined
+  signerOrProvider: Signer | Provider | undefined,
 ): Contract => {
   const contractAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
   return new Contract(contractAddress, FLASHMINT_HYETH_ABI, signerOrProvider)
@@ -83,13 +83,13 @@ export const getFlashMintHyEthContract = (
  * @returns an instance of a FlashMintLeveraged contract
  */
 export const getIndexFlashMintLeveragedContract = (
-  signerOrProvider: Signer | Provider | undefined
+  signerOrProvider: Signer | Provider | undefined,
 ): Contract => {
   const contractAddress = FlashMintLeveragedAddress
   return new Contract(
     contractAddress,
     EXCHANGE_ISSUANCE_LEVERAGED_ABI,
-    signerOrProvider
+    signerOrProvider,
   )
 }
 
@@ -103,13 +103,13 @@ export const getIndexFlashMintLeveragedContract = (
  */
 export const getIndexFlashMintLeveragedExtendedContract = (
   signerOrProvider: Signer | Provider | undefined,
-  chainId: ChainId
+  chainId: ChainId,
 ): Contract => {
   const contractAddress = Contracts[chainId].FlashMintLeveragedExtended
   return new Contract(
     contractAddress,
     FLASHMINT_LEVERAGED_EXTENDED_ABI,
-    signerOrProvider
+    signerOrProvider,
   )
 }
 
@@ -119,12 +119,12 @@ export const getIndexFlashMintLeveragedExtendedContract = (
  * @returns An instance of a FlashMintLeveragedForCompound contract.
  */
 export const getFlashMintLeveragedForCompoundContract = (
-  signerOrProvider: Signer | Provider | undefined
+  signerOrProvider: Signer | Provider | undefined,
 ): Contract => {
   return new Contract(
     FlashMintLeveragedForCompoundAddress,
     FLASHMINT_LEVERAGED_COMPOUND,
-    signerOrProvider
+    signerOrProvider,
   )
 }
 
@@ -142,7 +142,7 @@ export const getFlashMintLeveragedForCompoundContract = (
 export const getFlashMintLeveragedContractForToken = (
   token: string,
   signerOrProvider: Signer | Provider | undefined,
-  chainId: ChainId = ChainId.Polygon
+  chainId: ChainId = ChainId.Polygon,
 ): Contract => {
   if (chainId === ChainId.Arbitrum) {
     const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')
@@ -158,7 +158,7 @@ export const getFlashMintLeveragedContractForToken = (
       case IndexCoopInverseEthereumIndex.symbol:
         return getIndexFlashMintLeveragedExtendedContract(
           signerOrProvider,
-          chainId
+          chainId,
         )
     }
     return getIndexFlashMintLeveragedContract(signerOrProvider)
@@ -169,7 +169,7 @@ export const getFlashMintLeveragedContractForToken = (
       case IndexCoopEthereum3xIndex.symbol:
         return getIndexFlashMintLeveragedExtendedContract(
           signerOrProvider,
-          chainId
+          chainId,
         )
     }
     return getIndexFlashMintLeveragedContract(signerOrProvider)
@@ -189,12 +189,12 @@ export const getFlashMintLeveragedContractForToken = (
  * @returns An instance of a FlashMintNav contract.
  */
 export const getFlashMintNavContract = (
-  signerOrProvider: Signer | Provider | undefined
+  signerOrProvider: Signer | Provider | undefined,
 ): Contract => {
   return new Contract(
     Contracts[ChainId.Mainnet].FlashMintNav,
     FLASHMINT_NAV_ABI,
-    signerOrProvider
+    signerOrProvider,
   )
 }
 
@@ -206,14 +206,14 @@ export const getFlashMintNavContract = (
  */
 export const getFlashMintWrappedContract = (
   signerOrProvider: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet
+  chainId: number = ChainId.Mainnet,
 ): Contract => {
   const contractAddress = Contracts[chainId].FlashMintWrapped
   return new Contract(contractAddress, FLASHMINT_WRAPPED_ABI, signerOrProvider)
 }
 
 export function getExchangeIssuanceZeroExContractAddress(
-  chainId: number = ChainId.Mainnet
+  chainId: number = ChainId.Mainnet,
 ): string {
   if (chainId === ChainId.Polygon) return ExchangeIssuanceZeroExPolygonAddress
   return ExchangeIssuanceZeroExMainnetAddress
@@ -230,13 +230,13 @@ export function getExchangeIssuanceZeroExContractAddress(
  */
 export const getFlashMintZeroExContract = (
   providerSigner: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet
+  chainId: number = ChainId.Mainnet,
 ): Contract => {
   const contractAddress = getExchangeIssuanceZeroExContractAddress(chainId)
   return new Contract(
     contractAddress,
     EXCHANGE_ISSUANCE_ZERO_EX_ABI,
-    providerSigner
+    providerSigner,
   )
 }
 
@@ -253,7 +253,7 @@ export const getFlashMintZeroExContract = (
 export const getFlashMintZeroExContractForToken = (
   token: string,
   providerSigner: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet
+  chainId: number = ChainId.Mainnet,
 ): Contract => {
   switch (token) {
     case CoinDeskEthTrendIndex.symbol:
@@ -262,7 +262,7 @@ export const getFlashMintZeroExContractForToken = (
       return new Contract(
         FlashMintZeroExMainnetAddress,
         FLASHMINT_ZEROEX_ABI,
-        providerSigner
+        providerSigner,
       )
     default:
       return getFlashMintZeroExContract(providerSigner, chainId)

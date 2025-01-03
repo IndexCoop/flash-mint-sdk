@@ -1,11 +1,11 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { BigNumber } from '@ethersproject/bignumber'
 
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
 import { getIssuanceModule } from '../../utils/issuanceModules'
-import { TransactionBuilder } from './interface'
+import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintZeroExBuildRequest {
@@ -20,13 +20,12 @@ export interface FlashMintZeroExBuildRequest {
 }
 
 export class ZeroExTransactionBuilder
-  implements
-    TransactionBuilder<FlashMintZeroExBuildRequest, TransactionRequest>
+  implements TransactionBuilder<FlashMintZeroExBuildRequest, TransactionRequest>
 {
   constructor(private readonly rpcUrl: string) {}
 
   async build(
-    request: FlashMintZeroExBuildRequest
+    request: FlashMintZeroExBuildRequest,
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
@@ -48,7 +47,7 @@ export class ZeroExTransactionBuilder
     const contract = getFlashMintZeroExContractForToken(
       indexTokenSymbol,
       provider,
-      chainId
+      chainId,
     )
     if (isMinting) {
       if (inputOutputTokenIsEth) {
@@ -58,7 +57,7 @@ export class ZeroExTransactionBuilder
           componentQuotes,
           issuanceModule.address,
           issuanceModule.isDebtIssuance,
-          { value: inputOutputTokenAmount }
+          { value: inputOutputTokenAmount },
         )
       } else {
         return await contract.populateTransaction.issueExactSetFromToken(
@@ -68,7 +67,7 @@ export class ZeroExTransactionBuilder
           inputOutputTokenAmount, // _maxAmountInputToken
           componentQuotes,
           issuanceModule.address,
-          issuanceModule.isDebtIssuance
+          issuanceModule.isDebtIssuance,
         )
       }
     } else {
@@ -79,7 +78,7 @@ export class ZeroExTransactionBuilder
           inputOutputTokenAmount, // _minEthReceive
           componentQuotes,
           issuanceModule.address,
-          issuanceModule.isDebtIssuance
+          issuanceModule.isDebtIssuance,
         )
       } else {
         return await contract.populateTransaction.redeemExactSetForToken(
@@ -89,7 +88,7 @@ export class ZeroExTransactionBuilder
           inputOutputTokenAmount, // _minOutputReceive
           componentQuotes,
           issuanceModule.address,
-          issuanceModule.isDebtIssuance
+          issuanceModule.isDebtIssuance,
         )
       }
     }

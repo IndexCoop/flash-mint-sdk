@@ -1,4 +1,4 @@
-import { createPublicClient, http } from 'viem'
+import { http, createPublicClient } from 'viem'
 import { base, mainnet } from 'viem/chains'
 
 import { ChainId } from 'constants/chains'

@@ -1,12 +1,15 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
 import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
-import { FlashMintZeroExBuildRequest, ZeroExTransactionBuilder } from './zeroex'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import {
+  type FlashMintZeroExBuildRequest,
+  ZeroExTransactionBuilder,
+} from './zeroex'
 
 const chainId = 1
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -17,7 +20,7 @@ describe('ZeroExTransactionBuilder()', () => {
   const contract = getFlashMintZeroExContractForToken(
     indexToken.symbol,
     getTestRpcProvider(chainId),
-    chainId
+    chainId,
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
   const rpcUrl = getLocalHostProviderUrl(chainId)
@@ -71,7 +74,7 @@ describe('ZeroExTransactionBuilder()', () => {
       buildRequest.inputOutputTokenAmount,
       buildRequest.componentQuotes,
       issuanceModule.address,
-      issuanceModule.isDebtIssuance
+      issuanceModule.isDebtIssuance,
     )
     const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -88,7 +91,7 @@ describe('ZeroExTransactionBuilder()', () => {
       buildRequest.componentQuotes,
       issuanceModule.address,
       issuanceModule.isDebtIssuance,
-      { value: buildRequest.inputOutputTokenAmount }
+      { value: buildRequest.inputOutputTokenAmount },
     )
     const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -107,7 +110,7 @@ describe('ZeroExTransactionBuilder()', () => {
       buildRequest.inputOutputTokenAmount,
       buildRequest.componentQuotes,
       issuanceModule.address,
-      issuanceModule.isDebtIssuance
+      issuanceModule.isDebtIssuance,
     )
     const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -124,7 +127,7 @@ describe('ZeroExTransactionBuilder()', () => {
       buildRequest.inputOutputTokenAmount,
       buildRequest.componentQuotes,
       issuanceModule.address,
-      issuanceModule.isDebtIssuance
+      issuanceModule.isDebtIssuance,
     )
     const builder = new ZeroExTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -137,7 +140,7 @@ describe('ZeroExTransactionBuilder()', () => {
 function createBuildRequest(
   isMinting = true,
   inputOutputToken: string = usdcAddress,
-  inputOutputTokenSymbol = 'USDC'
+  inputOutputTokenSymbol = 'USDC',
 ): FlashMintZeroExBuildRequest {
   return {
     isMinting,

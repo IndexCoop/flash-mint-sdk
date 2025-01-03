@@ -19,6 +19,6 @@ export function getZeroExSwapQuoteProvider(chainId: number) {
     '',
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-    get0xSwapPathOverride(chainId)
+    get0xSwapPathOverride(chainId),
   )
 }

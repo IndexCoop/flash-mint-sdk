@@ -1,11 +1,11 @@
 import {
-  ContractCallsQuoteRequest,
+  type ContractCallsQuoteRequest,
+  type LiFiStep,
   getContractCallsQuote,
   getQuote,
-  LiFiStep,
 } from '@lifi/sdk'
 
-import {
+import type {
   SwapQuote,
   SwapQuoteProvider,
   SwapQuoteRequest,
@@ -14,7 +14,10 @@ import {
 import { getSwapData } from './swap-data'
 
 export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
-  constructor(readonly apiKey: string, readonly integrator: string) {}
+  constructor(
+    readonly apiKey: string,
+    readonly integrator: string,
+  ) {}
 
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
     // This is not ideal but right now the only way to get only uniV2 and sushi quotes

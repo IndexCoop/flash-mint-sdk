@@ -1,4 +1,4 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 
 // For more on overrides, check:
 // https://docs.ethers.io/v5/api/contract/contract/#contract-functionsSend

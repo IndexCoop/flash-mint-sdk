@@ -8,12 +8,12 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
 import {
-  DiversifiedStakedETHIndex,
-  InterestCompoundingETHIndex,
   CoinDeskEthTrendIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopBitcoin2xIndex,
+  DiversifiedStakedETHIndex,
   HighYieldETHIndex,
+  IndexCoopBitcoin2xIndex,
+  IndexCoopEthereum2xIndex,
+  InterestCompoundingETHIndex,
   TheUSDCYieldIndex,
 } from '../constants/tokens'
 
@@ -24,7 +24,7 @@ export interface IssuanceModule {
 
 export function getIssuanceModule(
   tokenSymbol: string,
-  chainId: number = ChainId.Mainnet
+  chainId: number = ChainId.Mainnet,
 ): IssuanceModule {
   if (chainId === ChainId.Arbitrum) {
     return {
@@ -55,7 +55,10 @@ export function getIssuanceModule(
         isDebtIssuance: true,
       }
     case 'wsETH2':
-      return { address: IndexDebtIssuanceModuleV2Address, isDebtIssuance: true }
+      return {
+        address: IndexDebtIssuanceModuleV2Address,
+        isDebtIssuance: true,
+      }
     case InterestCompoundingETHIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
     case TheUSDCYieldIndex.symbol:

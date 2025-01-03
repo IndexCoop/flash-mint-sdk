@@ -1,16 +1,16 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import {
+  QuoteTokens,
+  type TestFactory,
   addLiquidityToLido,
   getMainnetTestFactory,
-  QuoteTokens,
-  TestFactory,
+  getSignerAccount,
+  getTestRpcProvider,
   swapExactInput,
   transferFromWhale,
   wei,
   wrapETH,
-  getSignerAccount,
-  getTestRpcProvider,
 } from '../utils'
 
 describe('dsETH (mainnet)', () => {
@@ -82,7 +82,7 @@ describe('dsETH (mainnet)', () => {
       factory.getSigner().address,
       quote.inputOutputAmount,
       quote.inputToken.address,
-      factory.getProvider()
+      factory.getProvider(),
     )
     await factory.executeTx()
   })
@@ -118,7 +118,7 @@ describe('dsETH (mainnet)', () => {
         amountOutMin: wei('1.5'),
       },
       factory.getProvider(),
-      factory.getSigner()
+      factory.getSigner(),
     )
     await factory.executeTx()
   })
@@ -171,7 +171,7 @@ describe('dsETH (mainnet)', () => {
       factory.getSigner().address,
       wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
-      factory.getProvider()
+      factory.getProvider(),
     )
     await factory.executeTx()
   })

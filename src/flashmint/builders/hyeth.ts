@@ -1,11 +1,11 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { BigNumber } from '@ethersproject/bignumber'
 
 import { getFlashMintHyEthContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, SwapData } from 'utils/swap-data'
+import { Exchange, type SwapData } from 'utils/swap-data'
 
-import { TransactionBuilder } from './interface'
+import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintHyEthBuildRequest {
@@ -27,7 +27,7 @@ export class FlashMintHyEthTransactionBuilder
   constructor(private readonly rpcUrl: string) {}
 
   async build(
-    request: FlashMintHyEthBuildRequest
+    request: FlashMintHyEthBuildRequest,
   ): Promise<TransactionRequest | null> {
     if (!this.isValidRequest(request)) return null
     const provider = getRpcProvider(this.rpcUrl)
@@ -52,7 +52,7 @@ export class FlashMintHyEthTransactionBuilder
           ...componentSwapData,
           poolIds: [],
         }
-      }
+      },
     )
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
@@ -60,7 +60,7 @@ export class FlashMintHyEthTransactionBuilder
           indexToken,
           indexTokenAmount,
           componentsSwapData,
-          { value: inputTokenAmount }
+          { value: inputTokenAmount },
         )
       } else {
         const swapDataInputTokenToEth = {
@@ -79,7 +79,7 @@ export class FlashMintHyEthTransactionBuilder
           inputTokenAmount, // _maxInputTokenAmount
           swapDataInputTokenToEth,
           swapDataEthToInputOutputToken,
-          componentsSwapData
+          componentsSwapData,
         )
       }
     } else {
@@ -88,7 +88,7 @@ export class FlashMintHyEthTransactionBuilder
           indexToken,
           indexTokenAmount,
           outputTokenAmount, // _minETHOut
-          componentsSwapData
+          componentsSwapData,
         )
       } else {
         const swapDataEthToInputOutputToken = {
@@ -101,7 +101,7 @@ export class FlashMintHyEthTransactionBuilder
           outputToken,
           outputTokenAmount, // _minOutputTokenAmount
           swapDataEthToInputOutputToken,
-          componentsSwapData
+          componentsSwapData,
         )
       }
     }

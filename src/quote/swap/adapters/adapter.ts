@@ -2,7 +2,7 @@ import { EthAddress } from 'constants/addresses'
 import { stETH } from 'constants/tokens'
 import { CurveSwapQuoteProvider } from 'quote/swap/adapters/curve'
 import { UniswapSwapQuoteProvider } from 'quote/swap/adapters/uniswap'
-import {
+import type {
   SwapQuote,
   SwapQuoteProvider,
   SwapQuoteRequest,
@@ -13,7 +13,7 @@ export class IndexSwapQuoteProvider implements SwapQuoteProvider {
   constructor(readonly rpcUrl: string) {}
 
   public async getSwapQuote(
-    request: SwapQuoteRequest
+    request: SwapQuoteRequest,
   ): Promise<SwapQuote | null> {
     let inputToken = request.inputToken
     let outputToken = request.outputToken

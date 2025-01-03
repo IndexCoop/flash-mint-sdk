@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import {
-  ComponentSwapData,
-  ComponentWrapData,
+  type ComponentSwapData,
+  type ComponentWrapData,
   getFlashMintWrappedContract,
   getIssuanceComponentSwapData,
   getRedemptionComponentSwapData,
@@ -12,7 +12,7 @@ import {
 } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { QuoteProvider, QuoteToken } from '../../interfaces'
 
 export interface FlashMintWrappedQuoteRequest {
   chainId: number
@@ -35,11 +35,11 @@ export class WrappedQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintWrappedQuoteRequest
+    request: FlashMintWrappedQuoteRequest,
   ): Promise<FlashMintWrappedQuote | null> {
     const {
       chainId,
@@ -61,7 +61,7 @@ export class WrappedQuoteProvider
             indexTokenAmount,
           },
           this.rpcUrl,
-          this.swapQuoteProvider
+          this.swapQuoteProvider,
         )
       : await getRedemptionComponentSwapData(
           {
@@ -72,7 +72,7 @@ export class WrappedQuoteProvider
             indexTokenAmount,
           },
           this.rpcUrl,
-          this.swapQuoteProvider
+          this.swapQuoteProvider,
         )
     const componentWrapData = getWrapData(indexToken.symbol)
     if (componentSwapData.length !== componentWrapData.length) return null
@@ -84,14 +84,14 @@ export class WrappedQuoteProvider
         indexToken.address,
         inputToken.address,
         indexTokenAmount,
-        componentSwapData
+        componentSwapData,
       )
     } else {
       estimatedInputOutputAmount = await contract.callStatic.getRedeemExactSet(
         indexToken.address,
         outputToken.address,
         indexTokenAmount,
-        componentSwapData
+        componentSwapData,
       )
     }
     // Apply slippage to the quote amount (minting: inputToken, redeeming: outputToken)
@@ -99,7 +99,7 @@ export class WrappedQuoteProvider
       estimatedInputOutputAmount,
       isMinting ? inputToken.decimals : outputToken.decimals,
       slippage,
-      isMinting
+      isMinting,
     )
     const quote: FlashMintWrappedQuote = {
       componentSwapData,

@@ -1,9 +1,9 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
 import { WETH } from 'constants/tokens'
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import { isSameAddress } from 'utils/addresses'
 import { getRpcProvider } from 'utils/rpc-provider'
 
@@ -11,7 +11,7 @@ export class MorphoQuoteProvider {
   readonly weth = WETH.address!
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   getTokenContract(address: string): Contract {
@@ -26,7 +26,7 @@ export class MorphoQuoteProvider {
   async getMintQuote(
     component: string,
     position: bigint,
-    inputToken: string
+    inputToken: string,
   ): Promise<bigint | null> {
     const tokenContract = this.getTokenContract(component)
     const ethAmount: BigNumber = await tokenContract.previewMint(position)
@@ -44,7 +44,7 @@ export class MorphoQuoteProvider {
   async getRedeemQuote(
     component: string,
     position: bigint,
-    outputToken: string
+    outputToken: string,
   ): Promise<bigint | null> {
     const tokenContract = this.getTokenContract(component)
     const ethAmount: BigNumber = await tokenContract.previewRedeem(position)

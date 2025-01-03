@@ -1,11 +1,11 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { BigNumber } from '@ethersproject/bignumber'
 
 import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, SwapDataV3 } from 'utils/swap-data'
+import { Exchange, type SwapDataV3 } from 'utils/swap-data'
 
 import { getFlashMintNavContract } from '../../utils/contracts'
-import { TransactionBuilder } from './interface'
+import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintNavBuildRequest {
@@ -25,7 +25,7 @@ export class FlashMintNavTransactionBuilder
   constructor(private readonly rpcUrl: string) {}
 
   async build(
-    request: FlashMintNavBuildRequest
+    request: FlashMintNavBuildRequest,
   ): Promise<TransactionRequest | null> {
     if (!this.isValidRequest(request)) return null
     const provider = getRpcProvider(this.rpcUrl)
@@ -48,7 +48,7 @@ export class FlashMintNavTransactionBuilder
           outputToken,
           indexTokenAmount, // _minSetTokenAmount
           reserveAssetSwapData,
-          { value: inputTokenAmount }
+          { value: inputTokenAmount },
         )
       } else {
         return await contract.populateTransaction.issueSetFromExactERC20(
@@ -56,7 +56,7 @@ export class FlashMintNavTransactionBuilder
           indexTokenAmount, // _minSetTokenAmount
           inputToken,
           inputTokenAmount, // _maxAmountInputToken
-          reserveAssetSwapData
+          reserveAssetSwapData,
         )
       }
     } else {
@@ -66,7 +66,7 @@ export class FlashMintNavTransactionBuilder
           inputToken,
           indexTokenAmount,
           outputTokenAmount, // _minEthAmount
-          reserveAssetSwapData
+          reserveAssetSwapData,
         )
       } else {
         return await contract.populateTransaction.redeemExactSetForERC20(
@@ -74,7 +74,7 @@ export class FlashMintNavTransactionBuilder
           indexTokenAmount,
           outputToken,
           outputTokenAmount, // _minOutputTokenAmount
-          reserveAssetSwapData
+          reserveAssetSwapData,
         )
       }
     }

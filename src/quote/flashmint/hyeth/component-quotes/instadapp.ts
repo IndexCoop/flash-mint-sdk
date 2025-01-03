@@ -1,9 +1,9 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
 import { stETH } from 'constants/tokens'
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import VAULT_ABI from './Vault.json'
@@ -11,13 +11,13 @@ import VAULT_ABI from './Vault.json'
 export class InstadappQuoteProvider {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getMintQuote(
     component: string,
     position: bigint,
-    inputToken: string
+    inputToken: string,
   ): Promise<bigint | null> {
     const provider = getRpcProvider(this.rpcUrl)
     // https://etherscan.io/address/0xa0d3707c569ff8c87fa923d3823ec5d81c98be78#readProxyContract
@@ -36,7 +36,7 @@ export class InstadappQuoteProvider {
   async getRedeemQuote(
     component: string,
     position: bigint,
-    outputToken: string
+    outputToken: string,
   ): Promise<bigint | null> {
     const provider = getRpcProvider(this.rpcUrl)
     // https://etherscan.io/address/0xa0d3707c569ff8c87fa923d3823ec5d81c98be78#readProxyContract

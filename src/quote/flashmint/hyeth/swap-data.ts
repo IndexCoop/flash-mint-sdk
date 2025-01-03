@@ -2,15 +2,15 @@
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { noopSwapData } from 'constants/swapdata'
 import { ETH, WETH } from 'constants/tokens'
-import { QuoteToken } from 'quote/interfaces'
-import { Exchange, SwapData } from 'utils'
+import type { QuoteToken } from 'quote/interfaces'
+import { Exchange, type SwapData } from 'utils'
 
 export function getComponentsSwapData(components: string[]): SwapData[] {
   return components.map(() => noopSwapData)
 }
 
 export function getEthToInputOutputTokenSwapData(
-  inputOutputToken: QuoteToken
+  inputOutputToken: QuoteToken,
 ): SwapData | null {
   if (inputOutputToken.symbol === ETH.symbol) return null
   if (inputOutputToken.symbol === WETH.symbol) {
@@ -30,7 +30,7 @@ export function getEthToInputOutputTokenSwapData(
 }
 
 export function getInputTokenToEthSwapData(
-  inputToken: QuoteToken
+  inputToken: QuoteToken,
 ): SwapData | null {
   if (inputToken.symbol === ETH.symbol) return null
   if (inputToken.symbol === WETH.symbol) {

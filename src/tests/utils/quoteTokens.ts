@@ -6,7 +6,7 @@ import {
   WETH,
   stETH,
 } from 'constants/tokens'
-import { QuoteToken } from 'quote/interfaces'
+import type { QuoteToken } from 'quote/interfaces'
 
 const btc2x: QuoteToken = {
   address: IndexCoopBitcoin2xIndex.address!,

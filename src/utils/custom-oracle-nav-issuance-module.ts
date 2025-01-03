@@ -1,4 +1,4 @@
-import { Address, parseAbi } from 'viem'
+import { type Address, parseAbi } from 'viem'
 
 import { Contracts } from 'constants/contracts'
 import { createClient } from 'utils/clients'
@@ -7,7 +7,7 @@ export async function getExpectedReserveRedeemQuantity(
   chainId: number,
   indexToken: Address,
   reserveAsset: Address,
-  indexTokenAmount: bigint
+  indexTokenAmount: bigint,
 ): Promise<bigint> {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const publicClient = createClient(chainId)!

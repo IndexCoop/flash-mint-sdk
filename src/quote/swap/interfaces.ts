@@ -1,4 +1,4 @@
-import { Exchange, SwapData } from 'utils'
+import type { Exchange, SwapData } from 'utils'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SwapQuote {

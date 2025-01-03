@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ETH, stETH, WETH } from 'constants/tokens'
+import { ETH, WETH, stETH } from 'constants/tokens'
 import { getAlchemyProviderUrl } from 'tests/utils'
 
-import { IndexSwapQuoteProvider } from './adapter'
 import { Exchange } from 'utils'
+import { IndexSwapQuoteProvider } from './adapter'
 
 const rpcUrl = getAlchemyProviderUrl(1)
 

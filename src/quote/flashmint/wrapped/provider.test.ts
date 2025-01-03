@@ -7,7 +7,7 @@ import {
 } from 'tests/utils'
 import { wei } from 'utils/numbers'
 
-import { FlashMintWrappedQuoteRequest, WrappedQuoteProvider } from '.'
+import { type FlashMintWrappedQuoteRequest, WrappedQuoteProvider } from '.'
 
 const chainId = ChainId.Base
 const indexToken = getTokenByChainAndSymbol(chainId, 'icUSD')

@@ -1,17 +1,17 @@
-import { BigNumber } from '@ethersproject/bignumber'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import type { BigNumber } from '@ethersproject/bignumber'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { WETH } from 'constants/tokens'
-import { getRpcProvider } from 'utils/rpc-provider'
 import {
   getAddressForToken,
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
   slippageAdjustedTokenAmount,
 } from 'utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
-import { QuoteProvider, QuoteToken } from '../../interfaces'
-import { SwapQuoteProvider } from '../../swap'
+import type { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { SwapQuoteProvider } from '../../swap'
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
 export interface FlashMintZeroExQuoteRequest {
@@ -33,11 +33,11 @@ export class ZeroExQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintZeroExQuoteRequest
+    request: FlashMintZeroExQuoteRequest,
   ): Promise<FlashMintZeroExQuote | null> {
     const { rpcUrl, swapQuoteProvider } = this
     const provider = getRpcProvider(rpcUrl)
@@ -58,20 +58,20 @@ export class ZeroExQuoteProvider
       indexTokenSymbol,
       indexTokenAmount,
       provider,
-      chainId
+      chainId,
     )
     const quoteProvider = new ComponentsQuoteProvider(
       chainId,
       slippage,
       wethAddress,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quoteResult = await quoteProvider.getComponentQuotes(
       components,
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (!quoteResult) return null
     const {
@@ -85,7 +85,7 @@ export class ZeroExQuoteProvider
       estimatedInputOutputAmount,
       inputOuputTokenDecimals,
       slippage,
-      isMinting
+      isMinting,
     )
     return {
       componentQuotes,
@@ -110,12 +110,12 @@ export async function getRequiredComponents(
   indexTokenSymbol: string,
   indexTokenAmount: BigNumber,
   provider: JsonRpcProvider,
-  chainId: number
+  chainId: number,
 ) {
   const contract = getFlashMintZeroExContractForToken(
     indexTokenSymbol,
     provider,
-    chainId
+    chainId,
   )
   const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
   const { components, positions } = isMinting
@@ -123,13 +123,13 @@ export async function getRequiredComponents(
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
         indexToken,
-        indexTokenAmount
+        indexTokenAmount,
       )
     : await contract.getRequiredRedemptionComponents(
         issuanceModule.address,
         issuanceModule.isDebtIssuance,
         indexToken,
-        indexTokenAmount
+        indexTokenAmount,
       )
   return { components, positions }
 }

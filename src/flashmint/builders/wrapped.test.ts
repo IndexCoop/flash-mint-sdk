@@ -6,13 +6,13 @@ import { getLocalHostProviderUrl } from 'tests/utils'
 import { getFlashMintWrappedContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { ComponentWrapData } from 'utils/wrap-data'
+import type { ComponentWrapData } from 'utils/wrap-data'
 
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
-  FlashMintWrappedBuildRequest,
+  type FlashMintWrappedBuildRequest,
   WrappedTransactionBuilder,
 } from './wrapped'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 const chainId = ChainId.Base
 const rpcUrl = getLocalHostProviderUrl(chainId)
@@ -90,7 +90,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.indexTokenAmount,
       buildRequest.inputOutputTokenAmount,
       buildRequest.componentSwapData,
-      buildRequest.componentWrapData
+      buildRequest.componentWrapData,
     )
     const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -108,7 +108,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.indexTokenAmount,
       buildRequest.componentSwapData,
       buildRequest.componentWrapData,
-      { value: buildRequest.inputOutputTokenAmount }
+      { value: buildRequest.inputOutputTokenAmount },
     )
     const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -128,7 +128,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.indexTokenAmount,
       buildRequest.inputOutputTokenAmount,
       buildRequest.componentSwapData,
-      buildRequest.componentWrapData
+      buildRequest.componentWrapData,
     )
     const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -146,7 +146,7 @@ describe('WrappedTransactionBuilder()', () => {
       buildRequest.indexTokenAmount,
       buildRequest.inputOutputTokenAmount,
       buildRequest.componentSwapData,
-      buildRequest.componentWrapData
+      buildRequest.componentWrapData,
     )
     const builder = new WrappedTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -159,7 +159,7 @@ describe('WrappedTransactionBuilder()', () => {
 function getDefaultBuildRequest(
   isMinting = true,
   inputOutputToken: string = usdcAddress,
-  inputOutputTokenSymbol = 'USDC'
+  inputOutputTokenSymbol = 'USDC',
 ): FlashMintWrappedBuildRequest {
   const wrapData: ComponentWrapData = {
     integrationName: '',

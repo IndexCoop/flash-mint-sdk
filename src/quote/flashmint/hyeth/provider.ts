@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { WETH } from 'constants/tokens'
-import { QuoteProvider, QuoteToken } from 'quote/interfaces'
-import { SwapQuoteProvider } from 'quote/swap'
-import { slippageAdjustedTokenAmount, SwapData } from 'utils'
+import type { QuoteProvider, QuoteToken } from 'quote/interfaces'
+import type { SwapQuoteProvider } from 'quote/swap'
+import { type SwapData, slippageAdjustedTokenAmount } from 'utils'
 
 import { ComponentQuotesProvider } from './component-quotes'
 import { getRequiredComponents } from './issuance'
@@ -39,11 +39,11 @@ export class FlashMintHyEthQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintHyEthQuoteRequest
+    request: FlashMintHyEthQuoteRequest,
   ): Promise<FlashMintHyEthQuote | null> {
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
@@ -57,7 +57,7 @@ export class FlashMintHyEthQuoteProvider
 
     const { components, positions } = await getRequiredComponents(
       request,
-      this.rpcUrl
+      this.rpcUrl,
     )
 
     const componentsSwapData = getComponentsSwapData(components)
@@ -73,21 +73,21 @@ export class FlashMintHyEthQuoteProvider
       slippage,
       wethAddress,
       this.rpcUrl,
-      this.swapQuoteProvider
+      this.swapQuoteProvider,
     )
     const quoteResult = await quoteProvider.getComponentQuotes(
       components,
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (!quoteResult) return null
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
       BigNumber.from(quoteResult.inputOutputTokenAmount.toString()),
       isMinting ? inputToken.decimals : outputToken.decimals,
       slippage,
-      isMinting
+      isMinting,
     )
     return {
       indexTokenAmount,

@@ -11,12 +11,12 @@ import {
   BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  InterestCompoundingETHIndex,
-  MetaverseIndex,
-  IndexCoopEthereum2xIndex,
+  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
-  HighYieldETHIndex,
+  IndexCoopEthereum2xIndex,
+  InterestCompoundingETHIndex,
+  MetaverseIndex,
   TheUSDCYieldIndex,
 } from 'constants/tokens'
 
@@ -115,7 +115,7 @@ describe('getIssuanceModule() - Arbitrum', () => {
     const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
@@ -125,7 +125,7 @@ describe('getIssuanceModule() - Arbitrum', () => {
     const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin3xIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
@@ -137,7 +137,7 @@ describe('getIssuanceModule() - Base', () => {
     const expectedModule = Contracts[ChainId.Base].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Base
+      ChainId.Base,
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
@@ -147,7 +147,7 @@ describe('getIssuanceModule() - Base', () => {
     const expectedModule = Contracts[ChainId.Base].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
       IndexCoopBitcoin3xIndex.symbol,
-      ChainId.Base
+      ChainId.Base,
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
@@ -159,7 +159,7 @@ describe('getIssuanceModule() - Polygon', () => {
     const expectedAddress = BasicIssuanceModulePolygonAddress
     const issuanceModule = getIssuanceModule(
       MetaverseIndex.symbol,
-      ChainId.Polygon
+      ChainId.Polygon,
     )
     expect(issuanceModule.address).toEqual(expectedAddress)
     expect(issuanceModule.isDebtIssuance).toBe(false)

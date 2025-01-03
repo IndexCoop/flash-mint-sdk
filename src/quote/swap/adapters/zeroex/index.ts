@@ -1,7 +1,7 @@
-import axios, { AxiosRequestHeaders } from 'axios'
+import axios, { type AxiosRequestHeaders } from 'axios'
 
 import { ChainId } from 'constants/chains'
-import {
+import type {
   SwapQuote,
   SwapQuoteProvider,
   SwapQuoteRequest,
@@ -85,7 +85,7 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
     private readonly baseUrl: string | null = null,
     private readonly affiliateAddress: string | null = null,
     private readonly headersOverride: AxiosRequestHeaders | null = null,
-    private readonly swapPathOverride: string | null = null
+    private readonly swapPathOverride: string | null = null,
   ) {}
 
   /**
@@ -110,7 +110,7 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
    * @param request An instance of type SwapQuoteRequest
    */
   public async getSwapQuote(
-    request: SwapQuoteRequest
+    request: SwapQuoteRequest,
   ): Promise<SwapQuote | null> {
     const { chainId, inputToken, outputToken, slippage } = request
     const params = this.getParams(request)

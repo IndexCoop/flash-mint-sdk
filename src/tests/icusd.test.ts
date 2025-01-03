@@ -3,10 +3,10 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import {
+  type TestFactory,
   getBaseTestFactory,
   getSignerAccount,
   getTestRpcProvider,
-  TestFactory,
   transferFromWhale,
   wei,
   wrapETH,
@@ -39,7 +39,7 @@ describe('icUSD (Base)', () => {
       factory.getSigner().address,
       wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
-      factory.getProvider()
+      factory.getProvider(),
     )
     await factory.executeTx()
   })
@@ -57,7 +57,7 @@ describe('icUSD (Base)', () => {
     await wrapETH(
       BigNumber.from(quote.inputAmount.mul(BigNumber.from('2'))),
       factory.getSigner(),
-      chainId
+      chainId,
     )
     await factory.executeTx()
   })
@@ -77,7 +77,7 @@ describe('icUSD (Base)', () => {
       factory.getSigner().address,
       wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
-      factory.getProvider()
+      factory.getProvider(),
     )
     await factory.executeTx()
   })

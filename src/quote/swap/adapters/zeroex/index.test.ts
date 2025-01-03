@@ -88,7 +88,7 @@ describe('ZeroExApi', () => {
     const zeroExApi = new ZeroExSwapQuoteProvider(
       baseUrl,
       affiliateAddress,
-      indexApiHeader
+      indexApiHeader,
     )
     const url = zeroExApi.buildUrl('/swap/v1/quote', query, chainId)
     expect(url).toEqual(expectedUrl)
@@ -119,7 +119,7 @@ describe('ZeroExApi', () => {
       index0xApiBaseUrl,
       '',
       indexApiHeader,
-      '/mainnet/swap/v1/quote'
+      '/mainnet/swap/v1/quote',
     )
     const quote = await zeroExApi.getSwapQuote(request)
     if (!quote) fail()

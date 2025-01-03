@@ -1,9 +1,9 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 
 import { WETH } from 'constants/tokens'
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import { isSameAddress } from 'utils/addresses'
 import { getRpcProvider } from 'utils/rpc-provider'
 
@@ -15,7 +15,7 @@ export class AcrossQuoteProvider {
 
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   getPoolContract(): Contract {
@@ -28,12 +28,12 @@ export class AcrossQuoteProvider {
 
   async getDepositQuote(
     acrossLpAmount: bigint,
-    inputToken: string
+    inputToken: string,
   ): Promise<bigint | null> {
     const outputToken = this.weth
     const pool = this.getPoolContract()
     const exchangeRate: BigNumber = await pool.callStatic.exchangeRateCurrent(
-      this.weth
+      this.weth,
     )
     const ethAmount =
       (exchangeRate.toBigInt() * acrossLpAmount) / BigInt(1e18) +
@@ -51,12 +51,12 @@ export class AcrossQuoteProvider {
 
   async getWithdrawQuote(
     acrossLpAmount: bigint,
-    outputToken: string
+    outputToken: string,
   ): Promise<bigint | null> {
     const inputToken = this.weth
     const pool = this.getPoolContract()
     const exchangeRate: BigNumber = await pool.callStatic.exchangeRateCurrent(
-      this.weth
+      this.weth,
     )
     const ethAmount = (exchangeRate.toBigInt() * acrossLpAmount) / BigInt(1e18)
     if (isSameAddress(inputToken, outputToken)) return ethAmount

@@ -1,7 +1,7 @@
-import { LiFiStep } from '@lifi/sdk'
+import type { LiFiStep } from '@lifi/sdk'
 
 import { AddressZero } from 'constants/addresses'
-import { Exchange, SwapData } from 'utils'
+import { Exchange, type SwapData } from 'utils'
 
 export function getSwapData(lifiResult: LiFiStep): SwapData | null {
   const feeCosts = lifiResult.estimate.feeCosts ?? null
