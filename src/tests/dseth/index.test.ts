@@ -1,14 +1,18 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
+import { getRpcProvider } from 'utils/rpc-provider'
+
 import {
   addLiquidityToLido,
   getMainnetTestFactory,
   QuoteTokens,
-  SignerAccount3,
   TestFactory,
   swapExactInput,
   transferFromWhale,
   wei,
   wrapETH,
+  getSignerAccount,
+  getLocalHostProviderUrl,
 } from '../utils'
 
 const { dseth, eth, steth, usdc, weth } = QuoteTokens
@@ -16,7 +20,8 @@ const { dseth, eth, steth, usdc, weth } = QuoteTokens
 describe('dsETH (mainnet)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = SignerAccount3
+    const provider = getRpcProvider(getLocalHostProviderUrl(1))
+    const signer = getSignerAccount(3, provider)
     factory = getMainnetTestFactory(signer)
   })
 

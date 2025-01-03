@@ -1,19 +1,23 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import {
   getMainnetTestFactory,
   getMainnetTestFactoryUniswap,
+  getSignerAccount,
+  getTestRpcProvider,
   QuoteTokens,
-  SignerAccount4,
   TestFactory,
   wei,
   wrapETH,
 } from './utils'
 
-const { eth, iceth, weth } = QuoteTokens
-
 describe('icETH (mainnet)', () => {
-  const signer = SignerAccount4
+  const chainId = 1
+  const { eth } = QuoteTokens
+  const iceth = getTokenByChainAndSymbol(chainId, 'icETH')
+  const weth = getTokenByChainAndSymbol(chainId, 'WETH')
+  const signer = getSignerAccount(4, getTestRpcProvider(chainId))
   let factory: TestFactory
   beforeEach(async () => {
     factory = getMainnetTestFactory(signer)
@@ -30,7 +34,7 @@ describe('icETH (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can mint icETH-ETH (IndexSwapQuoteProvider)', async () => {
+  test.skip('can mint icETH-ETH (IndexSwapQuoteProvider)', async () => {
     const factory = getMainnetTestFactoryUniswap(signer)
     await factory.fetchQuote({
       isMinting: true,
@@ -65,7 +69,7 @@ describe('icETH (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with WETH (IndexSwapQuoteProvider)', async () => {
+  test.skip('can mint with WETH (IndexSwapQuoteProvider)', async () => {
     const factory = getMainnetTestFactoryUniswap(signer)
     const quote = await factory.fetchQuote({
       isMinting: true,

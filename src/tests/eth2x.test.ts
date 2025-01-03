@@ -1,16 +1,19 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   getMainnetTestFactory,
   getMainnetTestFactoryUniswap,
+  getSignerAccount,
+  getTestRpcProvider,
   QuoteTokens,
-  SignerAccount4,
   TestFactory,
   wei,
 } from './utils'
 
-const { eth, eth2x } = QuoteTokens
-
 describe('ETH2X (mainnet)', () => {
-  const signer = SignerAccount4
+  const chainId = 1
+  const { eth } = QuoteTokens
+  const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
+  const signer = getSignerAccount(4, getTestRpcProvider(chainId))
   let factory: TestFactory
   beforeEach(async () => {
     factory = getMainnetTestFactory(signer)

@@ -11,6 +11,7 @@ export * from './factories'
 export * from './factory'
 export { QuoteTokens } from './quoteTokens'
 export * from './lido'
+export * from './providers'
 export * from './signers'
 export * from './uniswap'
 export * from './weth'
@@ -28,18 +29,6 @@ const LocalhostProviderUrlArbitrum = 'http://127.0.0.1:8548/'
 export const LocalhostProviderArbitrum = new JsonRpcProvider(
   LocalhostProviderUrlArbitrum
 )
-
-// Try to use these more together with the `getRpcProvider` util function
-export function getLocalHostProviderUrl(chainId: number) {
-  switch (chainId) {
-    case ChainId.Arbitrum:
-      return 'http://127.0.0.1:8548/'
-    case ChainId.Base:
-      return 'http://127.0.0.1:8453/'
-    default:
-      return 'http://127.0.0.1:8545/'
-  }
-}
 
 function get0xSwapPathOverride(chainId: number) {
   switch (chainId) {
