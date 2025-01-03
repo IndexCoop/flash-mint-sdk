@@ -1,28 +1,21 @@
-/* eslint-disable  @typescript-eslint/no-non-null-assertion */
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
-import { IndexCoopEthereum2xIndex } from 'constants/tokens'
 import {
   getBaseTestFactory,
-  getLocalHostProviderUrl,
   getSignerAccount,
+  getTestRpcProvider,
   QuoteTokens,
   TestFactory,
   wei,
 } from 'tests/utils'
-import { getRpcProvider } from 'utils/rpc-provider'
-
-const { eth } = QuoteTokens
-const eth2x = {
-  address: IndexCoopEthereum2xIndex.addressBase!,
-  decimals: 18,
-  symbol: IndexCoopEthereum2xIndex.symbol,
-}
 
 describe('ETH2X (Base)', () => {
+  const chainId = ChainId.Base
+  const { eth } = QuoteTokens
+  const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = getRpcProvider(getLocalHostProviderUrl(ChainId.Base))
-    const signer = getSignerAccount(0, provider)
+    const signer = getSignerAccount(0, getTestRpcProvider(chainId))
     factory = getBaseTestFactory(signer)
   })
 
