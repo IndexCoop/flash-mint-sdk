@@ -1,37 +1,26 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
-import {
-  LocalhostProvider,
-  LocalhostProviderUrl,
-  QuoteTokens,
-} from 'tests/utils'
+import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
 import { getIssuanceModule } from 'utils/issuanceModules'
 import { wei } from 'utils/numbers'
 import { FlashMintZeroExBuildRequest, ZeroExTransactionBuilder } from './zeroex'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 const chainId = 1
-const provider = LocalhostProvider
-const rpcUrl = LocalhostProviderUrl
-
-const { dseth, usdc } = QuoteTokens
-
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = dseth
-const usdcAddress = usdc.address
+const indexToken = getTokenByChainAndSymbol(chainId, 'dsETH')
+const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 
 describe('ZeroExTransactionBuilder()', () => {
   const contract = getFlashMintZeroExContractForToken(
     indexToken.symbol,
-    provider,
+    getTestRpcProvider(chainId),
     chainId
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
-
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
-  })
+  const rpcUrl = getLocalHostProviderUrl(chainId)
 
   test('returns null for invalid request (no index token)', async () => {
     const buildRequest = createBuildRequest()

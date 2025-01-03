@@ -2,11 +2,11 @@ import { Token } from '@uniswap/sdk-core'
 import { FeeAmount } from '@uniswap/v3-sdk'
 
 import { AddressZero } from 'constants/addresses'
-import { AlchemyProviderUrl } from 'tests/utils'
+import { getAlchemyProviderUrl } from 'tests/utils'
 
 import { getPool } from './pools'
 
-const rpcUrl = AlchemyProviderUrl
+const rpcUrl = getAlchemyProviderUrl(1)
 
 export const weth = new Token(
   1,

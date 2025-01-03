@@ -1,13 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import {
-  LocalhostProvider,
-  LocalhostProviderUrl,
-  QuoteTokens,
-} from 'tests/utils'
+import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintHyEthContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { Exchange } from 'utils/swap-data'
@@ -18,17 +15,16 @@ import {
   FlashMintHyEthTransactionBuilder,
 } from './hyeth'
 
-const provider = LocalhostProvider
-const rpcUrl = LocalhostProviderUrl
-
-const { hyeth, usdc, weth } = QuoteTokens
-
-const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
+const chainId = ChainId.Mainnet
+const FlashMintHyEthAddress = Contracts[chainId].FlashMintHyEthV3
 const eth = EthAddress
-const indexToken = hyeth
+const indexToken = getTokenByChainAndSymbol(chainId, 'hyETH')
+const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
+const weth = getTokenByChainAndSymbol(chainId, 'WETH')
 
 describe('FlashMintHyEthTransactionBuilder()', () => {
-  const contract = getFlashMintHyEthContract(provider)
+  const rpcUrl = getLocalHostProviderUrl(chainId)
+  const contract = getFlashMintHyEthContract(getTestRpcProvider(chainId))
 
   test('returns null for invalid request (no input token)', async () => {
     const buildRequest = createBuildRequest()
@@ -49,7 +45,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
   test('returns null for invalid request (indexTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     // isMinting: true
-    buildRequest.outputTokenAmount = BigNumber.from(0)
+    buildRequest.outputTokenAmount = wei(0)
     const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
@@ -58,7 +54,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
   test('returns null for invalid request (inputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     // isMinting: true
-    buildRequest.inputTokenAmount = BigNumber.from(0)
+    buildRequest.inputTokenAmount = wei(0)
     const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()

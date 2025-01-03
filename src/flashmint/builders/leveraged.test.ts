@@ -7,38 +7,27 @@ import {
   inputSwapData,
   outputSwapData,
 } from 'constants/swapdata'
-import {
-  LocalhostProvider,
-  LocalhostProviderUrl,
-  QuoteTokens,
-} from 'tests/utils'
+import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import {
   FlashMintLeveragedBuildRequest,
   LeveragedTransactionBuilder,
 } from './leveraged'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 const chainId = 1
-const provider = LocalhostProvider
-const rpcUrl = LocalhostProviderUrl
-
-const { iceth, usdc } = QuoteTokens
-
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = iceth
-const usdcAddress = usdc.address
+const indexToken = getTokenByChainAndSymbol(chainId, 'icETH')
+const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 
 describe('LeveragedTransactionBuilder()', () => {
   const contract = getFlashMintLeveragedContractForToken(
     indexToken.symbol,
-    provider,
+    getTestRpcProvider(chainId),
     chainId
   )
-
-  beforeEach((): void => {
-    jest.setTimeout(10000000)
-  })
+  const rpcUrl = getLocalHostProviderUrl(chainId)
 
   test('returns null for invalid request (no index token)', async () => {
     const buildRequest = createBuildRequest()

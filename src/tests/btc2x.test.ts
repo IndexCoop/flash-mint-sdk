@@ -1,17 +1,22 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   getMainnetTestFactory,
   getMainnetTestFactoryUniswap,
+  getSignerAccount,
+  getTestRpcProvider,
   QuoteTokens,
-  SignerAccount4,
-  TestFactory,
   wei,
 } from './utils'
 
-const { btc2x, eth } = QuoteTokens
+import type { TestFactory } from './utils'
 
 describe('BTC2X (mainnet)', () => {
-  const signer = SignerAccount4
+  const chainId = 1
+  const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
+  const { eth } = QuoteTokens
   let factory: TestFactory
+  const provider = getTestRpcProvider(chainId)
+  const signer = getSignerAccount(4, provider)
   beforeEach(async () => {
     factory = getMainnetTestFactory(signer)
   })

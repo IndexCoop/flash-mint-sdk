@@ -1,26 +1,22 @@
-/* eslint-disable  @typescript-eslint/no-non-null-assertion */
-import { IndexCoopEthereum3xIndex } from 'constants/tokens'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { ChainId } from 'constants/chains'
 import {
   getArbitrumTestFactory,
   getSignerAccount,
-  LocalhostProviderArbitrum,
+  getTestRpcProvider,
   QuoteTokens,
   TestFactory,
   wei,
 } from 'tests/utils'
 
+const chainId = ChainId.Arbitrum
+const eth3x = getTokenByChainAndSymbol(chainId, 'ETH3X')
 const { eth } = QuoteTokens
-const eth3x = {
-  address: IndexCoopEthereum3xIndex.addressArbitrum!,
-  decimals: 18,
-  symbol: IndexCoopEthereum3xIndex.symbol,
-}
 
 describe('ETH3X (Arbitrum)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = LocalhostProviderArbitrum
-    const signer = getSignerAccount(2, provider)
+    const signer = getSignerAccount(2, getTestRpcProvider(chainId))
     factory = getArbitrumTestFactory(signer)
   })
 

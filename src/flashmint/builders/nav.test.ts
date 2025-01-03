@@ -9,23 +9,23 @@ import {
   USDC,
   WETH,
 } from 'constants/tokens'
-import { LocalhostProvider, LocalhostProviderUrl } from 'tests/utils'
-import { getFlashMintNavContract } from 'utils/contracts'
-import { wei } from 'utils/numbers'
-import { Exchange } from 'utils'
-
 import {
   FlashMintNavBuildRequest,
   FlashMintNavTransactionBuilder,
 } from 'flashmint/builders/nav'
+import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
+import { getFlashMintNavContract } from 'utils/contracts'
+import { wei } from 'utils/numbers'
+import { Exchange } from 'utils'
 
-const provider = LocalhostProvider
-const rpcUrl = LocalhostProviderUrl
+const chainId = ChainId.Mainnet
+const provider = getTestRpcProvider(chainId)
+const rpcUrl = getLocalHostProviderUrl(chainId)
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
 
-const FlashMintNavAddress = Contracts[ChainId.Mainnet].FlashMintNav
+const FlashMintNavAddress = Contracts[chainId].FlashMintNav
 
 describe('FlashMintNavTransactionBuilder()', () => {
   const contract = getFlashMintNavContract(provider)

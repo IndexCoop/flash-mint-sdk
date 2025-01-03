@@ -2,8 +2,9 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   balanceOf,
   getMainnetTestFactory,
+  getSignerAccount,
+  getTestRpcProvider,
   QuoteTokens,
-  SignerAccount4,
   TestFactory,
   transferFromWhale,
   wei,
@@ -17,7 +18,7 @@ describe('hyETH', () => {
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = SignerAccount4
+    const signer = getSignerAccount(4, getTestRpcProvider(chainId))
     factory = getMainnetTestFactory(signer)
   })
 

@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ETH, stETH, WETH } from 'constants/tokens'
-import { AlchemyProviderUrl } from 'tests/utils'
 
-import { CurveSwapQuoteProvider } from './'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+
+import { ETH } from 'constants/tokens'
+import { getAlchemyProviderUrl } from 'tests/utils'
 import { Exchange } from 'utils'
 
-const rpcUrl = AlchemyProviderUrl
+import { CurveSwapQuoteProvider } from './'
+
+const chainId = 1
+const rpcUrl = getAlchemyProviderUrl(chainId)
 
 // ETH/stETH
 const curvePool = '0xdc24316b9ae028f1497c275eb9192a3ea0f67022'
 const eth = ETH.address!
-const steth = stETH.address!
-const weth = WETH.address!
+const steth = getTokenByChainAndSymbol(chainId, 'stETH').address
+const weth = getTokenByChainAndSymbol(chainId, 'WETH').address
 const ONE = '1000000000000000000'
 
 describe('CurveSwapQuoteProvider', () => {
@@ -29,7 +33,13 @@ describe('CurveSwapQuoteProvider', () => {
     expect(quote.swapData?.exchange).toBe(Exchange.Curve)
     expect(quote.swapData?.path.length).toBe(2)
     expect(quote.swapData?.fees.length).toBe(0)
-    expect(quote.swapData?.path).toEqual([weth, steth])
+    expect(isAddressEqual(quote.swapData?.path[0], weth)).toBe(true)
+    expect(
+      isAddressEqual(
+        quote.swapData?.path[quote.swapData.path.length - 1],
+        steth
+      )
+    ).toBe(true)
     expect(quote.swapData?.pool).toBe(curvePool)
     // expect(quote.callData).not.toBe('0x')
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
@@ -49,7 +59,13 @@ describe('CurveSwapQuoteProvider', () => {
     expect(quote.swapData?.exchange).toBe(Exchange.Curve)
     expect(quote.swapData?.path.length).toBe(2)
     expect(quote.swapData?.fees.length).toBe(0)
-    expect(quote.swapData?.path).toEqual([weth, steth])
+    expect(isAddressEqual(quote.swapData?.path[0], weth)).toBe(true)
+    expect(
+      isAddressEqual(
+        quote.swapData?.path[quote.swapData.path.length - 1],
+        steth
+      )
+    ).toBe(true)
     expect(quote.swapData?.pool).toBe(curvePool)
     // expect(quote.callData).not.toBe('0x')
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)

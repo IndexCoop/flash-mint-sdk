@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ETH, stETH, WETH } from 'constants/tokens'
-import { AlchemyProviderUrl } from 'tests/utils'
+import { getAlchemyProviderUrl } from 'tests/utils'
 
 import { IndexSwapQuoteProvider } from './adapter'
 import { Exchange } from 'utils'
 
-const rpcUrl = AlchemyProviderUrl
+const rpcUrl = getAlchemyProviderUrl(1)
 
 // ETH/stETH
 const curvePool = '0xdc24316b9ae028f1497c275eb9192a3ea0f67022'

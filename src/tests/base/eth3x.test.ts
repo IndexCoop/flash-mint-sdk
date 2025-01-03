@@ -1,32 +1,25 @@
-/* eslint-disable  @typescript-eslint/no-non-null-assertion */
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
-import { IndexCoopEthereum3xIndex } from 'constants/tokens'
 import {
   getBaseTestFactory,
-  getLocalHostProviderUrl,
   getSignerAccount,
+  getTestRpcProvider,
   QuoteTokens,
   TestFactory,
   wei,
 } from 'tests/utils'
-import { getRpcProvider } from 'utils/rpc-provider'
 
-const { eth } = QuoteTokens
-const eth3x = {
-  address: IndexCoopEthereum3xIndex.addressBase!,
-  decimals: 18,
-  symbol: IndexCoopEthereum3xIndex.symbol,
-}
-
-describe.skip('ETH3X (Base)', () => {
+describe('ETH3X (Base)', () => {
+  const chainId = ChainId.Base
+  const { eth } = QuoteTokens
+  const eth3x = getTokenByChainAndSymbol(chainId, 'ETH3X')
   let factory: TestFactory
   beforeEach(async () => {
-    const provider = getRpcProvider(getLocalHostProviderUrl(ChainId.Base))
-    const signer = getSignerAccount(2, provider)
+    const signer = getSignerAccount(2, getTestRpcProvider(chainId))
     factory = getBaseTestFactory(signer)
   })
 
-  test.only('can mint with ETH', async () => {
+  test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,

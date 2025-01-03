@@ -1,22 +1,25 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import {
   addLiquidityToLido,
   getMainnetTestFactory,
   QuoteTokens,
-  SignerAccount3,
   TestFactory,
   swapExactInput,
   transferFromWhale,
   wei,
   wrapETH,
+  getSignerAccount,
+  getTestRpcProvider,
 } from '../utils'
 
-const { dseth, eth, steth, usdc, weth } = QuoteTokens
-
 describe('dsETH (mainnet)', () => {
+  const chainId = 1
+  const dseth = getTokenByChainAndSymbol(chainId, 'dsETH')
+  const { eth, steth, usdc, weth } = QuoteTokens
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = SignerAccount3
+    const signer = getSignerAccount(3, getTestRpcProvider(1))
     factory = getMainnetTestFactory(signer)
   })
 

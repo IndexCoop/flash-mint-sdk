@@ -1,4 +1,3 @@
-/* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { ChainId } from 'constants/chains'
 import {
   collateralDebtSwapData,
@@ -14,11 +13,14 @@ import {
 } from 'tests/utils'
 
 import { LeveragedQuoteProvider } from './provider'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-const rpcUrl = getLocalHostProviderUrl(ChainId.Mainnet)
-const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
+const chainId = ChainId.Mainnet
+const rpcUrl = getLocalHostProviderUrl(chainId)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
-const { eth, iceth } = QuoteTokens
+const { eth } = QuoteTokens
+const iceth = getTokenByChainAndSymbol(chainId, 'icETH')
 
 describe('LeveragedQuoteProvider()', () => {
   test('returns static swap data for 🧊ETH - minting', async () => {
@@ -27,11 +29,7 @@ describe('LeveragedQuoteProvider()', () => {
     const request = {
       isMinting: true,
       inputToken: eth,
-      outputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      outputToken: indexToken,
       indexTokenAmount,
       slippage: 0.5,
     }
@@ -53,11 +51,7 @@ describe('LeveragedQuoteProvider()', () => {
     const indexTokenAmount = wei(1)
     const request = {
       isMinting: false,
-      inputToken: {
-        symbol: indexToken.symbol,
-        decimals: 18,
-        address: indexToken.address!,
-      },
+      inputToken: indexToken,
       outputToken: eth,
       indexTokenAmount,
       slippage: 0.5,
