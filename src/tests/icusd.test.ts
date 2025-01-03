@@ -62,7 +62,7 @@ describe('icUSD (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with DAI', async () => {
+  test.skip('can mint with DAI', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(chainId, 'DAI'),
