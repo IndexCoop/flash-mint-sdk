@@ -212,7 +212,7 @@ function createBuildRequest(
       ? collateralDebtSwapData[indexToken.symbol]
       : debtCollateralSwapData[indexToken.symbol],
     swapDataPaymentToken: isMinting
-      ? inputSwapData[indexToken.symbol]['ETH']
-      : outputSwapData[indexToken.symbol]['ETH'],
+      ? inputSwapData[indexToken.symbol].ETH
+      : outputSwapData[indexToken.symbol].ETH,
   }
 }

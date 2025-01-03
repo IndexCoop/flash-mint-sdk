@@ -42,7 +42,7 @@ describe('LeveragedQuoteProvider()', () => {
       debtCollateralSwapData[indexToken.symbol],
     )
     expect(quote.swapDataPaymentToken).toStrictEqual(
-      inputSwapData[indexToken.symbol]['ETH'],
+      inputSwapData[indexToken.symbol].ETH,
     )
   })
 
@@ -65,7 +65,7 @@ describe('LeveragedQuoteProvider()', () => {
       collateralDebtSwapData[indexToken.symbol],
     )
     expect(quote.swapDataPaymentToken).toStrictEqual(
-      outputSwapData[indexToken.symbol]['ETH'],
+      outputSwapData[indexToken.symbol].ETH,
     )
   })
 })

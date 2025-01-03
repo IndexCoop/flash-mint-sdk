@@ -235,7 +235,7 @@ export class LeveragedQuoteProvider
         quoteRequest.inputAmount = paymentTokenAmount.toString()
       }
       const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
-      if (result && result.swapData) {
+      if (result?.swapData) {
         const { inputAmount, outputAmount, swapData } = result
         swapDataPaymentToken = swapData
         paymentTokenAmount = isMinting
