@@ -14,7 +14,6 @@ describe('BTC2X (mainnet)', () => {
   const chainId = 1
   const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
   const { eth } = QuoteTokens
-
   let factory: TestFactory
   const provider = getTestRpcProvider(chainId)
   const signer = getSignerAccount(4, provider)

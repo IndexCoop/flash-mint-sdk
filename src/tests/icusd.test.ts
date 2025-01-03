@@ -2,11 +2,10 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
-import { getRpcProvider } from 'utils/rpc-provider'
 import {
   getBaseTestFactory,
-  getLocalHostProviderUrl,
   getSignerAccount,
+  getTestRpcProvider,
   TestFactory,
   transferFromWhale,
   wei,
@@ -19,8 +18,7 @@ describe('icUSD (Base)', () => {
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   const usdcWhale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
-  const provider = getRpcProvider(getLocalHostProviderUrl(chainId))
-  const signer = getSignerAccount(4, provider)
+  const signer = getSignerAccount(4, getTestRpcProvider(chainId))
   let factory: TestFactory
   beforeEach(async () => {
     factory = getBaseTestFactory(signer)
