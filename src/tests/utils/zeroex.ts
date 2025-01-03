@@ -17,6 +17,7 @@ export function getZeroExSwapQuoteProvider(chainId: number) {
   return new ZeroExSwapQuoteProvider(
     index0xApiBaseUrl,
     '',
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
     get0xSwapPathOverride(chainId)
   )

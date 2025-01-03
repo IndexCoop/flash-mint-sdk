@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ETH, stETH, WETH } from 'constants/tokens'
-import { AlchemyProviderUrl, getAlchemyProviderUrl } from 'tests/utils'
+import { getAlchemyProviderUrl } from 'tests/utils'
 
 import { IndexSwapQuoteProvider } from './adapter'
 import { Exchange } from 'utils'

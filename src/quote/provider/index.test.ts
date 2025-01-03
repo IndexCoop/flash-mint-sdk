@@ -25,7 +25,11 @@ const provider = getRpcProvider(rpcUrl)
 const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
-const { eth, eth2x, hyeth, iceth, usdc } = QuoteTokens
+const { eth } = QuoteTokens
+const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
+const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
+const iceth = getTokenByChainAndSymbol(chainId, 'icETH')
+const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {

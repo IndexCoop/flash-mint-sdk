@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ChainId } from 'constants/chains'
 import { getRpcProvider } from 'utils/rpc-provider'
 
