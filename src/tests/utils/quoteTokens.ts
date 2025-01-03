@@ -26,12 +26,6 @@ const dpi: QuoteToken = {
   symbol: DefiPulseIndex.symbol,
 }
 
-const dseth: QuoteToken = {
-  address: DiversifiedStakedETHIndex.address!,
-  decimals: 18,
-  symbol: DiversifiedStakedETHIndex.symbol,
-}
-
 const eth: QuoteToken = {
   symbol: ETH.symbol,
   decimals: 18,
@@ -83,7 +77,6 @@ const weth: QuoteToken = {
 export const QuoteTokens = {
   btc2x,
   dpi,
-  dseth,
   eth,
   eth2x,
   hyeth,

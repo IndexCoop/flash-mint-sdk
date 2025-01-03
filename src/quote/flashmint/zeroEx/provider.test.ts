@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import {
@@ -10,53 +10,14 @@ import { wei } from 'utils'
 
 import { ZeroExQuoteProvider } from './provider'
 
-const rpcUrl = getLocalHostProviderUrl(ChainId.Mainnet)
-const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
-
-const { dpi, dseth, eth, mvi } = QuoteTokens
+const chainId = ChainId.Mainnet
+const rpcUrl = getLocalHostProviderUrl(chainId)
+const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 
 describe('ZeroExQuoteProvider', () => {
-  beforeEach((): void => {
-    jest.setTimeout(100000)
-  })
-
-  test.skip('returns a quote for minting dsETH', async () => {
-    const indexTokenAmount = wei(1)
-    const inputToken = eth
-    const outputToken = dseth
-    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
-    const quote = await quoteProvider.getQuote({
-      isMinting: true,
-      inputToken,
-      outputToken,
-      indexTokenAmount,
-      slippage: 0.5,
-    })
-    if (!quote) fail()
-    expect(quote.componentQuotes.length).toBeGreaterThan(0)
-    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
-    expect(quote.inputOutputTokenAmount).toBeDefined()
-    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-  })
-
-  test.skip('returns a quote for redeeming dsETH', async () => {
-    const indexTokenAmount = wei(1)
-    const inputToken = dseth
-    const outputToken = eth
-    const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
-    const quote = await quoteProvider.getQuote({
-      isMinting: false,
-      inputToken,
-      outputToken,
-      indexTokenAmount,
-      slippage: 0.5,
-    })
-    if (!quote) fail()
-    expect(quote.componentQuotes.length).toBeGreaterThan(0)
-    expect(quote.indexTokenAmount).toEqual(indexTokenAmount)
-    expect(quote.inputOutputTokenAmount).toBeDefined()
-    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-  })
+  const dpi = getTokenByChainAndSymbol(chainId, 'DPI')
+  const { eth } = QuoteTokens
+  const mvi = getTokenByChainAndSymbol(chainId, 'MVI')
 
   /**
    * Skipping tests for DPI and MVI - as they often lead to 0x API rate limits
