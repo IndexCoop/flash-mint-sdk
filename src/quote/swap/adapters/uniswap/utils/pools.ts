@@ -1,10 +1,10 @@
 import { Contract } from '@ethersproject/contracts'
-import { Token } from '@uniswap/sdk-core'
+import type { Token } from '@uniswap/sdk-core'
 import IUniswapV3PoolABI from '@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json'
-import { computePoolAddress, FeeAmount } from '@uniswap/v3-sdk'
+import { type FeeAmount, computePoolAddress } from '@uniswap/v3-sdk'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import { Pool } from '../types'
+import type { Pool } from '../types'
 
 const POOL_FACTORY_CONTRACT_ADDRESS =
   '0x1F98431c8aD98523631AE4a59f267346ea31F984'
@@ -16,7 +16,7 @@ export async function getPool(
   tokenA: Token,
   tokenB: Token,
   poolFee: FeeAmount,
-  rpcUrl: string
+  rpcUrl: string,
 ): Promise<Pool | null> {
   const provider = getRpcProvider(rpcUrl)
 

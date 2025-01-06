@@ -1,18 +1,21 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
+import type { Wallet } from '@ethersproject/wallet'
 
 import {
-  FlashMintQuote,
+  type FlashMintQuote,
   FlashMintQuoteProvider,
-  FlashMintQuoteRequest,
-  SwapQuoteProvider,
+  type FlashMintQuoteRequest,
+  type SwapQuoteProvider,
 } from 'quote'
 
 import { approveErc20, balanceOf } from './'
 
 class TxTestFactory {
-  constructor(readonly provider: JsonRpcProvider, readonly signer: Wallet) {}
+  constructor(
+    readonly provider: JsonRpcProvider,
+    readonly signer: Wallet,
+  ) {}
 
   /**
    * Tests minting a given flash mint quote.
@@ -29,7 +32,7 @@ class TxTestFactory {
         quote.inputToken.address,
         quote.contract,
         quote.inputOutputAmount,
-        signer
+        signer,
       )
     }
     // Automatically adding from as it seems like estimateGas won't recognize
@@ -41,7 +44,7 @@ class TxTestFactory {
     res.wait()
     const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
     expect(balanceAfter.gte(balanceBefore.add(quote.indexTokenAmount))).toBe(
-      true
+      true,
     )
   }
 
@@ -58,7 +61,7 @@ class TxTestFactory {
       indexToken.address,
       quote.contract,
       quote.indexTokenAmount,
-      signer
+      signer,
     )
     const tx = quote.tx
     if (!tx) fail()
@@ -74,7 +77,7 @@ class TxTestFactory {
     res.wait()
     const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
     expect(balanceAfter.lte(balanceBefore.sub(quote.indexTokenAmount))).toBe(
-      true
+      true,
     )
   }
 }
@@ -86,7 +89,7 @@ export class TestFactory {
   constructor(
     rpcUrl: string,
     signer: Wallet,
-    swapQuoteProvider: SwapQuoteProvider
+    swapQuoteProvider: SwapQuoteProvider,
   ) {
     const provider = new JsonRpcProvider(rpcUrl)
     this.quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)

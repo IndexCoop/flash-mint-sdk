@@ -4,8 +4,8 @@ import { ChainId } from 'constants/chains'
 import { USDC, WETH } from 'constants/tokens'
 import { getAlchemyProviderUrl } from 'tests/utils'
 
-import { UniswapSwapQuoteProvider } from './'
 import { Exchange } from 'utils'
+import { UniswapSwapQuoteProvider } from './'
 
 const rpcUrl = getAlchemyProviderUrl(ChainId.Mainnet)
 const rpcUrlArbitrum = getAlchemyProviderUrl(ChainId.Arbitrum)
@@ -151,7 +151,7 @@ describe.skip('UniswapSwapQuoteProvider', () => {
     expect(path.length).toBeGreaterThanOrEqual(2)
     expect(path[0]).toEqual(request.inputToken)
     expect(path[path.length - 1]).toEqual(
-      '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1'
+      '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
     )
     expect(quote.swapData?.fees.length).toBeGreaterThanOrEqual(1)
     // expect(quote.callData).not.toBe('0x')

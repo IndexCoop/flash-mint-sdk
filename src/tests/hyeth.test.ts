@@ -1,11 +1,11 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
+  QuoteTokens,
+  type TestFactory,
   balanceOf,
   getMainnetTestFactory,
   getSignerAccount,
   getTestRpcProvider,
-  QuoteTokens,
-  TestFactory,
   transferFromWhale,
   wei,
   wrapETH,
@@ -70,11 +70,11 @@ describe('hyETH', () => {
       factory.getSigner().address,
       wei('100000', quote.inputToken.decimals),
       quote.inputToken.address,
-      factory.getProvider()
+      factory.getProvider(),
     )
     const usdcBalance = await balanceOf(
       factory.getSigner(),
-      quote.inputToken.address
+      quote.inputToken.address,
     )
     console.log('usdc balance:', usdcBalance.toString())
     await factory.executeTx()

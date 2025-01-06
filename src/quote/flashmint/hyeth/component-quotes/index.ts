@@ -1,11 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { isAddressEqual } from '@indexcoop/tokenlists'
-import { Address } from 'viem'
+import type { Address } from 'viem'
 
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import { slippageAdjustedTokenAmount } from 'utils'
 
-import { QuoteToken } from '../../../interfaces'
+import type { QuoteToken } from '../../../interfaces'
 
 import { AcrossQuoteProvider } from './across'
 import { InstadappQuoteProvider } from './instadapp'
@@ -23,20 +23,20 @@ export class ComponentQuotesProvider {
     readonly slippage: number,
     readonly wethAddress: string,
     readonly rpcUrl: string,
-    readonly swapQuoteProvider: SwapQuoteProvider
+    readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   isAcross(token: string) {
     return isAddressEqual(
       token as Address,
-      '0x28F77208728B0A45cAb24c4868334581Fe86F95B'
+      '0x28F77208728B0A45cAb24c4868334581Fe86F95B',
     )
   }
 
   isInstdapp(token: string) {
     return isAddressEqual(
       token as Address,
-      '0xA0D3707c569ff8C87FA923d3823eC5D81c98Be78'
+      '0xA0D3707c569ff8C87FA923d3823eC5D81c98Be78',
     )
   }
 
@@ -47,7 +47,7 @@ export class ComponentQuotesProvider {
       '0xc554929a61d862F2741077F8aafa147479c0b308',
     ]
     return morphoTokens.some((morphoVault) =>
-      isAddressEqual(morphoVault, token as Address)
+      isAddressEqual(morphoVault, token as Address),
     )
   }
 
@@ -59,7 +59,7 @@ export class ComponentQuotesProvider {
       '0x7aa68E84bCD8d1B4C9e10B1e565DB993f68a3E09',
     ]
     return pendleTokens.some((pendleToken) =>
-      isAddressEqual(pendleToken, token as Address)
+      isAddressEqual(pendleToken, token as Address),
     )
   }
 
@@ -68,7 +68,7 @@ export class ComponentQuotesProvider {
     positions: BigNumber[],
     isMinting: boolean,
     inputToken: QuoteToken,
-    outputToken: QuoteToken
+    outputToken: QuoteToken,
   ): Promise<ComponentQuotesResult | null> {
     if (components.length === 0 || positions.length === 0) return null
     if (components.length !== positions.length) return null
@@ -97,18 +97,18 @@ export class ComponentQuotesProvider {
       if (this.isAcross(component)) {
         const acrossQuoteProvider = new AcrossQuoteProvider(
           this.rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         if (isMinting) {
           const quotePromise = acrossQuoteProvider.getDepositQuote(
             amount,
-            inputTokenAddress
+            inputTokenAddress,
           )
           quotePromises.push(quotePromise)
         } else {
           const quotePromise = acrossQuoteProvider.getWithdrawQuote(
             amount,
-            outputTokenAddress
+            outputTokenAddress,
           )
           quotePromises.push(quotePromise)
         }
@@ -117,20 +117,20 @@ export class ComponentQuotesProvider {
       if (this.isInstdapp(component)) {
         const instadappProvider = new InstadappQuoteProvider(
           this.rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         if (isMinting) {
           const quotePromise = instadappProvider.getMintQuote(
             component,
             amount,
-            inputTokenAddress
+            inputTokenAddress,
           )
           quotePromises.push(quotePromise)
         } else {
           const quotePromise = instadappProvider.getRedeemQuote(
             component,
             amount,
-            outputTokenAddress
+            outputTokenAddress,
           )
           quotePromises.push(quotePromise)
         }
@@ -139,20 +139,20 @@ export class ComponentQuotesProvider {
       if (this.isMorpho(component)) {
         const morphoQuoteProvider = new MorphoQuoteProvider(
           this.rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         if (isMinting) {
           const quotePromise = morphoQuoteProvider.getMintQuote(
             component,
             amount,
-            inputTokenAddress
+            inputTokenAddress,
           )
           quotePromises.push(quotePromise)
         } else {
           const quotePromise = morphoQuoteProvider.getRedeemQuote(
             component,
             amount,
-            outputTokenAddress
+            outputTokenAddress,
           )
           quotePromises.push(quotePromise)
         }
@@ -161,20 +161,20 @@ export class ComponentQuotesProvider {
       if (this.isPendle(component)) {
         const pendleQuoteProvider = new PendleQuoteProvider(
           this.rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         if (isMinting) {
           const quotePromise = pendleQuoteProvider.getDepositQuote(
             component,
             amount,
-            inputTokenAddress
+            inputTokenAddress,
           )
           quotePromises.push(quotePromise)
         } else {
           const quotePromise = pendleQuoteProvider.getWithdrawQuote(
             component,
             amount,
-            outputTokenAddress
+            outputTokenAddress,
           )
           quotePromises.push(quotePromise)
         }
@@ -182,7 +182,7 @@ export class ComponentQuotesProvider {
     }
     const resultsWithNull = await Promise.all(quotePromises)
     const results: bigint[] = resultsWithNull.filter(
-      (e): e is Exclude<typeof e, null> => e !== null
+      (e): e is Exclude<typeof e, null> => e !== null,
     )
     if (results.length !== resultsWithNull.length) return null
     // const componentQuotes = results.map((result) => result.callData)
@@ -195,7 +195,7 @@ export class ComponentQuotesProvider {
       BigNumber.from(inputOutputTokenAmount.toString()),
       isMinting ? inputToken.decimals : outputToken.decimals,
       this.slippage,
-      isMinting
+      isMinting,
     )
     return {
       componentQuotes: [],

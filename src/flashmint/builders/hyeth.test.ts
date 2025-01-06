@@ -4,14 +4,14 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
+import { getComponentsSwapData } from 'quote/flashmint/hyeth/swap-data'
 import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintHyEthContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
 import { Exchange } from 'utils/swap-data'
-import { getComponentsSwapData } from 'quote/flashmint/hyeth/swap-data'
 
 import {
-  FlashMintHyEthBuildRequest,
+  type FlashMintHyEthBuildRequest,
   FlashMintHyEthTransactionBuilder,
 } from './hyeth'
 
@@ -77,7 +77,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
       buildRequest.inputTokenAmount,
       buildRequest.swapDataInputTokenToEth,
       buildRequest.swapDataEthToInputOutputToken,
-      buildRequest.componentsSwapData
+      buildRequest.componentsSwapData,
     )
     const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -92,7 +92,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
       buildRequest.outputToken,
       buildRequest.outputTokenAmount,
       buildRequest.componentsSwapData,
-      { value: buildRequest.inputTokenAmount }
+      { value: buildRequest.inputTokenAmount },
     )
     const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -108,7 +108,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
       indexToken.address,
       'hyETH',
       usdc.address,
-      usdc.symbol
+      usdc.symbol,
     )
     const refTx = await contract.populateTransaction.redeemExactSetForERC20(
       buildRequest.inputToken,
@@ -116,7 +116,7 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
       buildRequest.outputToken,
       buildRequest.outputTokenAmount,
       buildRequest.swapDataEthToInputOutputToken,
-      buildRequest.componentsSwapData
+      buildRequest.componentsSwapData,
     )
     const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -131,13 +131,13 @@ describe('FlashMintHyEthTransactionBuilder()', () => {
       indexToken.address,
       'hyETH',
       eth,
-      'ETH'
+      'ETH',
     )
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.outputTokenAmount,
-      buildRequest.componentsSwapData
+      buildRequest.componentsSwapData,
     )
     const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -152,7 +152,7 @@ function createBuildRequest(
   inputToken: string = usdc.address,
   inputTokenSymbol: string = usdc.symbol,
   outputToken: string = indexToken.address,
-  outputTokenSymbol: string = indexToken.symbol
+  outputTokenSymbol: string = indexToken.symbol,
 ): FlashMintHyEthBuildRequest {
   const swapDataInputTokenToEth = {
     exchange: Exchange.UniV3,

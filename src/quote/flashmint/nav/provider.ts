@@ -1,20 +1,20 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { Address } from 'viem'
+import type { Address } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
-import { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProvider } from 'quote/swap'
 import {
   Exchange,
+  type SwapDataV3,
   getFlashMintNavContract,
   isSameAddress,
   slippageAdjustedTokenAmount,
-  SwapDataV3,
 } from 'utils'
 import { getExpectedReserveRedeemQuantity } from 'utils/custom-oracle-nav-issuance-module'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { QuoteProvider, QuoteToken } from '../../interfaces'
 
 export interface FlashMintNavQuoteRequest {
   chainId: number
@@ -37,11 +37,11 @@ export class FlashMintNavQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintNavQuoteRequest
+    request: FlashMintNavQuoteRequest,
   ): Promise<FlashMintNavQuoteQuote | null> {
     const {
       chainId,
@@ -83,7 +83,7 @@ export class FlashMintNavQuoteProvider
           chainId,
           indexToken as Address,
           usdc as Address,
-          inputTokenAmount.toBigInt()
+          inputTokenAmount.toBigInt(),
         )
         swapQuoteRequest.inputAmount = usdcAmountToSwap.toString()
       }
@@ -103,14 +103,14 @@ export class FlashMintNavQuoteProvider
         outputToken.address,
         inputToken.address,
         inputTokenAmount,
-        reserveAssetSwapData
+        reserveAssetSwapData,
       )
     } else {
       estimatedOutputAmount = await contract.callStatic.getRedeemAmountOut(
         inputToken.address,
         inputTokenAmount,
         outputToken.address,
-        reserveAssetSwapData
+        reserveAssetSwapData,
       )
     }
     const outputTokenAmount = slippageAdjustedTokenAmount(
@@ -120,7 +120,7 @@ export class FlashMintNavQuoteProvider
       // Usually, this function is used to have either input/output amount slippage
       // adjusted but since FlastMintNav only uses an input amount, we always have
       // the output amount as result. So we always want to substract slippage.
-      false
+      false,
     )
     return {
       inputTokenAmount,

@@ -1,14 +1,14 @@
 import { Contract } from '@ethersproject/contracts'
 
 import DEBT_ISSUANCE_MODULE_V2 from 'constants/abis/DebtIssuanceModuleV2.json'
-import { getRpcProvider } from 'utils/rpc-provider'
 import { getIssuanceModule } from 'utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
-import { FlashMintHyEthQuoteRequest } from './provider'
+import type { FlashMintHyEthQuoteRequest } from './provider'
 
 export async function getRequiredComponents(
   quoteRequest: FlashMintHyEthQuoteRequest,
-  rpcUrl: string
+  rpcUrl: string,
 ) {
   const { isMinting, indexTokenAmount, inputToken, outputToken } = quoteRequest
   const indexToken = isMinting ? outputToken : inputToken
@@ -17,16 +17,16 @@ export async function getRequiredComponents(
   const contract = new Contract(
     issuance.address,
     DEBT_ISSUANCE_MODULE_V2,
-    provider
+    provider,
   )
   const [components, positions] = isMinting
     ? await contract.getRequiredComponentIssuanceUnits(
         indexToken.address,
-        indexTokenAmount
+        indexTokenAmount,
       )
     : await contract.getRequiredComponentRedemptionUnits(
         indexToken.address,
-        indexTokenAmount
+        indexTokenAmount,
       )
   return { components, positions }
 }

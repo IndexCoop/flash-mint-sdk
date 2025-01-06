@@ -1,7 +1,7 @@
-import { BigNumber } from '@ethersproject/bignumber'
+import type { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { JsonRpcProvider } from '@ethersproject/providers'
-import { Wallet } from '@ethersproject/wallet'
+import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { Wallet } from '@ethersproject/wallet'
 
 import { createERC20Contract } from '.'
 // import UniswapV3PoolAbi from './UniswapV3PoolAbi.json'
@@ -28,7 +28,7 @@ export async function swapExactInput(
   poolAddress: string,
   swapParams: SwapExactInputParams,
   provider: JsonRpcProvider,
-  signer: Wallet
+  signer: Wallet,
 ) {
   // Get pool state to fetch the `sqrtPriceX96`
   // const poolContract = new Contract(poolAddress, UniswapV3PoolAbi, provider)
@@ -39,7 +39,7 @@ export async function swapExactInput(
   const uniswap = new Contract(
     UNISWAPV3_SWAPROUTER_ADDRESS,
     UNISWAPV3_SWAPROUTER_ABI,
-    signer
+    signer,
   )
 
   // On UniswapV3 the input token amount has to be approved before swapping

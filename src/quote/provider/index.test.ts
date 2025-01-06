@@ -8,15 +8,15 @@ import { getFlashMintLeveragedContractForToken, wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import {
+  QuoteTokens,
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
-  QuoteTokens,
 } from 'tests/utils'
 
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
-  FlashMintQuoteRequest,
+  type FlashMintQuoteRequest,
 } from '.'
 
 const chainId = ChainId.Mainnet
@@ -48,10 +48,10 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider
+      zeroexSwapQuoteProvider,
     )
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
-      'Index token not supported'
+      'Index token not supported',
     )
   })
 
@@ -67,7 +67,7 @@ describe('FlashMintQuoteProvider()', () => {
     const contract = getFlashMintLeveragedContractForToken(
       outputToken.symbol,
       arbitrumProvider,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const request: FlashMintQuoteRequest = {
       isMinting: true,
@@ -78,7 +78,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      getZeroExSwapQuoteProvider(ChainId.Arbitrum)
+      getZeroExSwapQuoteProvider(ChainId.Arbitrum),
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -109,7 +109,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider
+      zeroexSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -142,7 +142,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       getLocalHostProviderUrl(chainId),
-      getZeroExSwapQuoteProvider(chainId)
+      getZeroExSwapQuoteProvider(chainId),
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -175,7 +175,7 @@ describe('FlashMintQuoteProvider()', () => {
     const contract = getFlashMintLeveragedContractForToken(
       inputToken.symbol,
       arbitrumProvider,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const request: FlashMintQuoteRequest = {
       isMinting: false,
@@ -186,7 +186,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      getZeroExSwapQuoteProvider(ChainId.Arbitrum)
+      getZeroExSwapQuoteProvider(ChainId.Arbitrum),
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -217,7 +217,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider
+      zeroexSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -244,7 +244,7 @@ describe('FlashMintQuoteProvider()', () => {
     const contract = getFlashMintLeveragedContractForToken(
       inputToken.symbol,
       undefined,
-      1
+      1,
     )
     const request: FlashMintQuoteRequest = {
       isMinting: false,
@@ -255,7 +255,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider
+      zeroexSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -290,7 +290,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       getLocalHostProviderUrl(chainId),
-      getZeroExSwapQuoteProvider(chainId)
+      getZeroExSwapQuoteProvider(chainId),
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()

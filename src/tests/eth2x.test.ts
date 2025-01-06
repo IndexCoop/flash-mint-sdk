@@ -1,11 +1,11 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
+  QuoteTokens,
+  type TestFactory,
   getMainnetTestFactory,
   getMainnetTestFactoryUniswap,
   getSignerAccount,
   getTestRpcProvider,
-  QuoteTokens,
-  TestFactory,
   wei,
 } from './utils'
 

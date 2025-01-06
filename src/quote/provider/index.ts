@@ -1,39 +1,39 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { TheUSDCYieldIndex } from 'constants/tokens'
 import {
   FlashMintHyEthTransactionBuilder,
-  FlashMintLeveragedBuildRequest,
-  FlashMintLeveragedExtendedBuildRequest,
-  FlashMintWrappedBuildRequest,
-  FlashMintZeroExBuildRequest,
+  type FlashMintLeveragedBuildRequest,
+  type FlashMintLeveragedExtendedBuildRequest,
+  type FlashMintWrappedBuildRequest,
+  type FlashMintZeroExBuildRequest,
   LeveragedExtendedTransactionBuilder,
   LeveragedTransactionBuilder,
   WrappedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
-import { getRpcProvider } from 'utils/rpc-provider'
 import { wei } from 'utils'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
 import { WrappedQuoteProvider } from '../flashmint/wrapped'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
-import { QuoteProvider, QuoteToken } from '../interfaces'
-import { SwapQuoteProvider } from '../swap'
+import type { QuoteProvider, QuoteToken } from '../interfaces'
+import type { SwapQuoteProvider } from '../swap'
 
 import { IcUsdQuoteRouter } from './icusd'
 import { buildQuoteResponse, getContractType } from './utils'
 
 export enum FlashMintContractType {
-  hyeth,
-  leveraged,
-  leveragedExtended,
-  nav,
-  wrapped,
-  zeroEx,
+  hyeth = 0,
+  leveraged = 1,
+  leveragedExtended = 2,
+  nav = 3,
+  wrapped = 4,
+  zeroEx = 5,
 }
 
 export interface FlashMintQuoteRequest {
@@ -65,11 +65,11 @@ export class FlashMintQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider
+    private readonly swapQuoteProvider: SwapQuoteProvider,
   ) {}
 
   async getQuote(
-    request: FlashMintQuoteRequest
+    request: FlashMintQuoteRequest,
   ): Promise<FlashMintQuote | null> {
     const { rpcUrl, swapQuoteProvider } = this
     const provider = getRpcProvider(rpcUrl)
@@ -100,7 +100,7 @@ export class FlashMintQuoteProvider
       case FlashMintContractType.hyeth: {
         const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
           rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         const hyethQuote = await hyethQuoteProvider.getQuote({
           isMinting,
@@ -111,7 +111,7 @@ export class FlashMintQuoteProvider
         })
         if (!hyethQuote) return null
         const inputOutputTokenAmount = BigNumber.from(
-          hyethQuote.inputOutputTokenAmount.toString()
+          hyethQuote.inputOutputTokenAmount.toString(),
         )
         const builder = new FlashMintHyEthTransactionBuilder(rpcUrl)
         const txRequest = {
@@ -138,13 +138,13 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           inputOutputTokenAmount,
-          tx
+          tx,
         )
       }
       case FlashMintContractType.leveraged: {
         const leveragedQuoteProvider = new LeveragedQuoteProvider(
           rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         const leveragedQuote = await leveragedQuoteProvider.getQuote({
           ...request,
@@ -170,7 +170,7 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           leveragedQuote.inputOutputTokenAmount,
-          tx
+          tx,
         )
       }
       case FlashMintContractType.leveragedExtended: {
@@ -206,13 +206,13 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           leveragedExtendedQuote.inputOutputTokenAmount,
-          tx
+          tx,
         )
       }
       case FlashMintContractType.wrapped: {
         const wrappedQuoteProvider = new WrappedQuoteProvider(
           rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         const wrappedQuote = await wrappedQuoteProvider.getQuote({
           ...request,
@@ -239,13 +239,13 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           wrappedQuote.inputOutputTokenAmount,
-          tx
+          tx,
         )
       }
       case FlashMintContractType.zeroEx: {
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           rpcUrl,
-          swapQuoteProvider
+          swapQuoteProvider,
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote({
           ...request,
@@ -270,7 +270,7 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           zeroExQuote.inputOutputTokenAmount,
-          tx
+          tx,
         )
       }
       default:

@@ -1,4 +1,4 @@
-import axios, { AxiosRequestHeaders } from 'axios'
+import axios, { type AxiosRequestHeaders } from 'axios'
 
 import { ChainId } from 'constants/chains'
 
@@ -76,7 +76,7 @@ export class ZeroExApi {
     private readonly baseUrl: string | null = null,
     private readonly affiliateAddress: string | null = null,
     private readonly headersOverride: AxiosRequestHeaders | null = null,
-    private readonly swapPathOverride: string | null = null
+    private readonly swapPathOverride: string | null = null,
   ) {}
 
   /**
@@ -103,7 +103,7 @@ export class ZeroExApi {
   /* eslint-disable @typescript-eslint/no-explicit-any */
   public async getSwapQuote(
     params: any,
-    chainId: number
+    chainId: number,
   ): Promise<ZeroExApiSwapResponse | null> {
     /* eslint-enable @typescript-eslint/no-explicit-any */
     const path = this.swapPathOverride ?? '/swap/v1/quote'

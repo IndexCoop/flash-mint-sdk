@@ -3,14 +3,17 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { AddressZero } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import {
+  QuoteTokens,
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
-  QuoteTokens,
 } from 'tests/utils'
-import { wei } from 'utils/numbers'
 import { Exchange, isSameAddress } from 'utils'
+import { wei } from 'utils/numbers'
 
-import { FlashMintNavQuoteRequest, FlashMintNavQuoteProvider } from './provider'
+import {
+  FlashMintNavQuoteProvider,
+  type FlashMintNavQuoteRequest,
+} from './provider'
 
 describe('FlashMintNavQuoteProvider()', () => {
   const { usdc, weth } = QuoteTokens
@@ -30,7 +33,7 @@ describe('FlashMintNavQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintNavQuoteProvider(
       provider,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -56,7 +59,7 @@ describe('FlashMintNavQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintNavQuoteProvider(
       provider,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -71,8 +74,8 @@ describe('FlashMintNavQuoteProvider()', () => {
     expect(
       isSameAddress(
         reserveAssetSwapData.path[reserveAssetSwapData.path.length - 1],
-        usdc.address
-      )
+        usdc.address,
+      ),
     ).toBe(true)
     expect(reserveAssetSwapData.poolIds).toEqual([])
   })
@@ -88,7 +91,7 @@ describe('FlashMintNavQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintNavQuoteProvider(
       provider,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -114,7 +117,7 @@ describe('FlashMintNavQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintNavQuoteProvider(
       provider,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -129,8 +132,8 @@ describe('FlashMintNavQuoteProvider()', () => {
     expect(
       isSameAddress(
         reserveAssetSwapData.path[reserveAssetSwapData.path.length - 1],
-        weth.address
-      )
+        weth.address,
+      ),
     ).toBe(true)
     expect(reserveAssetSwapData.poolIds).toEqual([])
   })

@@ -115,7 +115,7 @@ describe('ZeroExApi', () => {
       index0xApiBaseUrl,
       '',
       indexApiHeader,
-      '/mainnet/swap/v1/quote'
+      '/mainnet/swap/v1/quote',
     )
     const quote = await zeroExApi.getSwapQuote(params, chainId)
     if (!quote) fail()

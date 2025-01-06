@@ -1,5 +1,5 @@
-import { stETH, WETH } from 'constants/tokens'
-import { Exchange, SwapData } from 'utils'
+import { WETH, stETH } from 'constants/tokens'
+import { Exchange, type SwapData } from 'utils'
 
 export function getSwapData(): SwapData {
   // The curve adapter is mostly just used for ETH/stETH swapping, so we can

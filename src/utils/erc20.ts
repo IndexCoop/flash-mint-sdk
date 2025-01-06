@@ -1,10 +1,10 @@
-import { Address, parseAbi } from 'viem'
+import { type Address, parseAbi } from 'viem'
 import { createClient } from './clients'
 
 export async function getBalanceOf(
   token: Address,
   account: Address,
-  chainId: number
+  chainId: number,
 ) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const publicClient = createClient(chainId)!

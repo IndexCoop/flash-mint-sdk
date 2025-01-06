@@ -10,13 +10,13 @@ import {
   WETH,
 } from 'constants/tokens'
 import {
-  FlashMintNavBuildRequest,
+  type FlashMintNavBuildRequest,
   FlashMintNavTransactionBuilder,
 } from 'flashmint/builders/nav'
 import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
+import { Exchange } from 'utils'
 import { getFlashMintNavContract } from 'utils/contracts'
 import { wei } from 'utils/numbers'
-import { Exchange } from 'utils'
 
 const chainId = ChainId.Mainnet
 const provider = getTestRpcProvider(chainId)
@@ -143,7 +143,7 @@ describe('FlashMintNavTransactionBuilder()', () => {
       buildRequest.outputTokenAmount,
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
-      buildRequest.reserveAssetSwapData
+      buildRequest.reserveAssetSwapData,
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -159,7 +159,7 @@ describe('FlashMintNavTransactionBuilder()', () => {
       indexToken,
       buildRequest.outputTokenAmount,
       buildRequest.reserveAssetSwapData,
-      { value: buildRequest.inputTokenAmount }
+      { value: buildRequest.inputTokenAmount },
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -175,14 +175,14 @@ describe('FlashMintNavTransactionBuilder()', () => {
       TheUSDCYieldIndex.address!,
       TheUSDCYieldIndex.symbol,
       usdcAddress,
-      'USDC'
+      'USDC',
     )
     const refTx = await contract.populateTransaction.redeemExactSetForERC20(
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.outputToken,
       buildRequest.outputTokenAmount,
-      buildRequest.reserveAssetSwapData
+      buildRequest.reserveAssetSwapData,
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -197,13 +197,13 @@ describe('FlashMintNavTransactionBuilder()', () => {
       TheUSDCYieldIndex.address!,
       TheUSDCYieldIndex.symbol,
       eth,
-      'ETH'
+      'ETH',
     )
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.inputToken,
       buildRequest.inputTokenAmount,
       buildRequest.outputTokenAmount,
-      buildRequest.reserveAssetSwapData
+      buildRequest.reserveAssetSwapData,
     )
     const builder = new FlashMintNavTransactionBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -218,7 +218,7 @@ function createBuildRequest(
   inputToken: string = usdcAddress,
   inputTokenSymbol = 'USDC',
   outputToken: string = HighYieldETHIndex.address!,
-  outputTokenSymbol: string = HighYieldETHIndex.symbol
+  outputTokenSymbol: string = HighYieldETHIndex.symbol,
 ): FlashMintNavBuildRequest {
   const inputSwapData = {
     exchange: Exchange.UniV3,

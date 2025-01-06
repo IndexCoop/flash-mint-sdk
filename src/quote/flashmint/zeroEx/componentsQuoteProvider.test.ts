@@ -4,8 +4,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { MetaverseIndex, WETH } from 'constants/tokens'
 
-import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 import { ZeroExSwapQuoteProvider } from 'quote/swap'
+import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
 const index0xApiBaseUrl = process.env.INDEX_0X_API
 
@@ -18,13 +18,13 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     index0xApiBaseUrl,
     '',
     { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-    '/mainnet/swap/v1/quote'
+    '/mainnet/swap/v1/quote',
   )
   const quoteProvider = new ComponentsQuoteProvider(
     chainId,
     slippage,
     WETH.address!,
-    zeroExApi
+    zeroExApi,
   )
 
   test('returns component quotes', async () => {
@@ -54,7 +54,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (!result) {
       fail()
@@ -86,7 +86,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (!result) {
       fail()
@@ -94,7 +94,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     const { componentQuotes, inputOutputTokenAmount } = result
     expect(componentQuotes.length).toEqual(components.length)
     expect(componentQuotes[1]).toEqual(
-      '0x0000000000000000000000000000000000000000'
+      '0x0000000000000000000000000000000000000000',
     )
     // When the input token equals the component, the position amount should just be
     // added to the input/ouput token amount. So the result should be greater than that.
@@ -120,7 +120,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (!result) {
       fail()
@@ -128,7 +128,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     const { componentQuotes, inputOutputTokenAmount } = result
     expect(componentQuotes.length).toEqual(components.length)
     expect(componentQuotes[0]).not.toEqual(
-      '0x0000000000000000000000000000000000000000'
+      '0x0000000000000000000000000000000000000000',
     )
     expect(inputOutputTokenAmount.gt(0)).toBe(true)
   })
@@ -152,7 +152,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (!result) {
       fail()
@@ -160,7 +160,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
     const { componentQuotes, inputOutputTokenAmount } = result
     expect(componentQuotes.length).toEqual(components.length)
     expect(componentQuotes[0]).toEqual(
-      '0x0000000000000000000000000000000000000000'
+      '0x0000000000000000000000000000000000000000',
     )
     // When the input token equals the component, the position amount should just be
     // added to the input/ouput token amount. So the result should be equal to that.
@@ -186,7 +186,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (result) {
       fail()
@@ -213,7 +213,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (result) {
       fail()
@@ -240,7 +240,7 @@ describe('ComponentsQuoteProvider - getComponentQuotes()', () => {
       positions,
       isMinting,
       inputToken,
-      outputToken
+      outputToken,
     )
     if (result) {
       fail()
@@ -257,13 +257,13 @@ describe('ComponentsQuoteProvider - getTokenAddressOrWeth()', () => {
       index0xApiBaseUrl,
       '',
       { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-      '/mainnet/swap/v1/quote'
+      '/mainnet/swap/v1/quote',
     )
     const quoteProvider = new ComponentsQuoteProvider(
       chainId,
       slippage,
       WETH.address!,
-      zeroExApi
+      zeroExApi,
     )
     const token = {
       address: USDC,
@@ -281,13 +281,13 @@ describe('ComponentsQuoteProvider - getTokenAddressOrWeth()', () => {
       index0xApiBaseUrl,
       '',
       { 'X-INDEXCOOP-API-KEY': process.env.INDEX_0X_API_KEY! },
-      '/mainnet/swap/v1/quote'
+      '/mainnet/swap/v1/quote',
     )
     const quoteProvider = new ComponentsQuoteProvider(
       chainId,
       slippage,
       WETH.address!,
-      zeroExApi
+      zeroExApi,
     )
     const token = {
       address: '0xeeeeee',

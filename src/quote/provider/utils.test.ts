@@ -21,7 +21,7 @@ import {
 import { QuoteTokens } from 'tests/utils'
 import { wei } from 'utils'
 
-import { FlashMintContractType, FlashMintQuoteRequest } from './'
+import { FlashMintContractType, type FlashMintQuoteRequest } from './'
 import { buildQuoteResponse, getContractType } from './utils'
 
 const { usdc } = QuoteTokens
@@ -46,7 +46,7 @@ describe('buildQuoteResponse()', () => {
       1,
       FlashMintContractType.wrapped,
       quoteAmount,
-      tx
+      tx,
     )
     expect(response).toEqual({
       chainId: 1,
@@ -69,29 +69,29 @@ describe('getContractType()', () => {
   test('returns correct contract type for leveraged arbitrum tokens', async () => {
     const btc2xContractType = getContractType(
       IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const btc2xEthContractType = getContractType('BTC2xETH', ChainId.Arbitrum)
     const btc3xContractType = getContractType(
       IndexCoopBitcoin3xIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const eth2xContractType = getContractType(
       IndexCoopEthereum2xIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const eth2xBtcContractType = getContractType('ETH2xBTC', ChainId.Arbitrum)
     const eth3xContractType = getContractType(
       IndexCoopEthereum3xIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const ibtc1xContractType = getContractType(
       IndexCoopInverseBitcoinIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     const ieth1xContractType = getContractType(
       IndexCoopInverseEthereumIndex.symbol,
-      ChainId.Arbitrum
+      ChainId.Arbitrum,
     )
     expect(btc2xContractType).toBe(FlashMintContractType.leveragedExtended)
     expect(btc2xEthContractType).toBe(FlashMintContractType.leveragedExtended)
@@ -106,7 +106,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for BED', async () => {
     const contractType = getContractType(
       BanklessBEDIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
@@ -119,7 +119,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for dsETH', async () => {
     const contractType = getContractType(
       DiversifiedStakedETHIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
@@ -132,7 +132,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for BTC2X (mainnet)', async () => {
     const contractType = getContractType(
       IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
   })
@@ -140,7 +140,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for ETH2X (mainnet)', async () => {
     const contractType = getContractType(
       IndexCoopEthereum2xIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
   })
@@ -148,7 +148,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for hyETH', async () => {
     const contractType = getContractType(
       HighYieldETHIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.hyeth)
   })
@@ -156,7 +156,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for icETH', async () => {
     const contractType = getContractType(
       InterestCompoundingETHIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.leveraged)
   })
@@ -164,7 +164,7 @@ describe('getContractType()', () => {
   test('returns correct contract type for icUSD', async () => {
     const contractType = getContractType(
       TheUSDCYieldIndex.symbol,
-      ChainId.Mainnet
+      ChainId.Mainnet,
     )
     expect(contractType).toBe(FlashMintContractType.wrapped)
   })

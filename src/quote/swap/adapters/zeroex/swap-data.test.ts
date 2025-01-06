@@ -21,7 +21,7 @@ describe('getEchangeFrom0xKey()', () => {
     const sushi = getEchangeFrom0xKey('SushiSwap')
     const uniswap = getEchangeFrom0xKey('Uniswap_V3')
     expect(
-      Object.keys(Exchange).filter((key) => isNaN(Number(key))).length
+      Object.keys(Exchange).filter((key) => Number.isNaN(Number(key))).length,
     ).toEqual(6)
     expect(balancer).toEqual(Exchange.BalancerV2)
     expect(curve).toEqual(Exchange.Curve)
@@ -113,7 +113,7 @@ describe('swapDataFrom0xQuote()', () => {
     expect(swapData).not.toBeNull()
     expect(swapData?.exchange).toEqual(Exchange.UniV3)
     expect(swapData?.path).toEqual(
-      zeroExQuote.orders[0].fillData.tokenAddressPath
+      zeroExQuote.orders[0].fillData.tokenAddressPath,
     )
     expect(swapData?.pool).toEqual('0x0000000000000000000000000000000000000000')
     expect(swapData?.fees).toEqual([500])

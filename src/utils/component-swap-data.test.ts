@@ -1,19 +1,19 @@
 import { AddressZero } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 
-import {
-  getIssuanceComponentSwapData,
-  getRedemptionComponentSwapData,
-} from 'utils/component-swap-data'
-import { wei } from 'utils/numbers'
+import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
 } from 'tests/utils'
 import { isSameAddress } from 'utils/addresses'
+import {
+  getIssuanceComponentSwapData,
+  getRedemptionComponentSwapData,
+} from 'utils/component-swap-data'
+import { wei } from 'utils/numbers'
 import { Exchange } from 'utils/swap-data'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import { BigNumber } from '@ethersproject/bignumber'
 
 const chainId = ChainId.Base
 const rpcUrl = getLocalHostProviderUrl(chainId)
@@ -36,12 +36,12 @@ describe('getIssuanceComponentSwapData()', () => {
         indexTokenAmount: wei(1),
       },
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
-        true
+        true,
       )
       // Should be empty as input token is equal to output token (underlying erc20)
       const dexData = componentSwapData[i].dexData
@@ -51,7 +51,7 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
       expect(
-        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0)),
       ).toBe(true)
     }
   })
@@ -66,12 +66,12 @@ describe('getIssuanceComponentSwapData()', () => {
         indexTokenAmount: wei(1),
       },
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
-        true
+        true,
       )
       const dexData = componentSwapData[i].dexData
       expect(dexData.exchange).toEqual(Exchange.UniV3)
@@ -81,7 +81,7 @@ describe('getIssuanceComponentSwapData()', () => {
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
       expect(
-        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0)),
       ).toBe(true)
     }
   })
@@ -98,12 +98,12 @@ describe('getRedemptionComponentSwapData()', () => {
         indexTokenAmount: wei(1),
       },
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
-        true
+        true,
       )
       // Should be empty as input token is equal to output token (underlying erc20)
       const dexData = componentSwapData[i].dexData
@@ -113,7 +113,7 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
       expect(
-        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0)),
       ).toBe(true)
     }
   })
@@ -128,12 +128,12 @@ describe('getRedemptionComponentSwapData()', () => {
         indexTokenAmount: wei(1),
       },
       rpcUrl,
-      swapQuoteProvider
+      swapQuoteProvider,
     )
     expect(componentSwapData.length).toBe(8)
     for (let i = 0; i < componentSwapData.length; i++) {
       expect(isSameAddress(componentSwapData[i].underlyingERC20, usdc)).toBe(
-        true
+        true,
       )
       const dexData = componentSwapData[i].dexData
       expect(dexData.exchange).toEqual(Exchange.UniV3)
@@ -143,7 +143,7 @@ describe('getRedemptionComponentSwapData()', () => {
       expect(dexData.pool).toEqual(AddressZero)
       expect(dexData.poolIds).toEqual([])
       expect(
-        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0))
+        componentSwapData[i].buyUnderlyingAmount.gt(BigNumber.from(0)),
       ).toBe(true)
     }
   })

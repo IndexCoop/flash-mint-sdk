@@ -1,11 +1,11 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider'
-import { BigNumber } from '@ethersproject/bignumber'
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { BigNumber } from '@ethersproject/bignumber'
 
+import { Exchange, type SwapData } from 'utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, SwapData } from 'utils'
 
-import { TransactionBuilder } from './interface'
+import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintLeveragedExtendedBuildRequest {
@@ -33,7 +33,7 @@ export class LeveragedExtendedTransactionBuilder
   constructor(private readonly rpcUrl: string) {}
 
   async build(
-    request: FlashMintLeveragedExtendedBuildRequest
+    request: FlashMintLeveragedExtendedBuildRequest,
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
@@ -58,7 +58,7 @@ export class LeveragedExtendedTransactionBuilder
     const contract = getFlashMintLeveragedContractForToken(
       indexTokenSymbol,
       provider,
-      chainId
+      chainId,
     )
     if (isMinting) {
       const isInputTokenEth = inputTokenSymbol === 'ETH'
@@ -68,7 +68,7 @@ export class LeveragedExtendedTransactionBuilder
           outputTokenAmount,
           swapDataDebtCollateral,
           swapDataInputOutputToken,
-          { value: inputTokenAmount }
+          { value: inputTokenAmount },
         )
       } else {
         return await contract.populateTransaction.issueExactSetFromERC20(
@@ -77,7 +77,7 @@ export class LeveragedExtendedTransactionBuilder
           inputToken,
           inputTokenAmount, // _maxAmountInputToken
           swapDataDebtCollateral,
-          swapDataInputOutputToken
+          swapDataInputOutputToken,
         )
       }
     } else {
@@ -88,7 +88,7 @@ export class LeveragedExtendedTransactionBuilder
           inputTokenAmount,
           outputTokenAmount, // _minAmountOutputToken
           swapDataDebtCollateral,
-          swapDataInputOutputToken // _swapDataOutputToken
+          swapDataInputOutputToken, // _swapDataOutputToken
         )
       } else {
         return await contract.populateTransaction.redeemExactSetForERC20(
@@ -97,7 +97,7 @@ export class LeveragedExtendedTransactionBuilder
           outputToken,
           outputTokenAmount, // _minAmountOutputToken
           swapDataDebtCollateral,
-          swapDataInputOutputToken // _swapDataOutputToken
+          swapDataInputOutputToken, // _swapDataOutputToken
         )
       }
     }
@@ -119,7 +119,7 @@ export class LeveragedExtendedTransactionBuilder
   }
 
   private isValidRequest(
-    request: FlashMintLeveragedExtendedBuildRequest
+    request: FlashMintLeveragedExtendedBuildRequest,
   ): boolean {
     const {
       inputToken,
