@@ -44,7 +44,7 @@ export class ComponentQuotesProvider {
     const morphoTokens: Address[] = [
       '0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0',
       // new morpho vault, soon to be the only component
-      '0xc554929a61d862F2741077F8aafa147479c0b308',
+      '0x701907283a57FF77E255C3f1aAD790466B8CE4ef',
     ]
     return morphoTokens.some((morphoVault) =>
       isAddressEqual(morphoVault, token as Address),
