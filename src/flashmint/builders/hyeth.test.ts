@@ -168,16 +168,7 @@ function createBuildRequest(
     poolIds: [],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
   }
-  const componentsSwapData = getComponentsSwapData([
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-  ]).map((swapData) => {
+  const componentsSwapData = getComponentsSwapData(['']).map((swapData) => {
     return { ...swapData, poolIds: [] }
   })
   return {
