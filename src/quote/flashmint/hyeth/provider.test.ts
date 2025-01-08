@@ -42,7 +42,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    const componentSwapDataIssue = [noopSwapData, noopSwapData]
+    const componentSwapDataIssue = [noopSwapData]
     expect(quote.componentsSwapData).toStrictEqual(componentSwapDataIssue)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
     expect(quote.swapDataInputTokenToEth).toBeNull()
@@ -64,7 +64,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    expect(quote.componentsSwapData.length).toBe(2)
+    expect(quote.componentsSwapData.length).toBe(1)
     const swapDataInputTokenToEth = {
       path: [weth.address, EthAddress],
       fees: [],
@@ -99,7 +99,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    expect(quote.componentsSwapData.length).toBe(2)
+    expect(quote.componentsSwapData.length).toBe(1)
     const swapDataInputTokenToEth = {
       path: [USDC.address, WETH.address],
       fees: [500],
@@ -134,7 +134,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    expect(quote.componentsSwapData.length).toBe(2)
+    expect(quote.componentsSwapData.length).toBe(1)
     expect(quote.swapDataEthToInputOutputToken).toBeNull()
     expect(quote.swapDataInputTokenToEth).toBeNull()
   })
@@ -155,7 +155,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     if (!quote) fail()
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
-    expect(quote.componentsSwapData.length).toBe(2)
+    expect(quote.componentsSwapData.length).toBe(1)
     expect(quote.swapDataInputTokenToEth).toBeNull()
     const swapDataEthToInputToken = {
       path: [WETH.address, USDC.address],
