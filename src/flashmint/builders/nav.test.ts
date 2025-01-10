@@ -1,14 +1,10 @@
 /* eslint-disable  @typescript-eslint/no-non-null-assertion */
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import {
-  HighYieldETHIndex,
-  TheUSDCYieldIndex,
-  USDC,
-  WETH,
-} from 'constants/tokens'
+import { TheUSDCYieldIndex, USDC, WETH } from 'constants/tokens'
 import {
   type FlashMintNavBuildRequest,
   FlashMintNavTransactionBuilder,
@@ -23,6 +19,7 @@ const provider = getTestRpcProvider(chainId)
 const rpcUrl = getLocalHostProviderUrl(chainId)
 
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH').address
 const usdcAddress = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831'
 
 const FlashMintNavAddress = Contracts[chainId].FlashMintNav
@@ -217,8 +214,8 @@ function createBuildRequest(
   isMinting = true,
   inputToken: string = usdcAddress,
   inputTokenSymbol = 'USDC',
-  outputToken: string = HighYieldETHIndex.address!,
-  outputTokenSymbol: string = HighYieldETHIndex.symbol,
+  outputToken: string = hyeth,
+  outputTokenSymbol = 'hyETH',
 ): FlashMintNavBuildRequest {
   const inputSwapData = {
     exchange: Exchange.UniV3,
