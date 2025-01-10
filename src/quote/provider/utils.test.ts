@@ -7,7 +7,6 @@ import {
   BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
-  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -146,10 +145,7 @@ describe('getContractType()', () => {
   })
 
   test('returns correct contract type for hyETH', async () => {
-    const contractType = getContractType(
-      HighYieldETHIndex.symbol,
-      ChainId.Mainnet,
-    )
+    const contractType = getContractType('hyETH', ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.hyeth)
   })
 
