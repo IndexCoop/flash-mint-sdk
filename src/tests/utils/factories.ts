@@ -18,14 +18,6 @@ export function getArbitrumTestFactory(
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 
-export function getBaseTestFactory(
-  signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Base),
-) {
-  const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Base)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
-
 export function getTestFactoryZeroEx(
   signerAccountNo: number,
   chainId = ChainId.Mainnet,
