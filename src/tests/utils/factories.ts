@@ -3,6 +3,8 @@ import { ChainId } from 'constants/chains'
 import { IndexSwapQuoteProvider } from 'quote'
 import {
   getLocalHostProviderUrl,
+  getSignerAccount,
+  getTestRpcProvider,
   getZeroExSwapQuoteProvider,
 } from 'tests/utils'
 import { TestFactory } from 'tests/utils/factory'
@@ -16,19 +18,14 @@ export function getArbitrumTestFactory(
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 
-export function getBaseTestFactory(
-  signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Base),
+export function getTestFactoryZeroEx(
+  signerAccountNo: number,
+  chainId = ChainId.Mainnet,
 ) {
-  const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Base)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
-
-export function getMainnetTestFactory(
-  signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Mainnet),
-) {
-  const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Mainnet)
+  const provider = getTestRpcProvider(chainId)
+  const signer = getSignerAccount(signerAccountNo, provider)
+  const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
+  const rpcUrl = getLocalHostProviderUrl(chainId)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
 }
 

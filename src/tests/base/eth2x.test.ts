@@ -3,9 +3,7 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
-  getBaseTestFactory,
-  getSignerAccount,
-  getTestRpcProvider,
+  getTestFactoryZeroEx,
   wei,
 } from 'tests/utils'
 
@@ -15,8 +13,7 @@ describe('ETH2X (Base)', () => {
   const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = getSignerAccount(0, getTestRpcProvider(chainId))
-    factory = getBaseTestFactory(signer)
+    factory = getTestFactoryZeroEx(0, chainId)
   })
 
   test('can mint with ETH', async () => {

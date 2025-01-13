@@ -2,10 +2,8 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   QuoteTokens,
   type TestFactory,
-  getMainnetTestFactory,
+  getTestFactoryZeroEx,
   getMainnetTestFactoryUniswap,
-  getSignerAccount,
-  getTestRpcProvider,
   wei,
 } from './utils'
 
@@ -13,10 +11,9 @@ describe('ETH2X (mainnet)', () => {
   const chainId = 1
   const { eth } = QuoteTokens
   const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
-  const signer = getSignerAccount(4, getTestRpcProvider(chainId))
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getMainnetTestFactory(signer)
+    factory = getTestFactoryZeroEx(4)
   })
 
   test.only('can mint with ETH', async () => {
@@ -31,15 +28,15 @@ describe('ETH2X (mainnet)', () => {
   })
 
   test.skip('can mint with ETH (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
-    await factory.fetchQuote({
+    const uniFactory = getMainnetTestFactoryUniswap(factory.getSigner())
+    await uniFactory.fetchQuote({
       isMinting: true,
       inputToken: eth,
       outputToken: eth2x,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    await factory.executeTx()
+    await uniFactory.executeTx()
   })
 
   test('can redeem with ETH', async () => {
@@ -54,14 +51,14 @@ describe('ETH2X (mainnet)', () => {
   })
 
   test.skip('can redeem with ETH (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
-    await factory.fetchQuote({
+    const uniFactory = getMainnetTestFactoryUniswap(factory.getSigner())
+    await uniFactory.fetchQuote({
       isMinting: false,
       inputToken: eth2x,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    await factory.executeTx()
+    await uniFactory.executeTx()
   })
 })

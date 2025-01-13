@@ -3,9 +3,7 @@ import {
   QuoteTokens,
   type TestFactory,
   balanceOf,
-  getMainnetTestFactory,
-  getSignerAccount,
-  getTestRpcProvider,
+  getTestFactoryZeroEx,
   transferFromWhale,
   wei,
   wrapETH,
@@ -18,8 +16,7 @@ describe('hyETH', () => {
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = getSignerAccount(4, getTestRpcProvider(chainId))
-    factory = getMainnetTestFactory(signer)
+    factory = getTestFactoryZeroEx(4)
   })
 
   test('can mint with ETH', async () => {
