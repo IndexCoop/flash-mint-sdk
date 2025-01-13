@@ -4,10 +4,8 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import {
   QuoteTokens,
   type TestFactory,
-  getMainnetTestFactory,
+  getTestFactoryZeroEx,
   getMainnetTestFactoryUniswap,
-  getSignerAccount,
-  getTestRpcProvider,
   wei,
   wrapETH,
 } from './utils'
@@ -17,10 +15,9 @@ describe('icETH (mainnet)', () => {
   const { eth } = QuoteTokens
   const iceth = getTokenByChainAndSymbol(chainId, 'icETH')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
-  const signer = getSignerAccount(4, getTestRpcProvider(chainId))
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getMainnetTestFactory(signer)
+    factory = getTestFactoryZeroEx(4)
   })
 
   test('can mint icETH-ETH', async () => {
@@ -35,15 +32,15 @@ describe('icETH (mainnet)', () => {
   })
 
   test.skip('can mint icETH-ETH (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
-    await factory.fetchQuote({
+    const uniFactory = getMainnetTestFactoryUniswap(factory.getSigner())
+    await uniFactory.fetchQuote({
       isMinting: true,
       inputToken: eth,
       outputToken: iceth,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    await factory.executeTx()
+    await uniFactory.executeTx()
   })
 
   test('can redeem for ETH', async () => {
@@ -70,7 +67,7 @@ describe('icETH (mainnet)', () => {
   })
 
   test.skip('can mint with WETH (IndexSwapQuoteProvider)', async () => {
-    const factory = getMainnetTestFactoryUniswap(signer)
+    const uniFactory = getMainnetTestFactoryUniswap(factory.getSigner())
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: weth,
@@ -78,8 +75,8 @@ describe('icETH (mainnet)', () => {
       indexTokenAmount: wei('0.1').toString(),
       slippage: 1,
     })
-    await wrapETH(quote.inputOutputAmount, factory.getSigner())
-    await factory.executeTx()
+    await wrapETH(quote.inputOutputAmount, uniFactory.getSigner())
+    await uniFactory.executeTx()
   })
 
   test('can redeem for WETH', async () => {
