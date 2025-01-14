@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { ChainId } from 'constants/chains'
 import {
   BasicIssuanceModuleAddress,
@@ -132,21 +134,45 @@ describe('getIssuanceModule() - Arbitrum', () => {
 })
 
 describe('getIssuanceModule() - Base', () => {
-  test('returns debt issuance module v3 for ETH2X on Base', async () => {
-    const expectedModule = Contracts[ChainId.Base].DebtIssuanceModuleV3
+  test('returns debt issuance module v3 for BTC2X on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
-      IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Base,
+      getTokenByChainAndSymbol(chainId, 'BTC2X').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for BTC3X', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'BTC3X').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for ETH2X on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'ETH2X').symbol,
+      chainId,
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
 
   test('returns debt issuance module v3 for ETH3X', async () => {
-    const expectedModule = Contracts[ChainId.Base].DebtIssuanceModuleV3
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule(
-      IndexCoopBitcoin3xIndex.symbol,
-      ChainId.Base,
+      getTokenByChainAndSymbol(chainId, 'ETH3X').symbol,
+      chainId,
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
