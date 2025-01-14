@@ -28,7 +28,7 @@ describe('LeveragedAerodromeQuoteProvider()', () => {
       isMinting: true,
       inputToken: eth,
       outputToken: getTokenByChainAndSymbol(chainId, 'BTC2X'),
-      inputAmount: wei(1).toString(),
+      inputAmount: wei(0.5).toString(),
       outputAmount: indexTokenAmount,
       slippage: 0.5,
     }
@@ -37,7 +37,6 @@ describe('LeveragedAerodromeQuoteProvider()', () => {
       swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
-    console.log(quote)
     if (!quote) fail()
     expect(quote.inputAmount.gt(0)).toBe(true)
     expect(quote.ouputAmount.toString()).toEqual(indexTokenAmount)
@@ -54,38 +53,38 @@ describe('LeveragedAerodromeQuoteProvider()', () => {
     )
   })
 
-  //   test('returns quote for ETH2X - minting w/ ERC20', async () => {
-  //     const indexToken = IndexCoopEthereum2xIndex
-  //     const indexTokenAmount = wei(1)
-  //     const request = {
-  //       isMinting: true,
-  //       inputToken: usdc,
-  //       outputToken: {
-  //         symbol: indexToken.symbol,
-  //         decimals: 18,
-  //         address: indexToken.addressArbitrum!,
-  //       },
-  //       indexTokenAmount,
-  //       slippage: 0.5,
-  //     }
-  //     const quoteProvider = new LeveragedAerodromeQuoteProvider(
-  //       rpcUrl,
-  //       swapQuoteProvider,
-  //     )
-  //     const quote = await quoteProvider.getQuote(request)
-  //     if (!quote) fail()
-  //     expect(quote.outputTokenAmount).toEqual(indexTokenAmount)
-  //     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
-  //     // Testing for individual params as changing quotes could affect the results
-  //     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
-  //     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
-  //     expect(
-  //       pathContains(USDC.addressArbitrum!, quote.swapDataDebtCollateral.path),
-  //     ).toBe(true)
-  //     expect(
-  //       pathContains(WETH.addressArbitrum!, quote.swapDataDebtCollateral.path),
-  //     ).toBe(true)
-  //   })
+  test('returns quote for minting BTC2X - USDC (ERC20)', async () => {
+    const indexTokenAmount = wei(1).toString()
+    const request = {
+      chainId,
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: getTokenByChainAndSymbol(chainId, 'BTC2X'),
+      inputAmount: wei(0.5).toString(),
+      outputAmount: indexTokenAmount,
+      slippage: 0.5,
+    }
+    const quoteProvider = new LeveragedAerodromeQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider,
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    console.log(quote)
+    expect(quote.inputAmount.gt(0)).toBe(true)
+    expect(quote.ouputAmount.toString()).toEqual(indexTokenAmount)
+    // Testing for individual params as changing quotes could affect the results
+    expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
+    swapDataPathContains(
+      [usdc.address, '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf'],
+      quote.swapDataDebtCollateral,
+    )
+    swapDataPathContains(
+      [usdc.address, '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf'],
+      quote.swapDataInputOutputToken,
+    )
+  })
 
   //   test('returns quote for ETH2X - redeeming to ETH', async () => {
   //     const indexToken = IndexCoopEthereum2xIndex
