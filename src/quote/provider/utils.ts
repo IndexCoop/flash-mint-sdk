@@ -73,7 +73,12 @@ export function getContractType(
     }
   }
   if (chainId === ChainId.Base) {
+    const btc2x = getTokenByChainAndSymbol(ChainId.Base, 'BTC2X')
+    const btc3x = getTokenByChainAndSymbol(ChainId.Base, 'BTC3X')
     switch (token) {
+      case btc2x.symbol:
+      case btc3x.symbol:
+        return FlashMintContractType.leveragedAerodrome
       case IndexCoopEthereum2xIndex.symbol:
       case IndexCoopEthereum3xIndex.symbol:
         return FlashMintContractType.leveragedExtended

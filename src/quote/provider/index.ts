@@ -1,18 +1,15 @@
-import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { TheUSDCYieldIndex } from 'constants/tokens'
 import {
   FlashMintHyEthTransactionBuilder,
-  type FlashMintLeveragedBuildRequest,
-  type FlashMintLeveragedExtendedBuildRequest,
-  type FlashMintWrappedBuildRequest,
-  type FlashMintZeroExBuildRequest,
+  LeveragedAerodromeBuilder,
   LeveragedExtendedTransactionBuilder,
   LeveragedTransactionBuilder,
   WrappedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
+import { LeveragedAerodromeQuoteProvider } from 'quote/flashmint/leveraged-aerodrome'
 import { wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
@@ -21,19 +18,28 @@ import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
 import { WrappedQuoteProvider } from '../flashmint/wrapped'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
-import type { QuoteProvider, QuoteToken } from '../interfaces'
-import type { SwapQuoteProvider } from '../swap'
-
 import { IcUsdQuoteRouter } from './icusd'
 import { buildQuoteResponse, getContractType } from './utils'
+
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type {
+  FlashMintLeveragedAerodromBuildRequest,
+  FlashMintLeveragedBuildRequest,
+  FlashMintLeveragedExtendedBuildRequest,
+  FlashMintWrappedBuildRequest,
+  FlashMintZeroExBuildRequest,
+} from 'flashmint'
+import type { QuoteProvider, QuoteToken } from '../interfaces'
+import type { SwapQuoteProvider } from '../swap'
 
 export enum FlashMintContractType {
   hyeth = 0,
   leveraged = 1,
-  leveragedExtended = 2,
-  nav = 3,
-  wrapped = 4,
-  zeroEx = 5,
+  leveragedAerodrome = 2,
+  leveragedExtended = 3,
+  nav = 4,
+  wrapped = 5,
+  zeroEx = 6,
 }
 
 export interface FlashMintQuoteRequest {
@@ -170,6 +176,54 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           leveragedQuote.inputOutputTokenAmount,
+          tx,
+        )
+      }
+      case FlashMintContractType.leveragedAerodrome: {
+        if (!inputTokenAmount) {
+          throw new Error(
+            'Must set `inputTokenAmount` for quote request with contract type leveragedAerodrome ',
+          )
+        }
+        const { isMinting } = request
+        const leverageAerodromeQuoteProvider =
+          new LeveragedAerodromeQuoteProvider(rpcUrl, swapQuoteProvider)
+        const leveragedAerodromeQuote =
+          await leverageAerodromeQuoteProvider.getQuote({
+            ...request,
+            chainId,
+            inputAmount: isMinting
+              ? request.inputTokenAmount!
+              : request.indexTokenAmount,
+            outputAmount: isMinting
+              ? request.indexTokenAmount
+              : request.inputTokenAmount!,
+          })
+        if (!leveragedAerodromeQuote) return null
+        const builder = new LeveragedAerodromeBuilder(rpcUrl)
+        const txRequest: FlashMintLeveragedAerodromBuildRequest = {
+          chainId,
+          isMinting,
+          inputToken: inputToken.address,
+          inputTokenSymbol: inputToken.symbol,
+          outputToken: outputToken.address,
+          outputTokenSymbol: outputToken.symbol,
+          inputTokenAmount: leveragedAerodromeQuote.inputAmount,
+          outputTokenAmount: leveragedAerodromeQuote.ouputAmount,
+          swapDataDebtCollateral:
+            leveragedAerodromeQuote.swapDataDebtCollateral,
+          swapDataInputOutputToken:
+            leveragedAerodromeQuote.swapDataInputOutputToken,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return buildQuoteResponse(
+          request,
+          chainId,
+          contractType,
+          isMinting
+            ? leveragedAerodromeQuote.inputAmount
+            : leveragedAerodromeQuote.ouputAmount,
           tx,
         )
       }
