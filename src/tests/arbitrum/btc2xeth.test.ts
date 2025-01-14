@@ -3,19 +3,17 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
-  getArbitrumTestFactory,
-  getSignerAccount,
-  getTestRpcProvider,
+  getTestFactoryZeroEx,
   wei,
 } from 'tests/utils'
 
 describe('BTC2xETH (Arbitrum)', () => {
+  const chainId = ChainId.Arbitrum
   const { eth } = QuoteTokens
-  const btc2xEth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'BTC2xETH')
+  const btc2xEth = getTokenByChainAndSymbol(chainId, 'BTC2xETH')
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = getSignerAccount(3, getTestRpcProvider(ChainId.Arbitrum))
-    factory = getArbitrumTestFactory(signer)
+    factory = getTestFactoryZeroEx(3, chainId)
   })
 
   test('can mint with ETH', async () => {

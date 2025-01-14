@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChainId } from 'constants/chains'
 import { IndexSwapQuoteProvider } from 'quote'
 import {
@@ -8,15 +7,6 @@ import {
   getZeroExSwapQuoteProvider,
 } from 'tests/utils'
 import { TestFactory } from 'tests/utils/factory'
-
-// Pre-configured TestFactories
-export function getArbitrumTestFactory(
-  signer: any,
-  rpcUrl: string = getLocalHostProviderUrl(ChainId.Arbitrum),
-) {
-  const swapQuoteProvider = getZeroExSwapQuoteProvider(ChainId.Arbitrum)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider)
-}
 
 export function getTestFactoryZeroEx(
   signerAccountNo: number,
@@ -30,6 +20,7 @@ export function getTestFactoryZeroEx(
 }
 
 export function getMainnetTestFactoryUniswap(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signer: any,
   rpcUrl: string = getLocalHostProviderUrl(ChainId.Mainnet),
 ) {
