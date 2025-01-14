@@ -1,11 +1,9 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import {
+  getTestFactoryZeroEx,
   QuoteTokens,
   type TestFactory,
-  getArbitrumTestFactory,
-  getSignerAccount,
-  getTestRpcProvider,
   wei,
 } from 'tests/utils'
 
@@ -16,8 +14,7 @@ const { eth } = QuoteTokens
 describe.skip('BTC3X (Arbitrum)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = getSignerAccount(5, getTestRpcProvider(chainId))
-    factory = getArbitrumTestFactory(signer)
+    factory = getTestFactoryZeroEx(5, chainId)
   })
 
   test('can mint with ETH', async () => {

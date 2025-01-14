@@ -3,9 +3,7 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
-  getArbitrumTestFactory,
-  getSignerAccount,
-  getTestRpcProvider,
+  getTestFactoryZeroEx,
   wei,
 } from 'tests/utils'
 
@@ -16,8 +14,7 @@ const { eth } = QuoteTokens
 describe('ETH3X (Arbitrum)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    const signer = getSignerAccount(2, getTestRpcProvider(chainId))
-    factory = getArbitrumTestFactory(signer)
+    factory = getTestFactoryZeroEx(2, chainId)
   })
 
   test.only('can mint with ETH', async () => {
