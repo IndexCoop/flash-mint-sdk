@@ -115,7 +115,7 @@ contract for that specific Index token.
 Use the [utility](./src/utils/contracts.ts) functions for easily obtaining
 the correct addresses and contracts.
 
-## Develoment
+## Development
 
 ### .env vars
 
