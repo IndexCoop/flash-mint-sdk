@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { ETH, InterestCompoundingETHIndex } from 'constants/tokens'
+import { ETH } from 'constants/tokens'
 import { Exchange } from 'utils'
 import { getLeveragedTokenData } from 'utils/leveraged-token-data'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -215,10 +215,7 @@ export class LeveragedAerodromeQuoteProvider
       : leftoverCollateral
 
     // Only fetch input/output swap data if collateral token is not the same as payment token
-    if (
-      collateralToken !== paymentTokenAddress &&
-      setTokenSymbol !== InterestCompoundingETHIndex.symbol
-    ) {
+    if (collateralToken !== paymentTokenAddress) {
       const quoteRequest: SwapQuoteRequest = {
         inputToken: isMinting ? paymentTokenAddress : collateralToken,
         outputToken: isMinting ? collateralToken : paymentTokenAddress,
