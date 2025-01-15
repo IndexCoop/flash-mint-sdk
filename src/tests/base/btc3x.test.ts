@@ -15,7 +15,7 @@ describe('BTC3X (Base)', () => {
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(0, chainId)
+    factory = getTestFactoryZeroEx(1, chainId)
   })
 
   test('can mint with ETH', async () => {
@@ -24,7 +24,7 @@ describe('BTC3X (Base)', () => {
       inputToken: eth,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei(0.5).toString(),
+      inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

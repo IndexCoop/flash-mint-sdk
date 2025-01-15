@@ -22,7 +22,7 @@ describe('BTC2X (Base)', () => {
       inputToken: eth,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei(0.5).toString(),
+      inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
