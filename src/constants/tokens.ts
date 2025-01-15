@@ -9,6 +9,7 @@ export interface Token {
   addressBase?: string
   addressOptimism?: string
   addressPolygon?: string
+  decimals?: number
 }
 
 // Indices by the Index Coop
@@ -91,9 +92,10 @@ export const TheUSDCYieldIndex: Token = {
 
 // Other
 
-export const ETH: Token = {
+export const ETH = {
   symbol: 'ETH',
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+  decimals: 18,
 }
 
 export const MATIC: Token = {

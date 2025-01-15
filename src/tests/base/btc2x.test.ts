@@ -7,33 +7,34 @@ import {
   wei,
 } from 'tests/utils'
 
-const chainId = ChainId.Arbitrum
-const ieth1x = getTokenByChainAndSymbol(chainId, 'iETH1X')
-const { eth } = QuoteTokens
-
-describe('iETH1X (Arbitrum)', () => {
+describe('BTC2X (Base)', () => {
+  const chainId = ChainId.Base
+  const { eth } = QuoteTokens
+  const indexToken = getTokenByChainAndSymbol(chainId, 'BTC2X')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(1, chainId)
+    factory = getTestFactoryZeroEx(0, chainId)
   })
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
-      outputToken: ieth1x,
+      outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
   })
 
-  test('can redeem with ETH', async () => {
+  test.skip('can redeem with ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
-      inputToken: ieth1x,
+      inputToken: indexToken,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

@@ -1,9 +1,9 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import {
-  getTestFactoryZeroEx,
   QuoteTokens,
   type TestFactory,
+  getTestFactoryZeroEx,
   wei,
 } from 'tests/utils'
 

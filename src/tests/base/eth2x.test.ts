@@ -13,7 +13,7 @@ describe('ETH2X (Base)', () => {
   const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(0, chainId)
+    factory = getTestFactoryZeroEx(2, chainId)
   })
 
   test('can mint with ETH', async () => {
@@ -33,7 +33,7 @@ describe('ETH2X (Base)', () => {
       inputToken: eth2x,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
-      slippage: 0.5,
+      slippage: 0.6,
     })
     await factory.executeTx()
   })

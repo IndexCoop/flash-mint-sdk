@@ -6,6 +6,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
 import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
+import FLASHMINT_LEVERAGED_AERODROME_ABI from '../constants/abis/FlashMintLeveragedAerodrome.json'
 import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
 import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
@@ -94,6 +95,24 @@ export const getIndexFlashMintLeveragedContract = (
 }
 
 /**
+ * Returns an instance of the Index FlashMintLeveragedAerodrome contract (Base)
+ *
+ * @param signerOrProvider a signer or provider
+ *
+ * @returns an instance of a FlashMintLeveraged contract
+ */
+export const getIndexFlashMintLeveragedAerodromeContract = (
+  signerOrProvider: Signer | Provider | undefined,
+): Contract => {
+  const contractAddress = Contracts[ChainId.Base].FlashMintLeveragedAerodrome
+  return new Contract(
+    contractAddress,
+    FLASHMINT_LEVERAGED_AERODROME_ABI,
+    signerOrProvider,
+  )
+}
+
+/**
  * Returns an instance of the Index FlashMintLeveragedExtended contract (Arbitrum + Base)
  *
  * @param signerOrProvider  a signer or provider
@@ -164,7 +183,12 @@ export const getFlashMintLeveragedContractForToken = (
     return getIndexFlashMintLeveragedContract(signerOrProvider)
   }
   if (chainId === ChainId.Base) {
+    const btc2x = getTokenByChainAndSymbol(ChainId.Base, 'BTC2X')
+    const btc3x = getTokenByChainAndSymbol(ChainId.Base, 'BTC3X')
     switch (token) {
+      case btc2x.symbol:
+      case btc3x.symbol:
+        return getIndexFlashMintLeveragedAerodromeContract(signerOrProvider)
       case IndexCoopEthereum2xIndex.symbol:
       case IndexCoopEthereum3xIndex.symbol:
         return getIndexFlashMintLeveragedExtendedContract(

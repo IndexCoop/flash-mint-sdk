@@ -73,7 +73,6 @@ describe('hyETH', () => {
       factory.getSigner(),
       quote.inputToken.address,
     )
-    console.log('usdc balance:', usdcBalance.toString())
     await factory.executeTx()
   })
 

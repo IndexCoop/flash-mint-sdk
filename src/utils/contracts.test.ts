@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
 import { ChainId } from 'constants/chains'
 import {
   Contracts,
@@ -11,8 +13,6 @@ import {
 } from 'constants/contracts'
 import {
   DiversifiedStakedETHIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
@@ -281,7 +281,7 @@ describe('BTC2X', () => {
   test('return correct contract for token - mainnet', async () => {
     const expectedAddress = FlashMintLeveragedAddress
     const contract = getFlashMintLeveragedContractForToken(
-      IndexCoopBitcoin2xIndex.symbol,
+      getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC2X').symbol,
       undefined,
     )
     expect(contract.address).toEqual(expectedAddress)
@@ -295,11 +295,30 @@ describe('BTC2X', () => {
   test('return correct contract for token - arbitrum', async () => {
     const chainId = ChainId.Arbitrum
     const contract = getFlashMintLeveragedContractForToken(
-      IndexCoopBitcoin2xIndex.symbol,
+      getTokenByChainAndSymbol(chainId, 'BTC2X').symbol,
       undefined,
       chainId,
     )
     const expectedAddress = Contracts[chainId].FlashMintLeveragedExtended
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const contract = getFlashMintLeveragedContractForToken(
+      getTokenByChainAndSymbol(chainId, 'BTC2X').symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedAerodrome
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
@@ -337,11 +356,30 @@ describe('BTC3X', () => {
   test('return correct contract for token - arbitrum', async () => {
     const chainId = ChainId.Arbitrum
     const contract = getFlashMintLeveragedContractForToken(
-      IndexCoopBitcoin3xIndex.symbol,
+      getTokenByChainAndSymbol(chainId, 'BTC3X').symbol,
       undefined,
       chainId,
     )
     const expectedAddress = Contracts[chainId].FlashMintLeveragedExtended
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const contract = getFlashMintLeveragedContractForToken(
+      getTokenByChainAndSymbol(chainId, 'BTC3X').symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedAerodrome
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
