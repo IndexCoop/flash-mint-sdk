@@ -4,6 +4,7 @@ import { decodePool, extractPoolFees } from 'utils/UniswapPath'
 import type {
   ZeroExApiSwapResponse,
   ZeroExApiSwapResponseOrder,
+  ZeroExApiSwapResponseOrderAerodrome,
   ZeroExApiSwapResponseOrderSushi,
 } from './0x'
 
@@ -16,6 +17,8 @@ export const getSwapData = async (
 
 export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
   switch (key) {
+    case 'Aerodrome':
+      return Exchange.Aerodrome
     case 'Balancer_V2':
       return Exchange.BalancerV2
     case 'Curve':
@@ -34,6 +37,8 @@ export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
 // 0x keys https://github.com/0xProject/protocol/blob/4f32f3174f25858644eae4c3de59c3a6717a757c/packages/asset-swapper/src/utils/market_operation_utils/types.ts#L38
 export function get0xEchangeKey(exchange: Exchange): string {
   switch (exchange) {
+    case Exchange.Aerodrome:
+      return 'Aerodrome'
     case Exchange.Curve:
       return 'Curve'
     case Exchange.Quickswap:
@@ -66,6 +71,10 @@ export function swapDataFrom0xQuote(
 
   if (!fillData || !exchange) return null
 
+  if (exchange === Exchange.Aerodrome) {
+    return swapDataFromAerodrome(order)
+  }
+
   // Avoid using Balancer for now - as the contracts don't support it
   // if (exchange === Exchange.BalancerV2) {
   //   return swapDataFromBalancer(order)
@@ -93,6 +102,19 @@ export function swapDataFrom0xQuote(
     path,
     fees,
     pool: '0x0000000000000000000000000000000000000000',
+  }
+}
+
+function swapDataFromAerodrome(
+  order: ZeroExApiSwapResponseOrderAerodrome,
+): SwapData | null {
+  const fillData = order.fillData
+  if (!fillData) return null
+  return {
+    exchange: Exchange.Aerodrome,
+    path: [fillData.routes[0].from, fillData.routes[0].to],
+    fees: [],
+    pool: fillData.router,
   }
 }
 

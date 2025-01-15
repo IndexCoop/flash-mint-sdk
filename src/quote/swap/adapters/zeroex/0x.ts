@@ -22,6 +22,31 @@ export type ZeroExApiSwapResponseOrder = {
     tokenAddressPath?: string[]
   }
 }
+export type ZeroExApiSwapResponseOrderAerodrome = {
+  type: number
+  source: string
+  makerToken: string
+  takerToken: string
+  makerAmount: string
+  takerAmount: string
+  fillData: {
+    router: string
+    routes: [
+      {
+        from: string
+        to: string
+        stable: boolean
+        factory: string
+      },
+    ]
+  }
+  fill: {
+    input: string
+    output: string
+    adjustedOutput: string
+    gas: number
+  }
+}
 
 export type ZeroExApiSwapResponseOrderBalancer = {
   source: string
@@ -135,6 +160,8 @@ export class ZeroExApi {
     switch (chainId) {
       case ChainId.Arbitrum:
         return 'https://arbitrum.api.0x.org/'
+      case ChainId.Base:
+        return 'https://base.api.0x.org/'
       case ChainId.Polygon:
         return 'https://polygon.api.0x.org'
       case ChainId.Optimism:

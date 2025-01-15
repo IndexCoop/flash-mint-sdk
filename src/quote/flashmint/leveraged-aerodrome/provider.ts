@@ -58,7 +58,7 @@ export class LeveragedAerodromeQuoteProvider
       isMinting ? outputAmount : inputAmount,
     )
     const indexTokenSymbol = indexToken.symbol
-    const sources = [Exchange.Sushiswap, Exchange.UniV3]
+    const sources = [Exchange.Aerodrome, Exchange.Sushiswap, Exchange.UniV3]
     const leveragedTokenData = await getLeveragedTokenData(
       indexToken.address,
       indexTokenAmount,

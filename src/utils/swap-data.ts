@@ -7,6 +7,7 @@ export enum Exchange {
   UniV3 = 3,
   Curve = 4,
   BalancerV2 = 5,
+  Aerodrome = 6,
 }
 
 export interface SwapData {
