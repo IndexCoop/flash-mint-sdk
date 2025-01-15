@@ -102,7 +102,6 @@ export class LeveragedAerodromeQuoteProvider
 
     const { swapDataInputOutputToken, estimatedInputOutputAmount } =
       await this.getSwapDataInputOutputToken(
-        indexTokenSymbol,
         leveragedTokenData.collateralToken,
         collateralShortfall,
         leftoverCollateral,
@@ -184,7 +183,6 @@ export class LeveragedAerodromeQuoteProvider
   }
 
   private async getSwapDataInputOutputToken(
-    setTokenSymbol: string,
     collateralToken: string,
     collateralShortfall: BigNumber,
     leftoverCollateral: BigNumber,
