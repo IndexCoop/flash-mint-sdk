@@ -13,7 +13,7 @@ describe('ETH3X (Base)', () => {
   const eth3x = getTokenByChainAndSymbol(chainId, 'ETH3X')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(3, chainId)
+    factory = getTestFactoryZeroEx(5, chainId)
   })
 
   test('can mint with ETH', async () => {
