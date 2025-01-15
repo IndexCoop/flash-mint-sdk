@@ -69,7 +69,7 @@ describe('BTC3X (Base)', () => {
       outputToken: usdc,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
-      slippage: 0.6,
+      slippage: 0.8,
     })
     await factory.executeTx()
   })
