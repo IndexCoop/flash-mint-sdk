@@ -14,7 +14,7 @@ describe('getWrapData()', () => {
     expect(wrapData[2].integrationName).toBe('ERC4626WrapV2Adapter')
     expect(wrapData[3].integrationName).toBe('ERC4626WrapV2Adapter')
     expect(wrapData[4].integrationName).toBe('ERC4626WrapV2Adapter')
-    expect(wrapData[5].integrationName).toBe('')
+    expect(wrapData[5].integrationName).toBe('ERC4626WrapV2Adapter')
     expect(wrapData[6].integrationName).toBe('ERC4626WrapV2Adapter')
     expect(wrapData[7].integrationName).toBe('ERC4626WrapV2Adapter')
     // biome-ignore lint:
