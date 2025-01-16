@@ -4,7 +4,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import {
-  BanklessBEDIndex,
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
@@ -91,7 +90,6 @@ export function getContractType(
     return FlashMintContractType.wrapped
   }
   if (
-    token === BanklessBEDIndex.symbol ||
     token === CoinDeskEthTrendIndex.symbol ||
     token === DefiPulseIndex.symbol ||
     token === DiversifiedStakedETHIndex.symbol ||

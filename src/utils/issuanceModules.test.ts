@@ -10,7 +10,6 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from 'constants/contracts'
 import {
-  BanklessBEDIndex,
   DefiPulseIndex,
   DiversifiedStakedETHIndex,
   IndexCoopBitcoin2xIndex,
@@ -82,13 +81,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
 })
 
 describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
-  test('returns basic issuance module for BED', async () => {
-    const expectedModule = BasicIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(BanklessBEDIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(false)
-  })
-
   test('returns basic issuance module for DPI', async () => {
     const expectedModule = BasicIssuanceModuleAddress
     const issuanceModule = getIssuanceModule(DefiPulseIndex.symbol)

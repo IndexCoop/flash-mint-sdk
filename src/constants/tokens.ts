@@ -14,11 +14,6 @@ export interface Token {
 
 // Indices by the Index Coop
 
-export const BanklessBEDIndex: Token = {
-  address: '0x2aF1dF3AB0ab157e1E2Ad8F88A7D04fbea0c7dc6',
-  symbol: 'BED',
-}
-
 export const CoinDeskEthTrendIndex: Token = {
   address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
   symbol: 'cdETI',
