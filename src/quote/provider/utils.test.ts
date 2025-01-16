@@ -136,6 +136,22 @@ describe('getContractType()', () => {
     expect(contractType).toBe(FlashMintContractType.leveraged)
   })
 
+  test('returns correct contract type for BTC2X (base)', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Base, 'BTC2X').symbol,
+      ChainId.Base,
+    )
+    expect(contractType).toBe(FlashMintContractType.leveragedAerodrome)
+  })
+
+  test('returns correct contract type for BTC3X (base)', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Base, 'BTC3X').symbol,
+      ChainId.Base,
+    )
+    expect(contractType).toBe(FlashMintContractType.leveragedAerodrome)
+  })
+
   test('returns correct contract type for ETH2X (mainnet)', async () => {
     const contractType = getContractType(
       IndexCoopEthereum2xIndex.symbol,

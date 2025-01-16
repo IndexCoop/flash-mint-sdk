@@ -153,6 +153,8 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
     switch (chainId) {
       case ChainId.Arbitrum:
         return 'https://arbitrum.api.0x.org/'
+      case ChainId.Base:
+        return 'https://base.api.0x.org/'
       case ChainId.Polygon:
         return 'https://polygon.api.0x.org'
       case ChainId.Optimism:
@@ -165,6 +167,9 @@ export class ZeroExSwapQuoteProvider implements SwapQuoteProvider {
   // Returns a comma separated string of sources to be included for 0x API calls
   private getIncludedSources(sources: Exchange[]): string {
     const includedSources: string[] = []
+    if (sources.includes(Exchange.Aerodrome)) {
+      includedSources.push(get0xEchangeKey(Exchange.Aerodrome))
+    }
     if (sources.includes(Exchange.Curve)) {
       includedSources.push(get0xEchangeKey(Exchange.Curve))
     }

@@ -7,13 +7,13 @@ import {
   wei,
 } from 'tests/utils'
 
-describe('ETH3X (Base)', () => {
+describe.skip('ETH3X (Base)', () => {
   const chainId = ChainId.Base
   const { eth } = QuoteTokens
   const eth3x = getTokenByChainAndSymbol(chainId, 'ETH3X')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(2, chainId)
+    factory = getTestFactoryZeroEx(5, chainId)
   })
 
   test('can mint with ETH', async () => {

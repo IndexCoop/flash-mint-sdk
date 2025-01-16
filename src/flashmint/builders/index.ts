@@ -1,6 +1,7 @@
 export * from './hyeth'
 export * from './interface'
 export * from './leveraged'
+export * from './leveraged-aerodrome'
 export * from './leveraged-extended'
 export * from './nav'
 export * from './wrapped'
