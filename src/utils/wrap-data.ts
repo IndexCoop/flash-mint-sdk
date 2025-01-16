@@ -42,7 +42,7 @@ export function getWrapData(tokenSymbol: string): ComponentWrapData[] {
       wrapData: ZERO_BYTES,
     },
     {
-      integrationName: '',
+      integrationName: IntegrationName.erc4626WrapV2Adapter,
       wrapData: ZERO_BYTES,
     },
     {
