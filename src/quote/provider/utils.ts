@@ -6,7 +6,6 @@ import { ChainId } from 'constants/chains'
 import {
   CoinDeskEthTrendIndex,
   DefiPulseIndex,
-  DiversifiedStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
@@ -92,7 +91,6 @@ export function getContractType(
   if (
     token === CoinDeskEthTrendIndex.symbol ||
     token === DefiPulseIndex.symbol ||
-    token === DiversifiedStakedETHIndex.symbol ||
     token === MetaverseIndex.symbol
   )
     return FlashMintContractType.zeroEx

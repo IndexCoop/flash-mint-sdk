@@ -26,7 +26,6 @@ import {
 } from '../constants/contracts'
 import {
   CoinDeskEthTrendIndex,
-  DiversifiedStakedETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -281,7 +280,6 @@ export const getFlashMintZeroExContractForToken = (
 ): Contract => {
   switch (token) {
     case CoinDeskEthTrendIndex.symbol:
-    case DiversifiedStakedETHIndex.symbol:
     case 'wsETH2':
       return new Contract(
         FlashMintZeroExMainnetAddress,

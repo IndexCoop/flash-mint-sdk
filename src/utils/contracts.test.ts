@@ -9,10 +9,8 @@ import {
   ExchangeIssuanceZeroExPolygonAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
-  FlashMintZeroExMainnetAddress,
 } from 'constants/contracts'
 import {
-  DiversifiedStakedETHIndex,
   IndexCoopEthereum2xIndex,
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
@@ -239,31 +237,6 @@ describe('getFlashMintZeroExContract()', () => {
 })
 
 describe('getFlashMintZeroExContractForToken()', () => {
-  test('returns Index Protocol for dsETH and wsETH2', async () => {
-    const expectedAddress = FlashMintZeroExMainnetAddress
-    const contract = getFlashMintZeroExContractForToken(
-      DiversifiedStakedETHIndex.symbol,
-      undefined,
-      1,
-    )
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
-
-    const contract2 = getFlashMintZeroExContractForToken('wsETH2', undefined, 1)
-    expect(contract2.address).toEqual(expectedAddress)
-    expect(contract2.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract2.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract2.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract2.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract2.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract2.functions.redeemExactSetForToken).toBeDefined()
-  })
-
   test('returns Set Protocol contract as default', async () => {
     const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
     const contract = getFlashMintZeroExContractForToken('', undefined)

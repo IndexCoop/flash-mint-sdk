@@ -9,7 +9,6 @@ import {
 } from '../constants/contracts'
 import {
   CoinDeskEthTrendIndex,
-  DiversifiedStakedETHIndex,
   HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
@@ -46,7 +45,6 @@ export function getIssuanceModule(
   // Mainnet
   switch (tokenSymbol) {
     case CoinDeskEthTrendIndex.symbol:
-    case DiversifiedStakedETHIndex.symbol:
     case HighYieldETHIndex.symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:

@@ -25,11 +25,6 @@ export const DefiPulseIndex: Token = {
   symbol: 'DPI',
 }
 
-export const DiversifiedStakedETHIndex: Token = {
-  address: '0x341c05c0E9b33C0E38d64de76516b2Ce970bB3BE',
-  symbol: 'dsETH',
-}
-
 export const HighYieldETHIndex: Token = {
   address: '0xc4506022Fb8090774E8A628d5084EED61D9B99Ee',
   symbol: 'hyETH',

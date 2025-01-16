@@ -5,7 +5,6 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import {
   DefiPulseIndex,
-  DiversifiedStakedETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -103,14 +102,6 @@ describe('getContractType()', () => {
 
   test('returns correct contract type for DPI', async () => {
     const contractType = getContractType(DefiPulseIndex.symbol, ChainId.Mainnet)
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for dsETH', async () => {
-    const contractType = getContractType(
-      DiversifiedStakedETHIndex.symbol,
-      ChainId.Mainnet,
-    )
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 
