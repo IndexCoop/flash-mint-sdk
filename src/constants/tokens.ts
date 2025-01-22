@@ -14,11 +14,6 @@ export interface Token {
 
 // Indices by the Index Coop
 
-export const BanklessBEDIndex: Token = {
-  address: '0x2aF1dF3AB0ab157e1E2Ad8F88A7D04fbea0c7dc6',
-  symbol: 'BED',
-}
-
 export const CoinDeskEthTrendIndex: Token = {
   address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
   symbol: 'cdETI',
@@ -28,11 +23,6 @@ export const DefiPulseIndex: Token = {
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
   addressPolygon: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',
   symbol: 'DPI',
-}
-
-export const DiversifiedStakedETHIndex: Token = {
-  address: '0x341c05c0E9b33C0E38d64de76516b2Ce970bB3BE',
-  symbol: 'dsETH',
 }
 
 export const HighYieldETHIndex: Token = {

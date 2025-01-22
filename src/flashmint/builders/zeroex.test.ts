@@ -13,7 +13,7 @@ import {
 
 const chainId = 1
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-const indexToken = getTokenByChainAndSymbol(chainId, 'dsETH')
+const indexToken = getTokenByChainAndSymbol(chainId, 'cdETI')
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 
 describe('ZeroExTransactionBuilder()', () => {
@@ -65,7 +65,7 @@ describe('ZeroExTransactionBuilder()', () => {
     expect(tx).toBeNull()
   })
 
-  test('returns a tx for minting dsETH (ERC20)', async () => {
+  test('returns a tx for minting cdETI (ERC20)', async () => {
     const buildRequest = createBuildRequest()
     const refTx = await contract.populateTransaction.issueExactSetFromToken(
       buildRequest.indexToken,
@@ -83,7 +83,7 @@ describe('ZeroExTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for minting dsETH (ETH)', async () => {
+  test('returns a tx for minting cdETI (ETH)', async () => {
     const buildRequest = createBuildRequest(true, eth, 'ETH')
     const refTx = await contract.populateTransaction.issueExactSetFromETH(
       buildRequest.indexToken,
@@ -101,7 +101,7 @@ describe('ZeroExTransactionBuilder()', () => {
     expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
   })
 
-  test('returns a tx for redeeming dsETH (ERC20)', async () => {
+  test('returns a tx for redeeming cdETI (ERC20)', async () => {
     const buildRequest = createBuildRequest(false)
     const refTx = await contract.populateTransaction.redeemExactSetForToken(
       buildRequest.indexToken,
@@ -119,7 +119,7 @@ describe('ZeroExTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for redeeming dsETH (ETH)', async () => {
+  test('returns a tx for redeeming cdETI (ETH)', async () => {
     const buildRequest = createBuildRequest(false, eth, 'ETH')
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.indexToken,

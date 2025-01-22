@@ -10,9 +10,7 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from 'constants/contracts'
 import {
-  BanklessBEDIndex,
   DefiPulseIndex,
-  DiversifiedStakedETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -34,13 +32,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for BTC2xETH', () => {
     const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
     const issuanceModule = getIssuanceModule('BTC2xETH', ChainId.Arbitrum)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for dsETH', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address_v2
-    const issuanceModule = getIssuanceModule(DiversifiedStakedETHIndex.symbol)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
@@ -82,13 +73,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
 })
 
 describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
-  test('returns basic issuance module for BED', async () => {
-    const expectedModule = BasicIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(BanklessBEDIndex.symbol)
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(false)
-  })
-
   test('returns basic issuance module for DPI', async () => {
     const expectedModule = BasicIssuanceModuleAddress
     const issuanceModule = getIssuanceModule(DefiPulseIndex.symbol)

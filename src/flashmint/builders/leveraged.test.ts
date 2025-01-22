@@ -161,7 +161,7 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx.value).toEqual(buildRequest.inputOutputTokenAmount)
   })
 
-  test('returns a tx for redeeming dsETH (ERC20)', async () => {
+  test('returns a tx for redeeming icETH (ERC20)', async () => {
     const buildRequest = createBuildRequest(false)
     const refTx = await contract.populateTransaction.redeemExactSetForERC20(
       buildRequest.indexToken,
@@ -178,7 +178,7 @@ describe('LeveragedTransactionBuilder()', () => {
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for redeeming dsETH (ETH)', async () => {
+  test('returns a tx for redeeming icETH (ETH)', async () => {
     const buildRequest = createBuildRequest(false, eth, 'ETH')
     const refTx = await contract.populateTransaction.redeemExactSetForETH(
       buildRequest.indexToken,

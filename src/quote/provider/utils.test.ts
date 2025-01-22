@@ -4,9 +4,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import {
-  BanklessBEDIndex,
   DefiPulseIndex,
-  DiversifiedStakedETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -102,24 +100,8 @@ describe('getContractType()', () => {
     expect(ieth1xContractType).toBe(FlashMintContractType.leveragedExtended)
   })
 
-  test('returns correct contract type for BED', async () => {
-    const contractType = getContractType(
-      BanklessBEDIndex.symbol,
-      ChainId.Mainnet,
-    )
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
   test('returns correct contract type for DPI', async () => {
     const contractType = getContractType(DefiPulseIndex.symbol, ChainId.Mainnet)
-    expect(contractType).toBe(FlashMintContractType.zeroEx)
-  })
-
-  test('returns correct contract type for dsETH', async () => {
-    const contractType = getContractType(
-      DiversifiedStakedETHIndex.symbol,
-      ChainId.Mainnet,
-    )
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 

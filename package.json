@@ -33,7 +33,6 @@
     "test:base": "npm test src/tests/base",
     "test:btc2x": "npm test src/tests/btc2x.test.ts",
     "test:btc2xeth": "npm test src/tests/arbitrum/btc2xeth.test.ts",
-    "test:dseth": "npm test src/tests/dseth",
     "test:eth2x": "npm test src/tests/eth2x.test.ts",
     "test:eth2xbtc": "npm test src/tests/arbitrum/eth2xbtc.test.ts",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
