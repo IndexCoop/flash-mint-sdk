@@ -25,3 +25,12 @@ export interface SwapDataV3 {
   pool: string
   poolIds: string[]
 }
+
+export interface SwapDataV4 {
+  exchange: Exchange
+  path: string[]
+  fees: number[]
+  pool: string
+  poolIds: string[]
+  tickSpacing: number[]
+}
