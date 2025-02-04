@@ -8,6 +8,7 @@ export enum Exchange {
   Curve = 4,
   BalancerV2 = 5,
   Aerodrome = 6,
+  AerodromeSlipstream = 7,
 }
 
 export interface SwapData {
