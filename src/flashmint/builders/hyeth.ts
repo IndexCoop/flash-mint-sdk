@@ -3,10 +3,10 @@ import type { BigNumber } from '@ethersproject/bignumber'
 
 import { getFlashMintHyEthContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, type SwapData } from 'utils/swap-data'
+import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
+import type { SwapData } from 'utils/swap-data'
 import type { TransactionBuilder } from './interface'
-import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintHyEthBuildRequest {
   isMinting: boolean
@@ -107,22 +107,6 @@ export class FlashMintHyEthTransactionBuilder
     }
   }
 
-  private isValidSwapData(swapData: SwapData | null): boolean {
-    if (!swapData) return false
-    if (swapData.exchange === Exchange.None) {
-      if (swapData.pool.length !== 42) return false
-      return true
-    }
-    if (
-      swapData.exchange === Exchange.UniV3 &&
-      swapData.fees.length !== swapData.path.length - 1
-    )
-      return false
-    if (swapData.path.length === 0) return false
-    if (swapData.pool.length !== 42) return false
-    return true
-  }
-
   private isValidRequest(request: FlashMintHyEthBuildRequest): boolean {
     const {
       componentsSwapData,
@@ -146,13 +130,13 @@ export class FlashMintHyEthTransactionBuilder
     if (
       isMinting &&
       inputTokenSymbol !== 'ETH' &&
-      !this.isValidSwapData(swapDataInputTokenToEth)
+      !isValidSwapData(swapDataInputTokenToEth)
     )
       return false
     if (
       ((isMinting && inputTokenSymbol !== 'ETH') ||
         (!isMinting && outputTokenSymbol !== 'ETH')) &&
-      !this.isValidSwapData(swapDataEthToInputOutputToken)
+      !isValidSwapData(swapDataEthToInputOutputToken)
     )
       return false
     return true

@@ -1,12 +1,11 @@
+import { getRpcProvider } from 'utils/rpc-provider'
+import { getFlashMintNavContract } from '../../utils/contracts'
+import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
+
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import type { BigNumber } from '@ethersproject/bignumber'
-
-import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, type SwapDataV3 } from 'utils/swap-data'
-
-import { getFlashMintNavContract } from '../../utils/contracts'
+import type { SwapDataV3 } from 'utils/swap-data'
 import type { TransactionBuilder } from './interface'
-import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintNavBuildRequest {
   isMinting: boolean
@@ -80,21 +79,6 @@ export class FlashMintNavTransactionBuilder
     }
   }
 
-  private isValidSwapData(swapData: SwapDataV3): boolean {
-    if (swapData.exchange === Exchange.None) {
-      if (swapData.pool.length !== 42) return false
-      return true
-    }
-    if (
-      swapData.exchange === Exchange.UniV3 &&
-      swapData.fees.length !== swapData.path.length - 1
-    )
-      return false
-    if (swapData.path.length === 0) return false
-    if (swapData.pool.length !== 42) return false
-    return true
-  }
-
   private isValidRequest(request: FlashMintNavBuildRequest): boolean {
     const {
       inputToken,
@@ -111,7 +95,7 @@ export class FlashMintNavTransactionBuilder
     if (isEmptyString(outputTokenSymbol)) return false
     if (isInvalidAmount(inputTokenAmount)) return false
     if (isInvalidAmount(outputTokenAmount)) return false
-    if (!this.isValidSwapData(reserveAssetSwapData)) return false
+    if (!isValidSwapData(reserveAssetSwapData)) return false
     return true
   }
 }

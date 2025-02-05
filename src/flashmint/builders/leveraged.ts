@@ -1,12 +1,11 @@
-import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { BigNumber } from '@ethersproject/bignumber'
-
-import { Exchange, type SwapData } from 'utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
+import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
+import type { TransactionRequest } from '@ethersproject/abstract-provider'
+import type { BigNumber } from '@ethersproject/bignumber'
+import type { SwapData } from 'utils'
 import type { TransactionBuilder } from './interface'
-import { isEmptyString, isInvalidAmount } from './utils'
 
 export interface FlashMintLeveragedBuildRequest {
   isMinting: boolean
@@ -92,21 +91,6 @@ export class LeveragedTransactionBuilder
     }
   }
 
-  private isValidSwapData(swapData: SwapData): boolean {
-    if (swapData.exchange === Exchange.None) {
-      if (swapData.pool.length !== 42) return false
-      return true
-    }
-    if (
-      swapData.exchange === Exchange.UniV3 &&
-      swapData.fees.length !== swapData.path.length - 1
-    )
-      return false
-    if (swapData.path.length === 0) return false
-    if (swapData.pool.length !== 42) return false
-    return true
-  }
-
   private isValidRequest(request: FlashMintLeveragedBuildRequest): boolean {
     const {
       indexToken,
@@ -120,8 +104,8 @@ export class LeveragedTransactionBuilder
     if (isEmptyString(inputOutputToken)) return false
     if (isInvalidAmount(indexTokenAmount)) return false
     if (isInvalidAmount(inputOutputTokenAmount)) return false
-    if (!this.isValidSwapData(swapDataDebtCollateral)) return false
-    if (!this.isValidSwapData(swapDataPaymentToken)) return false
+    if (!isValidSwapData(swapDataDebtCollateral)) return false
+    if (!isValidSwapData(swapDataPaymentToken)) return false
     return true
   }
 }

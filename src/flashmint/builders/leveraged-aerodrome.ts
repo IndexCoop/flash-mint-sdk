@@ -1,12 +1,12 @@
-import { Exchange } from 'utils'
-import { getIndexFlashMintLeveragedAerodromeContract } from 'utils/contracts'
-import { getRpcProvider } from 'utils/rpc-provider'
-import { isEmptyString, isInvalidAmount } from './utils'
-
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import type { BigNumber } from '@ethersproject/bignumber'
+
 import type { SwapDataV3 } from 'utils'
+import { getIndexFlashMintLeveragedAerodromeContract } from 'utils/contracts'
+import { getRpcProvider } from 'utils/rpc-provider'
+
 import type { TransactionBuilder } from './interface'
+import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
 export interface FlashMintLeveragedAerodromBuildRequest {
   chainId: number
@@ -91,21 +91,6 @@ export class LeveragedAerodromeBuilder
     }
   }
 
-  private isValidSwapData(swapData: SwapDataV3): boolean {
-    if (swapData.exchange === Exchange.None) {
-      if (swapData.pool.length !== 42) return false
-      return true
-    }
-    if (
-      swapData.exchange === Exchange.UniV3 &&
-      swapData.fees.length !== swapData.path.length - 1
-    )
-      return false
-    if (swapData.path.length === 0) return false
-    if (swapData.pool.length !== 42) return false
-    return true
-  }
-
   private isValidRequest(
     request: FlashMintLeveragedAerodromBuildRequest,
   ): boolean {
@@ -125,8 +110,8 @@ export class LeveragedAerodromeBuilder
     if (isEmptyString(outputTokenSymbol)) return false
     if (isInvalidAmount(inputTokenAmount)) return false
     if (isInvalidAmount(outputTokenAmount)) return false
-    if (!this.isValidSwapData(swapDataDebtCollateral)) return false
-    if (!this.isValidSwapData(swapDataInputOutputToken)) return false
+    if (!isValidSwapData(swapDataDebtCollateral)) return false
+    if (!isValidSwapData(swapDataInputOutputToken)) return false
     return true
   }
 }
