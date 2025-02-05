@@ -3,18 +3,10 @@ import { getFlashMintNavContract } from '../../utils/contracts'
 import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { BigNumber } from '@ethersproject/bignumber'
 import type { SwapDataV3 } from 'utils/swap-data'
-import type { TransactionBuilder } from './interface'
+import type { BuildRequest, TransactionBuilder } from './interface'
 
-export interface FlashMintNavBuildRequest {
-  isMinting: boolean
-  inputToken: string
-  inputTokenSymbol: string
-  outputToken: string
-  outputTokenSymbol: string
-  inputTokenAmount: BigNumber
-  outputTokenAmount: BigNumber
+export interface FlashMintNavBuildRequest extends BuildRequest {
   reserveAssetSwapData: SwapDataV3
 }
 

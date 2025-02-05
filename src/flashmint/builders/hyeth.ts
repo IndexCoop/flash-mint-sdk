@@ -1,21 +1,13 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { BigNumber } from '@ethersproject/bignumber'
 
 import { getFlashMintHyEthContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
 import type { SwapData } from 'utils/swap-data'
-import type { TransactionBuilder } from './interface'
+import type { BuildRequest, TransactionBuilder } from './interface'
 
-export interface FlashMintHyEthBuildRequest {
-  isMinting: boolean
-  inputToken: string
-  inputTokenSymbol: string
-  outputToken: string
-  outputTokenSymbol: string
-  inputTokenAmount: BigNumber
-  outputTokenAmount: BigNumber
+export interface FlashMintHyEthBuildRequest extends BuildRequest {
   componentsSwapData: SwapData[]
   swapDataInputTokenToEth: SwapData | null
   swapDataEthToInputOutputToken: SwapData | null

@@ -1,22 +1,14 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { BigNumber } from '@ethersproject/bignumber'
 
 import type { SwapDataV3 } from 'utils'
 import { getIndexFlashMintLeveragedAerodromeContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import type { TransactionBuilder } from './interface'
+import type { BuildRequest, TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
-export interface FlashMintLeveragedAerodromBuildRequest {
+export interface FlashMintLeveragedAerodromBuildRequest extends BuildRequest {
   chainId: number
-  isMinting: boolean
-  inputToken: string
-  outputToken: string
-  inputTokenSymbol: string
-  outputTokenSymbol: string
-  inputTokenAmount: BigNumber
-  outputTokenAmount: BigNumber
   swapDataDebtCollateral: SwapDataV3
   swapDataInputOutputToken: SwapDataV3
 }
