@@ -101,24 +101,19 @@ export class FlashMintHyEthTransactionBuilder
 
   private isValidRequest(request: FlashMintHyEthBuildRequest): boolean {
     const {
-      componentsSwapData,
-      inputToken,
-      inputTokenAmount,
       inputTokenSymbol,
       isMinting,
-      outputToken,
-      outputTokenAmount,
       outputTokenSymbol,
       swapDataEthToInputOutputToken,
       swapDataInputTokenToEth,
     } = request
-    if (isEmptyString(inputToken)) return false
-    if (isEmptyString(inputTokenSymbol)) return false
-    if (isEmptyString(outputToken)) return false
+    if (isEmptyString(request.inputToken)) return false
+    if (isEmptyString(request.inputTokenSymbol)) return false
+    if (isEmptyString(request.outputToken)) return false
     if (isEmptyString(outputTokenSymbol)) return false
-    if (isInvalidAmount(inputTokenAmount)) return false
-    if (isInvalidAmount(outputTokenAmount)) return false
-    if (componentsSwapData.length === 0) return false
+    if (isInvalidAmount(request.inputTokenAmount)) return false
+    if (isInvalidAmount(request.outputTokenAmount)) return false
+    if (request.componentsSwapData.length === 0) return false
     if (
       isMinting &&
       inputTokenSymbol !== 'ETH' &&

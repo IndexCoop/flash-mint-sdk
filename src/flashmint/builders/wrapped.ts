@@ -91,18 +91,11 @@ export class WrappedTransactionBuilder
   }
 
   private isValidRequest(request: FlashMintWrappedBuildRequest): boolean {
-    const {
-      componentSwapData,
-      componentWrapData,
-      indexToken,
-      indexTokenAmount,
-      inputOutputToken,
-      inputOutputTokenAmount,
-    } = request
-    if (isEmptyString(indexToken)) return false
-    if (isEmptyString(inputOutputToken)) return false
-    if (isInvalidAmount(indexTokenAmount)) return false
-    if (isInvalidAmount(inputOutputTokenAmount)) return false
+    if (isEmptyString(request.indexToken)) return false
+    if (isEmptyString(request.inputOutputToken)) return false
+    if (isInvalidAmount(request.indexTokenAmount)) return false
+    if (isInvalidAmount(request.inputOutputTokenAmount)) return false
+    const { componentSwapData, componentWrapData } = request
     if (componentSwapData.length === 0) return false
     if (componentWrapData.length === 0) return false
     if (componentSwapData.length !== componentWrapData.length) return false

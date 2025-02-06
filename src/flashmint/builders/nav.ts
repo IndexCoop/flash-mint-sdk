@@ -72,22 +72,13 @@ export class FlashMintNavTransactionBuilder
   }
 
   private isValidRequest(request: FlashMintNavBuildRequest): boolean {
-    const {
-      inputToken,
-      inputTokenSymbol,
-      outputToken,
-      outputTokenSymbol,
-      inputTokenAmount,
-      outputTokenAmount,
-      reserveAssetSwapData,
-    } = request
-    if (isEmptyString(inputToken)) return false
-    if (isEmptyString(outputToken)) return false
-    if (isEmptyString(inputTokenSymbol)) return false
-    if (isEmptyString(outputTokenSymbol)) return false
-    if (isInvalidAmount(inputTokenAmount)) return false
-    if (isInvalidAmount(outputTokenAmount)) return false
-    if (!isValidSwapData(reserveAssetSwapData)) return false
+    if (isEmptyString(request.inputToken)) return false
+    if (isEmptyString(request.outputToken)) return false
+    if (isEmptyString(request.inputTokenSymbol)) return false
+    if (isEmptyString(request.outputTokenSymbol)) return false
+    if (isInvalidAmount(request.inputTokenAmount)) return false
+    if (isInvalidAmount(request.outputTokenAmount)) return false
+    if (!isValidSwapData(request.reserveAssetSwapData)) return false
     return true
   }
 }

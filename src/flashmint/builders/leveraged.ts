@@ -92,20 +92,12 @@ export class LeveragedTransactionBuilder
   }
 
   private isValidRequest(request: FlashMintLeveragedBuildRequest): boolean {
-    const {
-      indexToken,
-      indexTokenAmount,
-      inputOutputToken,
-      inputOutputTokenAmount,
-      swapDataDebtCollateral,
-      swapDataPaymentToken,
-    } = request
-    if (isEmptyString(indexToken)) return false
-    if (isEmptyString(inputOutputToken)) return false
-    if (isInvalidAmount(indexTokenAmount)) return false
-    if (isInvalidAmount(inputOutputTokenAmount)) return false
-    if (!isValidSwapData(swapDataDebtCollateral)) return false
-    if (!isValidSwapData(swapDataPaymentToken)) return false
+    if (isEmptyString(request.indexToken)) return false
+    if (isEmptyString(request.inputOutputToken)) return false
+    if (isInvalidAmount(request.indexTokenAmount)) return false
+    if (isInvalidAmount(request.inputOutputTokenAmount)) return false
+    if (!isValidSwapData(request.swapDataDebtCollateral)) return false
+    if (!isValidSwapData(request.swapDataPaymentToken)) return false
     return true
   }
 }
