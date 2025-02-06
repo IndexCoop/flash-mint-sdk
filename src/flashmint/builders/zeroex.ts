@@ -95,18 +95,11 @@ export class ZeroExTransactionBuilder
   }
 
   private isValidRequest(request: FlashMintZeroExBuildRequest): boolean {
-    const {
-      componentQuotes,
-      indexToken,
-      indexTokenAmount,
-      inputOutputToken,
-      inputOutputTokenAmount,
-    } = request
-    if (isEmptyString(indexToken)) return false
-    if (isEmptyString(inputOutputToken)) return false
-    if (isInvalidAmount(indexTokenAmount)) return false
-    if (isInvalidAmount(inputOutputTokenAmount)) return false
-    if (componentQuotes.length === 0) return false
+    if (isEmptyString(request.indexToken)) return false
+    if (isEmptyString(request.inputOutputToken)) return false
+    if (isInvalidAmount(request.indexTokenAmount)) return false
+    if (isInvalidAmount(request.inputOutputTokenAmount)) return false
+    if (request.componentQuotes.length === 0) return false
     return true
   }
 }
