@@ -4,6 +4,7 @@ import type {
   SwapQuoteRequest,
 } from 'quote/swap/interfaces'
 import { getClientV2 } from './client'
+import { convertTo0xSlippage } from './utils'
 
 export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
   constructor(readonly apiKey: string) {}
@@ -27,8 +28,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
       sellToken: request.inputToken,
       sellAmount: request.inputAmount!,
       taker: request.address!,
-      // TODO:
-      // slippageBps: request.slippage.toString(),
+      slippageBps: convertTo0xSlippage(request.slippage ?? 0.5).toString(),
     }).toString()
   }
 }
