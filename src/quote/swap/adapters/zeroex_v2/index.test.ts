@@ -13,6 +13,7 @@ describe('ZeroExApi', () => {
       inputToken: USDC,
       outputToken: ETH,
       inputAmount: '100000000',
+      slippage: 0.1,
     }
     const quoteProvider = new ZeroExV2SwapQuoteProvider(
       process.env.ZEROEX_API_KEY!,

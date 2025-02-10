@@ -28,6 +28,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
       sellToken: request.inputToken,
       sellAmount: request.inputAmount!,
       taker: request.address!,
+      // optional
       slippageBps: convertTo0xSlippage(request.slippage ?? 0.5).toString(),
     }).toString()
   }
