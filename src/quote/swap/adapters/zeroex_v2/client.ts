@@ -1,27 +1,9 @@
 import axios from 'axios'
 
-interface ZeroExApiV2SwapResponse {
-  blockNumber: string
-  buyAmount: string
-  buyToken: string
-  // fees
-  gas: string | null
-  gasPrice: string
-  // issues
-  liquidityAvailable: boolean
-  minBuyAmount: string
-  // route
-  sellAmount: string
-  sellToken: string
-  // tokenMetadata
-  totalNetworkFee: string | null
-  zid: string
-}
-
-interface ZeroExApiV2SwapResponseNoLiquidity {
-  liquidityAvailable: boolean
-  zid: string
-}
+import type {
+  ZeroExApiV2SwapResponse,
+  ZeroExApiV2SwapResponseNoLiquidity,
+} from './types'
 
 export async function getClientV2(path: string, apiKey: string) {
   const config = {
