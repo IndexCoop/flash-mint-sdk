@@ -1,6 +1,22 @@
-import { decodeFunctionData, parseAbi } from 'viem'
+import { SettlerActionsABI } from 'quote/swap/adapters/zeroex_v2/abis/SettlerActions'
+import { SignatureTransferABI } from 'quote/swap/adapters/zeroex_v2/abis/SignatureTransfer'
+import { type Hex, decodeFunctionData, parseAbi } from 'viem'
 
-import type { Hex } from 'viem'
+export const IEIP712_ABI = [
+  {
+    inputs: [],
+    name: 'DOMAIN_SEPARATOR',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
 
 export function decode(callData: string) {
   const { functionName, args } = decodeFunctionData({
@@ -11,5 +27,9 @@ export function decode(callData: string) {
   })
   console.log(functionName, args)
   const [operator, token, amount, target, transformations] = args
-  console.log(transformations)
+  const data = decodeFunctionData({
+    abi: SettlerActionsABI,
+    data: transformations as Hex,
+  })
+  console.log(data)
 }
