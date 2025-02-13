@@ -24,6 +24,13 @@ export interface ZeroExApiV2SwapResponse {
   sellToken: string
   // tokenMetadata
   totalNetworkFee: string | null
+  transaction: {
+    to: string
+    data: string
+    gas: string
+    gasPrice: string
+    value: string
+  }
   zid: string
 }
 
