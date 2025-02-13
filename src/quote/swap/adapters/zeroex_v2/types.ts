@@ -14,7 +14,7 @@ export interface ZeroExApiV2SwapResponse {
       to: string
       source: string
       proportionBps: string
-    }
+    }[]
     tokens: {
       address: string
       symbol: string
