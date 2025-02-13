@@ -4,13 +4,15 @@ import type {
   SwapQuoteRequest,
 } from 'quote/swap/interfaces'
 import { getClientV2 } from './client'
+import { decode } from './decode'
+import { decodeActions } from './decode-actions'
 import {
   ZeroExV2SwapQuoteProviderError,
   ZeroExV2SwapQuoteProviderErrorType,
 } from './errors'
 import { convertTo0xSlippage, isZeroExApiV2SwapResponse } from './utils'
 
-import { decode } from './decode'
+import type { Hex } from 'viem'
 import type { ZeroExApiV2SwapResponse } from './types'
 
 export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
@@ -33,7 +35,13 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
 
     const swapResponse: ZeroExApiV2SwapResponse = res
     console.log(swapResponse.transaction)
-    const data = decode(swapResponse.transaction.data)
+    const source = swapResponse.route.fills[0].source
+    console.log('///////////')
+    console.log('///////////FILLS')
+    console.log(swapResponse.route.fills)
+    const actions = decode(swapResponse.transaction.data as Hex)
+    const swapData = decodeActions(actions as Hex[], source)
+    console.log(source, swapData)
     return null
   }
 
@@ -46,7 +54,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
       taker: request.address!,
       // optional
       slippageBps: convertTo0xSlippage(request.slippage ?? 0.5).toString(),
-      excludedSources: 'Uniswap_V4',
+      excludedSources: '0x_RFQ,PancakeSwap_V2,Uniswap_V4',
     }).toString()
   }
 }
