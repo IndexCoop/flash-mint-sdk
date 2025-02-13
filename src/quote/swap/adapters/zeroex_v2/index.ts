@@ -10,6 +10,7 @@ import {
 } from './errors'
 import { convertTo0xSlippage, isZeroExApiV2SwapResponse } from './utils'
 
+import { decode } from './decode'
 import type { ZeroExApiV2SwapResponse } from './types'
 
 export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
@@ -31,7 +32,8 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
     }
 
     const swapResponse: ZeroExApiV2SwapResponse = res
-    console.log(swapResponse.route)
+    console.log(swapResponse.transaction)
+    const data = decode(swapResponse.transaction.data)
     return null
   }
 
@@ -44,6 +46,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
       taker: request.address!,
       // optional
       slippageBps: convertTo0xSlippage(request.slippage ?? 0.5).toString(),
+      excludedSources: 'Uniswap_V4',
     }).toString()
   }
 }

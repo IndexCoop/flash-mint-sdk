@@ -12,7 +12,7 @@ describe('ZeroExApi', () => {
     quoteProvider = new ZeroExV2SwapQuoteProvider(process.env.ZEROEX_API_KEY!)
   })
 
-  test('building a url', async () => {
+  test.only('building a url', async () => {
     const request = {
       address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: 1,
