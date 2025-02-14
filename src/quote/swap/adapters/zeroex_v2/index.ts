@@ -12,6 +12,7 @@ import {
 } from './errors'
 import {
   convertTo0xSlippage,
+  getExchangeFrom0xSource,
   getExcludedSources,
   isZeroExApiV2SwapResponse,
 } from './utils'
@@ -23,6 +24,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
   constructor(readonly apiKey: string) {}
 
   async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
+    const { chainId, inputToken, outputToken, slippage } = request
     const path = this.getPath(request)
     const res = await getClientV2(path, this.apiKey)
     console.log(res)
@@ -44,9 +46,25 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
     console.log('///////////FILLS')
     console.log(swapResponse.route.fills)
     const actions = decode(swapResponse.transaction.data as Hex)
-    const swapData = decodeActions(actions as Hex[], source)
-    console.log(source, swapData)
-    return null
+    const decodedActions = decodeActions(actions as Hex[], source)
+    console.log(source, decodeActions)
+    return {
+      chainId,
+      inputToken,
+      outputToken,
+      callData: swapResponse.transaction.data,
+      inputAmount: swapResponse.sellAmount,
+      outputAmount: swapResponse.buyAmount,
+      // TODO: force slippage?
+      slippage: slippage ?? 0,
+      swapData: {
+        exchange: getExchangeFrom0xSource(source)!,
+        // TODO:
+        path: [],
+        fees: [],
+        pool: '',
+      },
+    }
   }
 
   getPath(request: SwapQuoteRequest): string {

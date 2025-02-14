@@ -18,9 +18,9 @@ export function isZeroExApiV2SwapResponse(
   return res && typeof res.buyAmount === 'string' && 'liquidityAvailable' in res
 }
 
-export function getEchangeFrom0xKey(key: string | undefined): Exchange | null {
-  switch (key) {
-    case 'Aerodrome':
+export function getExchangeFrom0xSource(source: string): Exchange | null {
+  switch (source) {
+    case 'Aerodrome_V3':
       return Exchange.Aerodrome
     case 'Balancer_V2':
       return Exchange.BalancerV2
