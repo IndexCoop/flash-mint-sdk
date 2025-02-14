@@ -10,7 +10,11 @@ import {
   ZeroExV2SwapQuoteProviderError,
   ZeroExV2SwapQuoteProviderErrorType,
 } from './errors'
-import { convertTo0xSlippage, isZeroExApiV2SwapResponse } from './utils'
+import {
+  convertTo0xSlippage,
+  getExcludedSources,
+  isZeroExApiV2SwapResponse,
+} from './utils'
 
 import type { Hex } from 'viem'
 import type { ZeroExApiV2SwapResponse } from './types'
@@ -54,7 +58,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
       taker: request.address!,
       // optional
       slippageBps: convertTo0xSlippage(request.slippage ?? 0.5).toString(),
-      excludedSources: '0x_RFQ,PancakeSwap_V2,Uniswap_V4',
+      excludedSources: getExcludedSources(request.chainId),
     }).toString()
   }
 }
