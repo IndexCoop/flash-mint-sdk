@@ -46,8 +46,8 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
     console.log('///////////FILLS')
     console.log(swapResponse.route.fills)
     const actions = decode(swapResponse.transaction.data as Hex)
-    const decodedActions = decodeActions(actions as Hex[], source)
-    console.log(source, decodeActions)
+    const swapData = decodeActions(actions as Hex[], source)
+    console.log(source, swapData)
     return {
       chainId,
       inputToken,

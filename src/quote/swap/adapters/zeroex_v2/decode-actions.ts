@@ -1,13 +1,20 @@
 import { decodeFunctionData } from 'viem'
 
 import { SettlerActionsABI } from './abis/SettlerActions'
-import { getEchangeFrom0xKey } from './utils'
+import { getExchangeFrom0xSource } from './utils'
 
-import type { SwapDataV3 } from 'utils'
+import { type SwapDataV3, decodePool } from 'utils'
 import type { Hex } from 'viem'
+
+enum SettlerAction {
+  AerodromeV3 = 'AERODROMEV3',
+  UniswapV3 = 'UNISWAPV3',
+}
 
 function getMappedSource(source: string) {
   switch (source) {
+    case 'Aerodrome_V3':
+      return 'AERODROMEV3'
     case 'Uniswap_V3':
       return 'UNISWAPV3'
     case 'Uniswap_V2':
@@ -31,6 +38,7 @@ function getMappedSource(source: string) {
   }
 }
 
+// TODO: add input/output token?
 export function decodeActions(
   actions: Hex[],
   source: string,
@@ -41,26 +49,30 @@ export function decodeActions(
       data: action,
     }),
   )
-  let swapData: SwapDataV3 | null = null
+  console.log(actionsData)
+  let fees: number[] = []
+  let path: string[] = []
+  // TODO: probably doesn't work with multi paths
   for (const action of actionsData) {
-    console.log(action)
-    const mappedFunctionName = getMappedSource(action.functionName)
-    if (action.functionName === 'UNISWAPV3') {
+    const mappedFunctionName = getMappedSource(source)
+    console.log(
+      action.functionName,
+      action.functionName === SettlerAction.UniswapV3,
+    )
+    // TODO: is returned as uniswapv3, so this will not work
+    // if (action.functionName === SettlerAction.AerodromeV3) {
+    if (action.functionName === SettlerAction.UniswapV3) {
       // function UNISWAPV3(address recipient, uint256 bps, bytes memory path, uint256 amountOutMin) external;
-      const [recipient, bps, path] = action.args
-      const exchange = getEchangeFrom0xKey(source)
-      if (!exchange) {
-        throw new Error('Invalid exchange')
-      }
-      swapData = {
-        exchange,
-        // TODO:
-        path: [],
-        fees: [Number((bps / BigInt(100)).toString())],
-        pool: '',
-        poolIds: [],
-      }
+      const [recipient, bps, uniPath] = action.args
+      fees = [Number((bps / BigInt(100)).toString())]
+      path = decodePool(uniPath).tokens
     }
   }
-  return swapData
+  return {
+    exchange: getExchangeFrom0xSource(source)!,
+    path,
+    fees,
+    pool: '',
+    poolIds: [],
+  }
 }
