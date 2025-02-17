@@ -7,7 +7,6 @@ function decodeAllowanceCallData(callData: Hex) {
     ]),
     data: callData,
   })
-  console.log(functionName, args)
   const [operator, token, amount, target, calldata] = args
   return {
     operator,
@@ -25,7 +24,6 @@ function decodeSettlerCallData(callData: Hex) {
     ]),
     data: callData,
   })
-  console.log(data)
   const [components, actions, bytes] = data.args
   return {
     components,

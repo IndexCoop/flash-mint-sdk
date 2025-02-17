@@ -1,10 +1,11 @@
-import { isAddressEqual } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { decodeFunctionData } from 'viem'
 
+import { EthAddress } from 'constants/addresses'
 import { SettlerActionsABI } from './abis/SettlerActions'
 import { getExchangeFrom0xSource } from './utils'
 
-import { type SwapDataV3, decodePool } from 'utils'
+import type { SwapDataV3 } from 'utils'
 import type { Hex } from 'viem'
 
 enum SettlerAction {
@@ -12,36 +13,64 @@ enum SettlerAction {
   UniswapV3 = 'UNISWAPV3',
 }
 
-function getMappedSource(source: string) {
-  switch (source) {
-    case 'Aerodrome_V3':
-      return 'AERODROMEV3'
-    case 'Uniswap_V3':
-      return 'UNISWAPV3'
-    case 'Uniswap_V2':
-      return 'UNISWAPV2'
-    case 'Sushiswap':
-      return 'SUSHISWAP'
-    case 'Balancer':
-      return 'BALANCER'
-    case 'Curve':
-      return 'CURVE'
-    case 'Kyber':
-      return 'KYBER'
-    case 'LiquidityProvider':
-      return 'LIQUIDITYPROVIDER'
-    case 'Mooniswap':
-      return 'MOONISWAP'
-    case 'MultiHop':
-      return 'MULTIHOP'
-    default:
-      return source
-  }
+// TBD if this is needed
+// function getMappedSource(source: string) {
+//   switch (source) {
+//     case 'Aerodrome_V3':
+//       return 'AERODROMEV3'
+//     case 'Uniswap_V3':
+//       return 'UNISWAPV3'
+//     case 'Uniswap_V2':
+//       return 'UNISWAPV2'
+//     case 'Sushiswap':
+//       return 'SUSHISWAP'
+//     case 'Balancer':
+//       return 'BALANCER'
+//     case 'Curve':
+//       return 'CURVE'
+//     case 'Kyber':
+//       return 'KYBER'
+//     case 'LiquidityProvider':
+//       return 'LIQUIDITYPROVIDER'
+//     case 'Mooniswap':
+//       return 'MOONISWAP'
+//     case 'MultiHop':
+//       return 'MULTIHOP'
+//     default:
+//       return source
+//   }
+// }
+
+function decodeUniPath(path: string): string[] {
+  const addressSize = 40
+  const tokenA = path.slice(0, addressSize + 2) // incl 0x
+  const tokenB = `0x${path.slice(path.length - addressSize, path.length)}`
+  return [tokenA, tokenB]
+}
+
+function isValidPath(
+  path: string[],
+  chainId: number,
+  inputToken: string,
+  outputToken: string,
+): boolean {
+  if (path.length < 2) return false
+  const weth = getTokenByChainAndSymbol(chainId, 'WETH')!.address
+  const inputTokenAddress = isAddressEqual(inputToken, EthAddress)
+    ? weth
+    : inputToken
+  if (!isAddressEqual(path[0], inputTokenAddress)) return false
+  const outputTokenAddress = isAddressEqual(outputToken, EthAddress)
+    ? weth
+    : outputToken
+  if (!isAddressEqual(path[path.length - 1], outputTokenAddress)) return false
+  return true
 }
 
 export function decodeActions(
   actions: Hex[],
   source: string,
+  chainId: number,
   inputToken: string,
   outputToken: string,
 ): SwapDataV3 | null {
@@ -51,31 +80,21 @@ export function decodeActions(
       data: action,
     }),
   )
-  console.log(actionsData)
-  let fees: number[] = []
+
+  const fees: number[] = []
   let path: string[] = []
-  // TODO: probably doesn't work with multi paths
   for (const action of actionsData) {
-    const mappedFunctionName = getMappedSource(source)
-    console.log(
-      action.functionName,
-      action.functionName === SettlerAction.UniswapV3,
-    )
-    // TODO: is returned as uniswapv3, so this will not work
-    // if (action.functionName === SettlerAction.AerodromeV3) {
+    // Aerodome is returned as `UNISWAPV3` fork, so checking for the action would
+    // not work: `if (action.functionName === SettlerAction.AerodromeV3)`
     if (action.functionName === SettlerAction.UniswapV3) {
-      // function UNISWAPV3(address recipient, uint256 bps, bytes memory path, uint256 amountOutMin) external;
-      const [recipient, bps, uniPath] = action.args
-      fees = [Number((bps / BigInt(100)).toString())]
-      path = decodePool(uniPath).tokens
+      // function UNISWAPV3(address recipient, uint256 bps, bytes memory path, uint256 amountOutMin) external
+      const [, bps, uniPath] = action.args
+      fees.push(Number((bps / BigInt(100)).toString()))
+      path = decodeUniPath(uniPath)
     }
   }
 
-  if (
-    path.length < 2 ||
-    !isAddressEqual(path[0], inputToken) ||
-    !isAddressEqual(path[path.length - 1], outputToken)
-  ) {
+  if (!isValidPath(path, chainId, inputToken, outputToken)) {
     console.error('Invalid path')
     return null
   }

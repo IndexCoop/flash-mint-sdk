@@ -4,6 +4,8 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
+import { Exchange } from 'utils'
+
 import type { SwapQuote } from 'quote/swap/interfaces'
 
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -33,6 +35,8 @@ describe('ZeroExApi', () => {
     expect(quote.outputToken).toBe(request.outputToken)
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
+    expect(quote.swapData).not.toBeNull()
+    expect(quote.swapData?.exchange).toBe(Exchange.UniV3)
   })
 
   test('should return quotes for base', async () => {
@@ -41,7 +45,7 @@ describe('ZeroExApi', () => {
       chainId: base.id,
       inputToken: getTokenByChainAndSymbol(base.id, 'USDC').address,
       outputToken: ETH,
-      inputAmount: '100000000',
+      inputAmount: '10000000000',
       slippage: 0.1,
     }
     const res = await quoteProvider.getSwapQuote(request)
@@ -52,6 +56,8 @@ describe('ZeroExApi', () => {
     expect(quote.outputToken).toBe(request.outputToken)
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
+    expect(quote.swapData).not.toBeNull()
+    expect(quote.swapData?.exchange).toBe(Exchange.Aerodrome)
   })
 
   test('should return quotes for base (cbBTC)', async () => {
@@ -60,11 +66,10 @@ describe('ZeroExApi', () => {
       chainId: base.id,
       inputToken: getTokenByChainAndSymbol(base.id, 'USDC').address,
       outputToken: getTokenByChainAndSymbol(base.id, 'cbBTC').address,
-      inputAmount: '10000000',
-      slippage: 0.1,
+      inputAmount: '10000000000',
+      slippage: 0.5,
     }
     const res = await quoteProvider.getSwapQuote(request)
-    console.log(res)
     expect(res).not.toBeNull()
     const quote = res as SwapQuote
     expect(quote.chainId).toBe(request.chainId)
@@ -72,6 +77,8 @@ describe('ZeroExApi', () => {
     expect(quote.outputToken).toBe(request.outputToken)
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
+    expect(quote.swapData).not.toBeNull()
+    expect(quote.swapData?.exchange).toBe(Exchange.Aerodrome)
   })
 
   test('should handle no liquidity available', async () => {

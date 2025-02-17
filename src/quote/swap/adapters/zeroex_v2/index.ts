@@ -26,7 +26,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
     const { chainId, inputToken, outputToken, slippage } = request
     const path = this.getPath(request)
     const res = await getClientV2(path, this.apiKey)
-    console.log(res)
+
     if (!res.liquidityAvailable) {
       throw new ZeroExV2SwapQuoteProviderError(
         ZeroExV2SwapQuoteProviderErrorType.insufficientLiquidity,
@@ -40,17 +40,15 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
 
     const swapResponse: ZeroExApiV2SwapResponse = res
     const source = swapResponse.route.fills[0].source
-    console.log('///////////')
-    console.log('///////////FILLS')
-    console.log(swapResponse.route.fills)
     const actions = decode(swapResponse.transaction.data as Hex)
     const swapData = decodeActions(
       actions as Hex[],
       source,
+      chainId,
       inputToken,
       outputToken,
     )
-    console.log(source, swapData)
+
     return {
       chainId,
       inputToken,
