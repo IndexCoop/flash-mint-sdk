@@ -2,10 +2,36 @@ export interface ZeroExApiV2SwapResponse {
   blockNumber: string
   buyAmount: string
   buyToken: string
-  // fees
-  gas: string | null
-  gasPrice: string
-  // issues
+  fees: {
+    integratorFee: {
+      amount: string
+      token: string
+      type: string
+    } | null
+    zeroExFee: {
+      amount: string
+      token: string
+      type: string
+    } | null
+    gasFee: {
+      amount: string
+      token: string
+      type: string
+    } | null
+  }
+  issues: {
+    allowance: {
+      actual: string
+      spender: string
+    } | null
+    balance: {
+      token: string
+      actual: string
+      epxected: string
+    } | null
+    simulationIncomplete: boolean
+    invalidSourcesPassed: string[]
+  }
   liquidityAvailable: boolean
   minBuyAmount: string
   route: {
@@ -22,7 +48,16 @@ export interface ZeroExApiV2SwapResponse {
   }
   sellAmount: string
   sellToken: string
-  // tokenMetadata
+  tokenMetadata: {
+    buyToken: {
+      buyTaxBps: string | null
+      sellTaxBps: string | null
+    }
+    sellToken: {
+      buyTaxBps: string | null
+      sellTaxBps: string | null
+    }
+  }
   totalNetworkFee: string | null
   transaction: {
     to: string
