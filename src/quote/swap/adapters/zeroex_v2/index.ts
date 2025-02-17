@@ -1,8 +1,3 @@
-import type {
-  SwapQuote,
-  SwapQuoteProvider,
-  SwapQuoteRequest,
-} from 'quote/swap/interfaces'
 import { getClientV2 } from './client'
 import { decode } from './decode'
 import { decodeActions } from './decode-actions'
@@ -17,13 +12,18 @@ import {
   isZeroExApiV2SwapResponse,
 } from './utils'
 
+import type {
+  SwapQuoteProviderV2,
+  SwapQuoteRequestV2,
+  SwapQuoteV2,
+} from 'quote/swap/interfaces'
 import type { Hex } from 'viem'
 import type { ZeroExApiV2SwapResponse } from './types'
 
-export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
+export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
   constructor(readonly apiKey: string) {}
 
-  async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
+  async getSwapQuote(request: SwapQuoteRequestV2): Promise<SwapQuoteV2 | null> {
     const { chainId, inputToken, outputToken, slippage } = request
     const path = this.getPath(request)
     const res = await getClientV2(path, this.apiKey)
@@ -40,7 +40,6 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
     }
 
     const swapResponse: ZeroExApiV2SwapResponse = res
-    console.log(swapResponse.transaction)
     const source = swapResponse.route.fills[0].source
     console.log('///////////')
     console.log('///////////FILLS')
@@ -55,27 +54,26 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProvider {
       callData: swapResponse.transaction.data,
       inputAmount: swapResponse.sellAmount,
       outputAmount: swapResponse.buyAmount,
-      // TODO: force slippage?
-      slippage: slippage ?? 0,
+      slippage,
       swapData: {
         exchange: getExchangeFrom0xSource(source)!,
         // TODO:
         path: [],
         fees: [],
         pool: '',
+        poolIds: [],
       },
     }
   }
 
-  getPath(request: SwapQuoteRequest): string {
+  getPath(request: SwapQuoteRequestV2): string {
     return new URLSearchParams({
       chainId: request.chainId.toString(),
       buyToken: request.outputToken,
       sellToken: request.inputToken,
-      sellAmount: request.inputAmount!,
-      taker: request.address!,
-      // optional
-      slippageBps: convertTo0xSlippage(request.slippage ?? 0.5).toString(),
+      sellAmount: request.inputAmount,
+      taker: request.taker,
+      slippageBps: convertTo0xSlippage(request.slippage).toString(),
       excludedSources: getExcludedSources(request.chainId),
     }).toString()
   }
