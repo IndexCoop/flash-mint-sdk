@@ -3,7 +3,7 @@ import { decodeFunctionData } from 'viem'
 
 import { EthAddress } from 'constants/addresses'
 import { SettlerActionsABI } from './abis/SettlerActions'
-import { getExchangeFrom0xSource } from './utils'
+import { convertFrom0xFeesToUniPool, getExchangeFrom0xSource } from './utils'
 
 import type { SwapDataV3 } from 'utils'
 import type { Hex } from 'viem'
@@ -89,7 +89,7 @@ export function decodeActions(
     if (action.functionName === SettlerAction.UniswapV3) {
       // function UNISWAPV3(address recipient, uint256 bps, bytes memory path, uint256 amountOutMin) external
       const [, bps, uniPath] = action.args
-      fees.push(Number((bps / BigInt(100)).toString()))
+      fees.push(convertFrom0xFeesToUniPool(bps))
       path = decodeUniPath(uniPath)
     }
   }
