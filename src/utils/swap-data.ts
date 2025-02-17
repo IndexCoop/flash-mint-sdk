@@ -8,6 +8,7 @@ export enum Exchange {
   Curve = 4,
   BalancerV2 = 5,
   Aerodrome = 6,
+  AerodromeSlipstream = 7,
 }
 
 export interface SwapData {
@@ -23,4 +24,13 @@ export interface SwapDataV3 {
   fees: number[]
   pool: string
   poolIds: string[]
+}
+
+export interface SwapDataV4 {
+  exchange: Exchange
+  path: string[]
+  fees: number[]
+  pool: string
+  poolIds: string[]
+  tickSpacing: number[]
 }
