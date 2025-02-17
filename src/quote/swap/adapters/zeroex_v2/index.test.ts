@@ -18,7 +18,7 @@ describe('ZeroExApi', () => {
 
   test('should return quotes for mainnet', async () => {
     const request = {
-      address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: 1,
       inputToken: USDC,
       outputToken: ETH,
@@ -37,7 +37,7 @@ describe('ZeroExApi', () => {
 
   test.only('should return quotes for base', async () => {
     const request = {
-      address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: base.id,
       inputToken: getTokenByChainAndSymbol(base.id, 'USDC').address,
       outputToken: ETH,
@@ -56,7 +56,7 @@ describe('ZeroExApi', () => {
 
   test('should return quotes for base (cbBTC)', async () => {
     const request = {
-      address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: base.id,
       inputToken: getTokenByChainAndSymbol(base.id, 'USDC').address,
       outputToken: getTokenByChainAndSymbol(base.id, 'cbBTC').address,
@@ -76,7 +76,7 @@ describe('ZeroExApi', () => {
 
   test('should handle no liquidity available', async () => {
     const request = {
-      address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: 1,
       inputToken: ETH,
       outputToken: '0x1B5E16C5b20Fb5EE87C61fE9Afe735Cca3B21A65', // ic21
