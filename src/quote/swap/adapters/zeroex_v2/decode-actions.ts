@@ -1,3 +1,4 @@
+import { isAddressEqual } from '@indexcoop/tokenlists'
 import { decodeFunctionData } from 'viem'
 
 import { SettlerActionsABI } from './abis/SettlerActions'
@@ -38,10 +39,11 @@ function getMappedSource(source: string) {
   }
 }
 
-// TODO: add input/output token?
 export function decodeActions(
   actions: Hex[],
   source: string,
+  inputToken: string,
+  outputToken: string,
 ): SwapDataV3 | null {
   const actionsData = actions!.map((action: Hex) =>
     decodeFunctionData({
@@ -68,6 +70,16 @@ export function decodeActions(
       path = decodePool(uniPath).tokens
     }
   }
+
+  if (
+    path.length < 2 ||
+    !isAddressEqual(path[0], inputToken) ||
+    !isAddressEqual(path[path.length - 1], outputToken)
+  ) {
+    console.error('Invalid path')
+    return null
+  }
+
   return {
     exchange: getExchangeFrom0xSource(source)!,
     path,
