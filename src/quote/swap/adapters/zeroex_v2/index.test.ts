@@ -35,7 +35,7 @@ describe('ZeroExApi', () => {
     expect(quote.slippage).toBe(request.slippage)
   })
 
-  test.only('should return quotes for base', async () => {
+  test('should return quotes for base', async () => {
     const request = {
       taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId: base.id,
