@@ -3,7 +3,7 @@ import { decodeFunctionData } from 'viem'
 
 import { EthAddress } from 'constants/addresses'
 import { SettlerActionsABI } from './abis/SettlerActions'
-import { convertFrom0xFeesToUniPool, getExchangeFrom0xSource } from './utils'
+import { convertFrom0xFeesToUniPool, exchangeFrom0xSource } from './utils'
 
 import type { SwapDataV3 } from 'utils'
 import type { Hex } from 'viem'
@@ -100,7 +100,7 @@ export function decodeActions(
   }
 
   return {
-    exchange: getExchangeFrom0xSource(source)!,
+    exchange: exchangeFrom0xSource[source],
     path,
     fees,
     pool: '',

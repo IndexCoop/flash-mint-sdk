@@ -27,23 +27,13 @@ export function isZeroExApiV2SwapResponse(
   return res && typeof res.buyAmount === 'string' && 'liquidityAvailable' in res
 }
 
-export function getExchangeFrom0xSource(source: string): Exchange | null {
-  switch (source) {
-    case 'Aerodrome_V3':
-      return Exchange.Aerodrome
-    case 'Balancer_V2':
-      return Exchange.BalancerV2
-    case 'Curve':
-      return Exchange.Curve
-    case 'QuickSwap':
-      return Exchange.Quickswap
-    case 'SushiSwap':
-      return Exchange.Sushiswap
-    case 'Uniswap_V3':
-      return Exchange.UniV3
-    default:
-      return null
-  }
+export const exchangeFrom0xSource: { [key: string]: Exchange } = {
+  Aerodrome_V3: Exchange.Aerodrome,
+  Balancer_V2: Exchange.BalancerV2,
+  Curve: Exchange.Curve,
+  QuickSwap: Exchange.Quickswap,
+  SushiSwap: Exchange.Sushiswap,
+  Uniswap_V3: Exchange.UniV3,
 }
 
 // docs: https://0x.org/docs/api#tag/Sources
