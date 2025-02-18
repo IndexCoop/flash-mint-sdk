@@ -23,7 +23,8 @@ const FlashMintLeveragedAerodromeAddress =
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 
-describe('LeveragedAerodromeBuilder()', () => {
+// Skip until using again with other new products
+describe.skip('LeveragedAerodromeBuilder()', () => {
   const contractBase = getFlashMintLeveragedContractForToken(
     getTokenByChainAndSymbol(chainId, 'BTC3X').symbol,
     providerBase,
