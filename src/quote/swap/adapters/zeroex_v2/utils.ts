@@ -28,7 +28,8 @@ export function isZeroExApiV2SwapResponse(
 }
 
 export const exchangeFrom0xSource: { [key: string]: Exchange } = {
-  Aerodrome_V3: Exchange.Aerodrome,
+  Aerodrome_V2: Exchange.Aerodrome,
+  Aerodrome_V3: Exchange.AerodromeSlipstream,
   Balancer_V2: Exchange.BalancerV2,
   Curve: Exchange.Curve,
   QuickSwap: Exchange.Quickswap,
