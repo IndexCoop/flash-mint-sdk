@@ -9,6 +9,7 @@ import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
 import FLASHMINT_LEVERAGED_AERODROME_ABI from '../constants/abis/FlashMintLeveragedAerodrome.json'
 import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
+import FLASHMINT_LEVERAGED_MORPHO_AAVE_LM_ABI from '../constants/abis/FlashMintLeveragedMorphoAaveLM.json'
 import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
 import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
@@ -110,7 +111,23 @@ export const getIndexFlashMintLeveragedAerodromeContract = (
     signerOrProvider,
   )
 }
-
+/**
+ * Returns an instance of the Index FlashMintLeveragedMorphoAaveLM contract (Base)
+ *
+ * @param signerOrProvider a signer or provider
+ *
+ * @returns an instance of a FlashMintLeveraged contract
+ */
+export const getIndexFlashMintLeveragedMorphoAaveLMContract = (
+  signerOrProvider: Signer | Provider | undefined,
+): Contract => {
+  const contractAddress = Contracts[ChainId.Base].FlashMintLeveragedMorphoAaveLM
+  return new Contract(
+    contractAddress,
+    FLASHMINT_LEVERAGED_MORPHO_AAVE_LM_ABI,
+    signerOrProvider,
+  )
+}
 /**
  * Returns an instance of the Index FlashMintLeveragedExtended contract (Arbitrum + Base)
  *
@@ -187,7 +204,7 @@ export const getFlashMintLeveragedContractForToken = (
     switch (token) {
       case btc2x.symbol:
       case btc3x.symbol:
-        return getIndexFlashMintLeveragedAerodromeContract(signerOrProvider)
+        return getIndexFlashMintLeveragedMorphoAaveLMContract(signerOrProvider)
       case IndexCoopEthereum2xIndex.symbol:
       case IndexCoopEthereum3xIndex.symbol:
         return getIndexFlashMintLeveragedExtendedContract(

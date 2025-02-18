@@ -76,7 +76,7 @@ export function getContractType(
     switch (token) {
       case btc2x.symbol:
       case btc3x.symbol:
-        return FlashMintContractType.leveragedAerodrome
+        return FlashMintContractType.leveragedMorphoAaveLM
       case IndexCoopEthereum2xIndex.symbol:
       case IndexCoopEthereum3xIndex.symbol:
         return FlashMintContractType.leveragedExtended

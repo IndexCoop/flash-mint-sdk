@@ -37,9 +37,10 @@ export enum FlashMintContractType {
   leveraged = 1,
   leveragedAerodrome = 2,
   leveragedExtended = 3,
-  nav = 4,
-  wrapped = 5,
-  zeroEx = 6,
+  leveragedMorphoAaveLM = 4,
+  nav = 5,
+  wrapped = 6,
+  zeroEx = 7,
 }
 
 export interface FlashMintQuoteRequest {
