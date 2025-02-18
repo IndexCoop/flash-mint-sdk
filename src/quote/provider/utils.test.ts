@@ -123,7 +123,7 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'BTC2X').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedAerodrome)
+    expect(contractType).toBe(FlashMintContractType.leveragedMorphoAaveLM)
   })
 
   test('returns correct contract type for BTC3X (base)', async () => {
@@ -131,7 +131,7 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'BTC3X').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedAerodrome)
+    expect(contractType).toBe(FlashMintContractType.leveragedMorphoAaveLM)
   })
 
   test('returns correct contract type for ETH2X (mainnet)', async () => {
