@@ -1,6 +1,5 @@
-import type { Exchange, SwapData } from 'utils'
+import type { Exchange, SwapData, SwapDataV3 } from 'utils'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface SwapQuote {
   chainId: number
   inputToken: string
@@ -10,6 +9,17 @@ export interface SwapQuote {
   callData: string
   slippage: number
   swapData: SwapData | null
+}
+
+export interface SwapQuoteV2 {
+  chainId: number
+  inputToken: string
+  outputToken: string
+  inputAmount: string
+  outputAmount: string
+  slippage: number
+  callData: string
+  swapData: SwapDataV3 | null
 }
 
 export interface SwapQuoteRequest {
@@ -25,6 +35,21 @@ export interface SwapQuoteRequest {
   sources?: Exchange[]
 }
 
+export interface SwapQuoteRequestV2 {
+  chainId: number
+  inputToken: string
+  outputToken: string
+  inputAmount: string
+  slippage: number
+  taker: string
+  // Optional
+  sources?: Exchange[]
+}
+
 export interface SwapQuoteProvider {
   getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null>
+}
+
+export interface SwapQuoteProviderV2 {
+  getSwapQuote(request: SwapQuoteRequestV2): Promise<SwapQuoteV2 | null>
 }

@@ -1,21 +1,13 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { BigNumber } from '@ethersproject/bignumber'
 
 import { getFlashMintHyEthContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
-import { Exchange, type SwapData } from 'utils/swap-data'
+import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
-import type { TransactionBuilder } from './interface'
-import { isEmptyString, isInvalidAmount } from './utils'
+import type { SwapData } from 'utils/swap-data'
+import type { BuildRequest, TransactionBuilder } from './interface'
 
-export interface FlashMintHyEthBuildRequest {
-  isMinting: boolean
-  inputToken: string
-  inputTokenSymbol: string
-  outputToken: string
-  outputTokenSymbol: string
-  inputTokenAmount: BigNumber
-  outputTokenAmount: BigNumber
+export interface FlashMintHyEthBuildRequest extends BuildRequest {
   componentsSwapData: SwapData[]
   swapDataInputTokenToEth: SwapData | null
   swapDataEthToInputOutputToken: SwapData | null
@@ -107,52 +99,31 @@ export class FlashMintHyEthTransactionBuilder
     }
   }
 
-  private isValidSwapData(swapData: SwapData | null): boolean {
-    if (!swapData) return false
-    if (swapData.exchange === Exchange.None) {
-      if (swapData.pool.length !== 42) return false
-      return true
-    }
-    if (
-      swapData.exchange === Exchange.UniV3 &&
-      swapData.fees.length !== swapData.path.length - 1
-    )
-      return false
-    if (swapData.path.length === 0) return false
-    if (swapData.pool.length !== 42) return false
-    return true
-  }
-
   private isValidRequest(request: FlashMintHyEthBuildRequest): boolean {
     const {
-      componentsSwapData,
-      inputToken,
-      inputTokenAmount,
       inputTokenSymbol,
       isMinting,
-      outputToken,
-      outputTokenAmount,
       outputTokenSymbol,
       swapDataEthToInputOutputToken,
       swapDataInputTokenToEth,
     } = request
-    if (isEmptyString(inputToken)) return false
-    if (isEmptyString(inputTokenSymbol)) return false
-    if (isEmptyString(outputToken)) return false
+    if (isEmptyString(request.inputToken)) return false
+    if (isEmptyString(request.inputTokenSymbol)) return false
+    if (isEmptyString(request.outputToken)) return false
     if (isEmptyString(outputTokenSymbol)) return false
-    if (isInvalidAmount(inputTokenAmount)) return false
-    if (isInvalidAmount(outputTokenAmount)) return false
-    if (componentsSwapData.length === 0) return false
+    if (isInvalidAmount(request.inputTokenAmount)) return false
+    if (isInvalidAmount(request.outputTokenAmount)) return false
+    if (request.componentsSwapData.length === 0) return false
     if (
       isMinting &&
       inputTokenSymbol !== 'ETH' &&
-      !this.isValidSwapData(swapDataInputTokenToEth)
+      !isValidSwapData(swapDataInputTokenToEth)
     )
       return false
     if (
       ((isMinting && inputTokenSymbol !== 'ETH') ||
         (!isMinting && outputTokenSymbol !== 'ETH')) &&
-      !this.isValidSwapData(swapDataEthToInputOutputToken)
+      !isValidSwapData(swapDataEthToInputOutputToken)
     )
       return false
     return true
