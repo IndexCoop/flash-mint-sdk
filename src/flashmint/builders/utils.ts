@@ -1,7 +1,7 @@
 import { Exchange } from 'utils'
 
 import type { BigNumber } from '@ethersproject/bignumber'
-import type { SwapData, SwapDataV3 } from 'utils'
+import type { SwapData, SwapDataV3, SwapDataV4 } from 'utils'
 
 export function isEmptyString(data: string): boolean {
   return typeof data === 'string' && data.trim().length === 0
@@ -12,7 +12,7 @@ export function isInvalidAmount(amount: BigNumber): boolean {
 }
 
 export function isValidSwapData(
-  swapData: SwapData | SwapDataV3 | null,
+  swapData: SwapData | SwapDataV3 | SwapDataV4 | null,
 ): boolean {
   if (!swapData) return false
   if (swapData.exchange === Exchange.None) {
