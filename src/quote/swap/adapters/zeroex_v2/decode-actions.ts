@@ -81,6 +81,10 @@ export function decodeActions(
     }),
   )
 
+  const isMultiPath =
+    actionsData.map((action) => action.functionName === SettlerAction.UniswapV3)
+      .length > 1
+
   const fees: number[] = []
   let path: string[] = []
   for (const action of actionsData) {
@@ -90,7 +94,16 @@ export function decodeActions(
       // function UNISWAPV3(address recipient, uint256 bps, bytes memory path, uint256 amountOutMin) external
       const [, bps, uniPath] = action.args
       fees.push(convertFrom0xFeesToUniPool(bps))
-      path = decodeUniPath(uniPath)
+      if (isMultiPath) {
+        const decodedPath = decodeUniPath(uniPath)
+        if (path.length === 0) {
+          path = decodedPath
+        } else {
+          path.push(decodedPath[1])
+        }
+      } else {
+        path = decodeUniPath(uniPath)
+      }
     }
   }
 

@@ -57,7 +57,7 @@ describe('ZeroExApi', () => {
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(quote.swapData?.exchange).toBe(Exchange.Aerodrome)
+    expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
   })
 
   test('should return quotes for base (cbBTC)', async () => {
@@ -78,7 +78,7 @@ describe('ZeroExApi', () => {
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(quote.swapData?.exchange).toBe(Exchange.Aerodrome)
+    expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
   })
 
   test('should handle no liquidity available', async () => {
