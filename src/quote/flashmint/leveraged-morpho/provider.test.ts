@@ -21,7 +21,7 @@ const weth = getTokenByChainAndSymbol(chainId, 'WETH')
 const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 
 describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
-  test.only('returns quote for minting BTC2X - ETH', async () => {
+  test('returns quote for minting BTC2X - ETH', async () => {
     const request = {
       chainId,
       isMinting: true,
@@ -42,15 +42,19 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     expect(quote.outputAmount.toString()).toEqual(request.outputAmount)
     // Testing for individual params as changing quotes could affect the results
     const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
-    expect(swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(swapDataDebtCollateral.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
     expect(swapDataDebtCollateral.path).toEqual([usdc.address, cbBTC.address])
-    expect(swapDataInputOutputToken.exchange).not.toBe(Exchange.None)
+    expect(swapDataInputOutputToken.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataInputOutputToken.tickSpacing).toEqual([100])
     expect(swapDataInputOutputToken.path).toEqual([weth.address, cbBTC.address])
   })
 
-  test.only('returns quote for minting BTC2X - USDC (ERC20)', async () => {
+  test('returns quote for minting BTC2X - USDC (ERC20)', async () => {
     const indexTokenAmount = wei(1).toString()
     const request = {
       chainId,
@@ -72,21 +76,25 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     expect(quote.outputAmount.toString()).toEqual(indexTokenAmount)
     // Testing for individual params as changing quotes could affect the results
     const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
-    expect(swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(swapDataDebtCollateral.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
     expect(swapDataDebtCollateral.path).toEqual([usdc.address, cbBTC.address])
-    expect(swapDataInputOutputToken.exchange).not.toBe(Exchange.None)
+    expect(swapDataInputOutputToken.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataInputOutputToken.tickSpacing).toEqual([100])
     expect(swapDataInputOutputToken.path).toEqual([usdc.address, cbBTC.address])
   })
 
-  test('returns quote for redeeming BTC2X - ETH', async () => {
+  test.only('returns quote for redeeming BTC2X - ETH', async () => {
     const indexTokenAmount = wei(1).toString()
     const request = {
       chainId,
       isMinting: false,
       inputToken: getTokenByChainAndSymbol(chainId, 'BTC2X'),
-      outputToken: eth,
+      outputToken: weth,
       inputAmount: indexTokenAmount,
       outputAmount: wei(0.5).toString(), // not used for redeeming
       slippage: 0.5,
@@ -103,10 +111,14 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     expect(quote.inputAmount.toString()).toEqual(indexTokenAmount)
     expect(quote.outputAmount.gt(0)).toBe(true)
     // Testing for individual params as changing quotes could affect the results
-    expect(swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(swapDataDebtCollateral.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
     expect(swapDataDebtCollateral.path).toEqual([cbBTC.address, usdc.address])
-    expect(swapDataInputOutputToken.exchange).not.toBe(Exchange.None)
+    expect(swapDataInputOutputToken.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataInputOutputToken.tickSpacing).toEqual([100])
     expect(swapDataInputOutputToken.path).toEqual([cbBTC.address, weth.address])
   })
@@ -133,10 +145,14 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     expect(quote.inputAmount.toString()).toEqual(indexTokenAmount)
     expect(quote.outputAmount.gt(0)).toBe(true)
     // Testing for individual params as changing quotes could affect the results
-    expect(swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
+    expect(swapDataDebtCollateral.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
     expect(swapDataDebtCollateral.path).toEqual([cbBTC.address, usdc.address])
-    expect(swapDataInputOutputToken.exchange).not.toBe(Exchange.None)
+    expect(swapDataInputOutputToken.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
     expect(swapDataInputOutputToken.tickSpacing).toEqual([100])
     expect(swapDataInputOutputToken.path).toEqual([cbBTC.address, usdc.address])
   })
