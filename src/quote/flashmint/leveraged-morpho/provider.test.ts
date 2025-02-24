@@ -48,6 +48,7 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
     expect(swapDataDebtCollateral.path).toEqual([usdc.address, cbBTC.address])
     expect(swapDataInputOutputToken.exchange).toEqual(Exchange.None)
+    expect(swapDataInputOutputToken.path).toEqual([])
     expect(swapDataInputOutputToken.tickSpacing).toEqual([])
   })
 
