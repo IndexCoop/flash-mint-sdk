@@ -21,6 +21,36 @@ const weth = getTokenByChainAndSymbol(chainId, 'WETH')
 const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 
 describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
+  test('returns quote for minting BTC2X - cbBTC', async () => {
+    const request = {
+      chainId,
+      isMinting: true,
+      inputToken: cbBTC,
+      outputToken: btc2x,
+      inputAmount: wei(0.015, 8).toString(),
+      outputAmount: wei(1).toString(),
+      slippage: 0.5,
+      taker,
+    }
+    const quoteProvider = new LeveragedMorphoAaveLmQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider,
+    )
+    const quote = await quoteProvider.getQuote(request)
+    if (!quote) fail()
+    expect(quote.inputAmount.gt(0)).toBe(true)
+    expect(quote.outputAmount.toString()).toEqual(request.outputAmount)
+    // Testing for individual params as changing quotes could affect the results
+    const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
+    expect(swapDataDebtCollateral.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
+    expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
+    expect(swapDataDebtCollateral.path).toEqual([usdc.address, cbBTC.address])
+    expect(swapDataInputOutputToken.exchange).toEqual(Exchange.None)
+    expect(swapDataInputOutputToken.tickSpacing).toEqual([])
+  })
+
   test('returns quote for minting BTC2X - ETH', async () => {
     const request = {
       chainId,
