@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { AddressZero } from 'constants/addresses'
 import { Exchange, getIndexFlashMintLeveragedMorphoAaveLMContract } from 'utils'
 import { getLeveragedTokenData } from 'utils/leveraged-token-data'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -241,12 +242,9 @@ export class LeveragedMorphoAaveLmQuoteProvider
     // By default the input/output swap data can be empty (as it will be ignored)
     let swapDataInputOutputToken: SwapDataV4 = {
       exchange: Exchange.None,
-      path: [
-        '0x0000000000000000000000000000000000000000',
-        '0x0000000000000000000000000000000000000000',
-      ],
+      path: [],
       fees: [],
-      pool: '0x0000000000000000000000000000000000000000',
+      pool: AddressZero,
       poolIds: [],
       tickSpacing: [],
     }
