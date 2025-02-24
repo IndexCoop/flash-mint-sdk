@@ -1,5 +1,7 @@
 import { base } from 'viem/chains'
 
+import { AddressZero } from 'constants/addresses'
+
 import type {
   SwapQuoteProviderV2,
   SwapQuoteRequestV2,
@@ -20,9 +22,9 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       exchange: Exchange.AerodromeSlipstream,
       path: [inputToken, outputToken],
       fees: [],
-      pool: '',
+      pool: AddressZero,
       poolIds: [],
-      tickSpacing: [500],
+      tickSpacing: [100],
     }
 
     return {
