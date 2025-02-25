@@ -136,7 +136,6 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
       swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
-    console.log(quote)
     if (!quote) fail()
     const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
     expect(quote.inputAmount.toString()).toEqual(indexTokenAmount)
@@ -169,7 +168,6 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
       swapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
-    console.log(quote)
     if (!quote) fail()
     const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
     expect(quote.inputAmount.toString()).toEqual(indexTokenAmount)
