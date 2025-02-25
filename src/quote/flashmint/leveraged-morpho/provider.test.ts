@@ -56,7 +56,7 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     const request = {
       chainId,
       isMinting: true,
-      inputToken: weth,
+      inputToken: eth,
       outputToken: btc2x,
       inputAmount: wei(0.4).toString(),
       outputAmount: wei(1).toString(),

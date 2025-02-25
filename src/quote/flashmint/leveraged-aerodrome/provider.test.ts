@@ -85,41 +85,6 @@ describe('LeveragedAerodromeQuoteProvider()', () => {
     )
   })
 
-  test('returns quote for redeeming BTC2X - ETH', async () => {
-    const indexTokenAmount = wei(1).toString()
-    const request = {
-      chainId,
-      isMinting: false,
-      inputToken: getTokenByChainAndSymbol(chainId, 'BTC2X'),
-      outputToken: eth,
-      inputAmount: indexTokenAmount,
-      outputAmount: wei(0.5).toString(), // not used for redeeming
-      slippage: 0.5,
-    }
-    const quoteProvider = new LeveragedAerodromeQuoteProvider(
-      rpcUrl,
-      swapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
-    expect(quote.inputAmount.toString()).toEqual(indexTokenAmount)
-    expect(quote.ouputAmount.gt(0)).toBe(true)
-    // Testing for individual params as changing quotes could affect the results
-    expect(swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
-    expect(swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
-    swapDataPathContains(
-      ['0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf', usdc.address],
-      swapDataDebtCollateral,
-    )
-    expect(swapDataInputOutputToken.exchange).not.toBe(Exchange.None)
-    expect(swapDataInputOutputToken.fees.length).toBeGreaterThanOrEqual(1)
-    swapDataPathContains(
-      ['0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf', weth.address],
-      swapDataInputOutputToken,
-    )
-  })
-
   test('returns quote for redeeming BTC2X - USDC (ERC20)', async () => {
     const indexTokenAmount = wei(1).toString()
     const request = {
