@@ -119,7 +119,40 @@ describe('LeveragedMorphoAaveLmQuoteProvider()', () => {
     expect(swapDataInputOutputToken.path).toEqual([usdc.address, cbBTC.address])
   })
 
-  test.only('returns quote for redeeming BTC2X - ETH', async () => {
+  test('returns quote for redeeming BTC2X - cbBTC', async () => {
+    const indexTokenAmount = wei(1).toString()
+    const request = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'BTC2X'),
+      outputToken: cbBTC,
+      inputAmount: indexTokenAmount,
+      outputAmount: wei(0.5).toString(), // not used for redeeming
+      slippage: 0.5,
+      taker,
+    }
+    const quoteProvider = new LeveragedMorphoAaveLmQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider,
+    )
+    const quote = await quoteProvider.getQuote(request)
+    console.log(quote)
+    if (!quote) fail()
+    const { swapDataDebtCollateral, swapDataInputOutputToken } = quote
+    expect(quote.inputAmount.toString()).toEqual(indexTokenAmount)
+    expect(quote.outputAmount.gt(0)).toBe(true)
+    // Testing for individual params as changing quotes could affect the results
+    expect(swapDataDebtCollateral.exchange).toEqual(
+      Exchange.AerodromeSlipstream,
+    )
+    expect(swapDataDebtCollateral.tickSpacing).toEqual([100])
+    expect(swapDataDebtCollateral.path).toEqual([cbBTC.address, usdc.address])
+    expect(swapDataInputOutputToken.exchange).toEqual(Exchange.None)
+    expect(swapDataInputOutputToken.tickSpacing).toEqual([])
+    expect(swapDataInputOutputToken.path).toEqual([])
+  })
+
+  test('returns quote for redeeming BTC2X - ETH', async () => {
     const indexTokenAmount = wei(1).toString()
     const request = {
       chainId,

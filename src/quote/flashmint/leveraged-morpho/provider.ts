@@ -175,13 +175,8 @@ export class LeveragedMorphoAaveLmQuoteProvider
   ) {
     const quoteRequest: SwapQuoteRequestV2 = {
       chainId,
-      // Before we had to do this to get the quote but now 0x API v2 supports
-      // `inputAmount` only, so for redeeming we have to switch the tokens -
-      // which makes it the same as minting.
-      //   inputToken: leveragedTokenData.collateralToken,
-      //   outputToken: leveragedTokenData.debtToken,
-      inputToken: leveragedTokenData.debtToken,
-      outputToken: leveragedTokenData.collateralToken,
+      inputToken: leveragedTokenData.collateralToken,
+      outputToken: leveragedTokenData.debtToken,
       inputAmount: leveragedTokenData.debtAmount.toString(),
       slippage,
       sources: includeSources,
