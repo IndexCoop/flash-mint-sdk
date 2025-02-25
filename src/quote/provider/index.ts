@@ -272,7 +272,7 @@ export class FlashMintQuoteProvider
       case FlashMintContractType.leveragedMorphoAaveLM: {
         if (!inputTokenAmount) {
           throw new Error(
-            'Must set `inputTokenAmount` for quote request with contract type leveragedAerodrome ',
+            'Must set `inputTokenAmount` for quote request with contract type leveragedMorphoAaveLM ',
           )
         }
         const { isMinting } = request
