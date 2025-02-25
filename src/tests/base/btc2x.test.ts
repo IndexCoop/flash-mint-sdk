@@ -12,6 +12,7 @@ import {
 
 describe('BTC2X (Base)', () => {
   const chainId = ChainId.Base
+  const cbbtc = getTokenByChainAndSymbol(chainId, 'cbBTC')
   const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'BTC2X')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
@@ -33,13 +34,33 @@ describe('BTC2X (Base)', () => {
     await factory.executeTx()
   })
 
+  test('can mint with cbBTC', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: cbbtc,
+      outputToken: indexToken,
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('0.01').toString(),
+      slippage: 0.5,
+    })
+    const whale = '0x9d719096fF38c8D6652Cd95233e58452f4F4a2f0'
+    await transferFromWhale(
+      whale,
+      factory.getSigner().address,
+      wei('1', quote.inputToken.decimals),
+      quote.inputToken.address,
+      factory.getProvider(),
+    )
+    await factory.executeTx()
+  })
+
   test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('0.5').toString(),
+      inputTokenAmount: wei('500').toString(),
       slippage: 0.5,
     })
     const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
