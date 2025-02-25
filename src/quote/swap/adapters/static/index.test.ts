@@ -21,6 +21,33 @@ describe('StaticSwapQuoteProvider', () => {
     quoteProvider = new StaticSwapQuoteProvider()
   })
 
+  test('should return swap data for ETH-cbBTC', async () => {
+    const request = {
+      taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      chainId,
+      inputToken: ETH,
+      outputToken: cbBTC,
+      inputAmount: '100000000000000000',
+      slippage: 0.1,
+    }
+    const res = await quoteProvider.getSwapQuote(request)
+    expect(res).not.toBeNull()
+    const quote = res as SwapQuoteV2
+    expect(quote.chainId).toBe(request.chainId)
+    expect(quote.inputToken).toBe(request.inputToken)
+    expect(quote.outputToken).toBe(request.outputToken)
+    expect(quote.inputAmount).toBe(request.inputAmount)
+    expect(quote.slippage).toBe(request.slippage)
+    expect(quote.swapData).not.toBeNull()
+    expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
+    expect(quote.swapData?.path).toEqual([WETH, cbBTC])
+    expect(quote.swapData?.pool).toEqual(
+      '0x0000000000000000000000000000000000000000',
+    )
+    expect(quote.swapData?.poolIds).toEqual([])
+    expect(quote.swapData?.tickSpacing).toEqual([100])
+  })
+
   test('should return swap data for WETH-cbBTC', async () => {
     const request = {
       taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
@@ -48,13 +75,13 @@ describe('StaticSwapQuoteProvider', () => {
     expect(quote.swapData?.tickSpacing).toEqual([100])
   })
 
-  test('should return swap data for USDC-cbBTC', async () => {
+  test('should return swap data for cbBTC-ETH', async () => {
     const request = {
       taker: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
       chainId,
-      inputToken: USDC,
-      outputToken: cbBTC,
-      inputAmount: '10000000000',
+      inputToken: cbBTC,
+      outputToken: ETH,
+      inputAmount: '1000000000000000000',
       slippage: 0.5,
     }
     const res = await quoteProvider.getSwapQuote(request)
@@ -67,7 +94,7 @@ describe('StaticSwapQuoteProvider', () => {
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
     expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
-    expect(quote.swapData?.path).toEqual([USDC, cbBTC])
+    expect(quote.swapData?.path).toEqual([cbBTC, WETH])
     expect(quote.swapData?.pool).toEqual(
       '0x0000000000000000000000000000000000000000',
     )
