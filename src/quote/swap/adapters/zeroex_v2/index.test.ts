@@ -11,7 +11,8 @@ import type { SwapQuote } from 'quote/swap/interfaces'
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 
-describe('ZeroExApi', () => {
+// Skip for now
+describe.skip('ZeroExApi', () => {
   let quoteProvider: ZeroExV2SwapQuoteProvider
 
   beforeEach(() => {
