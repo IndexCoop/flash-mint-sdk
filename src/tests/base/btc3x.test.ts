@@ -62,7 +62,11 @@ describe('BTC3X (Base)', () => {
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
-    await wrapETH(quote.inputAmount.mul(BigNumber.from(2)), factory.getSigner())
+    await wrapETH(
+      quote.inputAmount.mul(BigNumber.from(2)),
+      factory.getSigner(),
+      chainId,
+    )
     await factory.executeTx()
   })
 

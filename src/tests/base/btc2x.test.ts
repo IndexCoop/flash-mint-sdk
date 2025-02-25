@@ -4,6 +4,7 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
+  balanceOf,
   getTestFactoryZeroEx,
   transferFromWhale,
   wei,
@@ -83,7 +84,11 @@ describe('BTC2X (Base)', () => {
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
-    await wrapETH(quote.inputAmount.mul(BigNumber.from(2)), factory.getSigner())
+    await wrapETH(
+      quote.inputAmount.mul(BigNumber.from(2)),
+      factory.getSigner(),
+      chainId,
+    )
     await factory.executeTx()
   })
 
