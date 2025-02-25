@@ -45,7 +45,7 @@ describe('StaticSwapQuoteProvider', () => {
       '0x0000000000000000000000000000000000000000',
     )
     expect(quote.swapData?.poolIds).toEqual([])
-    expect(quote.swapData?.tickSpacing).toEqual([500])
+    expect(quote.swapData?.tickSpacing).toEqual([100])
   })
 
   test('should return swap data for USDC-cbBTC', async () => {
@@ -72,7 +72,7 @@ describe('StaticSwapQuoteProvider', () => {
       '0x0000000000000000000000000000000000000000',
     )
     expect(quote.swapData?.poolIds).toEqual([])
-    expect(quote.swapData?.tickSpacing).toEqual([500])
+    expect(quote.swapData?.tickSpacing).toEqual([100])
   })
 
   test('should return swap data for cbBTC-USDC', async () => {
@@ -99,7 +99,7 @@ describe('StaticSwapQuoteProvider', () => {
       '0x0000000000000000000000000000000000000000',
     )
     expect(quote.swapData?.poolIds).toEqual([])
-    expect(quote.swapData?.tickSpacing).toEqual([500])
+    expect(quote.swapData?.tickSpacing).toEqual([100])
   })
 
   test('should return null for unsupported chainId', async () => {
