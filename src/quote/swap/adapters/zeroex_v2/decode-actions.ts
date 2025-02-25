@@ -5,7 +5,7 @@ import { EthAddress } from 'constants/addresses'
 import { SettlerActionsABI } from './abis/SettlerActions'
 import { convertFrom0xFeesToUniPool, exchangeFrom0xSource } from './utils'
 
-import type { SwapDataV3 } from 'utils'
+import type { SwapDataV4 } from 'utils'
 import type { Hex } from 'viem'
 
 enum SettlerAction {
@@ -73,7 +73,7 @@ export function decodeActions(
   chainId: number,
   inputToken: string,
   outputToken: string,
-): SwapDataV3 | null {
+): SwapDataV4 | null {
   const actionsData = actions!.map((action: Hex) =>
     decodeFunctionData({
       abi: SettlerActionsABI,
@@ -118,5 +118,6 @@ export function decodeActions(
     fees,
     pool: '',
     poolIds: [],
+    tickSpacing: [],
   }
 }

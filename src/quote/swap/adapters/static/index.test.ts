@@ -41,7 +41,9 @@ describe('StaticSwapQuoteProvider', () => {
     expect(quote.swapData).not.toBeNull()
     expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
     expect(quote.swapData?.path).toEqual([WETH, cbBTC])
-    expect(quote.swapData?.pool).toEqual('')
+    expect(quote.swapData?.pool).toEqual(
+      '0x0000000000000000000000000000000000000000',
+    )
     expect(quote.swapData?.poolIds).toEqual([])
     expect(quote.swapData?.tickSpacing).toEqual([500])
   })
@@ -66,7 +68,9 @@ describe('StaticSwapQuoteProvider', () => {
     expect(quote.swapData).not.toBeNull()
     expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
     expect(quote.swapData?.path).toEqual([USDC, cbBTC])
-    expect(quote.swapData?.pool).toEqual('')
+    expect(quote.swapData?.pool).toEqual(
+      '0x0000000000000000000000000000000000000000',
+    )
     expect(quote.swapData?.poolIds).toEqual([])
     expect(quote.swapData?.tickSpacing).toEqual([500])
   })
@@ -91,7 +95,9 @@ describe('StaticSwapQuoteProvider', () => {
     expect(quote.swapData).not.toBeNull()
     expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
     expect(quote.swapData?.path).toEqual([cbBTC, USDC])
-    expect(quote.swapData?.pool).toEqual('')
+    expect(quote.swapData?.pool).toEqual(
+      '0x0000000000000000000000000000000000000000',
+    )
     expect(quote.swapData?.poolIds).toEqual([])
     expect(quote.swapData?.tickSpacing).toEqual([500])
   })
