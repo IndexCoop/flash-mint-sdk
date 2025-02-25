@@ -289,7 +289,6 @@ export class FlashMintQuoteProvider
             outputAmount: isMinting
               ? request.indexTokenAmount
               : request.inputTokenAmount!,
-            // TODO:
             taker: '0x0',
           })
         if (!leveragedAerodromeQuote) return null

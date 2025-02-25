@@ -4,6 +4,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex } from 'constants/tokens'
+import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
 import { getFlashMintLeveragedContractForToken, wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
@@ -55,12 +56,11 @@ describe('FlashMintQuoteProvider()', () => {
     )
   })
 
-  // TODO:
-  test.skip('returns a quote for minting BTC2X', async () => {
+  test('returns a quote for minting BTC2X', async () => {
     const chainID = ChainId.Base
     const rpcUrl = getLocalHostProviderUrl(chainID)
     const baseProvider = getRpcProvider(rpcUrl)
-    const inputToken = usdc
+    const inputToken = getTokenByChainAndSymbol(chainID, 'USDC')
     const outputToken = getTokenByChainAndSymbol(chainID, 'BTC2X')
     const contract = getFlashMintLeveragedContractForToken(
       outputToken.symbol,
@@ -72,18 +72,18 @@ describe('FlashMintQuoteProvider()', () => {
       inputToken,
       outputToken,
       indexTokenAmount: wei(1).toString(),
-      inputTokenAmount: wei(0.5).toString(),
+      inputTokenAmount: wei(500).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      rpcUrl,
-      getZeroExSwapQuoteProvider(chainID),
-    )
+    const swapQuoteProvider = new StaticSwapQuoteProvider()
+    const quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     const chainId = (await baseProvider.getNetwork()).chainId
     expect(quote.chainId).toEqual(chainId)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveragedAerodrome)
+    expect(quote.contractType).toEqual(
+      FlashMintContractType.leveragedMorphoAaveLM,
+    )
     expect(quote.contract).toEqual(contract.address)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)

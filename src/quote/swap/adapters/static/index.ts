@@ -30,7 +30,6 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       fees: [],
       pool: AddressZero,
       poolIds: [],
-      // TODO: check all pools
       tickSpacing: [100],
     }
 
