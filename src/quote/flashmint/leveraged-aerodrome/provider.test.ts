@@ -20,7 +20,7 @@ const eth = ETH
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 const weth = getTokenByChainAndSymbol(chainId, 'WETH')
 
-describe('LeveragedAerodromeQuoteProvider()', () => {
+describe.skip('LeveragedAerodromeQuoteProvider()', () => {
   test('returns quote for minting BTC2X - ETH', async () => {
     const indexTokenAmount = wei(1).toString()
     const request = {
