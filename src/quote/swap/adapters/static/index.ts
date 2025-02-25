@@ -9,7 +9,7 @@ import type {
   SwapQuoteRequestV2,
   SwapQuoteV2,
 } from 'quote/swap/interfaces'
-import type { SwapDataV4 } from 'utils'
+import type { SwapDataV5 } from 'utils'
 import type { Address } from 'viem'
 
 export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
@@ -24,7 +24,7 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       return null
     }
 
-    const swapData: SwapDataV4 = {
+    const swapData: SwapDataV5 = {
       exchange: Exchange.AerodromeSlipstream,
       path: [inputToken, outputToken],
       fees: [],

@@ -4,7 +4,6 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
-  balanceOf,
   getTestFactoryZeroEx,
   transferFromWhale,
   wei,

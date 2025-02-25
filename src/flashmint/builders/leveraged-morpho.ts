@@ -3,14 +3,14 @@ import { getRpcProvider } from 'utils/rpc-provider'
 import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
-import type { SwapDataV4 } from 'utils'
+import type { SwapDataV5 } from 'utils'
 import type { BuildRequest, TransactionBuilder } from './interface'
 
 export interface FlashMintLeveragedMorphoAaveLmBuildRequest
   extends BuildRequest {
   chainId: number
-  swapDataDebtCollateral: SwapDataV4
-  swapDataInputOutputToken: SwapDataV4
+  swapDataDebtCollateral: SwapDataV5
+  swapDataInputOutputToken: SwapDataV5
 }
 
 export class LeveragedMorphoAaveLmBuilder

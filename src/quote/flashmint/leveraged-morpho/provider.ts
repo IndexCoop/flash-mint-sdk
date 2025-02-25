@@ -6,7 +6,7 @@ import { getLeveragedTokenData } from 'utils/leveraged-token-data'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 
-import type { SwapDataV4 } from 'utils'
+import type { SwapDataV5 } from 'utils'
 import type { LeveragedTokenData } from 'utils/leveraged-token-data'
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
 import type { SwapQuoteProviderV2, SwapQuoteRequestV2 } from '../../swap'
@@ -25,8 +25,8 @@ export interface FlashMintLeveragedMorphoAaveLmRequest {
 export interface FlashMintLeveragedMorphoAaveLmQuote {
   inputAmount: BigNumber
   outputAmount: BigNumber
-  swapDataDebtCollateral: SwapDataV4
-  swapDataInputOutputToken: SwapDataV4
+  swapDataDebtCollateral: SwapDataV5
+  swapDataInputOutputToken: SwapDataV5
 }
 
 export class LeveragedMorphoAaveLmQuoteProvider
@@ -226,11 +226,11 @@ export class LeveragedMorphoAaveLmQuoteProvider
     includeSources: Exchange[],
     chainId: number,
   ): Promise<{
-    swapDataInputOutputToken: SwapDataV4
+    swapDataInputOutputToken: SwapDataV5
     estimatedInputOutputAmount: BigNumber
   }> {
     // By default the input/output swap data can be empty (as it will be ignored)
-    let swapDataInputOutputToken: SwapDataV4 = {
+    let swapDataInputOutputToken: SwapDataV5 = {
       exchange: Exchange.None,
       path: [],
       fees: [],

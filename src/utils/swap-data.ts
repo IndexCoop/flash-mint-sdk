@@ -26,7 +26,9 @@ export interface SwapDataV3 {
   poolIds: string[]
 }
 
-export interface SwapDataV4 {
+// V5 because it belongs to DEXAdapterV5
+// https://github.com/IndexCoop/index-coop-smart-contracts/blob/master/contracts/exchangeIssuance/DEXAdapterV5.sol
+export interface SwapDataV5 {
   exchange: Exchange
   path: string[]
   fees: number[]
