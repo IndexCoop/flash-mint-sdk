@@ -124,26 +124,21 @@ export class LeveragedMorphoAaveLmQuoteProvider
 
     let estimatedInputOutputAmount = BigNumber.from(0)
     const contract = getIndexFlashMintLeveragedMorphoAaveLMContract(provider)
-    try {
-      if (isMinting) {
-        estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
-          indexToken.address,
-          indexTokenAmount,
-          BigNumber.from(inputAmount),
-          swapDataDebtCollateral,
-          swapDataInputOutputToken,
-        )
-      } else {
-        estimatedInputOutputAmount =
-          await contract.callStatic.getRedeemExactSet(
-            indexToken.address,
-            indexTokenAmount,
-            swapDataDebtCollateral,
-            swapDataInputOutputToken,
-          )
-      }
-    } catch (error) {
-      console.log(error)
+    if (isMinting) {
+      estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
+        indexToken.address,
+        indexTokenAmount,
+        BigNumber.from(inputAmount),
+        swapDataDebtCollateral,
+        swapDataInputOutputToken,
+      )
+    } else {
+      estimatedInputOutputAmount = await contract.callStatic.getRedeemExactSet(
+        indexToken.address,
+        indexTokenAmount,
+        swapDataDebtCollateral,
+        swapDataInputOutputToken,
+      )
     }
 
     const inputOuputTokenDecimals = isMinting
