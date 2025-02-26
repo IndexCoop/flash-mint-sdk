@@ -521,3 +521,113 @@ describe('iETH1x', () => {
     expect(contract.functions.issueExactSetFromETH).toBeDefined()
   })
 })
+
+describe('uSOL2x', () => {
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const indexToken = getTokenByChainAndSymbol(chainId, 'uSOL2x')
+    const contract = getFlashMintLeveragedContractForToken(
+      indexToken.symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorpho
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
+
+describe('uSOL3x', () => {
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const indexToken = getTokenByChainAndSymbol(chainId, 'uSOL3x')
+    const contract = getFlashMintLeveragedContractForToken(
+      indexToken.symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorpho
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
+
+describe('uSUI2x', () => {
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI2x')
+    const contract = getFlashMintLeveragedContractForToken(
+      indexToken.symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorpho
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
+
+describe('uSUI3x', () => {
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI3x')
+    const contract = getFlashMintLeveragedContractForToken(
+      indexToken.symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorpho
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
+
+describe('wstETH15x', () => {
+  test('return correct contract for token - base', async () => {
+    const chainId = ChainId.Base
+    const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
+    const contract = getFlashMintLeveragedContractForToken(
+      indexToken.symbol,
+      undefined,
+      chainId,
+    )
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorpho
+    expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getLeveragedTokenData).toBeDefined()
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForERC20).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    // Functions specific to extended contract
+    expect(contract.functions.issueExactSetFromERC20).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+  })
+})
