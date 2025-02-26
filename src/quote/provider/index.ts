@@ -13,7 +13,7 @@ import { LeveragedAerodromeQuoteProvider } from 'quote/flashmint/leveraged-aerod
 import { wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import { LeveragedMorphoAaveLmBuilder } from 'flashmint/builders/leveraged-morpho'
+import { LeveragedMorphoAaveLmBuilder } from 'flashmint/builders/leveraged-morpho-aave'
 import { LeveragedMorphoAaveLmQuoteProvider } from 'quote/flashmint/leveraged-morpho-aave'
 import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
@@ -32,7 +32,7 @@ import type {
   FlashMintWrappedBuildRequest,
   FlashMintZeroExBuildRequest,
 } from 'flashmint'
-import type { FlashMintLeveragedMorphoAaveLmBuildRequest } from 'flashmint/builders/leveraged-morpho'
+import type { FlashMintLeveragedMorphoAaveLmBuildRequest } from 'flashmint/builders/leveraged-morpho-aave'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
 import type { SwapQuoteProvider } from '../swap'
 
