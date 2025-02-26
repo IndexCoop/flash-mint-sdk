@@ -18,10 +18,11 @@ const chainId = ChainId.Base
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const providerBase = getRpcProvider(rpcUrl)
 
-const FlashMintLeveragedAerodromeAddress =
-  Contracts[chainId].FlashMintLeveragedMorphoAaveLM
+const FlashMintLeveragedMorpoAddress =
+  Contracts[chainId].FlashMintLeveragedMorpho
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
+const uSUI2x = getTokenByChainAndSymbol(chainId, 'uSUI2x')
 
 describe('LeveragedMorphoBuilder()', () => {
   const contractBase = getFlashMintLeveragedContractForToken(
@@ -143,15 +144,14 @@ describe('LeveragedMorphoBuilder()', () => {
     expect(tx).not.toBeNull()
   })
 
-  // TODO: change to uSUI2X
-  test.skip('returns a tx for minting BTC2X (ETH) - Base', async () => {
+  test('returns a tx for minting uSUI2x (ETH) - Base', async () => {
     const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
     const buildRequest = createBuildRequest(
       true,
       eth,
       'ETH',
-      btc2x.address,
-      btc2x.symbol,
+      uSUI2x.address,
+      uSUI2x.symbol,
     )
     const refTx = await contractBase.populateTransaction.issueExactSetFromETH(
       buildRequest.outputToken,
@@ -163,17 +163,16 @@ describe('LeveragedMorphoBuilder()', () => {
     const builder = new LeveragedMorphoBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
+    expect(tx.to).toBe(FlashMintLeveragedMorpoAddress)
     expect(tx.data).toEqual(refTx.data)
     expect(tx.value).toEqual(buildRequest.inputTokenAmount)
   })
 
-  // TODO: change to uSUI2X
-  test.skip('returns a tx for redeeming ETH2X (ERC20) - Base', async () => {
+  test('returns a tx for redeeming uSUI2x (ERC20) - Base', async () => {
     const buildRequest = createBuildRequest(
       false,
-      IndexCoopEthereum2xIndex.addressBase!,
-      IndexCoopEthereum2xIndex.symbol,
+      uSUI2x.address,
+      uSUI2x.symbol,
       usdcAddress,
       'USDC',
     )
@@ -188,16 +187,15 @@ describe('LeveragedMorphoBuilder()', () => {
     const builder = new LeveragedMorphoBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
+    expect(tx.to).toBe(FlashMintLeveragedMorpoAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 
-  // TODO: change to uSUI2X
-  test.skip('returns a tx for redeeming ETH2X (ETH) - Base', async () => {
+  test('returns a tx for redeeming uSUI2x (ETH) - Base', async () => {
     const buildRequest = createBuildRequest(
       false,
-      IndexCoopEthereum2xIndex.addressBase!,
-      IndexCoopEthereum2xIndex.symbol,
+      uSUI2x.address,
+      uSUI2x.symbol,
       eth,
       'ETH',
     )
@@ -211,7 +209,7 @@ describe('LeveragedMorphoBuilder()', () => {
     const builder = new LeveragedMorphoBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
+    expect(tx.to).toBe(FlashMintLeveragedMorpoAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 })
