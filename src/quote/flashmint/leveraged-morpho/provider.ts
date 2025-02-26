@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { AddressZero } from 'constants/addresses'
-import { Exchange, getIndexFlashMintLeveragedMorphoAaveLMContract } from 'utils'
+import { Exchange, getIndexFlashMintLeveragedMorphoContract } from 'utils'
 import { getLeveragedTokenData } from 'utils/leveraged-token-data'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
@@ -123,7 +123,7 @@ export class LeveragedMorphoQuoteProvider
     )
 
     let estimatedInputOutputAmount = BigNumber.from(0)
-    const contract = getIndexFlashMintLeveragedMorphoAaveLMContract(provider)
+    const contract = getIndexFlashMintLeveragedMorphoContract(provider)
     if (isMinting) {
       estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
         indexToken.address,
