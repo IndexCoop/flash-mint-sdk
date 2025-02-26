@@ -161,6 +161,61 @@ describe('getIssuanceModule() - Base', () => {
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
+
+  test('returns debt issuance module v3 for uSOL2x on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'uSOL2x').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for uSOL3x on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'uSOL3x').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for uSUI2x on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'uSUI2x').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for uSUI3x on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'uSUI3x').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
+
+  test('returns debt issuance module v3 for wstETH15x on Base', async () => {
+    const chainId = ChainId.Base
+    const expectedModule = Contracts[chainId].DebtIssuanceModuleV3
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(chainId, 'wstETH15x').symbol,
+      chainId,
+    )
+    expect(issuanceModule.address).toEqual(expectedModule)
+    expect(issuanceModule.isDebtIssuance).toBe(true)
+  })
 })
 
 describe('getIssuanceModule() - Polygon', () => {
