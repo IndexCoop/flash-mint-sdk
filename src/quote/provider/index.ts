@@ -14,7 +14,7 @@ import { wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { LeveragedMorphoAaveLmBuilder } from 'flashmint/builders/leveraged-morpho'
-import { LeveragedMorphoAaveLmQuoteProvider } from 'quote/flashmint/leveraged-morpho'
+import { LeveragedMorphoAaveLmQuoteProvider } from 'quote/flashmint/leveraged-morpho-aave'
 import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
