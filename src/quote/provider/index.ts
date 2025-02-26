@@ -32,7 +32,12 @@ import type {
   FlashMintWrappedBuildRequest,
   FlashMintZeroExBuildRequest,
 } from 'flashmint'
+import {
+  type FlashMintLeveragedMorphoBuildRequest,
+  LeveragedMorphoBuilder,
+} from 'flashmint/builders/leveraged-morpho'
 import type { FlashMintLeveragedMorphoAaveLmBuildRequest } from 'flashmint/builders/leveraged-morpho-aave'
+import { LeveragedMorphoQuoteProvider } from 'quote/flashmint/leveraged-morpho'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
 import type { SwapQuoteProvider } from '../swap'
 
@@ -41,10 +46,11 @@ export enum FlashMintContractType {
   leveraged = 1,
   leveragedAerodrome = 2,
   leveragedExtended = 3,
-  leveragedMorphoAaveLM = 4,
-  nav = 5,
-  wrapped = 6,
-  zeroEx = 7,
+  leveragedMorpho = 4,
+  leveragedMorphoAaveLM = 5,
+  nav = 6,
+  wrapped = 7,
+  zeroEx = 8,
 }
 
 export interface FlashMintQuoteRequest {
@@ -266,6 +272,58 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           leveragedExtendedQuote.inputOutputTokenAmount,
+          tx,
+        )
+      }
+      case FlashMintContractType.leveragedMorpho: {
+        if (!inputTokenAmount) {
+          throw new Error(
+            'Must set `inputTokenAmount` for quote request with contract type leveragedMorpho ',
+          )
+        }
+        const { isMinting } = request
+        const swapQuoteProvider = new StaticSwapQuoteProvider()
+        const leverageMorphoQuoteProvider = new LeveragedMorphoQuoteProvider(
+          rpcUrl,
+          swapQuoteProvider,
+        )
+        const leveragedMorphoQuote = await leverageMorphoQuoteProvider.getQuote(
+          {
+            ...request,
+            chainId,
+            inputAmount: isMinting
+              ? request.inputTokenAmount!
+              : request.indexTokenAmount,
+            outputAmount: isMinting
+              ? request.indexTokenAmount
+              : request.inputTokenAmount!,
+            taker: '0x0',
+          },
+        )
+        if (!leveragedMorphoQuote) return null
+        const builder = new LeveragedMorphoBuilder(rpcUrl)
+        const txRequest: FlashMintLeveragedMorphoBuildRequest = {
+          chainId,
+          isMinting,
+          inputToken: inputToken.address,
+          inputTokenSymbol: inputToken.symbol,
+          outputToken: outputToken.address,
+          outputTokenSymbol: outputToken.symbol,
+          inputTokenAmount: leveragedMorphoQuote.inputAmount,
+          outputTokenAmount: leveragedMorphoQuote.outputAmount,
+          swapDataDebtCollateral: leveragedMorphoQuote.swapDataDebtCollateral,
+          swapDataInputOutputToken:
+            leveragedMorphoQuote.swapDataInputOutputToken,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return buildQuoteResponse(
+          request,
+          chainId,
+          contractType,
+          isMinting
+            ? leveragedMorphoQuote.inputAmount
+            : leveragedMorphoQuote.outputAmount,
           tx,
         )
       }
