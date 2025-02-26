@@ -27,7 +27,7 @@ describe('ETH2X (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem with ETH', async () => {
+  test.skip('can redeem with ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: eth2x,

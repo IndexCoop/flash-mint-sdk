@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import {
@@ -6,6 +7,7 @@ import {
   getTestFactoryZeroEx,
   transferFromWhale,
   wei,
+  wrapETH,
 } from 'tests/utils'
 
 describe('BTC3X (Base)', () => {
@@ -13,6 +15,7 @@ describe('BTC3X (Base)', () => {
   const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'BTC3X')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
+  const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
     factory = getTestFactoryZeroEx(1, chainId)
@@ -36,7 +39,7 @@ describe('BTC3X (Base)', () => {
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('1018', usdc.decimals).toString(),
+      inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
     const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
@@ -50,6 +53,23 @@ describe('BTC3X (Base)', () => {
     await factory.executeTx()
   })
 
+  test('can mint with WETH', async () => {
+    const quote = await factory.fetchQuote({
+      isMinting: true,
+      inputToken: weth,
+      outputToken: indexToken,
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('0.5').toString(),
+      slippage: 0.5,
+    })
+    await wrapETH(
+      quote.inputAmount.mul(BigNumber.from(2)),
+      factory.getSigner(),
+      chainId,
+    )
+    await factory.executeTx()
+  })
+
   test('can redeem to ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
@@ -57,7 +77,7 @@ describe('BTC3X (Base)', () => {
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
-      slippage: 0.6,
+      slippage: 0.5,
     })
     await factory.executeTx()
   })
@@ -69,7 +89,7 @@ describe('BTC3X (Base)', () => {
       outputToken: usdc,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
-      slippage: 0.8,
+      slippage: 0.5,
     })
     await factory.executeTx()
   })

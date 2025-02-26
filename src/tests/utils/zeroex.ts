@@ -22,3 +22,7 @@ export function getZeroExSwapQuoteProvider(chainId: number) {
     get0xSwapPathOverride(chainId),
   )
 }
+
+// export function getZeroExV2SwapQuoteProvider() {
+//   return new ZeroExV2SwapQuoteProvider(process.env.ZEROEX_API_KEY!)
+// }

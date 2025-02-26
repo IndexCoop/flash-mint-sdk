@@ -8,6 +8,7 @@ export enum Exchange {
   Curve = 4,
   BalancerV2 = 5,
   Aerodrome = 6,
+  AerodromeSlipstream = 7,
 }
 
 export interface SwapData {
@@ -23,4 +24,15 @@ export interface SwapDataV3 {
   fees: number[]
   pool: string
   poolIds: string[]
+}
+
+// V5 because it belongs to DEXAdapterV5
+// https://github.com/IndexCoop/index-coop-smart-contracts/blob/master/contracts/exchangeIssuance/DEXAdapterV5.sol
+export interface SwapDataV5 {
+  exchange: Exchange
+  path: string[]
+  fees: number[]
+  pool: string
+  poolIds: string[]
+  tickSpacing: number[]
 }

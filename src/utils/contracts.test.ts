@@ -291,7 +291,7 @@ describe('BTC2X', () => {
       undefined,
       chainId,
     )
-    const expectedAddress = Contracts[chainId].FlashMintLeveragedAerodrome
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorphoAaveLM
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()
@@ -352,7 +352,7 @@ describe('BTC3X', () => {
       undefined,
       chainId,
     )
-    const expectedAddress = Contracts[chainId].FlashMintLeveragedAerodrome
+    const expectedAddress = Contracts[chainId].FlashMintLeveragedMorphoAaveLM
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getLeveragedTokenData).toBeDefined()
     expect(contract.functions.issueExactSetFromERC20).toBeDefined()

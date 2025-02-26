@@ -3,9 +3,9 @@ import { decodeFunctionData } from 'viem'
 
 import { EthAddress } from 'constants/addresses'
 import { SettlerActionsABI } from './abis/SettlerActions'
-import { convertFrom0xFeesToUniPool, getExchangeFrom0xSource } from './utils'
+import { convertFrom0xFeesToUniPool, exchangeFrom0xSource } from './utils'
 
-import type { SwapDataV3 } from 'utils'
+import type { SwapDataV5 } from 'utils'
 import type { Hex } from 'viem'
 
 enum SettlerAction {
@@ -73,13 +73,17 @@ export function decodeActions(
   chainId: number,
   inputToken: string,
   outputToken: string,
-): SwapDataV3 | null {
+): SwapDataV5 | null {
   const actionsData = actions!.map((action: Hex) =>
     decodeFunctionData({
       abi: SettlerActionsABI,
       data: action,
     }),
   )
+
+  const isMultiPath =
+    actionsData.map((action) => action.functionName === SettlerAction.UniswapV3)
+      .length > 1
 
   const fees: number[] = []
   let path: string[] = []
@@ -90,7 +94,16 @@ export function decodeActions(
       // function UNISWAPV3(address recipient, uint256 bps, bytes memory path, uint256 amountOutMin) external
       const [, bps, uniPath] = action.args
       fees.push(convertFrom0xFeesToUniPool(bps))
-      path = decodeUniPath(uniPath)
+      if (isMultiPath) {
+        const decodedPath = decodeUniPath(uniPath)
+        if (path.length === 0) {
+          path = decodedPath
+        } else {
+          path.push(decodedPath[1])
+        }
+      } else {
+        path = decodeUniPath(uniPath)
+      }
     }
   }
 
@@ -100,10 +113,11 @@ export function decodeActions(
   }
 
   return {
-    exchange: getExchangeFrom0xSource(source)!,
+    exchange: exchangeFrom0xSource[source],
     path,
     fees,
     pool: '',
     poolIds: [],
+    tickSpacing: [],
   }
 }

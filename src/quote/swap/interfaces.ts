@@ -1,4 +1,4 @@
-import type { Exchange, SwapData, SwapDataV3 } from 'utils'
+import type { Exchange, SwapData, SwapDataV5 } from 'utils'
 
 export interface SwapQuote {
   chainId: number
@@ -19,7 +19,7 @@ export interface SwapQuoteV2 {
   outputAmount: string
   slippage: number
   callData: string
-  swapData: SwapDataV3 | null
+  swapData: SwapDataV5 | null
 }
 
 export interface SwapQuoteRequest {

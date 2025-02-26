@@ -5,9 +5,9 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import {
-  type FlashMintLeveragedAerodromBuildRequest,
-  LeveragedAerodromeBuilder,
-} from 'flashmint/builders/leveraged-aerodrome'
+  type FlashMintLeveragedMorphoAaveLmBuildRequest,
+  LeveragedMorphoAaveLmBuilder,
+} from 'flashmint/builders/leveraged-morpho'
 import { getLocalHostProviderUrl } from 'tests/utils'
 import { Exchange } from 'utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
@@ -19,12 +19,11 @@ const rpcUrl = getLocalHostProviderUrl(chainId)
 const providerBase = getRpcProvider(rpcUrl)
 
 const FlashMintLeveragedAerodromeAddress =
-  Contracts[chainId].FlashMintLeveragedAerodrome
+  Contracts[chainId].FlashMintLeveragedMorphoAaveLM
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 
-// Skip until using again with other new products
-describe.skip('LeveragedAerodromeBuilder()', () => {
+describe('LeveragedMorphoAaveLmBuilder()', () => {
   const contractBase = getFlashMintLeveragedContractForToken(
     getTokenByChainAndSymbol(chainId, 'BTC3X').symbol,
     providerBase,
@@ -39,7 +38,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
     const buildRequest = createBuildRequest()
     buildRequest.isMinting = true
     buildRequest.outputToken = ''
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -47,7 +46,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
   test('returns null for invalid request (no input/output token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputToken = ''
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -55,7 +54,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
   test('returns null for invalid request (inputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -63,7 +62,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
   test('returns null for invalid request (outputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.outputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -76,8 +75,9 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       fees: [],
       pool: '',
       poolIds: [],
+      tickSpacing: [500],
     }
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -90,8 +90,9 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       fees: [],
       pool: '0x0000000000000000000000000000000000000000',
       poolIds: [],
+      tickSpacing: [500],
     }
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -105,8 +106,9 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       fees: [3000],
       pool: '0x0000000000000000000000000000000000000000',
       poolIds: [],
+      tickSpacing: [500],
     }
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -119,8 +121,9 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       fees: [500],
       pool: '0x00000000000000000000000000000000000000',
       poolIds: [],
+      tickSpacing: [500],
     }
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -133,8 +136,9 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       fees: [500],
       pool: '0x0000000000000000000000000000000000000000',
       poolIds: [],
+      tickSpacing: [500],
     }
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).not.toBeNull()
   })
@@ -155,7 +159,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       buildRequest.swapDataInputOutputToken,
       { value: buildRequest.inputTokenAmount },
     )
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
@@ -179,7 +183,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
     )
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
@@ -201,7 +205,7 @@ describe.skip('LeveragedAerodromeBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
     )
-    const builder = new LeveragedAerodromeBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
     expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
@@ -215,34 +219,38 @@ function createBuildRequest(
   inputTokenSymbol = 'USDC',
   outputToken: string = IndexCoopEthereum2xIndex.addressArbitrum!,
   outputTokenSymbol: string = IndexCoopEthereum2xIndex.symbol,
-): FlashMintLeveragedAerodromBuildRequest {
+): FlashMintLeveragedMorphoAaveLmBuildRequest {
   const collateralDebtSwapData = {
     exchange: Exchange.UniV3,
     path: [USDC.addressArbitrum!, WETH.addressArbitrum!],
-    fees: [500],
+    fees: [100],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     poolIds: [],
+    tickSpacing: [100],
   }
   const debtCollateralSwapData = {
     exchange: Exchange.UniV3,
     path: [WETH.addressArbitrum!, USDC.addressArbitrum!],
-    fees: [500],
+    fees: [100],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     poolIds: [],
+    tickSpacing: [100],
   }
   const inputSwapData = {
     exchange: Exchange.UniV3,
     path: [USDC.addressArbitrum!, WETH.address!],
-    fees: [500],
+    fees: [100],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     poolIds: [],
+    tickSpacing: [100],
   }
   const outputSwapData = {
     exchange: Exchange.UniV3,
     path: [WETH.addressArbitrum!, USDC.addressArbitrum!],
-    fees: [500],
+    fees: [100],
     pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     poolIds: [],
+    tickSpacing: [100],
   }
   return {
     chainId,
