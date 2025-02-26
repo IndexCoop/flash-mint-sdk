@@ -18,7 +18,7 @@ const chainId = ChainId.Base
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const providerBase = getRpcProvider(rpcUrl)
 
-const FlashMintLeveragedMorpoAddress =
+const FlashMintLeveragedMorphoAddress =
   Contracts[chainId].FlashMintLeveragedMorpho
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
@@ -163,7 +163,7 @@ describe('LeveragedMorphoBuilder()', () => {
     const builder = new LeveragedMorphoBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedMorpoAddress)
+    expect(tx.to).toBe(FlashMintLeveragedMorphoAddress)
     expect(tx.data).toEqual(refTx.data)
     expect(tx.value).toEqual(buildRequest.inputTokenAmount)
   })
@@ -187,7 +187,7 @@ describe('LeveragedMorphoBuilder()', () => {
     const builder = new LeveragedMorphoBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedMorpoAddress)
+    expect(tx.to).toBe(FlashMintLeveragedMorphoAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 
@@ -209,7 +209,7 @@ describe('LeveragedMorphoBuilder()', () => {
     const builder = new LeveragedMorphoBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedMorpoAddress)
+    expect(tx.to).toBe(FlashMintLeveragedMorphoAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 })
