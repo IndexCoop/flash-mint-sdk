@@ -1,9 +1,9 @@
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { Exchange } from 'utils'
 
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import type {
   SwapQuoteProviderV2,
   SwapQuoteRequestV2,
@@ -14,6 +14,7 @@ import type { Address } from 'viem'
 
 const uSol = getTokenByChainAndSymbol(base.id, 'uSOL')
 const uSui = getTokenByChainAndSymbol(base.id, 'uSUI')
+const wstEth = getTokenByChainAndSymbol(base.id, 'wstETH')
 
 export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
   async getSwapQuote(request: SwapQuoteRequestV2): Promise<SwapQuoteV2 | null> {
@@ -52,6 +53,14 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       swapData = getUSuiSwapData(inputToken, outputToken)
     }
 
+    const isWstEth =
+      isAddressEqual(inputToken, wstEth.address) ||
+      isAddressEqual(outputToken, wstEth.address)
+
+    if (isWstEth) {
+      swapData = getWstEthSwapData(inputToken, outputToken)
+    }
+
     return {
       chainId,
       inputToken: request.inputToken,
@@ -77,7 +86,7 @@ function getUSolSwapData(
 ): SwapDataV5 {
   const weth = getTokenByChainAndSymbol(base.id, 'WETH').address
   if (isAddressEqual(inputToken, weth) || isAddressEqual(outputToken, weth)) {
-    // WETH/uSUI https://basescan.org/address/0x0225Ba893D5f8Ecd6d2022f9dEC59b34F61098A1
+    // WETH/uSOL https://basescan.org/address/0x0225Ba893D5f8Ecd6d2022f9dEC59b34F61098A1
     return {
       exchange: Exchange.AerodromeSlipstream,
       path: [inputToken, outputToken],
@@ -124,5 +133,33 @@ function getUSuiSwapData(
     pool: AddressZero,
     poolIds: [],
     tickSpacing: isRedeeming ? [200, 100] : [100, 200],
+  }
+}
+
+function getWstEthSwapData(
+  inputToken: Address,
+  outputToken: Address,
+): SwapDataV5 {
+  const weth = getTokenByChainAndSymbol(base.id, 'WETH').address
+  if (isAddressEqual(inputToken, weth) || isAddressEqual(outputToken, weth)) {
+    // WETH/wstETH https://basescan.org/address/0x861A2922bE165a5Bd41b1E482B49216b465e1B5F
+    return {
+      exchange: Exchange.AerodromeSlipstream,
+      path: [inputToken, outputToken],
+      fees: [],
+      pool: AddressZero,
+      poolIds: [],
+      tickSpacing: [1],
+    }
+  }
+  // USDC/WETH WETH/wstETH
+  const isRedeeming = isAddressEqual(inputToken, wstEth.address)
+  return {
+    exchange: Exchange.AerodromeSlipstream,
+    path: [inputToken, weth, outputToken],
+    fees: [],
+    pool: AddressZero,
+    poolIds: [],
+    tickSpacing: isRedeeming ? [1, 100] : [100, 1],
   }
 }
