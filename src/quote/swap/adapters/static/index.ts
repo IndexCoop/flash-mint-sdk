@@ -40,7 +40,7 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       isAddressEqual(outputToken, uSui.address)
 
     if (isUSui) {
-      swapData = this.getUSuiSwapData(inputToken, outputToken)
+      swapData = getUSuiSwapData(inputToken, outputToken)
     }
 
     return {
@@ -60,29 +60,32 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       ? getTokenByChainAndSymbol(chainId, 'WETH')!.address
       : (token as Address)
   }
+}
 
-  getUSuiSwapData(inputToken: Address, outputToken: Address): SwapDataV5 {
-    const weth = getTokenByChainAndSymbol(base.id, 'WETH').address
-    if (isAddressEqual(inputToken, weth) || isAddressEqual(outputToken, weth)) {
-      // WETH/uSUI https://basescan.org/address/0x5C45b0F48c326f79b56709d8F63CE2beE7697106
-      return {
-        exchange: Exchange.AerodromeSlipstream,
-        path: [inputToken, outputToken],
-        fees: [],
-        pool: AddressZero,
-        poolIds: [],
-        tickSpacing: [200],
-      }
-    }
-    // USDC/WETH WETH/uSUI
-    const isRedeeming = isAddressEqual(inputToken, uSui.address)
+function getUSuiSwapData(
+  inputToken: Address,
+  outputToken: Address,
+): SwapDataV5 {
+  const weth = getTokenByChainAndSymbol(base.id, 'WETH').address
+  if (isAddressEqual(inputToken, weth) || isAddressEqual(outputToken, weth)) {
+    // WETH/uSUI https://basescan.org/address/0x5C45b0F48c326f79b56709d8F63CE2beE7697106
     return {
       exchange: Exchange.AerodromeSlipstream,
-      path: [inputToken, weth, outputToken],
+      path: [inputToken, outputToken],
       fees: [],
       pool: AddressZero,
       poolIds: [],
-      tickSpacing: isRedeeming ? [200, 100] : [100, 200],
+      tickSpacing: [200],
     }
+  }
+  // USDC/WETH WETH/uSUI
+  const isRedeeming = isAddressEqual(inputToken, uSui.address)
+  return {
+    exchange: Exchange.AerodromeSlipstream,
+    path: [inputToken, weth, outputToken],
+    fees: [],
+    pool: AddressZero,
+    poolIds: [],
+    tickSpacing: isRedeeming ? [200, 100] : [100, 200],
   }
 }
