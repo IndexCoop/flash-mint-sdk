@@ -10,16 +10,15 @@ import {
   wrapETH,
 } from 'tests/utils'
 
-// TODO: activate once implemented
-describe.skip('wstETH15x (Base)', () => {
+describe('uSUI2x (Base)', () => {
   const chainId = ChainId.Base
   const { eth } = QuoteTokens
-  const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
+  const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI2x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(8, chainId)
+    factory = getTestFactoryZeroEx(6, chainId)
   })
 
   test('can mint with ETH', async () => {
