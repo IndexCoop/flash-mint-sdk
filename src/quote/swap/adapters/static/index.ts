@@ -12,6 +12,7 @@ import type {
 import type { SwapDataV5 } from 'utils'
 import type { Address } from 'viem'
 
+const uSol = getTokenByChainAndSymbol(base.id, 'uSOL')
 const uSui = getTokenByChainAndSymbol(base.id, 'uSUI')
 
 export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
@@ -33,6 +34,14 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
       pool: AddressZero,
       poolIds: [],
       tickSpacing: [100],
+    }
+
+    const isUSol =
+      isAddressEqual(inputToken, uSol.address) ||
+      isAddressEqual(outputToken, uSol.address)
+
+    if (isUSol) {
+      swapData = getUSolSwapData(inputToken, outputToken)
     }
 
     const isUSui =
@@ -59,6 +68,34 @@ export class StaticSwapQuoteProvider implements SwapQuoteProviderV2 {
     return token === EthAddress
       ? getTokenByChainAndSymbol(chainId, 'WETH')!.address
       : (token as Address)
+  }
+}
+
+function getUSolSwapData(
+  inputToken: Address,
+  outputToken: Address,
+): SwapDataV5 {
+  const weth = getTokenByChainAndSymbol(base.id, 'WETH').address
+  if (isAddressEqual(inputToken, weth) || isAddressEqual(outputToken, weth)) {
+    // WETH/uSUI https://basescan.org/address/0x0225Ba893D5f8Ecd6d2022f9dEC59b34F61098A1
+    return {
+      exchange: Exchange.AerodromeSlipstream,
+      path: [inputToken, outputToken],
+      fees: [],
+      pool: AddressZero,
+      poolIds: [],
+      tickSpacing: [200],
+    }
+  }
+  // USDC/WETH WETH/uSOL
+  const isRedeeming = isAddressEqual(inputToken, uSol.address)
+  return {
+    exchange: Exchange.AerodromeSlipstream,
+    path: [inputToken, weth, outputToken],
+    fees: [],
+    pool: AddressZero,
+    poolIds: [],
+    tickSpacing: isRedeeming ? [200, 100] : [100, 200],
   }
 }
 
