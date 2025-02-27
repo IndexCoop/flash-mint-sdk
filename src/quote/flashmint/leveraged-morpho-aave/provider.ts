@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { AddressZero } from 'constants/addresses'
-import { Exchange, getIndexFlashMintLeveragedMorphoContract } from 'utils'
+import { Exchange, getIndexFlashMintLeveragedMorphoAaveLMContract } from 'utils'
 import { getLeveragedTokenData } from 'utils/leveraged-token-data'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
@@ -11,7 +11,7 @@ import type { LeveragedTokenData } from 'utils/leveraged-token-data'
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
 import type { SwapQuoteProviderV2, SwapQuoteRequestV2 } from '../../swap'
 
-export interface FlashMintLeveragedMorphoRequest {
+export interface FlashMintLeveragedMorphoAaveLmRequest {
   chainId: number
   isMinting: boolean
   inputToken: QuoteToken
@@ -22,18 +22,18 @@ export interface FlashMintLeveragedMorphoRequest {
   taker: string
 }
 
-export interface FlashMintLeveragedMorphoQuote {
+export interface FlashMintLeveragedMorphoAaveLmQuote {
   inputAmount: BigNumber
   outputAmount: BigNumber
   swapDataDebtCollateral: SwapDataV5
   swapDataInputOutputToken: SwapDataV5
 }
 
-export class LeveragedMorphoQuoteProvider
+export class LeveragedMorphoAaveLmQuoteProvider
   implements
     QuoteProvider<
-      FlashMintLeveragedMorphoRequest,
-      FlashMintLeveragedMorphoQuote
+      FlashMintLeveragedMorphoAaveLmRequest,
+      FlashMintLeveragedMorphoAaveLmQuote
     >
 {
   readonly sources = [Exchange.AerodromeSlipstream]
@@ -43,8 +43,8 @@ export class LeveragedMorphoQuoteProvider
   ) {}
 
   async getQuote(
-    request: FlashMintLeveragedMorphoRequest,
-  ): Promise<FlashMintLeveragedMorphoQuote | null> {
+    request: FlashMintLeveragedMorphoAaveLmRequest,
+  ): Promise<FlashMintLeveragedMorphoAaveLmQuote | null> {
     const provider = getRpcProvider(this.rpcUrl)
     const {
       chainId,
@@ -123,7 +123,7 @@ export class LeveragedMorphoQuoteProvider
     )
 
     let estimatedInputOutputAmount = BigNumber.from(0)
-    const contract = getIndexFlashMintLeveragedMorphoContract(provider)
+    const contract = getIndexFlashMintLeveragedMorphoAaveLMContract(provider)
     if (isMinting) {
       estimatedInputOutputAmount = await contract.callStatic.getIssueExactSet(
         indexToken.address,
@@ -258,7 +258,7 @@ export class LeveragedMorphoQuoteProvider
       const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
       if (result?.swapData) {
         swapDataInputOutputToken = result.swapData
-        // is ignored
+        // Is ignored
         estimatedInputOutputAmount = BigNumber.from(0)
       }
     }

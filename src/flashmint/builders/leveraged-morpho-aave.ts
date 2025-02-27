@@ -1,4 +1,4 @@
-import { getIndexFlashMintLeveragedMorphoContract } from 'utils/contracts'
+import { getIndexFlashMintLeveragedMorphoAaveLMContract } from 'utils/contracts'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { isEmptyString, isInvalidAmount, isValidSwapData } from './utils'
 
@@ -6,20 +6,24 @@ import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import type { SwapDataV5 } from 'utils'
 import type { BuildRequest, TransactionBuilder } from './interface'
 
-export interface FlashMintLeveragedMorphoBuildRequest extends BuildRequest {
+export interface FlashMintLeveragedMorphoAaveLmBuildRequest
+  extends BuildRequest {
   chainId: number
   swapDataDebtCollateral: SwapDataV5
   swapDataInputOutputToken: SwapDataV5
 }
 
-export class LeveragedMorphoBuilder
+export class LeveragedMorphoAaveLmBuilder
   implements
-    TransactionBuilder<FlashMintLeveragedMorphoBuildRequest, TransactionRequest>
+    TransactionBuilder<
+      FlashMintLeveragedMorphoAaveLmBuildRequest,
+      TransactionRequest
+    >
 {
   constructor(private readonly rpcUrl: string) {}
 
   async build(
-    request: FlashMintLeveragedMorphoBuildRequest,
+    request: FlashMintLeveragedMorphoAaveLmBuildRequest,
   ): Promise<TransactionRequest | null> {
     const isValidRequest = this.isValidRequest(request)
     if (!isValidRequest) return null
@@ -35,7 +39,7 @@ export class LeveragedMorphoBuilder
       swapDataDebtCollateral,
       swapDataInputOutputToken,
     } = request
-    const contract = getIndexFlashMintLeveragedMorphoContract(provider)
+    const contract = getIndexFlashMintLeveragedMorphoAaveLMContract(provider)
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
         return await contract.populateTransaction.issueExactSetFromETH(
@@ -78,7 +82,7 @@ export class LeveragedMorphoBuilder
   }
 
   private isValidRequest(
-    request: FlashMintLeveragedMorphoBuildRequest,
+    request: FlashMintLeveragedMorphoAaveLmBuildRequest,
   ): boolean {
     if (isEmptyString(request.inputToken)) return false
     if (isEmptyString(request.inputTokenSymbol)) return false

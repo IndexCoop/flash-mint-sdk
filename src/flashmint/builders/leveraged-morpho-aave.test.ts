@@ -5,9 +5,9 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { IndexCoopEthereum2xIndex, USDC, WETH } from 'constants/tokens'
 import {
-  type FlashMintLeveragedMorphoBuildRequest,
-  LeveragedMorphoBuilder,
-} from 'flashmint/builders/leveraged-morpho'
+  type FlashMintLeveragedMorphoAaveLmBuildRequest,
+  LeveragedMorphoAaveLmBuilder,
+} from 'flashmint/builders/leveraged-morpho-aave'
 import { getLocalHostProviderUrl } from 'tests/utils'
 import { Exchange } from 'utils'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
@@ -18,13 +18,12 @@ const chainId = ChainId.Base
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const providerBase = getRpcProvider(rpcUrl)
 
-const FlashMintLeveragedMorphoAddress =
-  Contracts[chainId].FlashMintLeveragedMorpho
+const FlashMintLeveragedAerodromeAddress =
+  Contracts[chainId].FlashMintLeveragedMorphoAaveLM
 const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
-const uSUI2x = getTokenByChainAndSymbol(chainId, 'uSUI2x')
 
-describe('LeveragedMorphoBuilder()', () => {
+describe('LeveragedMorphoAaveLmBuilder()', () => {
   const contractBase = getFlashMintLeveragedContractForToken(
     getTokenByChainAndSymbol(chainId, 'BTC3X').symbol,
     providerBase,
@@ -39,7 +38,7 @@ describe('LeveragedMorphoBuilder()', () => {
     const buildRequest = createBuildRequest()
     buildRequest.isMinting = true
     buildRequest.outputToken = ''
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -47,7 +46,7 @@ describe('LeveragedMorphoBuilder()', () => {
   test('returns null for invalid request (no input/output token)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputToken = ''
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -55,7 +54,7 @@ describe('LeveragedMorphoBuilder()', () => {
   test('returns null for invalid request (inputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.inputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -63,7 +62,7 @@ describe('LeveragedMorphoBuilder()', () => {
   test('returns null for invalid request (outputTokenAmount = 0)', async () => {
     const buildRequest = createBuildRequest()
     buildRequest.outputTokenAmount = BigNumber.from(0)
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -78,7 +77,7 @@ describe('LeveragedMorphoBuilder()', () => {
       poolIds: [],
       tickSpacing: [500],
     }
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -93,7 +92,7 @@ describe('LeveragedMorphoBuilder()', () => {
       poolIds: [],
       tickSpacing: [500],
     }
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -109,7 +108,7 @@ describe('LeveragedMorphoBuilder()', () => {
       poolIds: [],
       tickSpacing: [500],
     }
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -124,7 +123,7 @@ describe('LeveragedMorphoBuilder()', () => {
       poolIds: [],
       tickSpacing: [500],
     }
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).toBeNull()
   })
@@ -139,19 +138,19 @@ describe('LeveragedMorphoBuilder()', () => {
       poolIds: [],
       tickSpacing: [500],
     }
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     expect(tx).not.toBeNull()
   })
 
-  test('returns a tx for minting uSUI2x (ETH) - Base', async () => {
+  test('returns a tx for minting BTC2X (ETH) - Base', async () => {
     const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
     const buildRequest = createBuildRequest(
       true,
       eth,
       'ETH',
-      uSUI2x.address,
-      uSUI2x.symbol,
+      btc2x.address,
+      btc2x.symbol,
     )
     const refTx = await contractBase.populateTransaction.issueExactSetFromETH(
       buildRequest.outputToken,
@@ -160,19 +159,19 @@ describe('LeveragedMorphoBuilder()', () => {
       buildRequest.swapDataInputOutputToken,
       { value: buildRequest.inputTokenAmount },
     )
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedMorphoAddress)
+    expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
     expect(tx.data).toEqual(refTx.data)
     expect(tx.value).toEqual(buildRequest.inputTokenAmount)
   })
 
-  test('returns a tx for redeeming uSUI2x (ERC20) - Base', async () => {
+  test('returns a tx for redeeming ETH2X (ERC20) - Base', async () => {
     const buildRequest = createBuildRequest(
       false,
-      uSUI2x.address,
-      uSUI2x.symbol,
+      IndexCoopEthereum2xIndex.addressBase!,
+      IndexCoopEthereum2xIndex.symbol,
       usdcAddress,
       'USDC',
     )
@@ -184,18 +183,18 @@ describe('LeveragedMorphoBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
     )
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedMorphoAddress)
+    expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 
-  test('returns a tx for redeeming uSUI2x (ETH) - Base', async () => {
+  test('returns a tx for redeeming ETH2X (ETH) - Base', async () => {
     const buildRequest = createBuildRequest(
       false,
-      uSUI2x.address,
-      uSUI2x.symbol,
+      IndexCoopEthereum2xIndex.addressBase!,
+      IndexCoopEthereum2xIndex.symbol,
       eth,
       'ETH',
     )
@@ -206,10 +205,10 @@ describe('LeveragedMorphoBuilder()', () => {
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
     )
-    const builder = new LeveragedMorphoBuilder(rpcUrl)
+    const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    expect(tx.to).toBe(FlashMintLeveragedMorphoAddress)
+    expect(tx.to).toBe(FlashMintLeveragedAerodromeAddress)
     expect(tx.data).toEqual(refTx.data)
   })
 })
@@ -220,7 +219,7 @@ function createBuildRequest(
   inputTokenSymbol = 'USDC',
   outputToken: string = IndexCoopEthereum2xIndex.addressArbitrum!,
   outputTokenSymbol: string = IndexCoopEthereum2xIndex.symbol,
-): FlashMintLeveragedMorphoBuildRequest {
+): FlashMintLeveragedMorphoAaveLmBuildRequest {
   const collateralDebtSwapData = {
     exchange: Exchange.UniV3,
     path: [USDC.addressArbitrum!, WETH.addressArbitrum!],

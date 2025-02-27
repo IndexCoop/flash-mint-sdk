@@ -9,6 +9,7 @@ import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
 import FLASHMINT_LEVERAGED_AERODROME_ABI from '../constants/abis/FlashMintLeveragedAerodrome.json'
 import FLASHMINT_LEVERAGED_EXTENDED_ABI from '../constants/abis/FlashMintLeveragedExtended.json'
 import FLASHMINT_LEVERAGED_COMPOUND from '../constants/abis/FlashMintLeveragedForCompound.json'
+import FLASHMINT_LEVERAGED_MORPHO_AAVE_ABI from '../constants/abis/FlashMintLeveragedMorpho.json'
 import FLASHMINT_LEVERAGED_MORPHO_AAVE_LM_ABI from '../constants/abis/FlashMintLeveragedMorphoAaveLM.json'
 import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
@@ -111,6 +112,25 @@ export const getIndexFlashMintLeveragedAerodromeContract = (
     signerOrProvider,
   )
 }
+
+/**
+ * Returns an instance of the Index FlashMintLeveragedMorphoAaveLM contract (Base)
+ *
+ * @param signerOrProvider a signer or provider
+ *
+ * @returns an instance of a FlashMintLeveraged contract
+ */
+export const getIndexFlashMintLeveragedMorphoContract = (
+  signerOrProvider: Signer | Provider | undefined,
+): Contract => {
+  const contractAddress = Contracts[ChainId.Base].FlashMintLeveragedMorpho
+  return new Contract(
+    contractAddress,
+    FLASHMINT_LEVERAGED_MORPHO_AAVE_ABI,
+    signerOrProvider,
+  )
+}
+
 /**
  * Returns an instance of the Index FlashMintLeveragedMorphoAaveLM contract (Base)
  *
@@ -201,6 +221,11 @@ export const getFlashMintLeveragedContractForToken = (
   if (chainId === ChainId.Base) {
     const btc2x = getTokenByChainAndSymbol(ChainId.Base, 'BTC2X')
     const btc3x = getTokenByChainAndSymbol(ChainId.Base, 'BTC3X')
+    const uSol2x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL2x')
+    const uSol3x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x')
+    const uSui2x = getTokenByChainAndSymbol(ChainId.Base, 'uSUI2x')
+    const uSui3x = getTokenByChainAndSymbol(ChainId.Base, 'uSUI3x')
+    const wstEth15x = getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x')
     switch (token) {
       case btc2x.symbol:
       case btc3x.symbol:
@@ -211,6 +236,12 @@ export const getFlashMintLeveragedContractForToken = (
           signerOrProvider,
           chainId,
         )
+      case uSol2x.symbol:
+      case uSol3x.symbol:
+      case uSui2x.symbol:
+      case uSui3x.symbol:
+      case wstEth15x.symbol:
+        return getIndexFlashMintLeveragedMorphoContract(signerOrProvider)
     }
     return getIndexFlashMintLeveragedContract(signerOrProvider)
   }
