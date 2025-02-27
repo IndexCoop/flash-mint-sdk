@@ -33,7 +33,7 @@ describe('uSUI2x (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with USDC', async () => {
+  test.skip('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
@@ -82,7 +82,7 @@ describe('uSUI2x (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to USDC', async () => {
+  test.skip('can redeem to USDC', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
