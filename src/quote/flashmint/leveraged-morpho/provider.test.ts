@@ -12,15 +12,12 @@ const chainId = ChainId.Base
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const swapQuoteProvider = new StaticSwapQuoteProvider()
 
-const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
-const cbBTC = getTokenByChainAndSymbol(chainId, 'cbBTC')
 const eth = ETH
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 const uSui = getTokenByChainAndSymbol(chainId, 'uSUI')
 const uSui2x = getTokenByChainAndSymbol(chainId, 'uSUI2x')
-const uSui3x = getTokenByChainAndSymbol(chainId, 'uSUI3x')
 const weth = getTokenByChainAndSymbol(chainId, 'WETH')
-const wstEth15x = getTokenByChainAndSymbol(chainId, 'wstETH15x')
+// const wstEth15x = getTokenByChainAndSymbol(chainId, 'wstETH15x')
 
 const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 
