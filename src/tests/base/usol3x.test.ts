@@ -18,7 +18,7 @@ describe('uSOL3x (Base)', () => {
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(0, chainId)
+    factory = getTestFactoryZeroEx(5, chainId)
   })
 
   test('can mint with ETH', async () => {
