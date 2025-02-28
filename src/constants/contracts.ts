@@ -16,7 +16,7 @@ export const Contracts: { [key: number]: any } = {
   [ChainId.Base]: {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
     FlashMintLeveragedAerodrome: '0x0b2aEa82E65Dad8b2718c8a29cdfaD1B8EC77974',
-    FlashMintLeveragedMorpho: '0xe394ce17e378A77049D0c34385CC551b72db7dF0',
+    FlashMintLeveragedMorpho: '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42',
     FlashMintLeveragedMorphoAaveLM:
       '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8',
     FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
