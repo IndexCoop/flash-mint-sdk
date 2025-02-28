@@ -10,8 +10,7 @@ import {
   wrapETH,
 } from 'tests/utils'
 
-// TODO: activate once implemented
-describe.skip('wstETH15x (Base)', () => {
+describe('wstETH15x (Base)', () => {
   const chainId = ChainId.Base
   const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
