@@ -10,7 +10,7 @@ import {
   wrapETH,
 } from 'tests/utils'
 
-describe.skip('uSOL3x (Base)', () => {
+describe('uSOL3x (Base)', () => {
   const chainId = ChainId.Base
   const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSOL3x')
