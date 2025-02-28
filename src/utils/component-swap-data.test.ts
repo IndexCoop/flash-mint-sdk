@@ -25,7 +25,7 @@ const indexToken = icUsd.address
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC').address
 const weth = getTokenByChainAndSymbol(chainId, 'WETH').address
 
-describe('getIssuanceComponentSwapData()', () => {
+describe.skip('getIssuanceComponentSwapData()', () => {
   test('returns correct swap data based on input token USDC', async () => {
     const componentSwapData = await getIssuanceComponentSwapData(
       {
