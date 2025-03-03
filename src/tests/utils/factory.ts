@@ -124,3 +124,46 @@ export class TestFactory {
     return this.txFactory.signer
   }
 }
+
+export class TestFactoryV2 {
+  private quote: FlashMintQuote | null = null
+  private quoteProvider: FlashMintQuoteProvider
+  private txFactory: TxTestFactory
+  constructor(
+    rpcUrl: string,
+    signer: Wallet,
+    swapQuoteProvider: SwapQuoteProvider,
+  ) {
+    const provider = new JsonRpcProvider(rpcUrl)
+    this.quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)
+    this.txFactory = new TxTestFactory(provider, signer)
+  }
+
+  async executeTx(gasLimit?: BigNumber) {
+    if (!this.quote) fail()
+    if (this.quote.isMinting) {
+      await this.txFactory.testMinting(this.quote)
+      return
+    }
+    await this.txFactory.testRedeeming(this.quote, gasLimit)
+  }
+
+  async fetchQuote(config: FlashMintQuoteRequest): Promise<FlashMintQuote> {
+    const quote = await this.quoteProvider.getQuote(config)
+    expect(quote).toBeDefined()
+    if (!quote) fail()
+    expect(quote.isMinting).toEqual(config.isMinting)
+    expect(quote.indexTokenAmount.toString()).toEqual(config.indexTokenAmount)
+    expect(quote.inputOutputAmount.gt(0)).toBe(true)
+    this.quote = quote
+    return quote
+  }
+
+  getProvider(): JsonRpcProvider {
+    return this.txFactory.provider
+  }
+
+  getSigner(): Wallet {
+    return this.txFactory.signer
+  }
+}

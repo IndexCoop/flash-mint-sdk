@@ -1,9 +1,10 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
-  type TestFactory,
+  type TestFactoryV2,
   balanceOf,
-  getTestFactoryZeroEx,
+  getTestFactoryV2ZeroEx,
   transferFromWhale,
   wei,
   wrapETH,
@@ -11,18 +12,17 @@ import {
 
 describe('hyETH', () => {
   const chainId = 1
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'hyETH')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
-  let factory: TestFactory
+  let factory: TestFactoryV2
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(4)
+    factory = getTestFactoryV2ZeroEx(4)
   })
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('3').toString(),
       slippage: 0.5,
@@ -45,7 +45,7 @@ describe('hyETH', () => {
   test.skip('can mint with ETH (large amout)', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('550').toString(),
       slippage: 0.5,
@@ -80,7 +80,7 @@ describe('hyETH', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
@@ -91,7 +91,7 @@ describe('hyETH', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('200').toString(),
       slippage: 0.5,
     })
@@ -102,7 +102,7 @@ describe('hyETH', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })

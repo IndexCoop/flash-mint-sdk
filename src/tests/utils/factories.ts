@@ -6,7 +6,8 @@ import {
   getTestRpcProvider,
   getZeroExSwapQuoteProvider,
 } from 'tests/utils'
-import { TestFactory } from 'tests/utils/factory'
+import { TestFactory, TestFactoryV2 } from 'tests/utils/factory'
+import { getRpcProvider } from 'utils/rpc-provider'
 
 export function getTestFactoryZeroEx(
   signerAccountNo: number,
@@ -17,6 +18,18 @@ export function getTestFactoryZeroEx(
   const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
   const rpcUrl = getLocalHostProviderUrl(chainId)
   return new TestFactory(rpcUrl, signer, swapQuoteProvider)
+}
+
+export function getTestFactoryV2ZeroEx(
+  signerAccountNo: number,
+  chainId = ChainId.Mainnet,
+) {
+  const localhostUrl = 'http://127.0.0.1:8547/'
+  const provider = getRpcProvider(localhostUrl)
+  const signer = getSignerAccount(signerAccountNo, provider)
+  const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
+  const rpcUrl = localhostUrl
+  return new TestFactoryV2(rpcUrl, signer, swapQuoteProvider)
 }
 
 export function getMainnetTestFactoryUniswap(
