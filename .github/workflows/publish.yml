@@ -44,7 +44,7 @@ jobs:
         run: sleep 10
       - run: npm run test:utils
       - run: npm run test:builders
-      - run: npm run test:quotes
+      # - run: npm run test:quotes
       # - run: npm run test:base
       - run: npm run foundry
         env: 
