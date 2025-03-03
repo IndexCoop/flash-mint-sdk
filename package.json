@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "build:watch": "npm run build -- --watch src",
-    "foundry": "export $(cat .env | xargs) && anvil -p 8547 -f $MAINNET_ALCHEMY_API",
+    "foundry": "anvil -p 8547 -f $MAINNET_ALCHEMY_API",
     "hardhat:foundry": "npx hardhat node --network foundry --port 8547",
     "hardhat": "npx hardhat node --verbose",
     "hardhat:arbitrum": "npx hardhat node --config hardhat.arbitrum.config.js --port 8548",
