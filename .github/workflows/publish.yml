@@ -46,7 +46,7 @@ jobs:
       - run: npm run test:builders
       # - run: npm run test:quotes
       # - run: npm run test:base
-      - run: npm run foundry
+      - run: npm run foundry &
         env: 
           MAINNET_ALCHEMY_API: ${{ secrets.MAINNET_ALCHEMY_API }}
       - run: npm run test:hyeth
