@@ -9,6 +9,9 @@ module.exports = {
     },
   },
   networks: {
+    foundry: {
+      url: " http://127.0.0.1:8545",
+    },
     hardhat: {
       chainId: 1,
       forking: {

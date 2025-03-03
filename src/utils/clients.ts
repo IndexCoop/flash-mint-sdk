@@ -1,7 +1,7 @@
 import { http, createPublicClient } from 'viem'
 import { base, mainnet } from 'viem/chains'
 
-import { ChainId } from 'constants/chains'
+import { ChainId } from '../constants/chains'
 
 export function createClient(chainId: number) {
   if (chainId === ChainId.Base) {
