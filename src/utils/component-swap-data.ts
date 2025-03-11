@@ -5,9 +5,9 @@ import { type Address, parseAbi } from 'viem'
 
 import { AddressZero } from 'constants/addresses'
 import type { SwapQuote, SwapQuoteProvider } from 'quote'
+import { getIssuanceModule } from 'utils'
 import { isSameAddress } from 'utils/addresses'
 import { createClientWithUrl } from 'utils/clients'
-import { getIssuanceModule } from 'utils/issuanceModules'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { Exchange, type SwapDataV3 } from 'utils/swap-data'
 

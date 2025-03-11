@@ -4,7 +4,7 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
-import { getIssuanceModule } from '../../utils/issuanceModules'
+import { getIssuanceModule } from '../../utils/issuance-modules'
 import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 

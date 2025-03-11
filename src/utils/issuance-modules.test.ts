@@ -19,7 +19,7 @@ import {
   TheUSDCYieldIndex,
 } from 'constants/tokens'
 
-import { getIssuanceModule } from './issuanceModules'
+import { getIssuanceModule } from './issuance-modules'
 
 describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for BTC2X', async () => {
