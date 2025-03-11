@@ -2,6 +2,7 @@ import type { Provider } from '@ethersproject/abstract-provider'
 import type { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { base } from 'viem/chains'
 
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
@@ -35,6 +36,8 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
 } from '../constants/tokens'
+
+import type { Address } from 'viem'
 
 export function getExchangeIssuanceLeveragedContractAddress(
   chainId: number = ChainId.Mainnet,
@@ -337,4 +340,9 @@ export const getFlashMintZeroExContractForToken = (
     default:
       return getFlashMintZeroExContract(providerSigner, chainId)
   }
+}
+
+export const FlashMintContractForProduct: { [key: Address]: Address } = {
+  [getTokenByChainAndSymbol(base.id, 'BTC2X').address]:
+    Contracts[base.id].FlashMintLeveragedZeroEx,
 }
