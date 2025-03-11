@@ -20,6 +20,7 @@ export const Contracts: { [key: number]: any } = {
     FlashMintLeveragedMorphoAaveLM:
       '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8',
     FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
+    FlashMintLeveragedZeroEx: '0x2A009f06C7d8eF50F016F0890253D78Ce78104B3',
     FlashMintWrapped: '0xb929Ca7279B193d2B5428eED0AB685ECA9Ed567A',
   },
 }
