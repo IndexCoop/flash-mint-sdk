@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
+import { FlashMintAbis } from 'utils/abis'
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
 import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
@@ -345,4 +346,12 @@ export const getFlashMintZeroExContractForToken = (
 export const FlashMintContractForProduct: { [key: Address]: Address } = {
   [getTokenByChainAndSymbol(base.id, 'BTC2X').address]:
     Contracts[base.id].FlashMintLeveragedZeroEx,
+}
+
+export function getFlashMintContract(
+  contract: Address,
+  providerSigner: Signer | Provider | undefined,
+): Contract {
+  const abi = FlashMintAbis[contract]
+  return new Contract(contract, abi, providerSigner)
 }
