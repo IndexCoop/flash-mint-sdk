@@ -18,6 +18,11 @@ export interface SwapData {
   pool: string
 }
 
+export interface SwapDataV2 {
+  swapTarget: string
+  callData: string
+}
+
 export interface SwapDataV3 {
   exchange: Exchange
   path: string[]
