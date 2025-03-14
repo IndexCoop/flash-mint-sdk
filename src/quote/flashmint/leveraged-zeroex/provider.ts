@@ -27,7 +27,7 @@ export interface FlashMintLeveragedZeroExQuote {
   inputAmount: BigNumber
   outputAmount: BigNumber
   swapDataDebtCollateral: SwapData
-  swapDataPaymentToken: SwapData
+  swapDataInputOutputToken: SwapData
 }
 
 export class LeveragedZeroExQuoteProvider
@@ -92,7 +92,7 @@ export class LeveragedZeroExQuoteProvider
       isMinting ? inputToken.address : outputToken.address,
       isMinting ? inputToken.symbol : outputToken.symbol,
     )
-    const { swapDataPaymentToken, paymentTokenAmount } =
+    const { swapDataInputOutputToken, paymentTokenAmount } =
       await this.getSwapDataAndPaymentTokenAmount(
         indexTokenSymbol,
         leveragedTokenData.collateralToken,
@@ -119,7 +119,7 @@ export class LeveragedZeroExQuoteProvider
       inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
       outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
       swapDataDebtCollateral,
-      swapDataPaymentToken,
+      swapDataInputOutputToken,
     }
   }
 
@@ -186,11 +186,11 @@ export class LeveragedZeroExQuoteProvider
     includeSources: Exchange[],
     chainId: number,
   ): Promise<{
-    swapDataPaymentToken: SwapData
+    swapDataInputOutputToken: SwapData
     paymentTokenAmount: BigNumber
   }> {
     // By default the input/output swap data can be empty (as it will be ignored)
-    let swapDataPaymentToken: SwapData = {
+    let swapDataInputOutputToken: SwapData = {
       exchange: Exchange.None,
       path: [
         '0x0000000000000000000000000000000000000000',
@@ -225,14 +225,14 @@ export class LeveragedZeroExQuoteProvider
       const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
       if (result?.swapData) {
         const { inputAmount, outputAmount, swapData } = result
-        swapDataPaymentToken = swapData
+        swapDataInputOutputToken = swapData
         paymentTokenAmount = isMinting
           ? BigNumber.from(inputAmount)
           : BigNumber.from(outputAmount)
       }
     }
 
-    return { swapDataPaymentToken, paymentTokenAmount }
+    return { swapDataInputOutputToken, paymentTokenAmount }
   }
 }
 
