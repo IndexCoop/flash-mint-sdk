@@ -4,7 +4,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { FlashMintZeroExMainnetAddress } from 'constants/contracts'
 import { getLocalHostProviderUrl, getTestRpcProvider } from 'tests/utils'
 import { getFlashMintZeroExContractForToken } from 'utils/contracts'
-import { getIssuanceModule } from 'utils/issuanceModules'
+import { getIssuanceModule } from 'utils/issuance-modules'
 import { wei } from 'utils/numbers'
 import {
   type FlashMintZeroExBuildRequest,
