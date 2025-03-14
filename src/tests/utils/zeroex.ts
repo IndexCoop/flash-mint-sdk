@@ -1,5 +1,6 @@
 import { ChainId } from 'constants/chains'
 import { ZeroExSwapQuoteProvider } from 'quote'
+import { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
 
 function get0xSwapPathOverride(chainId: number) {
   switch (chainId) {
@@ -23,6 +24,6 @@ export function getZeroExSwapQuoteProvider(chainId: number) {
   )
 }
 
-// export function getZeroExV2SwapQuoteProvider() {
-//   return new ZeroExV2SwapQuoteProvider(process.env.ZEROEX_API_KEY!)
-// }
+export function getZeroExV2SwapQuoteProvider() {
+  return new ZeroExV2SwapQuoteProvider(process.env.ZEROEX_API_KEY!)
+}
