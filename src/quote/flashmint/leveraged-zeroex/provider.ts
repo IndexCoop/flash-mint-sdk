@@ -13,18 +13,19 @@ import type { QuoteProvider, QuoteToken } from '../../interfaces'
 import type { SwapQuoteProvider, SwapQuoteRequest } from '../../swap'
 
 export interface FlashMintLeveragedZeroExQuoteRequest {
+  chainId: number
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
-  indexTokenAmount: BigNumber
+  inputAmount: string
+  outputAmount: string
   slippage: number
+  taker: string
 }
 
 export interface FlashMintLeveragedZeroExQuote {
-  inputTokenAmount: BigNumber
-  outputTokenAmount: BigNumber
-  indexTokenAmount: BigNumber
-  inputOutputTokenAmount: BigNumber
+  inputAmount: BigNumber
+  outputAmount: BigNumber
   swapDataDebtCollateral: SwapData
   swapDataPaymentToken: SwapData
 }
@@ -45,8 +46,10 @@ export class LeveragedZeroExQuoteProvider
     request: FlashMintLeveragedZeroExQuoteRequest,
   ): Promise<FlashMintLeveragedZeroExQuote | null> {
     const provider = getRpcProvider(this.rpcUrl)
-    const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
-      request
+    const { inputToken, isMinting, outputToken, slippage } = request
+    const indexTokenAmount = BigNumber.from(
+      isMinting ? request.outputAmount : request.inputAmount,
+    )
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
     const sources = [Exchange.Sushiswap, Exchange.UniV3]
@@ -113,10 +116,8 @@ export class LeveragedZeroExQuoteProvider
       isMinting,
     )
     return {
-      inputTokenAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
-      outputTokenAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
-      indexTokenAmount,
-      inputOutputTokenAmount,
+      inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
+      outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
       swapDataDebtCollateral,
       swapDataPaymentToken,
     }
