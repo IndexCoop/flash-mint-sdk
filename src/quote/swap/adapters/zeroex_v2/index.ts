@@ -22,37 +22,32 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
   async getSwapQuote(request: SwapQuoteRequestV2): Promise<SwapQuoteV2 | null> {
     const { chainId, inputToken, outputToken, slippage } = request
     const path = this.getPath(request)
-    try {
-      const res = await getClientV2(path, this.apiKey)
+    const res = await getClientV2(path, this.apiKey)
 
-      if (!res.liquidityAvailable) {
-        throw new ZeroExV2SwapQuoteProviderError(
-          ZeroExV2SwapQuoteProviderErrorType.insufficientLiquidity,
-          'Insufficient liquidity for swap',
-        )
-      }
+    if (!res.liquidityAvailable) {
+      throw new ZeroExV2SwapQuoteProviderError(
+        ZeroExV2SwapQuoteProviderErrorType.insufficientLiquidity,
+        'Insufficient liquidity for swap',
+      )
+    }
 
-      if (!isZeroExApiV2SwapResponse(res)) {
-        throw new Error('Invalid response format from ZeroEx API')
-      }
+    if (!isZeroExApiV2SwapResponse(res)) {
+      throw new Error('Invalid response format from ZeroEx API')
+    }
 
-      const swapResponse: ZeroExApiV2SwapResponse = res
+    const swapResponse: ZeroExApiV2SwapResponse = res
 
-      return {
-        chainId,
-        inputToken,
-        outputToken,
-        inputAmount: swapResponse.sellAmount,
-        outputAmount: swapResponse.buyAmount,
-        slippage,
-        swapData: {
-          swapTarget: swapResponse.transaction.to,
-          callData: swapResponse.transaction.data,
-        },
-      }
-    } catch (e) {
-      console.log(e)
-      return null
+    return {
+      chainId,
+      inputToken,
+      outputToken,
+      inputAmount: swapResponse.sellAmount,
+      outputAmount: swapResponse.buyAmount,
+      slippage,
+      swapData: {
+        swapTarget: swapResponse.transaction.to,
+        callData: swapResponse.transaction.data,
+      },
     }
   }
 
