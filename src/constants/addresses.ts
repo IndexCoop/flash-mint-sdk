@@ -1,5 +1,7 @@
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 export const EthAddress = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+export const HashZero =
+  '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 // 0x v2
 // https://0x.org/docs/introduction/0x-cheat-sheet#allowanceholder-contract
