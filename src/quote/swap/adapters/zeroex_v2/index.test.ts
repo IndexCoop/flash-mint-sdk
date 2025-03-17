@@ -1,10 +1,10 @@
 import 'dotenv/config'
 
-import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
-import { ZeroExV2AllowanceHolderContract } from 'constants/addresses'
 import { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
+import { isZeroExV2AllowanceHolderContract } from 'utils'
 
 import type { SwapQuoteV2 } from 'quote/swap/interfaces'
 
@@ -36,13 +36,9 @@ describe('ZeroExApi', () => {
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(
-      isAddressEqual(
-        quote.swapData?.swapTarget,
-        ZeroExV2AllowanceHolderContract,
-      ),
-    ).toBe(true)
-    expect(quote.swapData?.callData).not.toBeUndefined()
+    const { swapData } = quote
+    expect(isZeroExV2AllowanceHolderContract(swapData?.swapTarget)).toBe(true)
+    expect(swapData?.callData).not.toBeUndefined()
   })
 
   test('should return quotes for base', async () => {
@@ -63,13 +59,9 @@ describe('ZeroExApi', () => {
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(
-      isAddressEqual(
-        quote.swapData?.swapTarget,
-        ZeroExV2AllowanceHolderContract,
-      ),
-    ).toBe(true)
-    expect(quote.swapData?.callData).not.toBeUndefined()
+    const { swapData } = quote
+    expect(isZeroExV2AllowanceHolderContract(swapData?.swapTarget)).toBe(true)
+    expect(swapData?.callData).not.toBeUndefined()
   })
 
   test('should return quotes for base (cbBTC)', async () => {
@@ -90,13 +82,9 @@ describe('ZeroExApi', () => {
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(
-      isAddressEqual(
-        quote.swapData?.swapTarget,
-        ZeroExV2AllowanceHolderContract,
-      ),
-    ).toBe(true)
-    expect(quote.swapData?.callData).not.toBeUndefined()
+    const { swapData } = quote
+    expect(isZeroExV2AllowanceHolderContract(swapData?.swapTarget)).toBe(true)
+    expect(swapData?.callData).not.toBeUndefined()
   })
 
   test('should handle no liquidity available', async () => {
