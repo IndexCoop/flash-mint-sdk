@@ -1,6 +1,4 @@
 import { getClientV2 } from './client'
-import { decode } from './decode'
-import { decodeActions } from './decode-actions'
 import {
   ZeroExV2SwapQuoteProviderError,
   ZeroExV2SwapQuoteProviderErrorType,
@@ -16,7 +14,6 @@ import type {
   SwapQuoteRequestV2,
   SwapQuoteV2,
 } from 'quote/swap/interfaces'
-import type { Hex } from 'viem'
 import type { ZeroExApiV2SwapResponse } from './types'
 
 export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
@@ -25,39 +22,37 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
   async getSwapQuote(request: SwapQuoteRequestV2): Promise<SwapQuoteV2 | null> {
     const { chainId, inputToken, outputToken, slippage } = request
     const path = this.getPath(request)
-    const res = await getClientV2(path, this.apiKey)
+    try {
+      const res = await getClientV2(path, this.apiKey)
 
-    if (!res.liquidityAvailable) {
-      throw new ZeroExV2SwapQuoteProviderError(
-        ZeroExV2SwapQuoteProviderErrorType.insufficientLiquidity,
-        'Insufficient liquidity for swap',
-      )
-    }
+      if (!res.liquidityAvailable) {
+        throw new ZeroExV2SwapQuoteProviderError(
+          ZeroExV2SwapQuoteProviderErrorType.insufficientLiquidity,
+          'Insufficient liquidity for swap',
+        )
+      }
 
-    if (!isZeroExApiV2SwapResponse(res)) {
-      throw new Error('Invalid response format from ZeroEx API')
-    }
+      if (!isZeroExApiV2SwapResponse(res)) {
+        throw new Error('Invalid response format from ZeroEx API')
+      }
 
-    const swapResponse: ZeroExApiV2SwapResponse = res
-    const source = swapResponse.route.fills[0].source
-    const actions = decode(swapResponse.transaction.data as Hex)
-    const swapData = decodeActions(
-      actions as Hex[],
-      source,
-      chainId,
-      inputToken,
-      outputToken,
-    )
+      const swapResponse: ZeroExApiV2SwapResponse = res
 
-    return {
-      chainId,
-      inputToken,
-      outputToken,
-      callData: swapResponse.transaction.data,
-      inputAmount: swapResponse.sellAmount,
-      outputAmount: swapResponse.buyAmount,
-      slippage,
-      swapData,
+      return {
+        chainId,
+        inputToken,
+        outputToken,
+        inputAmount: swapResponse.sellAmount,
+        outputAmount: swapResponse.buyAmount,
+        slippage,
+        swapData: {
+          swapTarget: swapResponse.transaction.to,
+          callData: swapResponse.transaction.data,
+        },
+      }
+    } catch (e) {
+      console.log(e)
+      return null
     }
   }
 
