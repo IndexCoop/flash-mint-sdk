@@ -383,7 +383,6 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.leveragedZeroEx: {
-        console.log('HERE')
         const { inputTokenAmount, taker } = request
         if (
           !this.swapQuoteProviderV2 ||
