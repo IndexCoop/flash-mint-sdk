@@ -67,6 +67,7 @@ export function getContractType(
       case IndexCoopEthereum3xIndex.symbol:
       case IndexCoopInverseBitcoinIndex.symbol:
       case IndexCoopInverseEthereumIndex.symbol:
+        // TODO:
         return FlashMintContractType.leveragedExtended
     }
   }
@@ -81,16 +82,18 @@ export function getContractType(
     switch (token) {
       case btc2x.symbol:
       case btc3x.symbol:
+        // TODO:
         return FlashMintContractType.leveragedMorphoAaveLM
       case IndexCoopEthereum2xIndex.symbol:
       case IndexCoopEthereum3xIndex.symbol:
+        // TODO:
         return FlashMintContractType.leveragedExtended
       case uSol2x.symbol:
       case uSol3x.symbol:
       case uSui2x.symbol:
       case uSui3x.symbol:
       case wstEth15x.symbol:
-        return FlashMintContractType.leveragedMorpho
+        return FlashMintContractType.leveragedZeroEx
     }
   }
   if (token === HighYieldETHIndex.symbol) {

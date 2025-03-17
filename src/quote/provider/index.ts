@@ -6,6 +6,7 @@ import {
   LeveragedAerodromeBuilder,
   LeveragedExtendedTransactionBuilder,
   LeveragedTransactionBuilder,
+  LeveragedZeroExBuilder,
   WrappedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
@@ -29,6 +30,7 @@ import type {
   FlashMintLeveragedAerodromBuildRequest,
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
+  FlashMintLeveragedZeroExBuilderBuildRequest,
   FlashMintWrappedBuildRequest,
   FlashMintZeroExBuildRequest,
 } from 'flashmint'
@@ -38,8 +40,9 @@ import {
 } from 'flashmint/builders/leveraged-morpho'
 import type { FlashMintLeveragedMorphoAaveLmBuildRequest } from 'flashmint/builders/leveraged-morpho-aave'
 import { LeveragedMorphoQuoteProvider } from 'quote/flashmint/leveraged-morpho'
+import { LeveragedZeroExQuoteProvider } from 'quote/flashmint/leveraged-zeroex'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
-import type { SwapQuoteProvider } from '../swap'
+import type { SwapQuoteProvider, SwapQuoteProviderV2 } from '../swap'
 
 export enum FlashMintContractType {
   hyeth = 0,
@@ -48,19 +51,20 @@ export enum FlashMintContractType {
   leveragedExtended = 3,
   leveragedMorpho = 4,
   leveragedMorphoAaveLM = 5,
-  nav = 6,
-  wrapped = 7,
-  zeroEx = 8,
+  leveragedZeroEx = 6,
+  nav = 7,
+  wrapped = 8,
+  zeroEx = 9,
 }
 
 export interface FlashMintQuoteRequest {
-  // TODO: add taker?
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
   indexTokenAmount: string
   inputTokenAmount?: string
   slippage: number
+  taker?: string
 }
 
 export interface FlashMintQuote {
@@ -84,12 +88,13 @@ export class FlashMintQuoteProvider
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider,
+    private readonly swapQuoteProviderV2?: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest,
   ): Promise<FlashMintQuote | null> {
-    const { rpcUrl, swapQuoteProvider } = this
+    const { rpcUrl, swapQuoteProvider, swapQuoteProviderV2 } = this
     const provider = getRpcProvider(rpcUrl)
     const { inputToken, inputTokenAmount, isMinting, outputToken, slippage } =
       request
@@ -377,6 +382,52 @@ export class FlashMintQuoteProvider
           tx,
         )
       }
+      case FlashMintContractType.leveragedZeroEx: {
+        console.log('HERE')
+        const { inputTokenAmount, taker } = request
+        if (
+          !this.swapQuoteProviderV2 ||
+          inputTokenAmount === undefined ||
+          taker === undefined
+        ) {
+          throw new Error('400')
+        }
+        const leveragedZeroExQuoteProvider = new LeveragedZeroExQuoteProvider(
+          rpcUrl,
+          swapQuoteProviderV2!,
+        )
+        const leveragedQuote = await leveragedZeroExQuoteProvider.getQuote({
+          ...request,
+          chainId,
+          inputAmount: inputTokenAmount!,
+          outputAmount: request.indexTokenAmount,
+          taker: taker!,
+        })
+        if (!leveragedQuote) return null
+        const builder = new LeveragedZeroExBuilder(rpcUrl)
+        const txRequest: FlashMintLeveragedZeroExBuilderBuildRequest = {
+          chainId,
+          isMinting,
+          inputToken: inputToken.address,
+          inputTokenSymbol: inputToken.symbol,
+          inputTokenAmount: leveragedQuote.inputAmount,
+          outputToken: outputToken.address,
+          outputTokenSymbol: outputToken.symbol,
+          outputTokenAmount: leveragedQuote.outputAmount,
+          swapDataDebtCollateral: leveragedQuote.swapDataDebtCollateral,
+          swapDataInputOutputToken: leveragedQuote.swapDataInputOutputToken,
+        }
+        const tx = await builder.build(txRequest)
+        if (!tx) return null
+        return buildQuoteResponse(
+          request,
+          chainId,
+          contractType,
+          isMinting ? leveragedQuote.inputAmount : leveragedQuote.outputAmount,
+          tx,
+        )
+      }
+
       case FlashMintContractType.wrapped: {
         const wrappedQuoteProvider = new WrappedQuoteProvider(
           rpcUrl,
