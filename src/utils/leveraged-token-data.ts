@@ -15,6 +15,14 @@ export interface LeveragedTokenData {
   debtAmount: BigNumber
 }
 
+export interface LeveragedZeroExTokenData {
+  collateralAToken: string
+  collateralToken: string
+  debtToken: string
+  collateralAmount: bigint
+  debtAmount: bigint
+}
+
 export async function getLeveragedTokenData(
   indexTokenAddress: string,
   indexTokenAmount: BigNumber,
@@ -52,7 +60,7 @@ export async function getLeveragedZeroExTokenData(
   params: GetLeveragedTokenDataParams,
   chainId: number,
   rpcUrl: string,
-): Promise<LeveragedTokenData | null> {
+): Promise<LeveragedZeroExTokenData | null> {
   try {
     const { indexTokenAddress, indexTokenAmount, isIssuance, isAave } = params
     const contract = Contracts[chainId].FlashMintLeveragedZeroEx
@@ -64,7 +72,7 @@ export async function getLeveragedZeroExTokenData(
       functionName: 'getLeveragedTokenData',
       args: [indexTokenAddress, indexTokenAmount, isIssuance, isAave],
     })
-    return data as LeveragedTokenData | null
+    return data as LeveragedZeroExTokenData | null
   } catch (error) {
     console.error('Error getting leveraged token data:', error)
     return null
