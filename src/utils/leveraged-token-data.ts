@@ -1,3 +1,4 @@
+import { Contracts } from 'constants/contracts'
 import { FlashMintAbis } from 'utils/abis'
 import { createClientWithUrl } from 'utils/clients'
 import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
@@ -41,20 +42,20 @@ export async function getLeveragedTokenData(
 }
 
 type GetLeveragedTokenDataParams = {
-  indexTokenAddress: string
+  indexTokenAddress: Address
   indexTokenAmount: bigint
   isIssuance: boolean
   isAave: boolean
 }
 
 export async function getLeveragedZeroExTokenData(
-  contract: Address,
   params: GetLeveragedTokenDataParams,
   chainId: number,
   rpcUrl: string,
 ): Promise<LeveragedTokenData | null> {
   try {
     const { indexTokenAddress, indexTokenAmount, isIssuance, isAave } = params
+    const contract = Contracts[chainId].FlashMintLeveragedZeroEx
     const abi = FlashMintAbis[contract]
     const publicClient = createClientWithUrl(chainId, rpcUrl)!
     const data = await publicClient.readContract({
