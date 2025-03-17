@@ -1,15 +1,16 @@
-import type { BigNumber } from '@ethersproject/bignumber'
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { FlashMintQuoteProvider } from 'quote'
+import { approveErc20, balanceOf } from './'
+
+import type { BigNumber } from '@ethersproject/bignumber'
 import type { Wallet } from '@ethersproject/wallet'
 
-import {
-  type FlashMintQuote,
-  FlashMintQuoteProvider,
-  type FlashMintQuoteRequest,
-  type SwapQuoteProvider,
+import type {
+  FlashMintQuote,
+  FlashMintQuoteRequest,
+  SwapQuoteProvider,
+  SwapQuoteProviderV2,
 } from 'quote'
-
-import { approveErc20, balanceOf } from './'
 
 class TxTestFactory {
   constructor(
@@ -90,9 +91,14 @@ export class TestFactory {
     rpcUrl: string,
     signer: Wallet,
     swapQuoteProvider: SwapQuoteProvider,
+    swapQuoteProviderV2?: SwapQuoteProviderV2,
   ) {
     const provider = new JsonRpcProvider(rpcUrl)
-    this.quoteProvider = new FlashMintQuoteProvider(rpcUrl, swapQuoteProvider)
+    this.quoteProvider = new FlashMintQuoteProvider(
+      rpcUrl,
+      swapQuoteProvider,
+      swapQuoteProviderV2,
+    )
     this.txFactory = new TxTestFactory(provider, signer)
   }
 
