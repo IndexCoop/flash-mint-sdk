@@ -1,4 +1,4 @@
-import type { Exchange, SwapData, SwapDataV2, SwapDataV5 } from 'utils'
+import type { Exchange, SwapData, SwapDataV2 } from 'utils'
 
 export interface SwapQuote {
   chainId: number
