@@ -3,11 +3,11 @@ import 'dotenv/config'
 import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
+import { ZeroExV2AllowanceHolderContract } from 'constants/addresses'
 import { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
 
 import type { SwapQuoteV2 } from 'quote/swap/interfaces'
 
-const AllowanceHolderContract = '0x0000000000001fF3684f28c67538d4D072C22734' // 0x v2
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 
@@ -37,7 +37,10 @@ describe('ZeroExApi', () => {
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
     expect(
-      isAddressEqual(quote.swapData?.swapTarget, AllowanceHolderContract),
+      isAddressEqual(
+        quote.swapData?.swapTarget,
+        ZeroExV2AllowanceHolderContract,
+      ),
     ).toBe(true)
     expect(quote.swapData?.callData).not.toBeUndefined()
   })
@@ -61,7 +64,10 @@ describe('ZeroExApi', () => {
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
     expect(
-      isAddressEqual(quote.swapData?.swapTarget, AllowanceHolderContract),
+      isAddressEqual(
+        quote.swapData?.swapTarget,
+        ZeroExV2AllowanceHolderContract,
+      ),
     ).toBe(true)
     expect(quote.swapData?.callData).not.toBeUndefined()
   })
@@ -85,7 +91,10 @@ describe('ZeroExApi', () => {
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
     expect(
-      isAddressEqual(quote.swapData?.swapTarget, AllowanceHolderContract),
+      isAddressEqual(
+        quote.swapData?.swapTarget,
+        ZeroExV2AllowanceHolderContract,
+      ),
     ).toBe(true)
     expect(quote.swapData?.callData).not.toBeUndefined()
   })
