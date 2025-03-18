@@ -227,7 +227,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     validateSwapData(quote.swapDataInputOutputToken)
   })
 
-  test.only('returns quote for uSOL2x - redeeming to ETH', async () => {
+  test('returns quote for uSOL2x - redeeming to ETH', async () => {
     const request = {
       chainId: ChainId.Base,
       isMinting: false,
@@ -249,7 +249,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     validateSwapData(quote.swapDataInputOutputToken)
   })
 
-  test.only('returns quote for uSOL2x - redeeming to USDC', async () => {
+  test('returns quote for uSOL2x - redeeming to USDC', async () => {
     const request = {
       chainId: ChainId.Base,
       isMinting: false,
