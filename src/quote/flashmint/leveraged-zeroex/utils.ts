@@ -13,7 +13,6 @@ export async function getZeroExResponse(
   if (isQuote && taker === undefined) {
     throw new Error('taker is required when getting actual quote')
   }
-  // TODO: Add param selling whole contract balance
   const priceParams = new URLSearchParams({
     chainId: chainId.toString(),
     sellToken,
