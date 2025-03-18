@@ -28,8 +28,8 @@ export interface FlashMintLeveragedZeroExQuoteRequest {
 }
 
 export interface FlashMintLeveragedZeroExQuote {
-  inputAmount: BigNumber
-  outputAmount: BigNumber
+  inputAmount: string
+  outputAmount: string
   swapDataDebtCollateral: SwapDataV2
   swapDataInputOutputToken: SwapDataV2
 }
@@ -113,8 +113,14 @@ export class LeveragedZeroExQuoteProvider
     )
 
     return {
-      inputAmount: isMinting ? inputOutputTokenAmount : indexTokenAmount,
-      outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
+      inputAmount: (isMinting
+        ? inputOutputTokenAmount
+        : indexTokenAmount
+      ).toString(),
+      outputAmount: (isMinting
+        ? indexTokenAmount
+        : inputOutputTokenAmount
+      ).toString(),
       swapDataDebtCollateral,
       swapDataInputOutputToken,
     }
@@ -128,21 +134,38 @@ export class LeveragedZeroExQuoteProvider
     request: FlashMintLeveragedZeroExQuoteRequest,
   ) {
     const { chainId, slippage, taker } = request
+
+    const debtAmount = BigNumber.from(leveragedTokenData.debtAmount.toString())
+    const targetBuyAmount = debtAmount.mul(1001).div(1000)
+    const minBuyAmount = debtAmount
+    const maxBuyAmount = debtAmount.mul(1005).div(1000)
+    const sellAmount = await getSellAmount(
+      chainId,
+      leveragedTokenData.collateralToken,
+      leveragedTokenData.debtToken,
+      targetBuyAmount,
+      minBuyAmount,
+      maxBuyAmount,
+      BigNumber.from(leveragedTokenData.collateralAmount.toString()),
+    )
+
     const quoteRequest: SwapQuoteRequestV2 = {
       chainId,
       inputToken: leveragedTokenData.collateralToken,
       outputToken: leveragedTokenData.debtToken,
-      // FIXME:
-      // TODO:
-      inputAmount: leveragedTokenData.debtAmount.toString(),
+      inputAmount: sellAmount.toString(),
       slippage,
       sources: includeSources,
       taker,
     }
+
     const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+
     if (!result || !result.swapData) return null
+
     const { inputAmount, swapData } = result
     const collateralSold = BigNumber.from(inputAmount)
+
     return {
       swapDataDebtCollateral: swapData,
       collateralObtainedOrSold: collateralSold,

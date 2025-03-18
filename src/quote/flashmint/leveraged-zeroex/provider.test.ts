@@ -181,7 +181,6 @@ function validateSwapData(swapData: SwapDataV2) {
 
 describe('LeveragedQuoteProvider() - Base', () => {
   const indexToken = getTokenByChainAndSymbol(ChainId.Base, 'ETH2X')
-  // FIXME: approve on contract
   const usdc = getTokenByChainAndSymbol(ChainId.Base, 'USDC')
   const uSOL2x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL2x')
 
@@ -200,8 +199,8 @@ describe('LeveragedQuoteProvider() - Base', () => {
     const quote = await getQuote(request)
     console.log(quote)
 
-    expect(quote.outputAmount.toString()).toEqual(request.outputAmount)
-    expect(quote.inputAmount.gt(0)).toBe(true)
+    expect(quote.outputAmount).toEqual(request.outputAmount)
+    expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
     validateSwapData(quote.swapDataInputOutputToken)
@@ -221,43 +220,42 @@ describe('LeveragedQuoteProvider() - Base', () => {
 
     const quote = await getQuote(request)
 
-    expect(quote.outputAmount.toString()).toEqual(request.outputAmount)
-    expect(quote.inputAmount.gt(0)).toBe(true)
+    expect(quote.outputAmount).toEqual(request.outputAmount)
+    expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
     validateSwapData(quote.swapDataInputOutputToken)
   })
 
-  test.skip('returns quote for ETH2X - redeeming to ETH', async () => {
-    const indexTokenAmount = wei(1)
+  test.only('returns quote for uSOL2x - redeeming to ETH', async () => {
     const request = {
       chainId: ChainId.Base,
       isMinting: false,
-      inputToken: indexToken,
+      inputToken: uSOL2x,
       outputToken: ETH,
-      inputAmount: indexTokenAmount.toString(),
+      inputAmount: wei(1).toString(),
       outputAmount: '',
       slippage: 0.5,
       taker,
     }
 
     const quote = await getQuote(request)
+    console.log(quote)
 
-    expect(quote.inputAmount.toString()).toEqual(request.inputAmount)
-    expect(quote.outputAmount.gt(0)).toBe(true)
+    expect(quote.inputAmount).toEqual(request.inputAmount)
+    expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
     validateSwapData(quote.swapDataInputOutputToken)
   })
 
-  test.skip('returns quote for ETH2X - redeeming to USDC', async () => {
-    const indexTokenAmount = wei(1)
+  test.only('returns quote for uSOL2x - redeeming to USDC', async () => {
     const request = {
       chainId: ChainId.Base,
       isMinting: false,
-      inputToken: indexToken,
+      inputToken: uSOL2x,
       outputToken: usdc,
-      inputAmount: indexTokenAmount.toString(),
+      inputAmount: wei(1).toString(),
       outputAmount: '0',
       slippage: 0.5,
       taker,
@@ -265,8 +263,8 @@ describe('LeveragedQuoteProvider() - Base', () => {
 
     const quote = await getQuote(request)
 
-    expect(quote.inputAmount.toString()).toEqual(request.inputAmount)
-    expect(quote.outputAmount.gt(0)).toBe(true)
+    expect(quote.inputAmount).toEqual(request.inputAmount)
+    expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
     validateSwapData(quote.swapDataInputOutputToken)
