@@ -98,7 +98,7 @@ export class LeveragedZeroExQuoteProvider
       debtCollateralResult
 
     const { swapDataInputOutputToken, estimatedInputOutputAmount } =
-      await this.getSwapDataAndPaymentTokenAmount(
+      await this.getSwapDataInputOutputToken(
         request,
         leveragedTokenData,
         collateralObtainedOrSold,
@@ -179,34 +179,32 @@ export class LeveragedZeroExQuoteProvider
     includeSources: Exchange[],
     request: FlashMintLeveragedZeroExQuoteRequest,
   ) {
-    const { chainId, slippage, taker } = request
-    // TODO:
-    // const roundingFactor = subjectSetAmount.div(1000);
-    // const roundedDebtAmount = leveragedTokenData.debtAmount
-    //   .div(roundingFactor)
-    //   .add(1)
-    //   .mul(roundingFactor);
+    const { chainId, outputAmount, slippage, taker } = request
+    // const roundingFactor = BigInt(outputAmount) / BigInt(1000)
+    // const roundedDebtAmount =
+    //   leveragedTokenData.debtAmount / roundingFactor +
+    //   BigInt(1) * roundingFactor
     const quoteRequest: SwapQuoteRequestV2 = {
       chainId,
       inputToken: leveragedTokenData.debtToken,
       outputToken: leveragedTokenData.collateralToken,
       inputAmount: leveragedTokenData.debtAmount.toString(),
       slippage,
+      sellEntireBalance: true,
       sources: includeSources,
       taker,
     }
     const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
     console.log(result)
     if (!result || !result.swapData) return null
-    const { outputAmount, swapData } = result
-    const collateralObtained = BigNumber.from(outputAmount)
+    const collateralObtained = BigNumber.from(result.outputAmount)
     return {
-      swapDataDebtCollateral: swapData,
+      swapDataDebtCollateral: result.swapData,
       collateralObtainedOrSold: collateralObtained,
     }
   }
 
-  private async getSwapDataAndPaymentTokenAmount(
+  private async getSwapDataInputOutputToken(
     request: FlashMintLeveragedZeroExQuoteRequest,
     leveragedTokenData: LeveragedZeroExTokenData,
     collateralObtainedOrSold: BigNumber,
@@ -251,7 +249,7 @@ export class LeveragedZeroExQuoteProvider
       collateralObtainedOrSold,
     )
 
-    // Default if collateral token should be equal to payment token
+    // Default if collateral token should be equal to input/output token
     let estimatedInputOutputAmount = isMinting
       ? collateralShortfall
       : leftoverCollateral
@@ -287,12 +285,6 @@ export class LeveragedZeroExQuoteProvider
           sources: includeSources,
           taker,
         }
-        if (isMinting) {
-          // TODO:
-          // quoteRequest.outputAmount = paymentTokenAmount.toString()
-        } else {
-          quoteRequest.inputAmount = estimatedInputOutputAmount.toString()
-        }
         const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
         if (result?.swapData) {
           const { inputAmount, outputAmount, swapData } = result
@@ -302,22 +294,15 @@ export class LeveragedZeroExQuoteProvider
             : BigNumber.from(outputAmount)
         }
       } else {
-        // TODO: use getSellAmount for testing?
         const quoteRequest: SwapQuoteRequestV2 = {
-          inputToken: isMinting ? inputTokenAddress : collateralToken,
-          outputToken: isMinting ? collateralToken : outputToken.address,
+          inputToken: collateralToken,
+          outputToken: outputToken.address,
           chainId,
           slippage,
-          // TODO:
           inputAmount: estimatedInputOutputAmount.toString(),
+          sellEntireBalance: true,
           sources: includeSources,
           taker,
-        }
-        if (isMinting) {
-          // TODO:
-          // quoteRequest.outputAmount = paymentTokenAmount.toString()
-        } else {
-          quoteRequest.inputAmount = estimatedInputOutputAmount.toString()
         }
         const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
         if (result?.swapData) {

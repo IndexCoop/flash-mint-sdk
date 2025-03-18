@@ -52,7 +52,7 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
   }
 
   getPath(request: SwapQuoteRequestV2): string {
-    return new URLSearchParams({
+    const params: any = {
       chainId: request.chainId.toString(),
       buyToken: request.outputToken,
       sellToken: request.inputToken,
@@ -60,6 +60,10 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
       taker: request.taker,
       slippageBps: convertTo0xSlippage(request.slippage).toString(),
       excludedSources: getExcludedSources(request.chainId),
-    }).toString()
+    }
+    if (request.sellEntireBalance === true) {
+      params.sellEntireBalance = true
+    }
+    return new URLSearchParams(params).toString()
   }
 }

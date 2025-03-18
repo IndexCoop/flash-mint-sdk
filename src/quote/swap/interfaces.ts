@@ -42,6 +42,7 @@ export interface SwapQuoteRequestV2 {
   slippage: number
   taker: string
   // Optional
+  sellEntireBalance?: boolean // might depend on support of provider
   sources?: Exchange[]
 }
 
