@@ -5,6 +5,7 @@ import {
 } from '@indexcoop/tokenlists'
 
 import { AddressZero, HashZero } from 'constants/addresses'
+import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import { Exchange, getTokenAddressOrWeth } from 'utils'
 import { usesAaveLeverageModule } from 'utils/leverage-module'
 import {
@@ -13,7 +14,6 @@ import {
 } from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 
-import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import type { SwapDataV2 } from 'utils'
 import type { Address } from 'viem'
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
