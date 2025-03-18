@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { isAddressEqual } from '@indexcoop/tokenlists'
 
 import { AddressZero, HashZero } from 'constants/addresses'
-import { Exchange } from 'utils'
+import { Exchange, getTokenAddressOrWeth } from 'utils'
 import { usesAaveLeverageModule } from 'utils/leverage-module'
 import {
   type LeveragedZeroExTokenData,
@@ -233,6 +233,9 @@ export class LeveragedZeroExQuoteProvider
       ? collateralShortfall
       : leftoverCollateral
 
+    // We gotta use WETH if input token is ETH
+    const inputTokenAddress = getTokenAddressOrWeth(inputToken.address, chainId)
+
     // Only fetch input/output swap data if collateral token is not the same as payment token
     if (
       !isAddressEqual(inputOutputToken, collateralToken) // TOOD: && setTokenSymbol !== InterestCompoundingETHIndex.symbol
@@ -243,7 +246,7 @@ export class LeveragedZeroExQuoteProvider
         const maxBuyAmount = collateralShortfall.mul(101).div(100)
         const sellAmount = await getSellAmount(
           chainId,
-          inputToken.address,
+          inputTokenAddress,
           collateralToken,
           targetBuyAmount,
           minBuyAmount,
@@ -253,7 +256,7 @@ export class LeveragedZeroExQuoteProvider
         )
         console.log(sellAmount.toString(), 'sellAmount')
         const quoteRequest: SwapQuoteRequestV2 = {
-          inputToken: inputToken.address,
+          inputToken: inputTokenAddress,
           outputToken: collateralToken,
           chainId,
           slippage,
@@ -278,8 +281,8 @@ export class LeveragedZeroExQuoteProvider
       } else {
         // TODO: use getSellAmount for testing?
         const quoteRequest: SwapQuoteRequestV2 = {
-          inputToken: isMinting ? inputOutputToken : collateralToken,
-          outputToken: isMinting ? collateralToken : inputOutputToken,
+          inputToken: isMinting ? inputTokenAddress : collateralToken,
+          outputToken: isMinting ? collateralToken : outputToken.address,
           chainId,
           slippage,
           // TODO:
