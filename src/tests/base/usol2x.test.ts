@@ -35,7 +35,7 @@ describe('uSOL2x (Base)', () => {
     await factory.executeTx()
   })
 
-  test.skip('can mint with USDC', async () => {
+  test.only('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
@@ -45,7 +45,7 @@ describe('uSOL2x (Base)', () => {
       slippage: 0.5,
       taker,
     })
-    const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
+    const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
