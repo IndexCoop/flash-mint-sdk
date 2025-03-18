@@ -1,5 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { isAddressEqual } from '@indexcoop/tokenlists'
+import {
+  getTokenByChainAndAddress,
+  isAddressEqual,
+} from '@indexcoop/tokenlists'
 
 import { AddressZero, HashZero } from 'constants/addresses'
 import { Exchange, getTokenAddressOrWeth } from 'utils'
@@ -181,16 +184,38 @@ export class LeveragedZeroExQuoteProvider
     includeSources: Exchange[],
     request: FlashMintLeveragedZeroExQuoteRequest,
   ) {
-    const { chainId, outputAmount, slippage, taker } = request
-    // const roundingFactor = BigInt(outputAmount) / BigInt(1000)
-    // const roundedDebtAmount =
-    //   leveragedTokenData.debtAmount / roundingFactor +
-    //   BigInt(1) * roundingFactor
+    const { chainId, outputAmount, outputToken, slippage, taker } = request
+    const { collateralToken, debtAmount, debtToken } = leveragedTokenData
+    const debtTokenTokenlist = getTokenByChainAndAddress(chainId, debtToken)
+    // We want to force, so that missing tokens will throw an error
+    const decimals = debtTokenTokenlist!.decimals
+    const adjustDecimals = outputToken.decimals !== decimals
+    const outputAmountAdjusted = adjustDecimals
+      ? BigNumber.from(outputAmount).div(
+          BigNumber.from(10).pow(outputToken.decimals - decimals),
+        )
+      : outputAmount
+    console.log(
+      outputAmountAdjusted.toString(),
+      outputAmount.toString(),
+      'outputAmountAdjusted',
+    )
+    const roundingFactor = BigNumber.from(outputAmountAdjusted).div(1000)
+    const roundedDebtAmount = BigNumber.from(debtAmount.toString())
+      .div(roundingFactor)
+      .add(1)
+      .mul(roundingFactor)
+
+    console.log(
+      debtAmount.toString(),
+      roundedDebtAmount.toString(),
+      'roundedDebtAmount',
+    )
     const quoteRequest: SwapQuoteRequestV2 = {
       chainId,
-      inputToken: leveragedTokenData.debtToken,
-      outputToken: leveragedTokenData.collateralToken,
-      inputAmount: leveragedTokenData.debtAmount.toString(),
+      inputToken: debtToken,
+      outputToken: collateralToken,
+      inputAmount: roundedDebtAmount.toString(),
       slippage,
       sellEntireBalance: true,
       sources: includeSources,
@@ -274,16 +299,15 @@ export class LeveragedZeroExQuoteProvider
           targetBuyAmount,
           minBuyAmount,
           maxBuyAmount,
-          // TODO:
           BigNumber.from(inputAmount),
         )
         console.log(sellAmount.toString(), 'sellAmount')
         const quoteRequest: SwapQuoteRequestV2 = {
+          chainId,
           inputToken: inputTokenAddress,
           outputToken: collateralToken,
-          chainId,
-          slippage,
           inputAmount: sellAmount.toString(),
+          slippage,
           sources: includeSources,
           taker,
         }
