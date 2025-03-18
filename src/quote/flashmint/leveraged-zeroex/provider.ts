@@ -32,6 +32,7 @@ export interface FlashMintLeveragedZeroExQuote {
   outputAmount: string
   swapDataDebtCollateral: SwapDataV2
   swapDataInputOutputToken: SwapDataV2
+  isAave: boolean
 }
 
 export class LeveragedZeroExQuoteProvider
@@ -123,6 +124,7 @@ export class LeveragedZeroExQuoteProvider
       ).toString(),
       swapDataDebtCollateral,
       swapDataInputOutputToken,
+      isAave,
     }
   }
 

@@ -409,12 +409,13 @@ export class FlashMintQuoteProvider
           isMinting,
           inputToken: inputToken.address,
           inputTokenSymbol: inputToken.symbol,
-          inputTokenAmount: leveragedQuote.inputAmount,
+          inputTokenAmount: BigNumber.from(leveragedQuote.inputAmount),
           outputToken: outputToken.address,
           outputTokenSymbol: outputToken.symbol,
-          outputTokenAmount: leveragedQuote.outputAmount,
+          outputTokenAmount: BigNumber.from(leveragedQuote.outputAmount),
           swapDataDebtCollateral: leveragedQuote.swapDataDebtCollateral,
           swapDataInputOutputToken: leveragedQuote.swapDataInputOutputToken,
+          isAave: leveragedQuote.isAave,
         }
         const tx = await builder.build(txRequest)
         if (!tx) return null
@@ -422,7 +423,11 @@ export class FlashMintQuoteProvider
           request,
           chainId,
           contractType,
-          isMinting ? leveragedQuote.inputAmount : leveragedQuote.outputAmount,
+          BigNumber.from(
+            isMinting
+              ? leveragedQuote.inputAmount
+              : leveragedQuote.outputAmount,
+          ),
           tx,
         )
       }

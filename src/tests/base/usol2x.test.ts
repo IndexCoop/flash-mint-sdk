@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
   getTestFactoryZeroExV2,
   transferFromWhale,
@@ -13,7 +13,6 @@ import {
 describe('uSOL2x (Base)', () => {
   const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
   const chainId = ChainId.Base
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSOL2x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
@@ -23,15 +22,16 @@ describe('uSOL2x (Base)', () => {
   })
 
   test.only('can mint with ETH', async () => {
-    await factory.fetchQuote({
+    const quote = await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
       taker,
     })
+    console.log(quote)
     await factory.executeTx()
   })
 
@@ -78,7 +78,7 @@ describe('uSOL2x (Base)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,

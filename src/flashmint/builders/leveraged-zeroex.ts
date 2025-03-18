@@ -13,6 +13,7 @@ export interface FlashMintLeveragedZeroExBuilderBuildRequest
   chainId: number
   swapDataDebtCollateral: SwapDataV2
   swapDataInputOutputToken: SwapDataV2
+  isAave: boolean
 }
 
 export class LeveragedZeroExBuilder
@@ -41,6 +42,7 @@ export class LeveragedZeroExBuilder
       outputTokenSymbol,
       swapDataDebtCollateral,
       swapDataInputOutputToken,
+      isAave,
     } = request
     const contractAddress = Contracts[chainId].FlashMintLeveragedZeroEx
     const abi = FlashMintAbis[contractAddress]
@@ -61,7 +63,7 @@ export class LeveragedZeroExBuilder
           outputTokenAmount,
           swapDataDebtCollateral,
           swapDataInputOutputToken,
-          false, // TODO: _isAave
+          isAave,
           { value: inputTokenAmount },
         )
       } else {
@@ -72,7 +74,7 @@ export class LeveragedZeroExBuilder
           inputTokenAmount, // _maxAmountInputToken
           swapDataDebtCollateral,
           swapDataInputOutputToken,
-          false, // TODO: _isAave
+          isAave,
         )
       }
     } else {
@@ -83,7 +85,7 @@ export class LeveragedZeroExBuilder
           outputTokenAmount, // _minAmountOutputToken
           swapDataDebtCollateral,
           swapDataInputOutputToken,
-          false, // TODO: _isAave
+          isAave,
         )
       } else {
         return await contract.populateTransaction.redeemExactSetForERC20(
@@ -93,7 +95,7 @@ export class LeveragedZeroExBuilder
           outputTokenAmount, // _minAmountOutputToken
           swapDataDebtCollateral,
           swapDataInputOutputToken,
-          false, // TODO: _isAave
+          isAave,
         )
       }
     }

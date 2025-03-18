@@ -100,7 +100,7 @@ describe('LeveragedZeroExBuilder()', () => {
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      false,
+      buildRequest.isAave,
       { value: buildRequest.inputTokenAmount },
     )
     const builder = new LeveragedZeroExBuilder(rpcUrl)
@@ -127,7 +127,7 @@ describe('LeveragedZeroExBuilder()', () => {
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      false,
+      buildRequest.isAave,
     )
     const builder = new LeveragedZeroExBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -150,7 +150,7 @@ describe('LeveragedZeroExBuilder()', () => {
       buildRequest.outputTokenAmount,
       buildRequest.swapDataDebtCollateral,
       buildRequest.swapDataInputOutputToken,
-      false,
+      buildRequest.isAave,
     )
     const builder = new LeveragedZeroExBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
@@ -196,5 +196,6 @@ function createBuildRequest(
       ? collateralDebtSwapData
       : debtCollateralSwapData,
     swapDataInputOutputToken: isMinting ? inputSwapData : outputSwapData,
+    isAave: false,
   }
 }
