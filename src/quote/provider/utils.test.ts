@@ -168,7 +168,7 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'uSUI2x').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedMorpho)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for uSUI3x', async () => {
@@ -176,7 +176,7 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'uSUI3x').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedMorpho)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for uSOL2x', async () => {
@@ -184,7 +184,7 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedMorpho)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for uSOL3x', async () => {
@@ -192,7 +192,7 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedMorpho)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for wstEth15x', async () => {
@@ -200,6 +200,6 @@ describe('getContractType()', () => {
       getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x').symbol,
       ChainId.Base,
     )
-    expect(contractType).toBe(FlashMintContractType.leveragedMorpho)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 })
