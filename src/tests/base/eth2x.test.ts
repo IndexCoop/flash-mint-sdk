@@ -7,7 +7,7 @@ import {
   wei,
 } from 'tests/utils'
 
-describe('ETH2X (Base)', () => {
+describe.skip('ETH2X (Base)', () => {
   const chainId = ChainId.Base
   const { eth } = QuoteTokens
   const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')

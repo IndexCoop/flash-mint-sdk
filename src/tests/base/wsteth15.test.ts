@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
-  getTestFactoryZeroEx,
+  getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
   wrapETH,
@@ -12,22 +12,21 @@ import {
 
 describe('wstETH15x (Base)', () => {
   const chainId = ChainId.Base
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(8, chainId)
+    factory = getTestFactoryZeroExV2(8, chainId)
   })
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('0.5').toString(),
+      inputTokenAmount: wei('1.1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -39,7 +38,7 @@ describe('wstETH15x (Base)', () => {
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('500').toString(),
+      inputTokenAmount: wei('1900').toString(),
       slippage: 0.5,
     })
     const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
@@ -74,7 +73,7 @@ describe('wstETH15x (Base)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
