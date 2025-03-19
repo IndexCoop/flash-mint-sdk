@@ -11,7 +11,6 @@ import {
 } from 'tests/utils'
 
 describe('uSOL2x (Base)', () => {
-  const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
   const chainId = ChainId.Base
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSOL2x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
@@ -29,13 +28,12 @@ describe('uSOL2x (Base)', () => {
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
-      taker,
     })
     console.log(quote)
     await factory.executeTx()
   })
 
-  test.only('can mint with USDC', async () => {
+  test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
@@ -43,7 +41,6 @@ describe('uSOL2x (Base)', () => {
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('500').toString(),
       slippage: 0.5,
-      taker,
     })
     const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
     await transferFromWhale(
@@ -64,7 +61,6 @@ describe('uSOL2x (Base)', () => {
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
-      taker,
     })
     await wrapETH(
       quote.inputAmount.mul(BigNumber.from(2)),
@@ -82,7 +78,6 @@ describe('uSOL2x (Base)', () => {
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
-      taker,
     })
     await factory.executeTx()
   })
@@ -95,7 +90,6 @@ describe('uSOL2x (Base)', () => {
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
-      taker,
     })
     await factory.executeTx()
   })

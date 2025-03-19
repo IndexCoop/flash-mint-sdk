@@ -14,6 +14,7 @@ import { LeveragedAerodromeQuoteProvider } from 'quote/flashmint/leveraged-aerod
 import { wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
+import { Contracts } from 'constants/contracts'
 import { LeveragedMorphoAaveLmBuilder } from 'flashmint/builders/leveraged-morpho-aave'
 import { LeveragedMorphoAaveLmQuoteProvider } from 'quote/flashmint/leveraged-morpho-aave'
 import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
@@ -64,7 +65,6 @@ export interface FlashMintQuoteRequest {
   indexTokenAmount: string
   inputTokenAmount?: string
   slippage: number
-  taker?: string
 }
 
 export interface FlashMintQuote {
@@ -383,12 +383,8 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.leveragedZeroEx: {
-        const { inputTokenAmount, taker } = request
-        if (
-          !this.swapQuoteProviderV2 ||
-          inputTokenAmount === undefined ||
-          taker === undefined
-        ) {
+        const { inputTokenAmount } = request
+        if (!this.swapQuoteProviderV2 || inputTokenAmount === undefined) {
           throw new Error('400')
         }
         const leveragedZeroExQuoteProvider = new LeveragedZeroExQuoteProvider(
@@ -400,7 +396,7 @@ export class FlashMintQuoteProvider
           chainId,
           inputAmount: inputTokenAmount!,
           outputAmount: request.indexTokenAmount,
-          taker: taker!,
+          taker: Contracts[chainId].FlashMintLeveragedZeroEx,
         })
         if (!leveragedQuote) return null
         const builder = new LeveragedZeroExBuilder(rpcUrl)

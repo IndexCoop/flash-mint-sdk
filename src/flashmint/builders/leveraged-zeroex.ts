@@ -1,6 +1,5 @@
 import { Contracts } from 'constants/contracts'
 import { getFlashMintContract } from 'utils'
-import { FlashMintAbis } from 'utils/abis'
 import { getRpcProvider } from 'utils/rpc-provider'
 import { isEmptyString, isInvalidAmount, isValidSwapDataV2 } from './utils'
 
@@ -45,7 +44,6 @@ export class LeveragedZeroExBuilder
       isAave,
     } = request
     const contractAddress = Contracts[chainId].FlashMintLeveragedZeroEx
-    const abi = FlashMintAbis[contractAddress]
     const contract = getFlashMintContract(contractAddress, provider)
     console.log(contractAddress)
     console.log(isMinting, inputTokenSymbol === 'ETH')
