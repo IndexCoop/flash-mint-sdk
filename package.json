@@ -85,7 +85,7 @@
     "@ethersproject/providers": "^5.6.8",
     "@ethersproject/units": "^5.6.1",
     "@indexcoop/tokenlists": "3.11.0",
-    "@lifi/sdk": "3.0.0-beta.1",
+    "@lifi/sdk": "3.6.2",
     "axios": "^1.7.9",
     "viem": "^2.10.2"
   }
