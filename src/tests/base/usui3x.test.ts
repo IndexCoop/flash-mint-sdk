@@ -4,13 +4,13 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
-  getTestFactoryZeroEx,
+  getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
   wrapETH,
 } from 'tests/utils'
 
-describe.skip('uSUI3x (Base)', () => {
+describe('uSUI3x (Base)', () => {
   const chainId = ChainId.Base
   const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI3x')
@@ -18,10 +18,10 @@ describe.skip('uSUI3x (Base)', () => {
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(7, chainId)
+    factory = getTestFactoryZeroExV2(7, chainId)
   })
 
-  test('can mint with ETH', async () => {
+  test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: eth,
