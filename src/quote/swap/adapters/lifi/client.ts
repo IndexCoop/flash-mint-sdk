@@ -17,7 +17,7 @@ interface LiFiQuoteRequest {
 }
 
 export async function getQuote(request: LiFiQuoteRequest, apiKey: string) {
-  const { fromToken, fromAddress, slippage, toToken } = request
+  const { fromToken, fromAddress, integrator, slippage, toToken } = request
 
   const params = new URLSearchParams({
     fromChain: request.fromChain.toString(),
@@ -25,6 +25,7 @@ export async function getQuote(request: LiFiQuoteRequest, apiKey: string) {
     fromAddress,
     toChain: request.toChain.toString(),
     toToken,
+    integrator,
     slippage: convertToLiFiSlippage(slippage).toString(),
   })
 
