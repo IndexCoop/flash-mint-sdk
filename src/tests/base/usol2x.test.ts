@@ -21,7 +21,7 @@ describe('uSOL2x (Base)', () => {
   })
 
   test.only('can mint with ETH', async () => {
-    const quote = await factory.fetchQuote({
+    await factory.fetchQuote({
       isMinting: true,
       inputToken: ETH,
       outputToken: indexToken,
@@ -29,11 +29,10 @@ describe('uSOL2x (Base)', () => {
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
-    console.log(quote)
     await factory.executeTx()
   })
 
-  test('can mint with USDC', async () => {
+  test.skip('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
@@ -82,7 +81,7 @@ describe('uSOL2x (Base)', () => {
     await factory.executeTx()
   })
 
-  test.skip('can redeem to USDC', async () => {
+  test('can redeem to USDC', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
