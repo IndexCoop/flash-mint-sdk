@@ -251,10 +251,6 @@ export class LeveragedZeroExQuoteProvider
     } = request
     const { collateralAmount, collateralToken } = leveragedTokenData
 
-    const inputOutputToken = isMinting
-      ? inputToken.address
-      : outputToken.address
-
     // By default the input/output swap data can be empty (as it would be ignored)
     let swapDataInputOutputToken: SwapDataV2 = {
       swapTarget: AddressZero,
@@ -283,6 +279,11 @@ export class LeveragedZeroExQuoteProvider
 
     // We gotta use WETH if input token is ETH
     const inputTokenAddress = getTokenAddressOrWeth(inputToken.address, chainId)
+    const outputTokenAddress = getTokenAddressOrWeth(
+      outputToken.address,
+      chainId,
+    )
+    const inputOutputToken = isMinting ? inputTokenAddress : outputTokenAddress
 
     // Only fetch input/output swap data if collateral token is not the same as payment token
     if (
@@ -322,7 +323,7 @@ export class LeveragedZeroExQuoteProvider
       } else {
         const quoteRequest: SwapQuoteRequestV2 = {
           inputToken: collateralToken,
-          outputToken: outputToken.address,
+          outputToken: outputTokenAddress,
           chainId,
           slippage,
           inputAmount: estimatedInputOutputAmount.toString(),
