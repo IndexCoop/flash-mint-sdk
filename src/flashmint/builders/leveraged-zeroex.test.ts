@@ -106,7 +106,6 @@ describe('LeveragedZeroExBuilder()', () => {
     const builder = new LeveragedZeroExBuilder(rpcUrl)
     const tx = await builder.build(buildRequest)
     if (!tx) fail()
-    console.log(tx)
     expect(tx.to).toBe(FlashMintLeveragedZeroExAddress)
     expect(tx.data).toEqual(refTx.data)
     expect(tx.value).toEqual(buildRequest.inputTokenAmount)
