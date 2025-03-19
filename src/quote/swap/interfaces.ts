@@ -38,7 +38,8 @@ export interface SwapQuoteRequestV2 {
   chainId: number
   inputToken: string
   outputToken: string
-  inputAmount: string
+  inputAmount?: string
+  outputAmount?: string // note that not all providers may support this
   slippage: number
   taker: string
   // Optional

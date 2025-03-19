@@ -1,87 +1,63 @@
-import {
-  type ContractCallsQuoteRequest,
-  type LiFiStep,
-  getContractCallsQuote,
-  getQuote,
-} from '@lifi/sdk'
+import { getQuote } from 'quote/swap/adapters/lifi/client'
 
 import type {
-  SwapQuote,
-  SwapQuoteProvider,
-  SwapQuoteRequest,
+  SwapQuoteProviderV2,
+  SwapQuoteRequestV2,
+  SwapQuoteV2,
 } from 'quote/swap/interfaces'
 
-import { getSwapData } from './swap-data'
-
-export class LiFiSwapQuoteProvider implements SwapQuoteProvider {
+export class LiFiSwapQuoteProvider implements SwapQuoteProviderV2 {
   constructor(
     readonly apiKey: string,
     readonly integrator: string,
   ) {}
 
-  async getSwapQuote(request: SwapQuoteRequest): Promise<SwapQuote | null> {
-    // This is not ideal but right now the only way to get only uniV2 and sushi quotes
-    const allowExchanges = ['uniswap', 'sushiswap']
+  async getSwapQuote(request: SwapQuoteRequestV2): Promise<SwapQuoteV2 | null> {
     const { integrator } = this
     const {
-      address,
       chainId,
       inputAmount,
       inputToken,
       outputAmount,
       outputToken,
       slippage,
+      taker,
     } = request
-    if (!address) {
-      throw new Error('Error - account address must be set')
-    }
-    if (!inputAmount && !outputAmount) {
+
+    if ((!inputAmount && !outputAmount) || (inputAmount && outputAmount)) {
       throw new Error('Error - either input or output amount must be set')
     }
+
     try {
-      let result: LiFiStep | null = null
-      if (outputAmount) {
-        // https://github.com/lifinance/sdk/blob/main/src/services/api.ts#L140
-        const quoteRequest: ContractCallsQuoteRequest = {
-          integrator,
-          contractCalls: [],
-          fromAddress: address,
+      const result = await getQuote(
+        {
           fromChain: chainId,
           fromToken: inputToken,
-          toAmount: outputAmount ?? '',
+          fromAddress: taker,
+          fromAmount: inputAmount,
           toChain: chainId,
           toToken: outputToken,
-          allowExchanges,
-        }
-        result = await getContractCallsQuote(quoteRequest, undefined)
-      } else {
-        // https://github.com/lifinance/sdk/blob/main/src/services/api.ts#L68
-        const quoteRequest = {
+          toAmount: outputAmount,
           integrator,
-          fromAddress: address,
-          fromChain: chainId,
-          fromToken: inputToken,
-          fromAmount: inputAmount ?? '',
-          toChain: chainId,
-          toToken: outputToken,
-          allowExchanges,
-        }
-        result = await getQuote(quoteRequest)
-      }
-      if (!result) {
+        },
+        process.env.LIFI_API_KEY!,
+      )
+
+      if (!result || !result.transactionRequest) {
         throw new Error('no estimate')
       }
-      const estimate = result.estimate
-      const swapData = getSwapData(result)
+
       return {
         chainId,
         inputToken,
         outputToken,
-        inputAmount: estimate.fromAmount,
-        outputAmount: estimate.toAmount,
-        callData: result.transactionRequest?.data ?? '0x',
-        slippage: slippage ?? 0,
-        swapData,
+        inputAmount: result.estimate.fromAmount,
+        outputAmount: result.estimate.toAmount,
+        slippage,
+        swapData: {
+          swapTarget: result.transactionRequest.to ?? '0x',
+          callData: result.transactionRequest.data ?? '0x',
+        },
       }
     } catch (error) {
       console.warn('Error getting LiFi swap quote:')
