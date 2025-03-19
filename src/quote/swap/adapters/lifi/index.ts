@@ -39,6 +39,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProviderV2 {
           toToken: outputToken,
           toAmount: outputAmount,
           integrator,
+          slippage,
         },
         process.env.LIFI_API_KEY!,
       )

@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+import { convertToLiFiSlippage } from 'quote/swap/adapters/lifi/utils'
+
 import type { LiFiStep } from '@lifi/sdk'
 
 interface LiFiQuoteRequest {
@@ -11,10 +13,11 @@ interface LiFiQuoteRequest {
   toToken: string
   toAmount?: string
   integrator: string
+  slippage: number
 }
 
 export async function getQuote(request: LiFiQuoteRequest, apiKey: string) {
-  const { fromToken, fromAddress, toToken } = request
+  const { fromToken, fromAddress, slippage, toToken } = request
 
   const params = new URLSearchParams({
     fromChain: request.fromChain.toString(),
@@ -22,6 +25,7 @@ export async function getQuote(request: LiFiQuoteRequest, apiKey: string) {
     fromAddress,
     toChain: request.toChain.toString(),
     toToken,
+    slippage: convertToLiFiSlippage(slippage).toString(),
   })
 
   if (request.fromAmount) {
