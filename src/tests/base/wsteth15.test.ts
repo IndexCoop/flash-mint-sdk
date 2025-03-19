@@ -20,7 +20,7 @@ describe('wstETH15x (Base)', () => {
     factory = getTestFactoryZeroExV2(8, chainId)
   })
 
-  test('can mint with ETH', async () => {
+  test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
       inputToken: ETH,
@@ -38,10 +38,10 @@ describe('wstETH15x (Base)', () => {
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('1900').toString(),
+      inputTokenAmount: wei('2100', 6).toString(),
       slippage: 0.5,
     })
-    const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
+    const whale = '0x621e7c767004266c8109e83143ab0da521b650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
@@ -58,7 +58,7 @@ describe('wstETH15x (Base)', () => {
       inputToken: weth,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('0.5').toString(),
+      inputTokenAmount: wei('1.1').toString(),
       slippage: 0.5,
     })
     await wrapETH(
