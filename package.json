@@ -71,7 +71,7 @@
     "semantic-release": "^24.0.0",
     "ts-node": "^10.8.1",
     "tsup": "^7.0.0",
-    "typescript": "^5.4.5"
+    "typescript": "5.6.2"
   },
   "publishConfig": {
     "access": "public",
@@ -87,6 +87,6 @@
     "@indexcoop/tokenlists": "3.11.0",
     "@lifi/sdk": "3.6.2",
     "axios": "^1.7.9",
-    "viem": "^2.10.2"
+    "viem": "2.23.12"
   }
 }
