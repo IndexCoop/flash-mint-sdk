@@ -1,13 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { TheUSDCYieldIndex } from 'constants/tokens'
 import {
   FlashMintHyEthTransactionBuilder,
   LeveragedAerodromeBuilder,
   LeveragedExtendedTransactionBuilder,
   LeveragedTransactionBuilder,
   LeveragedZeroExBuilder,
-  WrappedTransactionBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
 import { LeveragedAerodromeQuoteProvider } from 'quote/flashmint/leveraged-aerodrome'
@@ -21,9 +19,7 @@ import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
 import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
-import { WrappedQuoteProvider } from '../flashmint/wrapped'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
-import { IcUsdQuoteRouter } from './icusd'
 import { buildQuoteResponse, getContractType } from './utils'
 
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
@@ -32,7 +28,6 @@ import type {
   FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
   FlashMintLeveragedZeroExBuilderBuildRequest,
-  FlashMintWrappedBuildRequest,
   FlashMintZeroExBuildRequest,
 } from 'flashmint'
 import {
@@ -53,9 +48,7 @@ export enum FlashMintContractType {
   leveragedMorpho = 4,
   leveragedMorphoAaveLM = 5,
   leveragedZeroEx = 6,
-  nav = 7,
-  wrapped = 8,
-  zeroEx = 9,
+  zeroEx = 7,
 }
 
 export interface FlashMintQuoteRequest {
@@ -103,18 +96,6 @@ export class FlashMintQuoteProvider
     const inputOutputToken = isMinting ? inputToken : outputToken
     const network = await provider.getNetwork()
     const chainId = network.chainId
-    // As icUSD needs custom routing we return early using the custom router
-    if (indexToken.symbol === TheUSDCYieldIndex.symbol) {
-      if (!inputTokenAmount) {
-        throw new Error('Must set `inputTokenAmount` for icUSD quote request')
-      }
-      const icUsdRouter = new IcUsdQuoteRouter(rpcUrl, swapQuoteProvider)
-      return await icUsdRouter.getQuote({
-        ...request,
-        chainId,
-        inputTokenAmount,
-      })
-    }
     const contractType = getContractType(indexToken.symbol, chainId)
     if (contractType === null) {
       throw new Error('Index token not supported')
@@ -399,6 +380,7 @@ export class FlashMintQuoteProvider
           taker: Contracts[chainId].FlashMintLeveragedZeroEx,
         })
         if (!leveragedQuote) return null
+        console.log(rpcUrl)
         const builder = new LeveragedZeroExBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedZeroExBuilderBuildRequest = {
           chainId,
@@ -424,40 +406,6 @@ export class FlashMintQuoteProvider
               ? leveragedQuote.inputAmount
               : leveragedQuote.outputAmount,
           ),
-          tx,
-        )
-      }
-
-      case FlashMintContractType.wrapped: {
-        const wrappedQuoteProvider = new WrappedQuoteProvider(
-          rpcUrl,
-          swapQuoteProvider,
-        )
-        const wrappedQuote = await wrappedQuoteProvider.getQuote({
-          ...request,
-          chainId,
-          indexTokenAmount,
-        })
-        if (!wrappedQuote) return null
-        const builder = new WrappedTransactionBuilder(rpcUrl)
-        const txRequest: FlashMintWrappedBuildRequest = {
-          chainId,
-          isMinting,
-          indexToken: indexToken.address,
-          indexTokenAmount,
-          inputOutputToken: inputOutputToken.address,
-          inputOutputTokenSymbol: inputOutputToken.symbol,
-          inputOutputTokenAmount: wrappedQuote.inputOutputTokenAmount,
-          componentSwapData: wrappedQuote.componentSwapData,
-          componentWrapData: wrappedQuote.componentWrapData,
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          wrappedQuote.inputOutputTokenAmount,
           tx,
         )
       }

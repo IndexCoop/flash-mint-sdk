@@ -13,7 +13,6 @@ import {
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
-  TheUSDCYieldIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -59,11 +58,6 @@ export function getIssuanceModule(
       }
     case InterestCompoundingETHIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
-    case TheUSDCYieldIndex.symbol:
-      return {
-        address: Contracts[ChainId.Mainnet].DebtIssuanceModuleV3,
-        isDebtIssuance: true,
-      }
     default:
       return { address: BasicIssuanceModuleAddress, isDebtIssuance: false }
   }

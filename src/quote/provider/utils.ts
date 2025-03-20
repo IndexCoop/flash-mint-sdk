@@ -14,7 +14,6 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
   MetaverseIndex,
-  TheUSDCYieldIndex,
 } from 'constants/tokens'
 
 import {
@@ -89,9 +88,7 @@ export function getContractType(
   if (token === HighYieldETHIndex.symbol) {
     return FlashMintContractType.hyeth
   }
-  if (token === TheUSDCYieldIndex.symbol) {
-    return FlashMintContractType.wrapped
-  }
+
   if (
     token === CoinDeskEthTrendIndex.symbol ||
     token === DefiPulseIndex.symbol ||

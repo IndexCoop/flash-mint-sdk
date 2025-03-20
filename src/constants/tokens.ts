@@ -1,7 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-
-import { ChainId } from 'constants/chains'
-
 export interface Token {
   symbol: string
   address?: string
@@ -73,11 +69,6 @@ export const MetaverseIndex: Token = {
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
   addressPolygon: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
   symbol: 'MVI',
-}
-
-export const TheUSDCYieldIndex: Token = {
-  ...getTokenByChainAndSymbol(ChainId.Mainnet, 'icUSD'),
-  addressBase: getTokenByChainAndSymbol(ChainId.Base, 'icUSD').address,
 }
 
 // Other

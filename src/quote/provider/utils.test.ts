@@ -12,23 +12,20 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
   MetaverseIndex,
-  TheUSDCYieldIndex,
 } from 'constants/tokens'
-import { QuoteTokens } from 'tests/utils'
 import { wei } from 'utils'
 
 import { FlashMintContractType, type FlashMintQuoteRequest } from './'
 import { buildQuoteResponse, getContractType } from './utils'
 
-const { usdc } = QuoteTokens
-const icusd = getTokenByChainAndSymbol(ChainId.Base, 'icUSD')
-
 describe('buildQuoteResponse()', () => {
   test('returns correct quote response object', async () => {
+    const usdc = getTokenByChainAndSymbol(ChainId.Base, 'USDC')
+    const indexToken = getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x')
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: usdc,
-      outputToken: icusd,
+      outputToken: indexToken,
       indexTokenAmount: wei(1).toString(),
       slippage: 0.1,
     }
@@ -39,18 +36,18 @@ describe('buildQuoteResponse()', () => {
     }
     const response = buildQuoteResponse(
       request,
-      1,
-      FlashMintContractType.wrapped,
+      8453,
+      FlashMintContractType.leveragedZeroEx,
       quoteAmount,
       tx,
     )
     expect(response).toEqual({
-      chainId: 1,
-      contractType: FlashMintContractType.wrapped,
+      chainId: 8453,
+      contractType: FlashMintContractType.leveragedZeroEx,
       contract: Contracts[ChainId.Mainnet].FlashMintWrapped,
       isMinting: true,
       inputToken: usdc,
-      outputToken: icusd,
+      outputToken: getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x'),
       inputAmount: quoteAmount,
       outputAmount: BigNumber.from(request.indexTokenAmount),
       indexTokenAmount: BigNumber.from(request.indexTokenAmount),
@@ -143,14 +140,6 @@ describe('getContractType()', () => {
   test('returns correct contract type for icETH', async () => {
     const contractType = getContractType('icETH', ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
-  })
-
-  test('returns correct contract type for icUSD', async () => {
-    const contractType = getContractType(
-      TheUSDCYieldIndex.symbol,
-      ChainId.Mainnet,
-    )
-    expect(contractType).toBe(FlashMintContractType.wrapped)
   })
 
   test('returns correct contract type for uSUI2x', async () => {
