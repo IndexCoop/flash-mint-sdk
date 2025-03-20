@@ -11,7 +11,6 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
-  InterestCompoundingETHIndex,
   MetaverseIndex,
   TheUSDCYieldIndex,
 } from 'constants/tokens'
@@ -111,11 +110,8 @@ describe('getContractType()', () => {
   })
 
   test('returns correct contract type for BTC2X (mainnet)', async () => {
-    const contractType = getContractType(
-      IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Mainnet,
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
+    const contractType = getContractType('BTC2X', ChainId.Mainnet)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for BTC2X (base)', async () => {
@@ -135,11 +131,8 @@ describe('getContractType()', () => {
   })
 
   test('returns correct contract type for ETH2X (mainnet)', async () => {
-    const contractType = getContractType(
-      IndexCoopEthereum2xIndex.symbol,
-      ChainId.Mainnet,
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
+    const contractType = getContractType('ETH2X', ChainId.Mainnet)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for hyETH', async () => {
@@ -148,11 +141,8 @@ describe('getContractType()', () => {
   })
 
   test('returns correct contract type for icETH', async () => {
-    const contractType = getContractType(
-      InterestCompoundingETHIndex.symbol,
-      ChainId.Mainnet,
-    )
-    expect(contractType).toBe(FlashMintContractType.leveraged)
+    const contractType = getContractType('icETH', ChainId.Mainnet)
+    expect(contractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for icUSD', async () => {

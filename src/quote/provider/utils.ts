@@ -13,7 +13,6 @@ import {
   IndexCoopEthereum3xIndex,
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
-  InterestCompoundingETHIndex,
   MetaverseIndex,
   TheUSDCYieldIndex,
 } from 'constants/tokens'
@@ -71,7 +70,19 @@ export function getContractType(
         return FlashMintContractType.leveragedExtended
     }
   }
+
   if (chainId === ChainId.Base) {
+    return FlashMintContractType.leveragedZeroEx
+  }
+
+  const eth2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH2X')
+  const btc2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC2X')
+  const icEth = getTokenByChainAndSymbol(ChainId.Mainnet, 'icETH')
+  if (
+    token === eth2x.symbol ||
+    token === btc2x.symbol ||
+    token === icEth.symbol
+  ) {
     return FlashMintContractType.leveragedZeroEx
   }
 
@@ -87,11 +98,5 @@ export function getContractType(
     token === MetaverseIndex.symbol
   )
     return FlashMintContractType.zeroEx
-  if (
-    token === IndexCoopBitcoin2xIndex.symbol ||
-    token === IndexCoopEthereum2xIndex.symbol ||
-    token === InterestCompoundingETHIndex.symbol
-  )
-    return FlashMintContractType.leveraged
   return null
 }
