@@ -72,30 +72,9 @@ export function getContractType(
     }
   }
   if (chainId === ChainId.Base) {
-    const btc2x = getTokenByChainAndSymbol(ChainId.Base, 'BTC2X')
-    const btc3x = getTokenByChainAndSymbol(ChainId.Base, 'BTC3X')
-    const uSol2x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL2x')
-    const uSol3x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x')
-    const uSui2x = getTokenByChainAndSymbol(ChainId.Base, 'uSUI2x')
-    const uSui3x = getTokenByChainAndSymbol(ChainId.Base, 'uSUI3x')
-    const wstEth15x = getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x')
-    switch (token) {
-      case btc2x.symbol:
-      case btc3x.symbol:
-        // TODO:
-        return FlashMintContractType.leveragedMorphoAaveLM
-      case IndexCoopEthereum2xIndex.symbol:
-      case IndexCoopEthereum3xIndex.symbol:
-        // TODO:
-        return FlashMintContractType.leveragedExtended
-      case uSol2x.symbol:
-      case uSol3x.symbol:
-      case uSui2x.symbol:
-      case uSui3x.symbol:
-      case wstEth15x.symbol:
-        return FlashMintContractType.leveragedZeroEx
-    }
+    return FlashMintContractType.leveragedZeroEx
   }
+
   if (token === HighYieldETHIndex.symbol) {
     return FlashMintContractType.hyeth
   }
