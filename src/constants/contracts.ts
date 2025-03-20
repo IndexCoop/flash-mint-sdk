@@ -1,7 +1,7 @@
 import { ChainId } from 'constants/chains'
+import type { Address } from 'viem'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const Contracts: { [key: number]: any } = {
+export const Contracts: { [key: number]: { [key: string]: Address } } = {
   [ChainId.Mainnet]: {
     CustomOracleNavIssuanceModule: '0x2344674B23aD076908FD2396373CfE9cd48A1ba3',
     DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
@@ -20,7 +20,7 @@ export const Contracts: { [key: number]: any } = {
     FlashMintLeveragedMorphoAaveLM:
       '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8',
     FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
-    FlashMintLeveragedZeroEx: '0x2A009f06C7d8eF50F016F0890253D78Ce78104B3',
+    FlashMintLeveragedZeroEx: '0x5631271895bc53f77ea8d3fa016d1c880cd690c7',
     FlashMintWrapped: '0xb929Ca7279B193d2B5428eED0AB685ECA9Ed567A',
   },
 }

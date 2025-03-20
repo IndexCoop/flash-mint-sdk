@@ -224,6 +224,11 @@
             "type": "address"
           },
           {
+            "internalType": "address",
+            "name": "collateralAToken",
+            "type": "address"
+          },
+          {
             "internalType": "uint256",
             "name": "collateralAmount",
             "type": "uint256"
