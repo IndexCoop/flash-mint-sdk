@@ -31,12 +31,7 @@
     "test:quotes": "npm test src/quote/",
     "test:utils": "npm test src/utils",
     "test:base": "npm test src/tests/base",
-    "test:btc2x": "npm test src/tests/btc2x.test.ts",
-    "test:btc2xeth": "npm test src/tests/arbitrum/btc2xeth.test.ts",
-    "test:eth2x": "npm test src/tests/eth2x.test.ts",
-    "test:eth2xbtc": "npm test src/tests/arbitrum/eth2xbtc.test.ts",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
-    "test:iceth": "npm test src/tests/iceth",
     "test:watch": "jest --watch"
   },
   "keywords": [
