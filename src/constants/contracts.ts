@@ -21,7 +21,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
     FlashMintLeveragedMorphoAaveLM:
       '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8',
     FlashMintLeveragedExtended: '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE',
-    FlashMintLeveragedZeroEx: '0x5631271895Bc53F77eA8d3fa016d1c880cD690C7',
+    FlashMintLeveragedZeroEx: '0xBbE31D5946Dd3dabf797744732A7E18cbb4DE2a9',
     FlashMintWrapped: '0xb929Ca7279B193d2B5428eED0AB685ECA9Ed567A',
   },
 }
