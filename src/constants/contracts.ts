@@ -6,7 +6,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
     CustomOracleNavIssuanceModule: '0x2344674B23aD076908FD2396373CfE9cd48A1ba3',
     DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
-    FlashMintLeveragedZeroEx: '0xC1CdeDbb37F4F6417482ABb1B2466011807680a1',
+    FlashMintLeveragedZeroEx: '0x58093c03B4e7804D0127A6D0A5D86dcbd5652113',
     FlashMintNav: '0x62F160391d2f1e3a176f32F51ADE6Ed8BB2ea1cf',
     FlashMintWrapped: '0x7ddE626dE8CE73229838B5c2F9A71bc7ac207801',
   },
