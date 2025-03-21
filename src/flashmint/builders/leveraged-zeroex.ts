@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+
 import { Contracts } from 'constants/contracts'
 import { getFlashMintContract } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
@@ -43,10 +45,17 @@ export class LeveragedZeroExBuilder
       swapDataInputOutputToken,
       isAave,
     } = request
-    const contractAddress = Contracts[chainId].FlashMintLeveragedZeroEx
+    const isIcEth = isAddressEqual(
+      isMinting ? outputToken : inputToken,
+      getTokenByChainAndSymbol(1, 'icETH').address,
+    )
+    console.log(isIcEth, 'isIcEth')
+    const contractAddress = isIcEth
+      ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
+      : Contracts[chainId].FlashMintLeveragedZeroEx
     const contract = getFlashMintContract(contractAddress, provider)
     console.log(contractAddress)
-    console.log(isMinting, inputTokenSymbol === 'ETH')
+    console.log(isMinting, inputTokenSymbol === 'ETH', 'ETH', isAave)
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
         console.log(

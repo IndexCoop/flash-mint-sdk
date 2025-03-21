@@ -8,4 +8,16 @@ describe('FlashMintAbis', () => {
       FLASHMINT_LEVERAGED_ZEROEX_ABI,
     )
   })
+
+  test('returns correct ABI for FlashMintLeveragedZeroEx on Mainnet', async () => {
+    expect(FlashMintAbis[Contracts[1].FlashMintLeveragedZeroEx]).toEqual(
+      FLASHMINT_LEVERAGED_ZEROEX_ABI,
+    )
+  })
+
+  test('returns correct ABI for FlashMintLeveragedZeroEx (icETH) on Mainnet', async () => {
+    expect(FlashMintAbis[Contracts[1].FlashMintLeveragedZeroEx_AaveV2]).toEqual(
+      FLASHMINT_LEVERAGED_ZEROEX_ABI,
+    )
+  })
 })

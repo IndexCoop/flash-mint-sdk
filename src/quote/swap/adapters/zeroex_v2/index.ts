@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+
 import { getClientV2 } from './client'
 import {
   ZeroExV2SwapQuoteProviderError,
@@ -61,7 +63,13 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
       slippageBps: convertTo0xSlippage(request.slippage).toString(),
       excludedSources: getExcludedSources(request.chainId),
     }
-    if (request.sellEntireBalance === true) {
+    if (
+      request.sellEntireBalance === true &&
+      !isAddressEqual(
+        params.sellToken,
+        getTokenByChainAndSymbol(1, 'stETH').address,
+      )
+    ) {
       params.sellEntireBalance = true
     }
     return new URLSearchParams(params).toString()

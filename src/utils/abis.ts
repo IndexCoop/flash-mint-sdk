@@ -9,4 +9,6 @@ export const FlashMintAbis: { [key: Address]: any } = {
   [Contracts[base.id].FlashMintLeveragedZeroEx]: FLASHMINT_LEVERAGED_ZEROEX_ABI,
   [Contracts[mainnet.id].FlashMintLeveragedZeroEx]:
     FLASHMINT_LEVERAGED_ZEROEX_ABI,
+  [Contracts[mainnet.id].FlashMintLeveragedZeroEx_AaveV2]:
+    FLASHMINT_LEVERAGED_ZEROEX_ABI,
 }

@@ -25,7 +25,6 @@ const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
 const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
-const iceth = getTokenByChainAndSymbol(chainId, 'icETH')
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 
 describe('FlashMintQuoteProvider()', () => {
@@ -228,27 +227,27 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming icETH', async () => {
-    const contract = getFlashMintLeveragedContractForToken(
-      iceth.symbol,
-      undefined,
-      1,
-    )
+    const iceth = getTokenByChainAndSymbol(ChainId.Mainnet, 'icETH')
+    const expectedContract =
+      Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx_AaveV2
     const request: FlashMintQuoteRequest = {
       isMinting: false,
       inputToken: iceth,
       outputToken: ETH,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
       zeroexSwapQuoteProvider,
+      getZeroExV2SwapQuoteProvider(),
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.chainId).toEqual(ChainId.Mainnet)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveraged)
-    expect(quote.contract).toEqual(contract.address)
+    expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
+    expect(quote.contract).toEqual(expectedContract)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -258,7 +257,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(contract.address)
+    expect(quote.tx.to).toBe(expectedContract)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 

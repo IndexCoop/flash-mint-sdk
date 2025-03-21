@@ -41,7 +41,8 @@ export const exchangeFrom0xSource: { [key: string]: Exchange } = {
 export function getExcludedSources(chainId: number) {
   switch (chainId) {
     case 1:
-      return '0x_RFQ,Ambient,Angle,Balancer_V1,Balancer_V2,Balancer_V3,Bancor_V3,Curve,DODO_V1,DODO_V2,DeFi_Swap,Ekubo,Fluid,Fraxswap_V2,Integral,Lido,Maker_PSM,Maverick,Maverick_V2,Origin,PancakeSwap_V2,PancakeSwap_V3,Polygon_Migration,RingSwap,RocketPool,ShibaSwap,Sky_Migration,Solidly_V3,Spark,Stepn,SushiSwap_V3,Swaap_V2,Synapse,Uniswap_V2,Uniswap_V4,Wrapped_USDM,Yearn,Yearn_V3'
+      return ''
+    // return '0x_RFQ,Ambient,Angle,Balancer_V1,Balancer_V2,Balancer_V3,Bancor_V3,Curve,DODO_V1,DODO_V2,DeFi_Swap,Ekubo,Fluid,Fraxswap_V2,Integral,Lido,Maker_PSM,Maverick,Maverick_V2,Origin,PancakeSwap_V2,PancakeSwap_V3,Polygon_Migration,RingSwap,RocketPool,ShibaSwap,Sky_Migration,Solidly_V3,Spark,Stepn,SushiSwap_V3,Swaap_V2,Synapse,Uniswap_V2,Uniswap_V4,Wrapped_USDM,Yearn,Yearn_V3'
     case 8453:
       return ''
     // TODO: remove

@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import axios from 'axios'
 
 export async function getZeroExResponse(
@@ -22,7 +23,10 @@ export async function getZeroExResponse(
   if (taker !== undefined) {
     priceParams.append('taker', taker)
   }
-  if (sellEntireBalance) {
+  if (
+    sellEntireBalance &&
+    !isAddressEqual(sellToken, getTokenByChainAndSymbol(1, 'stETH').address)
+  ) {
     priceParams.append('sellEntireBalance', 'true')
   }
 

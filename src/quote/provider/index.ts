@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 
 import {
   FlashMintHyEthTransactionBuilder,
@@ -372,12 +373,20 @@ export class FlashMintQuoteProvider
           rpcUrl,
           swapQuoteProviderV2!,
         )
+        const isIcEth = isAddressEqual(
+          indexToken.address,
+          getTokenByChainAndSymbol(1, 'icETH').address,
+        )
+        console.log(isIcEth, 'isIcEth')
+        const flashmintContract = isIcEth
+          ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
+          : Contracts[chainId].FlashMintLeveragedZeroEx
         const leveragedQuote = await leveragedZeroExQuoteProvider.getQuote({
           ...request,
           chainId,
           inputAmount: inputTokenAmount!,
           outputAmount: request.indexTokenAmount,
-          taker: Contracts[chainId].FlashMintLeveragedZeroEx,
+          taker: flashmintContract,
         })
         if (!leveragedQuote) return null
         console.log(rpcUrl)

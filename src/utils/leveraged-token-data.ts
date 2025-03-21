@@ -1,3 +1,5 @@
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+
 import { Contracts } from 'constants/contracts'
 import { FlashMintAbis } from 'utils/abis'
 import { createClientWithUrl } from 'utils/clients'
@@ -63,7 +65,14 @@ export async function getLeveragedZeroExTokenData(
 ): Promise<LeveragedZeroExTokenData | null> {
   try {
     const { indexTokenAddress, indexTokenAmount, isIssuance, isAave } = params
-    const contract = Contracts[chainId].FlashMintLeveragedZeroEx
+    const isIcEth = isAddressEqual(
+      indexTokenAddress,
+      getTokenByChainAndSymbol(1, 'icETH').address,
+    )
+    const contract = isIcEth
+      ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
+      : Contracts[chainId].FlashMintLeveragedZeroEx
+    console.log(contract)
     const abi = FlashMintAbis[contract]
     const publicClient = createClientWithUrl(chainId, rpcUrl)!
     const data = await publicClient.readContract({
