@@ -1,5 +1,5 @@
 import { ChainId } from 'constants/chains'
-import { ZeroExSwapQuoteProvider } from 'quote'
+import { LiFiSwapQuoteProvider, ZeroExSwapQuoteProvider } from 'quote'
 import { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
 
 function get0xSwapPathOverride(chainId: number) {
@@ -11,6 +11,10 @@ function get0xSwapPathOverride(chainId: number) {
     default:
       return '/mainnet/swap/v1/quote'
   }
+}
+
+export function getLifiSwapQuoteProvider() {
+  return new LiFiSwapQuoteProvider(process.env.LIFI_API_KEY!, 'indexcoop')
 }
 
 export function getZeroExSwapQuoteProvider(chainId: number) {

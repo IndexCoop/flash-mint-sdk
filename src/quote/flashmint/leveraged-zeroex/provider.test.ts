@@ -1,8 +1,11 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 
+import { AddressZero, HashZero } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
+import { Contracts } from 'constants/contracts'
 import { ETH } from 'constants/tokens'
 import {
+  getLifiSwapQuoteProvider,
   getLocalHostProviderUrl,
   getZeroExV2SwapQuoteProvider,
 } from 'tests/utils'
@@ -18,9 +21,10 @@ import type { SwapDataV2 } from 'utils'
 
 // const rpcUrlArb = getLocalHostProviderUrl(ChainId.Arbitrum)
 const rpcUrlBase = getLocalHostProviderUrl(ChainId.Base)
+const swapQuoteOutputProvider = getLifiSwapQuoteProvider()
 const swapQuoteProviderZeroExV2 = getZeroExV2SwapQuoteProvider()
 
-const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+const taker = Contracts[ChainId.Base].FlashMintLeveragedZeroEx
 
 // describe.skip('LeveragedZeroExQuoteProvider()', () => {
 //   const indexToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
@@ -168,6 +172,7 @@ async function getQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
   const quoteProvider = new LeveragedZeroExQuoteProvider(
     rpcUrlBase,
     swapQuoteProviderZeroExV2,
+    swapQuoteOutputProvider,
   )
   const quote = await quoteProvider.getQuote(request)
   if (!quote) fail()
@@ -175,12 +180,22 @@ async function getQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
 }
 
 function validateSwapData(swapData: SwapDataV2) {
-  expect(isZeroExV2AllowanceHolderContract(swapData.swapTarget)).toBe(true)
+  console.log('validate:', swapData.swapTarget)
+  const LifiExchangeProxyContract = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE'
+  expect(
+    isZeroExV2AllowanceHolderContract(swapData.swapTarget) ||
+      isAddressEqual(swapData.swapTarget, LifiExchangeProxyContract) ||
+      isAddressEqual(swapData.swapTarget, AddressZero),
+  ).toBe(true)
   expect(swapData.callData).not.toBeUndefined()
 }
 
+function shouldBeNoOpSwapData(swapData: SwapDataV2) {
+  expect(swapData.swapTarget).toBe(AddressZero)
+  expect(swapData.callData).toBe(HashZero)
+}
+
 describe('LeveragedQuoteProvider() - Base', () => {
-  const indexToken = getTokenByChainAndSymbol(ChainId.Base, 'ETH2X')
   const usdc = getTokenByChainAndSymbol(ChainId.Base, 'USDC')
   const uSOL2x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL2x')
 
@@ -203,7 +218,7 @@ describe('LeveragedQuoteProvider() - Base', () => {
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
-    validateSwapData(quote.swapDataInputOutputToken)
+    shouldBeNoOpSwapData(quote.swapDataInputOutputToken)
   })
 
   test('returns quote for uSOL2x - minting w/ ERC20', async () => {

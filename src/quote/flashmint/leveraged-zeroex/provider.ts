@@ -17,7 +17,11 @@ import { slippageAdjustedTokenAmount } from 'utils/slippage'
 import type { SwapDataV2 } from 'utils'
 import type { Address } from 'viem'
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
-import type { SwapQuoteProviderV2, SwapQuoteRequestV2 } from '../../swap'
+import type {
+  SwapQuoteProviderV2,
+  SwapQuoteRequestV2,
+  SwapQuoteV2,
+} from '../../swap'
 
 export interface FlashMintLeveragedZeroExQuoteRequest {
   chainId: number
@@ -48,6 +52,8 @@ export class LeveragedZeroExQuoteProvider
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProviderV2,
+    // If provided, this provider will be used to fetch quotes for output amounts
+    private readonly swapQuoteOutputProvider?: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
@@ -144,27 +150,43 @@ export class LeveragedZeroExQuoteProvider
     const targetBuyAmount = debtAmount.mul(1001).div(1000)
     const minBuyAmount = debtAmount
     const maxBuyAmount = debtAmount.mul(1005).div(1000)
-    const sellAmount = await getSellAmount(
-      chainId,
-      leveragedTokenData.collateralToken,
-      leveragedTokenData.debtToken,
-      targetBuyAmount,
-      minBuyAmount,
-      maxBuyAmount,
-      BigNumber.from(leveragedTokenData.collateralAmount.toString()),
-    )
 
-    const quoteRequest: SwapQuoteRequestV2 = {
-      chainId,
-      inputToken: leveragedTokenData.collateralToken,
-      outputToken: leveragedTokenData.debtToken,
-      inputAmount: sellAmount.toString(),
-      slippage,
-      sources: includeSources,
-      taker,
+    let result: SwapQuoteV2 | null = null
+
+    if (this.swapQuoteOutputProvider) {
+      const quoteRequest: SwapQuoteRequestV2 = {
+        chainId,
+        inputToken: leveragedTokenData.collateralToken,
+        outputToken: leveragedTokenData.debtToken,
+        outputAmount: targetBuyAmount.toString(),
+        slippage,
+        taker,
+      }
+
+      result = await this.swapQuoteOutputProvider.getSwapQuote(quoteRequest)
+    } else {
+      const sellAmount = await getSellAmount(
+        chainId,
+        leveragedTokenData.collateralToken,
+        leveragedTokenData.debtToken,
+        targetBuyAmount,
+        minBuyAmount,
+        maxBuyAmount,
+        BigNumber.from(leveragedTokenData.collateralAmount.toString()),
+      )
+
+      const quoteRequest: SwapQuoteRequestV2 = {
+        chainId,
+        inputToken: leveragedTokenData.collateralToken,
+        outputToken: leveragedTokenData.debtToken,
+        inputAmount: sellAmount.toString(),
+        slippage,
+        sources: includeSources,
+        taker,
+      }
+
+      result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
     }
-
-    const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
 
     if (!result || !result.swapData) return null
 
@@ -285,6 +307,13 @@ export class LeveragedZeroExQuoteProvider
     )
     const inputOutputToken = isMinting ? inputTokenAddress : outputTokenAddress
 
+    console.log(
+      estimatedInputOutputAmount.toString(),
+      inputOutputToken,
+      collateralToken,
+      isMinting,
+    )
+
     // Only fetch input/output swap data if collateral token is not the same as payment token
     if (
       !isAddressEqual(inputOutputToken, collateralToken) // TOOD: && setTokenSymbol !== InterestCompoundingETHIndex.symbol
@@ -293,26 +322,45 @@ export class LeveragedZeroExQuoteProvider
         const targetBuyAmount = collateralShortfall.mul(1005).div(1000)
         const minBuyAmount = collateralShortfall
         const maxBuyAmount = collateralShortfall.mul(101).div(100)
-        const sellAmount = await getSellAmount(
-          chainId,
-          inputTokenAddress,
-          collateralToken,
-          targetBuyAmount,
-          minBuyAmount,
-          maxBuyAmount,
-          BigNumber.from(inputAmount),
-        )
-        console.log(sellAmount.toString(), 'sellAmount')
-        const quoteRequest: SwapQuoteRequestV2 = {
-          chainId,
-          inputToken: inputTokenAddress,
-          outputToken: collateralToken,
-          inputAmount: sellAmount.toString(),
-          slippage,
-          sources: includeSources,
-          taker,
+
+        let result: SwapQuoteV2 | null = null
+
+        if (this.swapQuoteOutputProvider) {
+          const quoteRequest: SwapQuoteRequestV2 = {
+            chainId,
+            inputToken: inputTokenAddress,
+            outputToken: collateralToken,
+            outputAmount: targetBuyAmount.toString(),
+            slippage,
+            taker,
+          }
+
+          result = await this.swapQuoteOutputProvider.getSwapQuote(quoteRequest)
+        } else {
+          const sellAmount = await getSellAmount(
+            chainId,
+            inputTokenAddress,
+            collateralToken,
+            targetBuyAmount,
+            minBuyAmount,
+            maxBuyAmount,
+            BigNumber.from(inputAmount),
+          )
+
+          console.log(sellAmount.toString(), 'sellAmount')
+          const quoteRequest: SwapQuoteRequestV2 = {
+            chainId,
+            inputToken: inputTokenAddress,
+            outputToken: collateralToken,
+            inputAmount: sellAmount.toString(),
+            slippage,
+            sources: includeSources,
+            taker,
+          }
+
+          result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
         }
-        const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+
         if (result?.swapData) {
           const { inputAmount, outputAmount, swapData } = result
           swapDataInputOutputToken = swapData
