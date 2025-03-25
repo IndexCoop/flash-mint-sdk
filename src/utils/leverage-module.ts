@@ -5,6 +5,7 @@ import { type Address, parseAbi } from 'viem'
 const AaveV3LeverageModule: { [key: number]: Address } = {
   1: '0x9d08CCeD85A68Bf8A19374ED4B5753aE3Be9F74f',
   8453: '0xC06a6E4d9D5FF9d64BD19fc243aD9B6E5a672699',
+  42161: '0x6D1b74e18064172D028C5EE7Af5D0ccC26f2A4Ae',
 }
 
 export async function usesAaveLeverageModule(
