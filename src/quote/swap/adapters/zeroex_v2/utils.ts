@@ -40,16 +40,7 @@ export const exchangeFrom0xSource: { [key: string]: Exchange } = {
 // docs: https://0x.org/docs/api#tag/Sources
 export function getExcludedSources(chainId: number) {
   switch (chainId) {
-    case 1:
-      return ''
-    // return '0x_RFQ,Ambient,Angle,Balancer_V1,Balancer_V2,Balancer_V3,Bancor_V3,Curve,DODO_V1,DODO_V2,DeFi_Swap,Ekubo,Fluid,Fraxswap_V2,Integral,Lido,Maker_PSM,Maverick,Maverick_V2,Origin,PancakeSwap_V2,PancakeSwap_V3,Polygon_Migration,RingSwap,RocketPool,ShibaSwap,Sky_Migration,Solidly_V3,Spark,Stepn,SushiSwap_V3,Swaap_V2,Synapse,Uniswap_V2,Uniswap_V4,Wrapped_USDM,Yearn,Yearn_V3'
-    case 8453:
-      return ''
-    // TODO: remove
-    // AerodromeV3 only (Slipstream)
-    // return '0x_RFQ,Aerodrome_V2,AlienBase_Stable,AlienBase_V2,AlienBase_V3,Angle,BaseSwap,BaseX,Clober_V2,DackieSwap_V3,DeltaSwap,Equalizer,Infusion,IziSwap,Kim_V4,Kinetix,Maverick,Maverick_V2,Morphex,Overnight,PancakeSwap_V2,PancakeSwap_V3,RocketSwap,SharkSwap_V2,SoSwap,Solidly_V3,SushiSwap,SushiSwap_V3,SwapBased_V3,Synapse,Synthswap_V2,Synthswap_V3,Thick,Treble,Uniswap_V2,Uniswap_V3,Uniswap_V4,WOOFi_V2,Wrapped_BLT,Wrapped_USDM'
-    case 42161:
-      return '0x_RFQ,Angle,Balancer_V2,Balancer_V3,Camelot_V2,Camelot_V3,Curve,DODO_V2,Fluid,GMX_V1,Integral,MIMSwap,Maverick_V2,PancakeSwap_V3,Ramses,Ramses_V2,Solidly_V3,SushiSwap,Swapr,Synapse,TraderJoe_V2.1,TraderJoe_V2.2,Uniswap_V2,Uniswap_V4,WOOFi_V2,Wrapped_USDM'
+    // TODO: check if neeeded (probably not)
     default:
       return ''
   }

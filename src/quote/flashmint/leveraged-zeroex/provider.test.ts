@@ -19,48 +19,52 @@ import {
 
 import type { SwapDataV2 } from 'utils'
 
-// const rpcUrlArb = getLocalHostProviderUrl(ChainId.Arbitrum)
+const rpcUrlArb = getLocalHostProviderUrl(ChainId.Arbitrum)
 const rpcUrlBase = getLocalHostProviderUrl(ChainId.Base)
 const swapQuoteOutputProvider = getLifiSwapQuoteProvider()
 const swapQuoteProviderZeroExV2 = getZeroExV2SwapQuoteProvider()
 
+const takerArb = Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
 const taker = Contracts[ChainId.Base].FlashMintLeveragedZeroEx
 
-// describe.skip('LeveragedZeroExQuoteProvider()', () => {
-//   const indexToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
-//   const usdc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC')
-//   const weth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'WETH')
+async function getArbQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
+  const quoteProvider = new LeveragedZeroExQuoteProvider(
+    rpcUrlArb,
+    swapQuoteProviderZeroExV2,
+    swapQuoteOutputProvider,
+  )
+  const quote = await quoteProvider.getQuote(request)
+  if (!quote) fail()
+  return quote
+}
 
-//   test('returns quote for ETH2X - minting w/ ETH', async () => {
-//     const indexTokenAmount = wei(1)
-//     const request = {
-//       chainId: ChainId.Arbitrum,
-//       isMinting: true,
-//       inputToken: eth,
-//       outputToken: indexToken,
-//       inputAmount: '',
-//       outputAmount: indexTokenAmount.toString(),
-//       slippage: 0.5,
-//       taker: '0x0',
-//     }
-//     const quoteProvider = new LeveragedZeroExQuoteProvider(
-//       rpcUrl,
-//       swap,
-//     )
-//     const quote = await quoteProvider.getQuote(request)
-//     if (!quote) fail()
-//     expect(quote.outputAmount).toEqual(indexTokenAmount)
-//     expect(quote.inputAmount.gt(0)).toBe(true)
-//     // Testing for individual params as changing quotes could affect the results
-//     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
-//     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
-//     expect(pathContains(usdc.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//     expect(pathContains(weth.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//   })
+describe.only('LeveragedZeroExQuoteProvider()', () => {
+  const indexToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
+  const usdc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC')
+  const weth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'WETH')
+
+  test('returns quote for ETH2X - minting w/ ETH', async () => {
+    const request = {
+      chainId: ChainId.Arbitrum,
+      isMinting: true,
+      inputToken: ETH,
+      outputToken: indexToken,
+      inputAmount: wei(0.5).toString(),
+      outputAmount: wei(1).toString(),
+      slippage: 0.5,
+      taker: takerArb,
+    }
+
+    const quote = await getArbQuote(request)
+    console.log(quote)
+
+    expect(quote.outputAmount).toEqual(request.outputAmount)
+    expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
+
+    validateSwapData(quote.swapDataDebtCollateral)
+    shouldBeNoOpSwapData(quote.swapDataInputOutputToken)
+  })
+})
 
 //   test('returns quote for ETH2X - minting w/ ERC20', async () => {
 //     const indexTokenAmount = wei(1)
