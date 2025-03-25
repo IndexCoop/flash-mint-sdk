@@ -64,113 +64,73 @@ describe.only('LeveragedZeroExQuoteProvider()', () => {
     validateSwapData(quote.swapDataDebtCollateral)
     shouldBeNoOpSwapData(quote.swapDataInputOutputToken)
   })
+
+  test('returns quote for ETH2X - minting w/ ERC20', async () => {
+    const request = {
+      chainId: ChainId.Arbitrum,
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: indexToken,
+      inputAmount: wei(100).toString(),
+      outputAmount: wei(1).toString(),
+      slippage: 0.5,
+      taker: takerArb,
+    }
+
+    const quote = await getArbQuote(request)
+    console.log(quote)
+
+    expect(quote.outputAmount).toEqual(request.outputAmount)
+    expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
+
+    validateSwapData(quote.swapDataDebtCollateral)
+    shouldBeNoOpSwapData(quote.swapDataInputOutputToken)
+  })
+
+  test('returns quote for ETH2X - redeeming to ETH', async () => {
+    const request = {
+      chainId: ChainId.Arbitrum,
+      isMinting: false,
+      inputToken: indexToken,
+      outputToken: ETH,
+      inputAmount: wei(1).toString(),
+      outputAmount: wei(1).toString(),
+      slippage: 0.5,
+      taker: takerArb,
+    }
+
+    const quote = await getArbQuote(request)
+    console.log(quote)
+
+    expect(quote.inputAmount).toEqual(request.inputAmount)
+    expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
+
+    validateSwapData(quote.swapDataDebtCollateral)
+    validateSwapData(quote.swapDataInputOutputToken)
+  })
+
+  test('returns quote for ETH2X - redeeming to ERC20', async () => {
+    const request = {
+      chainId: ChainId.Arbitrum,
+      isMinting: false,
+      inputToken: indexToken,
+      outputToken: usdc,
+      inputAmount: wei(1).toString(),
+      outputAmount: wei(1).toString(),
+      slippage: 0.5,
+      taker: takerArb,
+    }
+
+    const quote = await getArbQuote(request)
+    console.log(quote)
+
+    expect(quote.inputAmount).toEqual(request.inputAmount)
+    expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
+
+    validateSwapData(quote.swapDataDebtCollateral)
+    validateSwapData(quote.swapDataInputOutputToken)
+  })
 })
-
-//   test('returns quote for ETH2X - minting w/ ERC20', async () => {
-//     const indexTokenAmount = wei(1)
-//     const request = {
-//       chainId: ChainId.Arbitrum,
-//       isMinting: true,
-//       inputToken: usdc,
-//       outputToken: indexToken,
-//       inputAmount: '',
-//       outputAmount: indexTokenAmount.toString(),
-//       slippage: 0.5,
-//       taker: '0x0',
-//     }
-//     const quoteProvider = new LeveragedZeroExQuoteProvider(
-//       rpcUrl,
-//       swapQuoteProvider,
-//     )
-//     const quote = await quoteProvider.getQuote(request)
-//     if (!quote) fail()
-//     expect(quote.outputAmount).toEqual(indexTokenAmount)
-//     expect(quote.inputAmount.gt(0)).toBe(true)
-//     // Testing for individual params as changing quotes could affect the results
-//     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
-//     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
-//     expect(pathContains(usdc.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//     expect(pathContains(weth.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//   })
-
-//   test('returns quote for ETH2X - redeeming to ETH', async () => {
-//     const indexTokenAmount = wei(1)
-//     const request = {
-//       chainId: ChainId.Arbitrum,
-//       isMinting: false,
-//       inputToken: indexToken,
-//       outputToken: eth,
-//       inputAmount: indexTokenAmount.toString(),
-//       outputAmount: '',
-//       slippage: 0.5,
-//       taker: '0x0',
-//     }
-//     const quoteProvider = new LeveragedZeroExQuoteProvider(
-//       rpcUrl,
-//       swapQuoteProvider,
-//     )
-//     const quote = await quoteProvider.getQuote(request)
-//     if (!quote) fail()
-//     expect(quote.inputAmount).toEqual(indexTokenAmount)
-//     expect(quote.outputAmount.gt(0)).toBe(true)
-//     // Testing for individual params as changing quotes could affect the results
-//     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
-//     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
-//     expect(pathContains(usdc.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//     expect(pathContains(weth.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//     const swapDataOutputToken = noopSwapData
-//     noopSwapData.path = [
-//       '0x0000000000000000000000000000000000000000',
-//       '0x0000000000000000000000000000000000000000',
-//     ]
-//     expect(quote.swapDataInputOutputToken).toStrictEqual(swapDataOutputToken)
-//   })
-
-//   test('returns quote for ETH2X - redeeming to USDC', async () => {
-//     const indexTokenAmount = wei(1)
-//     const request = {
-//       chainId: ChainId.Arbitrum,
-//       isMinting: false,
-//       inputToken: indexToken,
-//       outputToken: usdc,
-//       inputAmount: indexTokenAmount.toString(),
-//       outputAmount: '',
-//       slippage: 0.5,
-//       taker: '0x0',
-//     }
-//     const quoteProvider = new LeveragedZeroExQuoteProvider(
-//       rpcUrl,
-//       swapQuoteProvider,
-//     )
-//     const quote = await quoteProvider.getQuote(request)
-//     if (!quote) fail()
-//     expect(quote.inputAmount).toEqual(indexTokenAmount)
-//     expect(quote.outputAmount.gt(0)).toBe(true)
-//     // Testing for individual params as changing quotes could affect the results
-//     expect(quote.swapDataDebtCollateral.exchange).not.toBe(Exchange.None)
-//     expect(quote.swapDataDebtCollateral.fees.length).toBeGreaterThanOrEqual(1)
-//     expect(pathContains(usdc.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//     expect(pathContains(weth.address, quote.swapDataDebtCollateral.path)).toBe(
-//       true,
-//     )
-//     const swapDataOutputToken = noopSwapData
-//     noopSwapData.path = [
-//       '0x0000000000000000000000000000000000000000',
-//       '0x0000000000000000000000000000000000000000',
-//     ]
-//     expect(quote.swapDataInputOutputToken).toStrictEqual(swapDataOutputToken)
-//   })
-// })
 
 async function getQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
   const quoteProvider = new LeveragedZeroExQuoteProvider(
