@@ -15,6 +15,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
     FlashMintLeveragedExtended: '0xc6b3B4624941287bB7BdD8255302c1b337e42194',
+    FlashMintLeveragedZeroEx: '0xdb4b7d3f812D0A8D98A1E17F9750c4E7a6477291',
   },
   [ChainId.Base]: {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
