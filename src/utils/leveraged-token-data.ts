@@ -83,7 +83,7 @@ export async function getLeveragedZeroExTokenData(
     })
     return data as LeveragedZeroExTokenData | null
   } catch (error) {
-    console.error('Error getting leveraged token data:', error)
+    console.error('Error getting leveraged zeroex token data:', error)
     return null
   }
 }
