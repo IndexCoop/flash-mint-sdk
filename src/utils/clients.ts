@@ -1,13 +1,22 @@
 import { http, createPublicClient } from 'viem'
-import { base, mainnet } from 'viem/chains'
+import { arbitrum, base, mainnet } from 'viem/chains'
 
 import { ChainId } from 'constants/chains'
 
 import type { PublicClient, Transport } from 'viem'
 
-type Client = PublicClient<Transport, typeof base | typeof mainnet>
+type Client = PublicClient<
+  Transport,
+  typeof arbitrum | typeof base | typeof mainnet
+>
 
 export function createClient(chainId: number): Client | null {
+  if (chainId === ChainId.Arbitrum) {
+    return createPublicClient({
+      chain: arbitrum,
+      transport: http(process.env.ARBITRUM_ALCHEMY_API),
+    }) as Client
+  }
   if (chainId === ChainId.Base) {
     return createPublicClient({
       chain: base,
@@ -25,6 +34,12 @@ export function createClientWithUrl(
   chainId: number,
   rpcUrl: string,
 ): Client | null {
+  if (chainId === ChainId.Arbitrum) {
+    return createPublicClient({
+      chain: arbitrum,
+      transport: http(rpcUrl),
+    }) as Client
+  }
   if (chainId === ChainId.Base) {
     return createPublicClient({
       chain: base,
