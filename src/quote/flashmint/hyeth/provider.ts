@@ -1,10 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-import { WETH } from 'constants/tokens'
-import type { QuoteProvider, QuoteToken } from 'quote/interfaces'
-import type { SwapQuoteProvider } from 'quote/swap'
-import { type SwapData, slippageAdjustedTokenAmount } from 'utils'
-
+import { slippageAdjustedTokenAmount } from 'utils'
 import { ComponentQuotesProvider } from './component-quotes'
 import { getRequiredComponents } from './issuance'
 import {
@@ -12,6 +9,10 @@ import {
   getEthToInputOutputTokenSwapData,
   getInputTokenToEthSwapData,
 } from './swap-data'
+
+import type { QuoteProvider, QuoteToken } from 'quote/interfaces'
+import type { SwapQuoteProvider } from 'quote/swap'
+import type { SwapData } from 'utils'
 
 export interface FlashMintHyEthQuoteRequest {
   isMinting: boolean
@@ -47,13 +48,14 @@ export class FlashMintHyEthQuoteProvider
   ): Promise<FlashMintHyEthQuote | null> {
     const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
       request
+
     // Only relevant for minting ERC-20's
     const swapDataInputTokenToEth = isMinting
       ? getInputTokenToEthSwapData(inputToken)
       : null
-    const inputOutputToken = isMinting ? inputToken : outputToken
-    const swapDataEthToInputOutputToken =
-      getEthToInputOutputTokenSwapData(inputOutputToken)
+    const swapDataEthToInputOutputToken = getEthToInputOutputTokenSwapData(
+      isMinting ? inputToken : outputToken,
+    )
 
     const { components, positions } = await getRequiredComponents(
       request,
@@ -66,8 +68,7 @@ export class FlashMintHyEthQuoteProvider
 
     // Mainnet only for now
     const chainId = 1
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const wethAddress = WETH.address!
+    const wethAddress = getTokenByChainAndSymbol(chainId, 'WETH').address
     const quoteProvider = new ComponentQuotesProvider(
       chainId,
       slippage,
