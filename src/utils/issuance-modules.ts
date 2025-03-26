@@ -1,3 +1,4 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from '../constants/chains'
 import {
   BasicIssuanceModuleAddress,
@@ -9,7 +10,6 @@ import {
 } from '../constants/contracts'
 import {
   CoinDeskEthTrendIndex,
-  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
@@ -44,7 +44,7 @@ export function getIssuanceModule(
   // Mainnet
   switch (tokenSymbol) {
     case CoinDeskEthTrendIndex.symbol:
-    case HighYieldETHIndex.symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH').symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
       return {

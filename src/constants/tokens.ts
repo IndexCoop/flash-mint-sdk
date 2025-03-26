@@ -21,11 +21,6 @@ export const DefiPulseIndex: Token = {
   symbol: 'DPI',
 }
 
-export const HighYieldETHIndex: Token = {
-  address: '0xc4506022Fb8090774E8A628d5084EED61D9B99Ee',
-  symbol: 'hyETH',
-}
-
 export const IndexCoopBitcoin2xIndex: Token = {
   address: '0xD2AC55cA3Bbd2Dd1e9936eC640dCb4b745fDe759',
   addressArbitrum: '0xeb5bE62e6770137beaA0cC712741165C594F59D7',

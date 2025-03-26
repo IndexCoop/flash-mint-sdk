@@ -3,16 +3,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import {
-  DefiPulseIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  IndexCoopEthereum3xIndex,
-  IndexCoopInverseBitcoinIndex,
-  IndexCoopInverseEthereumIndex,
-  MetaverseIndex,
-} from 'constants/tokens'
 import { wei } from 'utils'
 
 import { FlashMintContractType, type FlashMintQuoteRequest } from './'
@@ -60,49 +50,31 @@ describe('buildQuoteResponse()', () => {
 
 describe('getContractType()', () => {
   test('returns correct contract type for leveraged arbitrum tokens', async () => {
-    const btc2xContractType = getContractType(
-      IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Arbitrum,
-    )
+    const btc2xContractType = getContractType('BTC2X', ChainId.Arbitrum)
     const btc2xEthContractType = getContractType('BTC2xETH', ChainId.Arbitrum)
-    const btc3xContractType = getContractType(
-      IndexCoopBitcoin3xIndex.symbol,
-      ChainId.Arbitrum,
-    )
-    const eth2xContractType = getContractType(
-      IndexCoopEthereum2xIndex.symbol,
-      ChainId.Arbitrum,
-    )
+    const btc3xContractType = getContractType('BTC3X', ChainId.Arbitrum)
+    const eth2xContractType = getContractType('ETH2X', ChainId.Arbitrum)
     const eth2xBtcContractType = getContractType('ETH2xBTC', ChainId.Arbitrum)
-    const eth3xContractType = getContractType(
-      IndexCoopEthereum3xIndex.symbol,
-      ChainId.Arbitrum,
-    )
-    const ibtc1xContractType = getContractType(
-      IndexCoopInverseBitcoinIndex.symbol,
-      ChainId.Arbitrum,
-    )
-    const ieth1xContractType = getContractType(
-      IndexCoopInverseEthereumIndex.symbol,
-      ChainId.Arbitrum,
-    )
-    expect(btc2xContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(btc2xEthContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(btc3xContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(eth2xContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(eth2xBtcContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(eth3xContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(ibtc1xContractType).toBe(FlashMintContractType.leveragedExtended)
-    expect(ieth1xContractType).toBe(FlashMintContractType.leveragedExtended)
+    const eth3xContractType = getContractType('ETH3X', ChainId.Arbitrum)
+    const ibtc1xContractType = getContractType('iBTC1X', ChainId.Arbitrum)
+    const ieth1xContractType = getContractType('iETH1X', ChainId.Arbitrum)
+    expect(btc2xContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(btc2xEthContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(btc3xContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(eth2xContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(eth2xBtcContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(eth3xContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(ibtc1xContractType).toBe(FlashMintContractType.leveragedZeroEx)
+    expect(ieth1xContractType).toBe(FlashMintContractType.leveragedZeroEx)
   })
 
   test('returns correct contract type for DPI', async () => {
-    const contractType = getContractType(DefiPulseIndex.symbol, ChainId.Mainnet)
+    const contractType = getContractType('DPI', ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 
   test('returns correct contract type for MVI', async () => {
-    const contractType = getContractType(MetaverseIndex.symbol, ChainId.Mainnet)
+    const contractType = getContractType('MVI', ChainId.Mainnet)
     expect(contractType).toBe(FlashMintContractType.zeroEx)
   })
 
