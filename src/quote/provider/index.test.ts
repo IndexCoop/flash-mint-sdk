@@ -53,19 +53,16 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for minting ETH2X (Arbitrum)', async () => {
+    const FlashMintLeveragedZeroEx =
+      Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
-    const arbitrumProvider = getRpcProvider(rpcUrl)
     const outputToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
-    const contract = getFlashMintLeveragedContractForToken(
-      outputToken.symbol,
-      arbitrumProvider,
-      ChainId.Arbitrum,
-    )
     const request: FlashMintQuoteRequest = {
       isMinting: true,
-      inputToken: usdc,
+      inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
       outputToken,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(300, 6).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -76,8 +73,8 @@ describe('FlashMintQuoteProvider()', () => {
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.chainId).toEqual(ChainId.Arbitrum)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveragedExtended)
-    expect(quote.contract).toEqual(contract.address)
+    expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
+    expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -87,7 +84,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(contract.address)
+    expect(quote.tx.to).toBe(FlashMintLeveragedZeroEx)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
@@ -157,24 +154,15 @@ describe('FlashMintQuoteProvider()', () => {
   })
 
   test('returns a quote for redeeming ETH2X', async () => {
+    const FlashMintLeveragedZeroEx =
+      Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
-    const arbitrumProvider = getRpcProvider(rpcUrl)
-    const inputToken = {
-      address: IndexCoopEthereum2xIndex.addressArbitrum!,
-      decimals: eth2x.decimals,
-      symbol: eth2x.symbol,
-    }
-    const outputToken = usdc
-    const contract = getFlashMintLeveragedContractForToken(
-      inputToken.symbol,
-      arbitrumProvider,
-      ChainId.Arbitrum,
-    )
     const request: FlashMintQuoteRequest = {
       isMinting: false,
-      inputToken,
-      outputToken,
+      inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X'),
+      outputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -185,8 +173,8 @@ describe('FlashMintQuoteProvider()', () => {
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
     expect(quote.chainId).toEqual(ChainId.Arbitrum)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveragedExtended)
-    expect(quote.contract).toEqual(contract.address)
+    expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
+    expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -196,7 +184,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(contract.address)
+    expect(quote.tx.to).toBe(FlashMintLeveragedZeroEx)
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
