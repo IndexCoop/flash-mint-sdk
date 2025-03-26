@@ -4,7 +4,7 @@ import { ChainId } from 'constants/chains'
 import { ETH } from 'constants/tokens'
 import {
   getLocalHostProviderUrl,
-  getZeroExSwapQuoteProvider,
+  getZeroExV2SwapQuoteProvider,
 } from 'tests/utils'
 import { wei } from 'utils'
 
@@ -12,9 +12,10 @@ import { ZeroExQuoteProvider } from './provider'
 
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
-const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
+const swapQuoteProvider = getZeroExV2SwapQuoteProvider()
 
-describe('ZeroExQuoteProvider', () => {
+// Skipped for CI as it might create rate limits with 0x otherwise
+describe.skip('ZeroExQuoteProvider', () => {
   const dpi = getTokenByChainAndSymbol(chainId, 'DPI')
   const mvi = getTokenByChainAndSymbol(chainId, 'MVI')
 
@@ -37,7 +38,7 @@ describe('ZeroExQuoteProvider', () => {
     expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
   })
 
-  test.skip('returns a quote for redeeming MVI', async () => {
+  test('returns a quote for redeeming MVI', async () => {
     const inputToken = mvi
     const outputToken = ETH
     const request = {

@@ -11,7 +11,7 @@ import {
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
-import type { SwapQuoteProvider } from '../../swap'
+import type { SwapQuoteProviderV2 } from '../../swap'
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
 export interface FlashMintZeroExQuoteRequest {
@@ -33,7 +33,7 @@ export class ZeroExQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider,
+    private readonly swapQuoteProvider: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
