@@ -40,10 +40,8 @@ export class ZeroExTransactionBuilder
       inputOutputTokenAmount,
       isMinting,
     } = request
-    const network = await provider.getNetwork()
-    const chainId = network.chainId
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
-    const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
+    const issuanceModule = getIssuanceModule(indexTokenSymbol, 1)
     const contract = getFlashMintZeroExContractForToken(
       indexTokenSymbol,
       provider,

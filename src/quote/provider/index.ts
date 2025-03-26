@@ -419,9 +419,12 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.zeroEx: {
+        if (!this.swapQuoteProviderV2) {
+          throw new Error('400')
+        }
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           rpcUrl,
-          swapQuoteProvider,
+          this.swapQuoteProviderV2,
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote({
           ...request,

@@ -54,30 +54,23 @@ export class ComponentsQuoteProvider {
     for (let i = 0; i < components.length; i += 1) {
       const index = i
       const component = components[index]
-      const buyAmount = positions[index]
-      const sellAmount = positions[index]
       const buyToken = isMinting ? component : outputTokenAddress
       const sellToken = isMinting ? inputTokenAddress : component
+      const sellAmount = positions[index]
 
       if (buyToken === sellToken) {
-        const amount = isMinting ? buyAmount : sellAmount
-        const fakeResponse = this.getFakeSwapQuote(amount)
+        const fakeResponse = this.getFakeSwapQuote(sellAmount)
         quotePromises.push(fakeResponse)
       } else {
         const params: SwapQuoteRequestV2 = {
           chainId,
           inputToken: sellToken,
           outputToken: buyToken,
+          inputAmount: sellAmount.toString(),
           slippage,
           taker: Contracts[1].ExchangeIssuanceZeroEx,
           sellEntireBalance: true,
         }
-        if (isMinting) {
-          params.outputAmount = buyAmount.toString()
-        } else {
-          params.inputAmount = sellAmount.toString()
-        }
-        console.log(params)
         const quotePromise = swapQuoteProvider.getSwapQuote(params)
         quotePromises.push(quotePromise)
       }
