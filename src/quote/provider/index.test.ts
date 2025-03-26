@@ -2,9 +2,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
-import { ETH, IndexCoopEthereum2xIndex } from 'constants/tokens'
-import { getFlashMintLeveragedContractForToken, wei } from 'utils'
-import { getRpcProvider } from 'utils/rpc-provider'
+import { ETH } from 'constants/tokens'
 
 import {
   getLocalHostProviderUrl,
