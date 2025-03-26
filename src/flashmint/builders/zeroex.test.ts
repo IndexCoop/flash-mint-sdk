@@ -20,7 +20,6 @@ describe('ZeroExTransactionBuilder()', () => {
   const contract = getFlashMintZeroExContractForToken(
     indexToken.symbol,
     getTestRpcProvider(chainId),
-    chainId,
   )
   const issuanceModule = getIssuanceModule(indexToken.symbol, chainId)
   const rpcUrl = getLocalHostProviderUrl(chainId)

@@ -5,8 +5,6 @@ import {
   Contracts,
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
 } from 'constants/contracts'
@@ -20,7 +18,6 @@ import {
 
 import {
   getExchangeIssuanceLeveragedContractAddress,
-  getExchangeIssuanceZeroExContractAddress,
   getFlashMintHyEthContract,
   getFlashMintLeveragedContract,
   getFlashMintLeveragedContractForToken,
@@ -178,67 +175,23 @@ describe('getFlashMintWrappedContract()', () => {
   })
 })
 
-describe('getExchangeIssuanceZeroExContractAddress()', () => {
-  test('return correct address for polygon', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExPolygonAddress
-    const address = getExchangeIssuanceZeroExContractAddress(137)
-    expect(address).toEqual(expectedAddress)
-  })
-
-  test('return correct address for mainnet', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
-    const address = getExchangeIssuanceZeroExContractAddress(1)
-    expect(address).toEqual(expectedAddress)
-  })
-
-  test('returns mainnet by default', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
-    const address = getExchangeIssuanceZeroExContractAddress()
-    expect(address).toEqual(expectedAddress)
-  })
-
-  test('returns mainnet contract by default', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
-    const contract = getFlashMintZeroExContract(undefined)
-    expect(contract.address).toEqual(expectedAddress)
-  })
-})
-
 describe('getFlashMintZeroExContract()', () => {
-  test('return correct contract for polygon', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExPolygonAddress
-    const contract = getFlashMintZeroExContract(undefined, 137)
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
-  })
-
   test('return correct contract for mainnet', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
-    const contract = getFlashMintZeroExContract(undefined, 1)
-    expect(contract.address).toEqual(expectedAddress)
-    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
-    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
-    expect(contract.functions.issueExactSetFromETH).toBeDefined()
-    expect(contract.functions.issueExactSetFromToken).toBeDefined()
-    expect(contract.functions.redeemExactSetForETH).toBeDefined()
-    expect(contract.functions.redeemExactSetForToken).toBeDefined()
-  })
-
-  test('returns mainnet contract by default', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
+    const expectedAddress = Contracts[ChainId.Mainnet].ExchangeIssuanceZeroEx
     const contract = getFlashMintZeroExContract(undefined)
     expect(contract.address).toEqual(expectedAddress)
+    expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()
+    expect(contract.functions.getRequiredRedemptionComponents).toBeDefined()
+    expect(contract.functions.issueExactSetFromETH).toBeDefined()
+    expect(contract.functions.issueExactSetFromToken).toBeDefined()
+    expect(contract.functions.redeemExactSetForETH).toBeDefined()
+    expect(contract.functions.redeemExactSetForToken).toBeDefined()
   })
 })
 
 describe('getFlashMintZeroExContractForToken()', () => {
   test('returns Set Protocol contract as default', async () => {
-    const expectedAddress = ExchangeIssuanceZeroExMainnetAddress
+    const expectedAddress = Contracts[ChainId.Mainnet].ExchangeIssuanceZeroEx
     const contract = getFlashMintZeroExContractForToken('', undefined)
     expect(contract.address).toEqual(expectedAddress)
     expect(contract.functions.getRequiredIssuanceComponents).toBeDefined()

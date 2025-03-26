@@ -5,6 +5,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
   [ChainId.Mainnet]: {
     CustomOracleNavIssuanceModule: '0x2344674B23aD076908FD2396373CfE9cd48A1ba3',
     DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
+    ExchangeIssuanceZeroEx: '0x8760FCD90c82e1e95e55047b6b6A0F22dc07d7d1', // redeployed version
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
     FlashMintLeveragedZeroEx: '0x58093c03B4e7804D0127A6D0A5D86dcbd5652113',
     FlashMintLeveragedZeroEx_AaveV2:
@@ -60,9 +61,3 @@ export const ExchangeIssuanceLeveragedMainnetAddress =
 
 export const ExchangeIssuanceLeveragedPolygonAddress =
   '0xE86636f23B502B8746A72A1Ed87d65F096E419Db'
-
-export const ExchangeIssuanceZeroExMainnetAddress =
-  '0xf42eCDC112365fF79a745B4cf7D4C266bd6E4b25'
-
-export const ExchangeIssuanceZeroExPolygonAddress =
-  '0x0F5C21d4929f6F17119f43b0c51E665f12367A19'

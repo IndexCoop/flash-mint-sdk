@@ -43,15 +43,22 @@ export class ZeroExQuoteProvider
     const provider = getRpcProvider(rpcUrl)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
+
+    if (isMinting) {
+      throw new Error('Minting not supported.')
+    }
+
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
     const network = await provider.getNetwork()
     const chainId = network.chainId
+
     const wethAddress = getAddressForToken(WETH, chainId)
     if (wethAddress === undefined) {
       console.error('Error - WETH address not defined')
       return null
     }
+
     const { components, positions } = await getRequiredComponents(
       isMinting,
       indexToken.address,
@@ -115,7 +122,6 @@ export async function getRequiredComponents(
   const contract = getFlashMintZeroExContractForToken(
     indexTokenSymbol,
     provider,
-    chainId,
   )
   const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
   const { components, positions } = isMinting

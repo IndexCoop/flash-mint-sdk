@@ -47,7 +47,6 @@ export class ZeroExTransactionBuilder
     const contract = getFlashMintZeroExContractForToken(
       indexTokenSymbol,
       provider,
-      chainId,
     )
     if (isMinting) {
       if (inputOutputTokenIsEth) {
