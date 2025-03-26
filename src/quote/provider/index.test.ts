@@ -8,6 +8,7 @@ import {
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
   getZeroExV2SwapQuoteProvider,
+  wei,
 } from 'tests/utils'
 
 import {
