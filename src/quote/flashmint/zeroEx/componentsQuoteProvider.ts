@@ -1,8 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import type { SwapQuote, SwapQuoteProvider, SwapQuoteRequest } from 'quote/swap'
-import { Exchange } from 'utils'
+import { AddressZero, HashZero } from 'constants/addresses'
+import { Contracts } from 'constants/contracts'
 
+import type {
+  SwapQuoteProviderV2,
+  SwapQuoteRequestV2,
+  SwapQuoteV2,
+} from 'quote/swap'
 import type { QuoteToken } from '../../interfaces'
 
 export type ComponentQuotesResult = {
@@ -14,7 +19,7 @@ export class ComponentsQuoteProvider {
     readonly chainId: number,
     readonly slippage: number,
     readonly wethAddress: string,
-    readonly swapQuoteProvider: SwapQuoteProvider,
+    readonly swapQuoteProvider: SwapQuoteProviderV2,
   ) {}
 
   /**
@@ -44,7 +49,7 @@ export class ComponentsQuoteProvider {
     const inputTokenAddress = this.getTokenAddressOrWeth(inputToken)
     const outputTokenAddress = this.getTokenAddressOrWeth(outputToken)
 
-    const quotePromises: Promise<SwapQuote | null>[] = []
+    const quotePromises: Promise<SwapQuoteV2 | null>[] = []
 
     for (let i = 0; i < components.length; i += 1) {
       const index = i
@@ -59,28 +64,31 @@ export class ComponentsQuoteProvider {
         const fakeResponse = this.getFakeSwapQuote(amount)
         quotePromises.push(fakeResponse)
       } else {
-        const params: SwapQuoteRequest = {
+        const params: SwapQuoteRequestV2 = {
           chainId,
-          outputToken: buyToken,
           inputToken: sellToken,
+          outputToken: buyToken,
           slippage,
+          taker: Contracts[1].ExchangeIssuanceZeroEx,
+          sellEntireBalance: true,
         }
         if (isMinting) {
           params.outputAmount = buyAmount.toString()
         } else {
           params.inputAmount = sellAmount.toString()
         }
+        console.log(params)
         const quotePromise = swapQuoteProvider.getSwapQuote(params)
         quotePromises.push(quotePromise)
       }
     }
 
     const resultsWithNull = await Promise.all(quotePromises)
-    const results: SwapQuote[] = resultsWithNull.filter(
+    const results: SwapQuoteV2[] = resultsWithNull.filter(
       (e): e is Exclude<typeof e, null> => e !== null,
     )
     if (results.length !== resultsWithNull.length) return null
-    const componentQuotes = results.map((result) => result.callData)
+    const componentQuotes = results.map((result) => result.swapData!.callData)
     const inputOutputTokenAmount = results
       .map((result) =>
         BigNumber.from(isMinting ? result.inputAmount : result.outputAmount),
@@ -98,21 +106,18 @@ export class ComponentsQuoteProvider {
    * This is just a helper function to return a fake swap quote when the
    * component and input/output token are the same.
    */
-  async getFakeSwapQuote(amount: BigNumber): Promise<SwapQuote> {
+  async getFakeSwapQuote(amount: BigNumber): Promise<SwapQuoteV2> {
     return Promise.resolve({
       chainId: 1,
       inputToken: '',
       outputToken: '',
       inputAmount: amount.toString(),
       outputAmount: amount.toString(),
-      // Needs valid formatted hash - as otherwise validation will fail
-      callData: '0x0000000000000000000000000000000000000000',
       slippage: 0,
       swapData: {
-        exchange: Exchange.UniV3,
-        path: ['', ''],
-        fees: [300],
-        pool: '0x0000000000000000000000000000000000000000',
+        swapTarget: AddressZero,
+        // Needs valid formatted hash - as otherwise validation will fail
+        callData: HashZero, // TODO: check
       },
     })
   }
