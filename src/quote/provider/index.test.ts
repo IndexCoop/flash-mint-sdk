@@ -21,6 +21,7 @@ import {
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
+const zeroExV2SwapQuoteProvider = getZeroExV2SwapQuoteProvider()
 
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
@@ -70,6 +71,7 @@ describe('FlashMintQuoteProvider()', () => {
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
       getZeroExSwapQuoteProvider(ChainId.Arbitrum),
+      zeroExV2SwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -92,7 +94,7 @@ describe('FlashMintQuoteProvider()', () => {
   test('returns a quote for minting hyETH', async () => {
     const request: FlashMintQuoteRequest = {
       isMinting: true,
-      inputToken: usdc,
+      inputToken: ETH,
       outputToken: hyeth,
       indexTokenAmount: wei(1).toString(),
       slippage: 0.5,
@@ -100,6 +102,7 @@ describe('FlashMintQuoteProvider()', () => {
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
       zeroexSwapQuoteProvider,
+      zeroExV2SwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -177,6 +180,7 @@ describe('FlashMintQuoteProvider()', () => {
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
       getZeroExSwapQuoteProvider(ChainId.Arbitrum),
+      zeroExV2SwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -207,6 +211,7 @@ describe('FlashMintQuoteProvider()', () => {
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
       zeroexSwapQuoteProvider,
+      zeroExV2SwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
