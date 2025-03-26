@@ -11,7 +11,7 @@ import {
 } from './swap-data'
 
 import type { QuoteProvider, QuoteToken } from 'quote/interfaces'
-import type { SwapQuoteProvider } from 'quote/swap'
+import type { SwapQuoteProviderV2 } from 'quote/swap'
 import type { SwapData } from 'utils'
 
 export interface FlashMintHyEthQuoteRequest {
@@ -40,7 +40,7 @@ export class FlashMintHyEthQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider,
+    private readonly swapQuoteProvider: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(

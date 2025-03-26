@@ -103,9 +103,12 @@ export class FlashMintQuoteProvider
     }
     switch (contractType) {
       case FlashMintContractType.hyeth: {
+        if (!this.swapQuoteProviderV2) {
+          throw new Error('400')
+        }
         const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
           rpcUrl,
-          swapQuoteProvider,
+          this.swapQuoteProviderV2,
         )
         const hyethQuote = await hyethQuoteProvider.getQuote({
           isMinting,

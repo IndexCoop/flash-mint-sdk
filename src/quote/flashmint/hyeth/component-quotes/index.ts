@@ -2,12 +2,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { isAddressEqual } from '@indexcoop/tokenlists'
 import type { Address } from 'viem'
 
-import type { SwapQuoteProvider } from 'quote/swap'
 import { slippageAdjustedTokenAmount } from 'utils'
-
-import type { QuoteToken } from '../../../interfaces'
-
 import { MorphoQuoteProvider } from './morpho'
+
+import type { SwapQuoteProviderV2 } from 'quote/swap'
+import type { QuoteToken } from '../../../interfaces'
 
 interface ComponentQuotesResult {
   componentQuotes: string[]
@@ -20,7 +19,7 @@ export class ComponentQuotesProvider {
     readonly slippage: number,
     readonly wethAddress: string,
     readonly rpcUrl: string,
-    readonly swapQuoteProvider: SwapQuoteProvider,
+    readonly swapQuoteProvider: SwapQuoteProviderV2,
   ) {}
 
   isMorpho(token: string) {
@@ -71,6 +70,7 @@ export class ComponentQuotesProvider {
             component,
             amount,
             inputTokenAddress,
+            this.slippage,
           )
           quotePromises.push(quotePromise)
         } else {
@@ -78,6 +78,7 @@ export class ComponentQuotesProvider {
             component,
             amount,
             outputTokenAddress,
+            this.slippage,
           )
           quotePromises.push(quotePromise)
         }
