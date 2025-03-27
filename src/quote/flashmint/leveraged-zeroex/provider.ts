@@ -6,7 +6,7 @@ import {
 
 import { AddressZero, HashZero } from 'constants/addresses'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
-import { Exchange, getTokenAddressOrWeth } from 'utils'
+import { getTokenAddressOrWeth } from 'utils'
 import { usesAaveLeverageModule } from 'utils/leverage-module'
 import {
   type LeveragedZeroExTokenData,
@@ -65,8 +65,6 @@ export class LeveragedZeroExQuoteProvider
       isMinting ? request.outputAmount : request.inputAmount,
     )
     const indexToken = isMinting ? outputToken : inputToken
-    // TODO:
-    const sources = [Exchange.Sushiswap, Exchange.UniV3]
 
     const isAave = await usesAaveLeverageModule(
       indexToken.address,
@@ -90,16 +88,8 @@ export class LeveragedZeroExQuoteProvider
     if (leveragedTokenData === null) return null
 
     const debtCollateralResult = isMinting
-      ? await this.getSwapDataDebtToCollateral(
-          leveragedTokenData,
-          sources,
-          request,
-        )
-      : await this.getSwapDataCollateralToDebt(
-          leveragedTokenData,
-          sources,
-          request,
-        )
+      ? await this.getSwapDataDebtToCollateral(leveragedTokenData, request)
+      : await this.getSwapDataCollateralToDebt(leveragedTokenData, request)
     console.log(debtCollateralResult)
 
     if (!debtCollateralResult) return null
@@ -112,7 +102,6 @@ export class LeveragedZeroExQuoteProvider
         request,
         leveragedTokenData,
         collateralObtainedOrSold,
-        sources,
       )
 
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
@@ -141,7 +130,6 @@ export class LeveragedZeroExQuoteProvider
   // Returns collateral amount needed to be sold
   private async getSwapDataCollateralToDebt(
     leveragedTokenData: LeveragedZeroExTokenData,
-    includeSources: Exchange[],
     request: FlashMintLeveragedZeroExQuoteRequest,
   ) {
     const { chainId, slippage, taker } = request
@@ -181,7 +169,6 @@ export class LeveragedZeroExQuoteProvider
         outputToken: leveragedTokenData.debtToken,
         inputAmount: sellAmount.toString(),
         slippage,
-        sources: includeSources,
         taker,
       }
 
@@ -203,7 +190,6 @@ export class LeveragedZeroExQuoteProvider
   // Returns collateral amount bought
   private async getSwapDataDebtToCollateral(
     leveragedTokenData: LeveragedZeroExTokenData,
-    includeSources: Exchange[],
     request: FlashMintLeveragedZeroExQuoteRequest,
   ) {
     const { chainId, outputAmount, outputToken, slippage, taker } = request
@@ -240,7 +226,6 @@ export class LeveragedZeroExQuoteProvider
       inputAmount: roundedDebtAmount.toString(),
       slippage,
       sellEntireBalance: true,
-      sources: includeSources,
       taker,
     }
     const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
@@ -257,7 +242,6 @@ export class LeveragedZeroExQuoteProvider
     request: FlashMintLeveragedZeroExQuoteRequest,
     leveragedTokenData: LeveragedZeroExTokenData,
     collateralObtainedOrSold: BigNumber,
-    includeSources: Exchange[],
   ): Promise<{
     swapDataInputOutputToken: SwapDataV2
     estimatedInputOutputAmount: BigNumber
@@ -354,7 +338,6 @@ export class LeveragedZeroExQuoteProvider
             outputToken: collateralToken,
             inputAmount: sellAmount.toString(),
             slippage,
-            sources: includeSources,
             taker,
           }
 
@@ -376,7 +359,6 @@ export class LeveragedZeroExQuoteProvider
           slippage,
           inputAmount: estimatedInputOutputAmount.toString(),
           sellEntireBalance: true,
-          sources: includeSources,
           taker,
         }
         const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
