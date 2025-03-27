@@ -1,18 +1,18 @@
-import type { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { WETH } from 'constants/tokens'
 import {
-  getAddressForToken,
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
   slippageAdjustedTokenAmount,
 } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
+import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
+import type { BigNumber } from '@ethersproject/bignumber'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
 import type { SwapQuoteProviderV2 } from '../../swap'
-import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
 export interface FlashMintZeroExQuoteRequest {
   isMinting: boolean
@@ -53,7 +53,7 @@ export class ZeroExQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
 
-    const wethAddress = getAddressForToken(WETH, chainId)
+    const wethAddress = getTokenByChainAndSymbol(chainId, WETH.symbol)?.address
     if (wethAddress === undefined) {
       console.error('Error - WETH address not defined')
       return null
