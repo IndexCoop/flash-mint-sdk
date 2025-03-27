@@ -40,7 +40,7 @@ export const exchangeFrom0xSource: { [key: string]: Exchange } = {
 // docs: https://0x.org/docs/api#tag/Sources
 export function getExcludedSources(chainId: number) {
   switch (chainId) {
-    // TODO: check if neeeded (probably not)
+    // For now, no need to exclude any sources.
     default:
       return ''
   }
