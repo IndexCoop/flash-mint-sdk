@@ -18,6 +18,7 @@ describe('BTC3X (Arbitrum)', () => {
       inputToken: ETH,
       outputToken: btc3x,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 1,
     })
     await factory.executeTx()
@@ -29,6 +30,7 @@ describe('BTC3X (Arbitrum)', () => {
       inputToken: btc3x,
       outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 1,
     })
     await factory.executeTx()

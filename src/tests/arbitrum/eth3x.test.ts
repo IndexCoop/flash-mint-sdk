@@ -3,7 +3,7 @@ import { ChainId } from 'constants/chains'
 import {
   QuoteTokens,
   type TestFactory,
-  getTestFactoryZeroEx,
+  getTestFactoryZeroExV2,
   wei,
 } from 'tests/utils'
 
@@ -14,7 +14,7 @@ const { eth } = QuoteTokens
 describe('ETH3X (Arbitrum)', () => {
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(2, chainId)
+    factory = getTestFactoryZeroExV2(2, chainId)
   })
 
   test.only('can mint with ETH', async () => {
@@ -23,6 +23,7 @@ describe('ETH3X (Arbitrum)', () => {
       inputToken: eth,
       outputToken: eth3x,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -34,6 +35,7 @@ describe('ETH3X (Arbitrum)', () => {
       inputToken: eth3x,
       outputToken: eth,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

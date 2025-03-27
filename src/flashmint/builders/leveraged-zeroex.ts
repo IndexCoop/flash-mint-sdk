@@ -58,13 +58,6 @@ export class LeveragedZeroExBuilder
     console.log(isMinting, inputTokenSymbol === 'ETH', 'ETH', isAave)
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
-        console.log(
-          outputToken,
-          outputTokenAmount.toString(),
-          swapDataDebtCollateral,
-          swapDataInputOutputToken,
-        )
-        console.log(inputTokenAmount.toString())
         return await contract.populateTransaction.issueExactSetFromETH(
           outputToken,
           outputTokenAmount,
