@@ -3,7 +3,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { ETH } from 'constants/tokens'
-
 import {
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
@@ -23,7 +22,6 @@ const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 const zeroExV2SwapQuoteProvider = getZeroExV2SwapQuoteProvider()
 
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
-const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
 const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 
@@ -55,11 +53,10 @@ describe('FlashMintQuoteProvider()', () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
-    const outputToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
     const request: FlashMintQuoteRequest = {
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
-      outputToken,
+      outputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X'),
       indexTokenAmount: wei(1).toString(),
       inputTokenAmount: wei(300, 6).toString(),
       slippage: 0.5,
