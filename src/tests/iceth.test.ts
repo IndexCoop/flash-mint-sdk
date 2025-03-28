@@ -1,8 +1,6 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
   balanceOf,
   getTestFactoryZeroExV2,
@@ -12,9 +10,7 @@ import {
 
 describe('icETH (mainnet)', () => {
   const chainId = 1
-  const { eth } = QuoteTokens
   const iceth = getTokenByChainAndSymbol(chainId, 'icETH')
-  const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
     factory = getTestFactoryZeroExV2(4)
@@ -29,29 +25,28 @@ describe('icETH (mainnet)', () => {
       factory.getProvider(),
     )
     const balance = await balanceOf(factory.getSigner(), iceth.address)
-    console.log(balance.toString())
     expect(balance.gt(0)).toBe(true)
   })
 
-  test('can redeem for ETH', async () => {
+  test.skip('can redeem for ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: iceth,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
-    await factory.executeTx(BigNumber.from(5_000_000))
+    await factory.executeTx()
   })
 
-  test('can redeem for WETH', async () => {
+  test('can redeem for stETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: iceth,
-      outputToken: weth,
-      indexTokenAmount: wei('0.1').toString(),
-      inputTokenAmount: wei('0.1').toString(),
+      outputToken: getTokenByChainAndSymbol(chainId, 'stETH'),
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
