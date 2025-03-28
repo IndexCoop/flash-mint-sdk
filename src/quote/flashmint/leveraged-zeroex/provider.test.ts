@@ -38,7 +38,7 @@ async function getArbQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
   return quote
 }
 
-describe.only('LeveragedZeroExQuoteProvider()', () => {
+describe('LeveragedZeroExQuoteProvider()', () => {
   const indexToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
   const usdc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC')
   const weth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'WETH')
@@ -56,7 +56,6 @@ describe.only('LeveragedZeroExQuoteProvider()', () => {
     }
 
     const quote = await getArbQuote(request)
-    console.log(quote)
 
     expect(quote.outputAmount).toEqual(request.outputAmount)
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
@@ -78,7 +77,6 @@ describe.only('LeveragedZeroExQuoteProvider()', () => {
     }
 
     const quote = await getArbQuote(request)
-    console.log(quote)
 
     expect(quote.outputAmount).toEqual(request.outputAmount)
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
@@ -100,7 +98,6 @@ describe.only('LeveragedZeroExQuoteProvider()', () => {
     }
 
     const quote = await getArbQuote(request)
-    console.log(quote)
 
     expect(quote.inputAmount).toEqual(request.inputAmount)
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
@@ -122,7 +119,6 @@ describe.only('LeveragedZeroExQuoteProvider()', () => {
     }
 
     const quote = await getArbQuote(request)
-    console.log(quote)
 
     expect(quote.inputAmount).toEqual(request.inputAmount)
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
@@ -144,7 +140,6 @@ async function getQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
 }
 
 function validateSwapData(swapData: SwapDataV2) {
-  console.log('validate:', swapData.swapTarget)
   const LifiExchangeProxyContract = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE'
   expect(
     isZeroExV2AllowanceHolderContract(swapData.swapTarget) ||
@@ -176,13 +171,12 @@ describe('LeveragedQuoteProvider() - Base', () => {
     }
 
     const quote = await getQuote(request)
-    console.log(quote)
 
     expect(quote.outputAmount).toEqual(request.outputAmount)
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
-    shouldBeNoOpSwapData(quote.swapDataInputOutputToken)
+    validateSwapData(quote.swapDataInputOutputToken)
   })
 
   test('returns quote for uSOL2x - minting w/ ERC20', async () => {
@@ -219,7 +213,6 @@ describe('LeveragedQuoteProvider() - Base', () => {
     }
 
     const quote = await getQuote(request)
-    console.log(quote)
 
     expect(quote.inputAmount).toEqual(request.inputAmount)
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)

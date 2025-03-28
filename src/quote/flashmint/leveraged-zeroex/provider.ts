@@ -71,7 +71,6 @@ export class LeveragedZeroExQuoteProvider
       chainId,
       this.rpcUrl,
     )
-    console.log(isAave, 'isAave')
 
     const leveragedTokenData = await getLeveragedZeroExTokenData(
       {
@@ -83,14 +82,12 @@ export class LeveragedZeroExQuoteProvider
       chainId,
       this.rpcUrl,
     )
-    console.log(leveragedTokenData)
 
     if (leveragedTokenData === null) return null
 
     const debtCollateralResult = isMinting
       ? await this.getSwapDataDebtToCollateral(leveragedTokenData, request)
       : await this.getSwapDataCollateralToDebt(leveragedTokenData, request)
-    console.log(debtCollateralResult)
 
     if (!debtCollateralResult) return null
 
@@ -152,7 +149,10 @@ export class LeveragedZeroExQuoteProvider
       }
 
       result = await this.swapQuoteOutputProvider.getSwapQuote(quoteRequest)
-    } else {
+    }
+
+    if (!result) {
+      // Fallback in case LiFi doesn't return a output amount quote - or is not set.
       const sellAmount = await getSellAmount(
         chainId,
         leveragedTokenData.collateralToken,
@@ -203,22 +203,12 @@ export class LeveragedZeroExQuoteProvider
           BigNumber.from(10).pow(outputToken.decimals - decimals),
         )
       : outputAmount
-    console.log(
-      outputAmountAdjusted.toString(),
-      outputAmount.toString(),
-      'outputAmountAdjusted',
-    )
     const roundingFactor = BigNumber.from(outputAmountAdjusted).div(1000)
     const roundedDebtAmount = BigNumber.from(debtAmount.toString())
       .div(roundingFactor)
       .add(1)
       .mul(roundingFactor)
 
-    console.log(
-      debtAmount.toString(),
-      roundedDebtAmount.toString(),
-      'roundedDebtAmount',
-    )
     const quoteRequest: SwapQuoteRequestV2 = {
       chainId,
       inputToken: debtToken,
@@ -228,13 +218,14 @@ export class LeveragedZeroExQuoteProvider
       sellEntireBalance: true,
       taker,
     }
+
     const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
-    console.log(result)
+
     if (!result || !result.swapData) return null
-    const collateralObtained = BigNumber.from(result.outputAmount)
+
     return {
       swapDataDebtCollateral: result.swapData,
-      collateralObtainedOrSold: collateralObtained,
+      collateralObtainedOrSold: BigNumber.from(result.outputAmount),
     }
   }
 
@@ -263,12 +254,6 @@ export class LeveragedZeroExQuoteProvider
       callData: HashZero,
     }
 
-    console.log(
-      collateralAmount.toString(),
-      collateralObtainedOrSold.toString(),
-      'collateral',
-    )
-
     // Relevant when issuing
     const collateralShortfall = BigNumber.from(collateralAmount).sub(
       collateralObtainedOrSold,
@@ -290,13 +275,6 @@ export class LeveragedZeroExQuoteProvider
       chainId,
     )
     const inputOutputToken = isMinting ? inputTokenAddress : outputTokenAddress
-
-    console.log(
-      estimatedInputOutputAmount.toString(),
-      inputOutputToken,
-      collateralToken,
-      isMinting,
-    )
 
     // Only fetch input/output swap data if collateral token is not the same as payment token
     if (
@@ -320,7 +298,10 @@ export class LeveragedZeroExQuoteProvider
           }
 
           result = await this.swapQuoteOutputProvider.getSwapQuote(quoteRequest)
-        } else {
+        }
+
+        if (!result) {
+          // Fallback in case LiFi doesn't return a output amount quote - or is not set.
           const sellAmount = await getSellAmount(
             chainId,
             inputTokenAddress,
@@ -331,7 +312,6 @@ export class LeveragedZeroExQuoteProvider
             BigNumber.from(inputAmount),
           )
 
-          console.log(sellAmount.toString(), 'sellAmount')
           const quoteRequest: SwapQuoteRequestV2 = {
             chainId,
             inputToken: inputTokenAddress,
