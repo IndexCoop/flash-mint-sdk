@@ -110,7 +110,7 @@ export class ComponentsQuoteProvider {
       swapData: {
         swapTarget: AddressZero,
         // Needs valid formatted hash - as otherwise validation will fail
-        callData: HashZero, // TODO: check
+        callData: HashZero,
       },
     })
   }
