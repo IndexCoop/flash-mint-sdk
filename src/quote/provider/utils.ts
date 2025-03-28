@@ -11,7 +11,6 @@ import {
 } from './index'
 
 const btc2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC2X')
-const cdeti = getTokenByChainAndSymbol(ChainId.Mainnet, 'cdETI')
 const dpi = getTokenByChainAndSymbol(ChainId.Mainnet, 'DPI')
 const eth2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH2X')
 const mvi = getTokenByChainAndSymbol(ChainId.Mainnet, 'MVI')
@@ -71,7 +70,7 @@ export function getContractType(
     return FlashMintContractType.hyeth
   }
 
-  if (token === cdeti.symbol || token === dpi.symbol || token === mvi.symbol) {
+  if (token === dpi.symbol || token === mvi.symbol) {
     return FlashMintContractType.zeroEx
   }
 

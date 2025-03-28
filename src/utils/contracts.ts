@@ -14,7 +14,6 @@ import FLASHMINT_LEVERAGED_MORPHO_AAVE_ABI from '../constants/abis/FlashMintLeve
 import FLASHMINT_LEVERAGED_MORPHO_AAVE_LM_ABI from '../constants/abis/FlashMintLeveragedMorphoAaveLM.json'
 import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
-import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
 import { ChainId } from '../constants/chains'
 import {
@@ -23,10 +22,8 @@ import {
   ExchangeIssuanceLeveragedPolygonAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
-  FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
 import {
-  CoinDeskEthTrendIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -313,13 +310,6 @@ export const getFlashMintZeroExContractForToken = (
   providerSigner: Signer | Provider | undefined,
 ): Contract => {
   switch (token) {
-    case CoinDeskEthTrendIndex.symbol:
-    case 'wsETH2':
-      return new Contract(
-        FlashMintZeroExMainnetAddress,
-        FLASHMINT_ZEROEX_ABI,
-        providerSigner,
-      )
     default:
       return getFlashMintZeroExContract(providerSigner)
   }

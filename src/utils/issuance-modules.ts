@@ -9,7 +9,6 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
 import {
-  CoinDeskEthTrendIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
@@ -43,7 +42,6 @@ export function getIssuanceModule(
     }
   // Mainnet
   switch (tokenSymbol) {
-    case CoinDeskEthTrendIndex.symbol:
     case getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH').symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
