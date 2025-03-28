@@ -83,12 +83,18 @@ export class FlashMintQuoteProvider
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProvider,
     private readonly swapQuoteProviderV2?: SwapQuoteProviderV2,
+    private readonly swapQuoteOutputProviderV2?: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest,
   ): Promise<FlashMintQuote | null> {
-    const { rpcUrl, swapQuoteProvider, swapQuoteProviderV2 } = this
+    const {
+      rpcUrl,
+      swapQuoteProvider,
+      swapQuoteProviderV2,
+      swapQuoteOutputProviderV2,
+    } = this
     const provider = getRpcProvider(rpcUrl)
     const { inputToken, inputTokenAmount, isMinting, outputToken, slippage } =
       request
@@ -103,12 +109,12 @@ export class FlashMintQuoteProvider
     }
     switch (contractType) {
       case FlashMintContractType.hyeth: {
-        if (!this.swapQuoteProviderV2) {
+        if (!swapQuoteProviderV2) {
           throw new Error('400')
         }
         const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
           rpcUrl,
-          this.swapQuoteProviderV2,
+          swapQuoteProviderV2,
         )
         const hyethQuote = await hyethQuoteProvider.getQuote({
           isMinting,
@@ -369,12 +375,17 @@ export class FlashMintQuoteProvider
       }
       case FlashMintContractType.leveragedZeroEx: {
         const { inputTokenAmount } = request
-        if (!this.swapQuoteProviderV2 || inputTokenAmount === undefined) {
+        if (
+          !swapQuoteProviderV2 ||
+          !swapQuoteOutputProviderV2 ||
+          inputTokenAmount === undefined
+        ) {
           throw new Error('400')
         }
         const leveragedZeroExQuoteProvider = new LeveragedZeroExQuoteProvider(
           rpcUrl,
-          swapQuoteProviderV2!,
+          swapQuoteProviderV2,
+          swapQuoteOutputProviderV2,
         )
         const isIcEth = isAddressEqual(
           indexToken.address,
@@ -422,12 +433,12 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.zeroEx: {
-        if (!this.swapQuoteProviderV2) {
+        if (!swapQuoteProviderV2) {
           throw new Error('400')
         }
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           rpcUrl,
-          this.swapQuoteProviderV2,
+          swapQuoteProviderV2,
         )
         const zeroExQuote = await zeroExQuoteProvider.getQuote({
           ...request,

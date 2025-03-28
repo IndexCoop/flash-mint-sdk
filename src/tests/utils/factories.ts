@@ -1,5 +1,6 @@
 import { ChainId } from 'constants/chains'
 import {
+  getLifiSwapQuoteProvider,
   getLocalHostProviderUrl,
   getSignerAccount,
   getTestRpcProvider,
@@ -27,6 +28,13 @@ export function getTestFactoryZeroExV2(
   const signer = getSignerAccount(signerAccountNo, provider)
   const swapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
   const swapQuoteProviderV2 = getZeroExV2SwapQuoteProvider()
+  const swapQuoteOutputProviderV2 = getLifiSwapQuoteProvider()
   const rpcUrl = getLocalHostProviderUrl(chainId)
-  return new TestFactory(rpcUrl, signer, swapQuoteProvider, swapQuoteProviderV2)
+  return new TestFactory(
+    rpcUrl,
+    signer,
+    swapQuoteProvider,
+    swapQuoteProviderV2,
+    swapQuoteOutputProviderV2,
+  )
 }

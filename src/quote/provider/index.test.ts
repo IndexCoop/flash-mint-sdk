@@ -4,6 +4,7 @@ import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
 import { ETH } from 'constants/tokens'
 import {
+  getLifiSwapQuoteProvider,
   getLocalHostProviderUrl,
   getZeroExSwapQuoteProvider,
   getZeroExV2SwapQuoteProvider,
@@ -20,6 +21,7 @@ const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 const zeroExV2SwapQuoteProvider = getZeroExV2SwapQuoteProvider()
+const lifiSwapQuoteProvider = getLifiSwapQuoteProvider()
 
 const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
@@ -65,6 +67,7 @@ describe('FlashMintQuoteProvider()', () => {
       rpcUrl,
       getZeroExSwapQuoteProvider(ChainId.Arbitrum),
       zeroExV2SwapQuoteProvider,
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -130,6 +133,7 @@ describe('FlashMintQuoteProvider()', () => {
       getLocalHostProviderUrl(ChainId.Base),
       getZeroExSwapQuoteProvider(ChainId.Base),
       getZeroExV2SwapQuoteProvider(),
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -165,6 +169,7 @@ describe('FlashMintQuoteProvider()', () => {
       rpcUrl,
       getZeroExSwapQuoteProvider(ChainId.Arbitrum),
       zeroExV2SwapQuoteProvider,
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -265,6 +270,7 @@ describe('FlashMintQuoteProvider()', () => {
       getLocalHostProviderUrl(ChainId.Base),
       getZeroExSwapQuoteProvider(ChainId.Base),
       getZeroExV2SwapQuoteProvider(),
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()

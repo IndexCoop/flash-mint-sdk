@@ -72,7 +72,6 @@ export async function getLeveragedZeroExTokenData(
     const contract = isIcEth
       ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
       : Contracts[chainId].FlashMintLeveragedZeroEx
-    console.log(contract)
     const abi = FlashMintAbis[contract]
     const publicClient = createClientWithUrl(chainId, rpcUrl)!
     const data = await publicClient.readContract({
