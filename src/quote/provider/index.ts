@@ -391,7 +391,6 @@ export class FlashMintQuoteProvider
           indexToken.address,
           getTokenByChainAndSymbol(1, 'icETH').address,
         )
-        console.log(isIcEth, 'isIcEth')
         const flashmintContract = isIcEth
           ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
           : Contracts[chainId].FlashMintLeveragedZeroEx
@@ -403,7 +402,6 @@ export class FlashMintQuoteProvider
           taker: flashmintContract,
         })
         if (!leveragedQuote) return null
-        console.log(rpcUrl)
         const builder = new LeveragedZeroExBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedZeroExBuilderBuildRequest = {
           chainId,

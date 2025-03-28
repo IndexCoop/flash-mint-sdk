@@ -49,13 +49,10 @@ export class LeveragedZeroExBuilder
       isMinting ? outputToken : inputToken,
       getTokenByChainAndSymbol(1, 'icETH').address,
     )
-    console.log(isIcEth, 'isIcEth')
     const contractAddress = isIcEth
       ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
       : Contracts[chainId].FlashMintLeveragedZeroEx
     const contract = getFlashMintContract(contractAddress, provider)
-    console.log(contractAddress)
-    console.log(isMinting, inputTokenSymbol === 'ETH', 'ETH', isAave)
     if (isMinting) {
       if (inputTokenSymbol === 'ETH') {
         return await contract.populateTransaction.issueExactSetFromETH(
