@@ -33,6 +33,7 @@
     "test:arbitrum": "npm test src/tests/arbitrum",
     "test:base": "npm test src/tests/base",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
+    "test:iceth": "npm test src/tests/iceth.test.ts",
     "test:watch": "jest --watch"
   },
   "keywords": [
