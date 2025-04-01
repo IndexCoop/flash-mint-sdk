@@ -99,6 +99,7 @@ describe('FlashMintQuoteProvider()', () => {
       rpcUrl,
       zeroexSwapQuoteProvider,
       zeroExV2SwapQuoteProvider,
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -201,6 +202,7 @@ describe('FlashMintQuoteProvider()', () => {
       rpcUrl,
       zeroexSwapQuoteProvider,
       zeroExV2SwapQuoteProvider,
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
@@ -236,6 +238,7 @@ describe('FlashMintQuoteProvider()', () => {
       rpcUrl,
       zeroexSwapQuoteProvider,
       getZeroExV2SwapQuoteProvider(),
+      lifiSwapQuoteProvider,
     )
     const quote = await quoteProvider.getQuote(request)
     if (!quote) fail()
