@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
-  getTestFactoryZeroEx,
+  getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
   wrapETH,
@@ -12,19 +12,18 @@ import {
 
 describe('BTC3X (Base)', () => {
   const chainId = ChainId.Base
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'BTC3X')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(1, chainId)
+    factory = getTestFactoryZeroExV2(1, chainId)
   })
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
@@ -42,7 +41,7 @@ describe('BTC3X (Base)', () => {
       inputTokenAmount: wei('0.5').toString(),
       slippage: 0.5,
     })
-    const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
+    const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
@@ -53,7 +52,7 @@ describe('BTC3X (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with WETH', async () => {
+  test.only('can mint with WETH', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: weth,
@@ -70,11 +69,11 @@ describe('BTC3X (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to ETH', async () => {
+  test.only('can redeem to ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,

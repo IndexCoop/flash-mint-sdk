@@ -1,0 +1,536 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IController",
+        "name": "_setController",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IDebtIssuanceModule",
+        "name": "_debtIssuanceModule",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IMorphoLeverageModule",
+        "name": "_morphoLeverageModule",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IMorphoLeverageModule",
+        "name": "_aaveLeverageModule",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IMorpho",
+        "name": "_morpho",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IPool",
+        "name": "_aavePool",
+        "type": "address"
+      },
+      { "internalType": "contract IWETH", "name": "_weth", "type": "address" },
+      { "internalType": "address", "name": "_swapTarget", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_inputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountSetIssued",
+        "type": "uint256"
+      }
+    ],
+    "name": "FlashMint",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_outputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountSetRedeemed",
+        "type": "uint256"
+      }
+    ],
+    "name": "FlashRedeem",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "ETH_ADDRESS",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ROUNDING_ERROR_MARGIN",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "aaveLeverageModule",
+    "outputs": [
+      {
+        "internalType": "contract IMorphoLeverageModule",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "aavePool",
+    "outputs": [
+      { "internalType": "contract IPool", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      { "internalType": "bool", "name": "_isAave", "type": "bool" }
+    ],
+    "name": "approveSetToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract IERC20", "name": "_token", "type": "address" }
+    ],
+    "name": "approveToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20[]",
+        "name": "_tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "approveTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "debtIssuanceModule",
+    "outputs": [
+      {
+        "internalType": "contract IDebtIssuanceModule",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_setAmount", "type": "uint256" },
+      { "internalType": "bool", "name": "_isIssuance", "type": "bool" },
+      { "internalType": "bool", "name": "_isAave", "type": "bool" }
+    ],
+    "name": "getLeveragedTokenData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "collateralToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "collateralAToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "collateralAmount",
+            "type": "uint256"
+          },
+          { "internalType": "address", "name": "debtToken", "type": "address" },
+          { "internalType": "uint256", "name": "debtAmount", "type": "uint256" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.LeveragedTokenData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_setAmount", "type": "uint256" },
+      { "internalType": "address", "name": "_inputToken", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "_maxAmountInputToken",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataDebtForCollateral",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataInputToken",
+        "type": "tuple"
+      },
+      { "internalType": "bool", "name": "_isAave", "type": "bool" }
+    ],
+    "name": "issueExactSetFromERC20",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_setAmount", "type": "uint256" },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataDebtForCollateral",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataInputToken",
+        "type": "tuple"
+      },
+      { "internalType": "bool", "name": "_isAave", "type": "bool" }
+    ],
+    "name": "issueExactSetFromETH",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "morpho",
+    "outputs": [
+      { "internalType": "contract IMorpho", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "morphoLeverageModule",
+    "outputs": [
+      {
+        "internalType": "contract IMorphoLeverageModule",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "assets", "type": "uint256" },
+      { "internalType": "bytes", "name": "data", "type": "bytes" }
+    ],
+    "name": "onMorphoFlashLoan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_setAmount", "type": "uint256" },
+      { "internalType": "address", "name": "_outputToken", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "_minAmountOutputToken",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataCollateralForDebt",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataOutputToken",
+        "type": "tuple"
+      },
+      { "internalType": "bool", "name": "_isAave", "type": "bool" }
+    ],
+    "name": "redeemExactSetForERC20",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      { "internalType": "uint256", "name": "_setAmount", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "_minAmountOutputToken",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataCollateralForDebt",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "swapTarget",
+            "type": "address"
+          },
+          { "internalType": "bytes", "name": "callData", "type": "bytes" }
+        ],
+        "internalType": "struct FlashMintLeveragedZeroEx.SwapData",
+        "name": "_swapDataOutputToken",
+        "type": "tuple"
+      },
+      { "internalType": "bool", "name": "_isAave", "type": "bool" }
+    ],
+    "name": "redeemExactSetForETH",
+    "outputs": [
+      { "internalType": "uint256[]", "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setController",
+    "outputs": [
+      { "internalType": "contract IController", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_swapTarget", "type": "address" },
+      { "internalType": "bool", "name": "_isAllowed", "type": "bool" }
+    ],
+    "name": "setSwapTargetWhitelist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "swapTargetWhitelist",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "weth",
+    "outputs": [
+      { "internalType": "contract IWETH", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract IERC20", "name": "_token", "type": "address" }
+    ],
+    "name": "withdrawToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  { "stateMutability": "payable", "type": "receive" }
+]

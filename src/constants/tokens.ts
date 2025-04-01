@@ -1,7 +1,3 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-
-import { ChainId } from 'constants/chains'
-
 export interface Token {
   symbol: string
   address?: string
@@ -13,21 +9,10 @@ export interface Token {
 }
 
 // Indices by the Index Coop
-
-export const CoinDeskEthTrendIndex: Token = {
-  address: '0x55b2CFcfe99110C773f00b023560DD9ef6C8A13B',
-  symbol: 'cdETI',
-}
-
 export const DefiPulseIndex: Token = {
   address: '0x1494CA1F11D487c2bBe4543E90080AeBa4BA3C2b',
   addressPolygon: '0x85955046DF4668e1DD369D2DE9f3AEB98DD2A369',
   symbol: 'DPI',
-}
-
-export const HighYieldETHIndex: Token = {
-  address: '0xc4506022Fb8090774E8A628d5084EED61D9B99Ee',
-  symbol: 'hyETH',
 }
 
 export const IndexCoopBitcoin2xIndex: Token = {
@@ -73,11 +58,6 @@ export const MetaverseIndex: Token = {
   address: '0x72e364F2ABdC788b7E918bc238B21f109Cd634D7',
   addressPolygon: '0xfe712251173A2cd5F5bE2B46Bb528328EA3565E1',
   symbol: 'MVI',
-}
-
-export const TheUSDCYieldIndex: Token = {
-  ...getTokenByChainAndSymbol(ChainId.Mainnet, 'icUSD'),
-  addressBase: getTokenByChainAndSymbol(ChainId.Base, 'icUSD').address,
 }
 
 // Other

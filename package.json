@@ -30,13 +30,10 @@
     "test:builders": "npm test src/flashmint/",
     "test:quotes": "npm test src/quote/",
     "test:utils": "npm test src/utils",
+    "test:arbitrum": "npm test src/tests/arbitrum",
     "test:base": "npm test src/tests/base",
-    "test:btc2x": "npm test src/tests/btc2x.test.ts",
-    "test:btc2xeth": "npm test src/tests/arbitrum/btc2xeth.test.ts",
-    "test:eth2x": "npm test src/tests/eth2x.test.ts",
-    "test:eth2xbtc": "npm test src/tests/arbitrum/eth2xbtc.test.ts",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
-    "test:iceth": "npm test src/tests/iceth",
+    "test:iceth": "npm test src/tests/iceth.test.ts",
     "test:watch": "jest --watch"
   },
   "keywords": [
@@ -71,7 +68,7 @@
     "semantic-release": "^24.0.0",
     "ts-node": "^10.8.1",
     "tsup": "^7.0.0",
-    "typescript": "^5.4.5"
+    "typescript": "5.6.2"
   },
   "publishConfig": {
     "access": "public",
@@ -85,10 +82,8 @@
     "@ethersproject/providers": "^5.6.8",
     "@ethersproject/units": "^5.6.1",
     "@indexcoop/tokenlists": "3.11.0",
-    "@lifi/sdk": "3.0.0-beta.1",
-    "@uniswap/sdk-core": "^5.3.1",
-    "@uniswap/v3-sdk": "^3.13.1",
+    "@lifi/sdk": "3.6.2",
     "axios": "^1.7.9",
-    "viem": "^2.10.2"
+    "viem": "2.23.12"
   }
 }

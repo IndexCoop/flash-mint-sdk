@@ -3,6 +3,7 @@ import type { Signer } from '@ethersproject/abstract-signer'
 import { Contract } from '@ethersproject/contracts'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
+import { FlashMintAbis } from 'utils/abis'
 import EXCHANGE_ISSUANCE_LEVERAGED_ABI from '../constants/abis/ExchangeIssuanceLeveraged.json'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
 import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
@@ -13,21 +14,16 @@ import FLASHMINT_LEVERAGED_MORPHO_AAVE_ABI from '../constants/abis/FlashMintLeve
 import FLASHMINT_LEVERAGED_MORPHO_AAVE_LM_ABI from '../constants/abis/FlashMintLeveragedMorphoAaveLM.json'
 import FLASHMINT_NAV_ABI from '../constants/abis/FlashMintNav.json'
 import FLASHMINT_WRAPPED_ABI from '../constants/abis/FlashMintWrapped.json'
-import FLASHMINT_ZEROEX_ABI from '../constants/abis/FlashMintZeroEx.json'
 
 import { ChainId } from '../constants/chains'
 import {
   Contracts,
   ExchangeIssuanceLeveragedMainnetAddress,
   ExchangeIssuanceLeveragedPolygonAddress,
-  ExchangeIssuanceZeroExMainnetAddress,
-  ExchangeIssuanceZeroExPolygonAddress,
   FlashMintLeveragedAddress,
   FlashMintLeveragedForCompoundAddress,
-  FlashMintZeroExMainnetAddress,
 } from '../constants/contracts'
 import {
-  CoinDeskEthTrendIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
@@ -35,6 +31,8 @@ import {
   IndexCoopInverseBitcoinIndex,
   IndexCoopInverseEthereumIndex,
 } from '../constants/tokens'
+
+import type { Address } from 'viem'
 
 export function getExchangeIssuanceLeveragedContractAddress(
   chainId: number = ChainId.Mainnet,
@@ -283,27 +281,16 @@ export const getFlashMintWrappedContract = (
   return new Contract(contractAddress, FLASHMINT_WRAPPED_ABI, signerOrProvider)
 }
 
-export function getExchangeIssuanceZeroExContractAddress(
-  chainId: number = ChainId.Mainnet,
-): string {
-  if (chainId === ChainId.Polygon) return ExchangeIssuanceZeroExPolygonAddress
-  return ExchangeIssuanceZeroExMainnetAddress
-}
-
 /**
- * Returns an instance of a FlashMintZeroEx contract for Set Protocol (based on
- * the chain).
+ * Returns an instance of a FlashMintZeroEx contract.
  *
- * @param providerSigner  provider or signer
- * @param chainId         chain ID for the network (default Mainnet)
- *
- * @returns an instance of a FlashMintZeroEx contract
+ * @param providerSigner A provider or signer.
+ * @returns An instance of a FlashMintZeroEx contract.
  */
 export const getFlashMintZeroExContract = (
   providerSigner: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet,
 ): Contract => {
-  const contractAddress = getExchangeIssuanceZeroExContractAddress(chainId)
+  const contractAddress = Contracts[ChainId.Mainnet].ExchangeIssuanceZeroEx
   return new Contract(
     contractAddress,
     EXCHANGE_ISSUANCE_ZERO_EX_ABI,
@@ -312,29 +299,26 @@ export const getFlashMintZeroExContract = (
 }
 
 /**
- * Returns the correct instance of a FlashMintZeroEx contract - depending on the
- * token. It will be either Index Protocol (new) or (Set Protocol)
+ * Returns the FlashMintZeroEx contract based on the token.
  *
- * @param token           the token to be minted/redeemed
- * @param providerSigner  provider or signer
- * @param chainId         chain ID for the network (default Mainnet)
- *
- * @returns an instance of a FlashMintZeroEx contract
+ * @param token The token to be minted/redeemed.
+ * @param providerSigner A provider or signer.
+ * @returns An instance of a FlashMintZeroEx contract.
  */
 export const getFlashMintZeroExContractForToken = (
   token: string,
   providerSigner: Signer | Provider | undefined,
-  chainId: number = ChainId.Mainnet,
 ): Contract => {
   switch (token) {
-    case CoinDeskEthTrendIndex.symbol:
-    case 'wsETH2':
-      return new Contract(
-        FlashMintZeroExMainnetAddress,
-        FLASHMINT_ZEROEX_ABI,
-        providerSigner,
-      )
     default:
-      return getFlashMintZeroExContract(providerSigner, chainId)
+      return getFlashMintZeroExContract(providerSigner)
   }
+}
+
+export function getFlashMintContract(
+  contract: Address,
+  providerSigner: Signer | Provider | undefined,
+): Contract {
+  const abi = FlashMintAbis[contract]
+  return new Contract(contract, abi, providerSigner)
 }

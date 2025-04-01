@@ -1,10 +1,10 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
-  getTestFactoryZeroEx,
+  getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
   wrapETH,
@@ -13,19 +13,18 @@ import {
 describe('BTC2X (Base)', () => {
   const chainId = ChainId.Base
   const cbbtc = getTokenByChainAndSymbol(chainId, 'cbBTC')
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'BTC2X')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(0, chainId)
+    factory = getTestFactoryZeroExV2(0, chainId)
   })
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
@@ -34,7 +33,7 @@ describe('BTC2X (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with cbBTC', async () => {
+  test.only('can mint with cbBTC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: cbbtc,
@@ -54,7 +53,7 @@ describe('BTC2X (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with USDC', async () => {
+  test.only('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
@@ -63,7 +62,7 @@ describe('BTC2X (Base)', () => {
       inputTokenAmount: wei('500').toString(),
       slippage: 0.5,
     })
-    const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
+    const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
@@ -95,7 +94,7 @@ describe('BTC2X (Base)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,

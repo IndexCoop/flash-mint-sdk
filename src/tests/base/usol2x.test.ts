@@ -1,30 +1,29 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
-  getTestFactoryZeroEx,
+  getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
   wrapETH,
 } from 'tests/utils'
 
-describe.skip('uSOL2x (Base)', () => {
+describe('uSOL2x (Base)', () => {
   const chainId = ChainId.Base
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSOL2x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
   let factory: TestFactory
   beforeEach(async () => {
-    factory = getTestFactoryZeroEx(4, chainId)
+    factory = getTestFactoryZeroExV2(4, chainId)
   })
 
-  test('can mint with ETH', async () => {
+  test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
@@ -42,7 +41,7 @@ describe.skip('uSOL2x (Base)', () => {
       inputTokenAmount: wei('500').toString(),
       slippage: 0.5,
     })
-    const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
+    const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
@@ -74,7 +73,7 @@ describe.skip('uSOL2x (Base)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
@@ -82,7 +81,7 @@ describe.skip('uSOL2x (Base)', () => {
     await factory.executeTx()
   })
 
-  test.skip('can redeem to USDC', async () => {
+  test('can redeem to USDC', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: indexToken,

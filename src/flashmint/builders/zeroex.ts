@@ -4,7 +4,7 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { getFlashMintZeroExContractForToken } from '../../utils/contracts'
-import { getIssuanceModule } from '../../utils/issuanceModules'
+import { getIssuanceModule } from '../../utils/issuance-modules'
 import type { TransactionBuilder } from './interface'
 import { isEmptyString, isInvalidAmount } from './utils'
 
@@ -40,14 +40,11 @@ export class ZeroExTransactionBuilder
       inputOutputTokenAmount,
       isMinting,
     } = request
-    const network = await provider.getNetwork()
-    const chainId = network.chainId
     const inputOutputTokenIsEth = inputOutputTokenSymbol === 'ETH'
-    const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
+    const issuanceModule = getIssuanceModule(indexTokenSymbol, 1)
     const contract = getFlashMintZeroExContractForToken(
       indexTokenSymbol,
       provider,
-      chainId,
     )
     if (isMinting) {
       if (inputOutputTokenIsEth) {

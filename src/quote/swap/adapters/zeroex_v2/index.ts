@@ -1,6 +1,6 @@
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
+
 import { getClientV2 } from './client'
-import { decode } from './decode'
-import { decodeActions } from './decode-actions'
 import {
   ZeroExV2SwapQuoteProviderError,
   ZeroExV2SwapQuoteProviderErrorType,
@@ -16,7 +16,6 @@ import type {
   SwapQuoteRequestV2,
   SwapQuoteV2,
 } from 'quote/swap/interfaces'
-import type { Hex } from 'viem'
 import type { ZeroExApiV2SwapResponse } from './types'
 
 export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
@@ -39,30 +38,23 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
     }
 
     const swapResponse: ZeroExApiV2SwapResponse = res
-    const source = swapResponse.route.fills[0].source
-    const actions = decode(swapResponse.transaction.data as Hex)
-    const swapData = decodeActions(
-      actions as Hex[],
-      source,
-      chainId,
-      inputToken,
-      outputToken,
-    )
 
     return {
       chainId,
       inputToken,
       outputToken,
-      callData: swapResponse.transaction.data,
       inputAmount: swapResponse.sellAmount,
       outputAmount: swapResponse.buyAmount,
       slippage,
-      swapData,
+      swapData: {
+        swapTarget: swapResponse.transaction.to,
+        callData: swapResponse.transaction.data,
+      },
     }
   }
 
   getPath(request: SwapQuoteRequestV2): string {
-    return new URLSearchParams({
+    const params: any = {
       chainId: request.chainId.toString(),
       buyToken: request.outputToken,
       sellToken: request.inputToken,
@@ -70,6 +62,16 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
       taker: request.taker,
       slippageBps: convertTo0xSlippage(request.slippage).toString(),
       excludedSources: getExcludedSources(request.chainId),
-    }).toString()
+    }
+    if (
+      request.sellEntireBalance === true &&
+      !isAddressEqual(
+        params.sellToken,
+        getTokenByChainAndSymbol(1, 'stETH').address,
+      )
+    ) {
+      params.sellEntireBalance = true
+    }
+    return new URLSearchParams(params).toString()
   }
 }

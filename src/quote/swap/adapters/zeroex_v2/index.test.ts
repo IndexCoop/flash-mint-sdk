@@ -4,15 +4,14 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { base } from 'viem/chains'
 
 import { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
-import { Exchange } from 'utils'
+import { isZeroExV2AllowanceHolderContract } from 'utils'
 
-import type { SwapQuote } from 'quote/swap/interfaces'
+import type { SwapQuoteV2 } from 'quote/swap/interfaces'
 
 const ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
 
-// Skip for now
-describe.skip('ZeroExApi', () => {
+describe('ZeroExApi', () => {
   let quoteProvider: ZeroExV2SwapQuoteProvider
 
   beforeEach(() => {
@@ -30,14 +29,16 @@ describe.skip('ZeroExApi', () => {
     }
     const res = await quoteProvider.getSwapQuote(request)
     expect(res).not.toBeNull()
-    const quote = res as SwapQuote
+    const quote = res as SwapQuoteV2
     expect(quote.chainId).toBe(request.chainId)
     expect(quote.inputToken).toBe(request.inputToken)
     expect(quote.outputToken).toBe(request.outputToken)
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(quote.swapData?.exchange).toBe(Exchange.UniV3)
+    const { swapData } = quote
+    expect(isZeroExV2AllowanceHolderContract(swapData?.swapTarget)).toBe(true)
+    expect(swapData?.callData).not.toBeUndefined()
   })
 
   test('should return quotes for base', async () => {
@@ -51,14 +52,16 @@ describe.skip('ZeroExApi', () => {
     }
     const res = await quoteProvider.getSwapQuote(request)
     expect(res).not.toBeNull()
-    const quote = res as SwapQuote
+    const quote = res as SwapQuoteV2
     expect(quote.chainId).toBe(request.chainId)
     expect(quote.inputToken).toBe(request.inputToken)
     expect(quote.outputToken).toBe(request.outputToken)
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
+    const { swapData } = quote
+    expect(isZeroExV2AllowanceHolderContract(swapData?.swapTarget)).toBe(true)
+    expect(swapData?.callData).not.toBeUndefined()
   })
 
   test('should return quotes for base (cbBTC)', async () => {
@@ -72,14 +75,16 @@ describe.skip('ZeroExApi', () => {
     }
     const res = await quoteProvider.getSwapQuote(request)
     expect(res).not.toBeNull()
-    const quote = res as SwapQuote
+    const quote = res as SwapQuoteV2
     expect(quote.chainId).toBe(request.chainId)
     expect(quote.inputToken).toBe(request.inputToken)
     expect(quote.outputToken).toBe(request.outputToken)
     expect(quote.inputAmount).toBe(request.inputAmount)
     expect(quote.slippage).toBe(request.slippage)
     expect(quote.swapData).not.toBeNull()
-    expect(quote.swapData?.exchange).toBe(Exchange.AerodromeSlipstream)
+    const { swapData } = quote
+    expect(isZeroExV2AllowanceHolderContract(swapData?.swapTarget)).toBe(true)
+    expect(swapData?.callData).not.toBeUndefined()
   })
 
   test('should handle no liquidity available', async () => {

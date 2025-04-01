@@ -1,4 +1,4 @@
-import type { Exchange, SwapData, SwapDataV5 } from 'utils'
+import type { Exchange, SwapData, SwapDataV2 } from 'utils'
 
 export interface SwapQuote {
   chainId: number
@@ -18,8 +18,7 @@ export interface SwapQuoteV2 {
   inputAmount: string
   outputAmount: string
   slippage: number
-  callData: string
-  swapData: SwapDataV5 | null
+  swapData: SwapDataV2 | null
 }
 
 export interface SwapQuoteRequest {
@@ -39,10 +38,12 @@ export interface SwapQuoteRequestV2 {
   chainId: number
   inputToken: string
   outputToken: string
-  inputAmount: string
+  inputAmount?: string
+  outputAmount?: string // note that not all providers may support this
   slippage: number
   taker: string
   // Optional
+  sellEntireBalance?: boolean // might depend on support of provider
   sources?: Exchange[]
 }
 

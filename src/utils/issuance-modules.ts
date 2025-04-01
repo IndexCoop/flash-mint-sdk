@@ -1,3 +1,4 @@
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from '../constants/chains'
 import {
   BasicIssuanceModuleAddress,
@@ -8,12 +9,9 @@ import {
   IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
 import {
-  CoinDeskEthTrendIndex,
-  HighYieldETHIndex,
   IndexCoopBitcoin2xIndex,
   IndexCoopEthereum2xIndex,
   InterestCompoundingETHIndex,
-  TheUSDCYieldIndex,
 } from '../constants/tokens'
 
 export interface IssuanceModule {
@@ -44,8 +42,7 @@ export function getIssuanceModule(
     }
   // Mainnet
   switch (tokenSymbol) {
-    case CoinDeskEthTrendIndex.symbol:
-    case HighYieldETHIndex.symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH').symbol:
     case IndexCoopBitcoin2xIndex.symbol:
     case IndexCoopEthereum2xIndex.symbol:
       return {
@@ -59,11 +56,6 @@ export function getIssuanceModule(
       }
     case InterestCompoundingETHIndex.symbol:
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
-    case TheUSDCYieldIndex.symbol:
-      return {
-        address: Contracts[ChainId.Mainnet].DebtIssuanceModuleV3,
-        isDebtIssuance: true,
-      }
     default:
       return { address: BasicIssuanceModuleAddress, isDebtIssuance: false }
   }

@@ -1,18 +1,18 @@
-import type { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { WETH } from 'constants/tokens'
 import {
-  getAddressForToken,
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
   slippageAdjustedTokenAmount,
 } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
-
-import type { QuoteProvider, QuoteToken } from '../../interfaces'
-import type { SwapQuoteProvider } from '../../swap'
 import { ComponentsQuoteProvider } from './componentsQuoteProvider'
+
+import type { BigNumber } from '@ethersproject/bignumber'
+import type { JsonRpcProvider } from '@ethersproject/providers'
+import type { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { SwapQuoteProviderV2 } from '../../swap'
 
 export interface FlashMintZeroExQuoteRequest {
   isMinting: boolean
@@ -33,7 +33,7 @@ export class ZeroExQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider,
+    private readonly swapQuoteProvider: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
@@ -43,15 +43,22 @@ export class ZeroExQuoteProvider
     const provider = getRpcProvider(rpcUrl)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
+
+    if (isMinting) {
+      throw new Error('Minting not supported.')
+    }
+
     const indexToken = isMinting ? outputToken : inputToken
     const indexTokenSymbol = indexToken.symbol
     const network = await provider.getNetwork()
     const chainId = network.chainId
-    const wethAddress = getAddressForToken(WETH, chainId)
+
+    const wethAddress = getTokenByChainAndSymbol(chainId, WETH.symbol)?.address
     if (wethAddress === undefined) {
       console.error('Error - WETH address not defined')
       return null
     }
+
     const { components, positions } = await getRequiredComponents(
       isMinting,
       indexToken.address,
@@ -115,7 +122,6 @@ export async function getRequiredComponents(
   const contract = getFlashMintZeroExContractForToken(
     indexTokenSymbol,
     provider,
-    chainId,
   )
   const issuanceModule = getIssuanceModule(indexTokenSymbol, chainId)
   const { components, positions } = isMinting
