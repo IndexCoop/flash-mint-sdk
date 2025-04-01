@@ -82,7 +82,7 @@ describe('LeveragedZeroExQuoteProvider()', () => {
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
 
     validateSwapData(quote.swapDataDebtCollateral)
-    shouldBeNoOpSwapData(quote.swapDataInputOutputToken)
+    validateSwapData(quote.swapDataInputOutputToken)
   })
 
   test('returns quote for ETH2X - redeeming to ETH', async () => {
