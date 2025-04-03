@@ -1,10 +1,10 @@
 import { Contract } from '@ethersproject/contracts'
+import { isAddressEqual } from '@indexcoop/tokenlists'
 
 import { Contracts } from 'constants/contracts'
 import { WETH } from 'constants/tokens'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import { wei } from 'utils'
-import { isSameAddress } from 'utils/addresses'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import type { BigNumber } from '@ethersproject/bignumber'
@@ -37,7 +37,7 @@ export class MorphoQuoteProvider {
     const tokenContract = this.getTokenContract(component)
     const ethAmount: BigNumber = await tokenContract.previewMint(position)
 
-    if (isSameAddress(inputToken, this.weth)) return ethAmount.toBigInt()
+    if (isAddressEqual(inputToken, this.weth)) return ethAmount.toBigInt()
 
     const targetBuyAmount = ethAmount.mul(1001).div(1000)
     const minBuyAmount = ethAmount
@@ -77,7 +77,7 @@ export class MorphoQuoteProvider {
     const { taker } = this
     const tokenContract = this.getTokenContract(component)
     const ethAmount: BigNumber = await tokenContract.previewRedeem(position)
-    if (isSameAddress(outputToken, this.weth)) return ethAmount.toBigInt()
+    if (isAddressEqual(outputToken, this.weth)) return ethAmount.toBigInt()
     const quote = await this.swapQuoteProvider.getSwapQuote({
       chainId: 1,
       inputToken: this.weth,
