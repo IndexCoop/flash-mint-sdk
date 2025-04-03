@@ -1,3 +1,3 @@
 export * from './hyeth'
-export * from './leveraged-extended'
+export * from './leveraged-zeroex'
 export * from './zeroEx'

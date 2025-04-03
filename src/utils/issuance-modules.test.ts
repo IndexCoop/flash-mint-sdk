@@ -6,7 +6,6 @@ import {
   BasicIssuanceModulePolygonAddress,
   Contracts,
   DebtIssuanceModuleV2Address,
-  IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from 'constants/contracts'
 import {
@@ -52,13 +51,6 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for hyETH', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
     const issuanceModule = getIssuanceModule('hyETH')
-    expect(issuanceModule.address).toEqual(expectedModule)
-    expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-
-  test('returns debt issuance module v2 for wsETH2', async () => {
-    const expectedModule = IndexDebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule('wsETH2')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })

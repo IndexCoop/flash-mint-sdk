@@ -3,10 +3,8 @@ import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { Contracts } from 'constants/contracts'
 import { FlashMintAbis } from 'utils/abis'
 import { createClientWithUrl } from 'utils/clients'
-import { getFlashMintLeveragedContractForToken } from 'utils/contracts'
 
 import type { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
 import type { Address } from 'viem'
 
 export interface LeveragedTokenData {
@@ -23,32 +21,6 @@ export interface LeveragedZeroExTokenData {
   debtToken: string
   collateralAmount: bigint
   debtAmount: bigint
-}
-
-export async function getLeveragedTokenData(
-  indexTokenAddress: string,
-  indexTokenAmount: BigNumber,
-  indexTokenSymbol: string,
-  isIssuance: boolean,
-  chainId: number,
-  provider: JsonRpcProvider,
-): Promise<LeveragedTokenData | null> {
-  try {
-    const contract = getFlashMintLeveragedContractForToken(
-      indexTokenSymbol,
-      provider,
-      chainId,
-    )
-    return await contract.getLeveragedTokenData(
-      indexTokenAddress,
-      indexTokenAmount,
-      isIssuance,
-    )
-  } catch (error) {
-    // Should this just always fail cause it means there is something wrongly configured?
-    console.error('Error getting leveraged token data', error)
-    return null
-  }
 }
 
 type GetLeveragedTokenDataParams = {

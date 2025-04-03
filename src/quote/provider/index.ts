@@ -3,50 +3,29 @@ import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 
 import {
   FlashMintHyEthTransactionBuilder,
-  LeveragedAerodromeBuilder,
-  LeveragedExtendedTransactionBuilder,
   LeveragedZeroExBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
-import { LeveragedAerodromeQuoteProvider } from 'quote/flashmint/leveraged-aerodrome'
-import { wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
 import { Contracts } from 'constants/contracts'
-import { LeveragedMorphoAaveLmBuilder } from 'flashmint/builders/leveraged-morpho-aave'
-import { LeveragedMorphoAaveLmQuoteProvider } from 'quote/flashmint/leveraged-morpho-aave'
-import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
-import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
 import { buildQuoteResponse, getContractType } from './utils'
 
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import type {
-  FlashMintLeveragedAerodromBuildRequest,
-  FlashMintLeveragedExtendedBuildRequest,
   FlashMintLeveragedZeroExBuilderBuildRequest,
   FlashMintZeroExBuildRequest,
 } from 'flashmint'
-import {
-  type FlashMintLeveragedMorphoBuildRequest,
-  LeveragedMorphoBuilder,
-} from 'flashmint/builders/leveraged-morpho'
-import type { FlashMintLeveragedMorphoAaveLmBuildRequest } from 'flashmint/builders/leveraged-morpho-aave'
-import { LeveragedMorphoQuoteProvider } from 'quote/flashmint/leveraged-morpho'
 import { LeveragedZeroExQuoteProvider } from 'quote/flashmint/leveraged-zeroex'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
 import type { SwapQuoteProvider, SwapQuoteProviderV2 } from '../swap'
 
 export enum FlashMintContractType {
   hyeth = 0,
-  leveraged = 1,
-  leveragedAerodrome = 2,
-  leveragedExtended = 3,
-  leveragedMorpho = 4,
-  leveragedMorphoAaveLM = 5,
-  leveragedZeroEx = 6,
-  zeroEx = 7,
+  leveragedZeroEx = 1,
+  zeroEx = 2,
 }
 
 export interface FlashMintQuoteRequest {
@@ -152,194 +131,7 @@ export class FlashMintQuoteProvider
           tx,
         )
       }
-      case FlashMintContractType.leveragedAerodrome: {
-        if (!inputTokenAmount) {
-          throw new Error(
-            'Must set `inputTokenAmount` for quote request with contract type leveragedAerodrome ',
-          )
-        }
-        const { isMinting } = request
-        const leverageAerodromeQuoteProvider =
-          new LeveragedAerodromeQuoteProvider(rpcUrl, swapQuoteProvider)
-        const leveragedAerodromeQuote =
-          await leverageAerodromeQuoteProvider.getQuote({
-            ...request,
-            chainId,
-            inputAmount: isMinting
-              ? request.inputTokenAmount!
-              : request.indexTokenAmount,
-            outputAmount: isMinting
-              ? request.indexTokenAmount
-              : request.inputTokenAmount!,
-          })
-        if (!leveragedAerodromeQuote) return null
-        const builder = new LeveragedAerodromeBuilder(rpcUrl)
-        const txRequest: FlashMintLeveragedAerodromBuildRequest = {
-          chainId,
-          isMinting,
-          inputToken: inputToken.address,
-          inputTokenSymbol: inputToken.symbol,
-          outputToken: outputToken.address,
-          outputTokenSymbol: outputToken.symbol,
-          inputTokenAmount: leveragedAerodromeQuote.inputAmount,
-          outputTokenAmount: leveragedAerodromeQuote.ouputAmount,
-          swapDataDebtCollateral:
-            leveragedAerodromeQuote.swapDataDebtCollateral,
-          swapDataInputOutputToken:
-            leveragedAerodromeQuote.swapDataInputOutputToken,
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          isMinting
-            ? leveragedAerodromeQuote.inputAmount
-            : leveragedAerodromeQuote.ouputAmount,
-          tx,
-        )
-      }
-      case FlashMintContractType.leveragedExtended: {
-        const leverageExtendedQuoteProvider =
-          new LeveragedExtendedQuoteProvider(rpcUrl, swapQuoteProvider)
-        const leveragedExtendedQuote =
-          await leverageExtendedQuoteProvider.getQuote({
-            ...request,
-            indexTokenAmount,
-          })
-        if (!leveragedExtendedQuote) return null
-        const builder = new LeveragedExtendedTransactionBuilder(rpcUrl)
-        const txRequest: FlashMintLeveragedExtendedBuildRequest = {
-          isMinting,
-          inputToken: inputToken.address,
-          inputTokenSymbol: inputToken.symbol,
-          outputToken: outputToken.address,
-          outputTokenSymbol: outputToken.symbol,
-          inputTokenAmount: leveragedExtendedQuote.inputTokenAmount,
-          outputTokenAmount: leveragedExtendedQuote.outputTokenAmount,
-          swapDataDebtCollateral: leveragedExtendedQuote.swapDataDebtCollateral,
-          swapDataInputOutputToken: leveragedExtendedQuote.swapDataPaymentToken,
-          swapDataInputTokenForETH:
-            leveragedExtendedQuote.swapDataDebtCollateral,
-          // Below not used for now
-          priceEstimateInflator: wei(0.9), // For the price estimate inflator, increasing it towards 1.0 (but always slightly less) should reduce gas costs but can also lead to revertions.
-          maxDust: wei(0.00001), // maxDust = 0.01 % * inputTokenAmount
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          leveragedExtendedQuote.inputOutputTokenAmount,
-          tx,
-        )
-      }
-      case FlashMintContractType.leveragedMorpho: {
-        if (!inputTokenAmount) {
-          throw new Error(
-            'Must set `inputTokenAmount` for quote request with contract type leveragedMorpho ',
-          )
-        }
-        const { isMinting } = request
-        const swapQuoteProvider = new StaticSwapQuoteProvider()
-        const leverageMorphoQuoteProvider = new LeveragedMorphoQuoteProvider(
-          rpcUrl,
-          swapQuoteProvider,
-        )
-        const leveragedMorphoQuote = await leverageMorphoQuoteProvider.getQuote(
-          {
-            ...request,
-            chainId,
-            inputAmount: isMinting
-              ? request.inputTokenAmount!
-              : request.indexTokenAmount,
-            outputAmount: isMinting
-              ? request.indexTokenAmount
-              : request.inputTokenAmount!,
-            taker: '0x0',
-          },
-        )
-        if (!leveragedMorphoQuote) return null
-        const builder = new LeveragedMorphoBuilder(rpcUrl)
-        const txRequest: FlashMintLeveragedMorphoBuildRequest = {
-          chainId,
-          isMinting,
-          inputToken: inputToken.address,
-          inputTokenSymbol: inputToken.symbol,
-          outputToken: outputToken.address,
-          outputTokenSymbol: outputToken.symbol,
-          inputTokenAmount: leveragedMorphoQuote.inputAmount,
-          outputTokenAmount: leveragedMorphoQuote.outputAmount,
-          swapDataDebtCollateral: leveragedMorphoQuote.swapDataDebtCollateral,
-          swapDataInputOutputToken:
-            leveragedMorphoQuote.swapDataInputOutputToken,
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          isMinting
-            ? leveragedMorphoQuote.inputAmount
-            : leveragedMorphoQuote.outputAmount,
-          tx,
-        )
-      }
-      case FlashMintContractType.leveragedMorphoAaveLM: {
-        if (!inputTokenAmount) {
-          throw new Error(
-            'Must set `inputTokenAmount` for quote request with contract type leveragedMorphoAaveLM ',
-          )
-        }
-        const { isMinting } = request
-        const swapQuoteProvider = new StaticSwapQuoteProvider()
-        const leverageAerodromeQuoteProvider =
-          new LeveragedMorphoAaveLmQuoteProvider(rpcUrl, swapQuoteProvider)
-        const leveragedAerodromeQuote =
-          await leverageAerodromeQuoteProvider.getQuote({
-            ...request,
-            chainId,
-            inputAmount: isMinting
-              ? request.inputTokenAmount!
-              : request.indexTokenAmount,
-            outputAmount: isMinting
-              ? request.indexTokenAmount
-              : request.inputTokenAmount!,
-            taker: '0x0',
-          })
-        if (!leveragedAerodromeQuote) return null
-        const builder = new LeveragedMorphoAaveLmBuilder(rpcUrl)
-        const txRequest: FlashMintLeveragedMorphoAaveLmBuildRequest = {
-          chainId,
-          isMinting,
-          inputToken: inputToken.address,
-          inputTokenSymbol: inputToken.symbol,
-          outputToken: outputToken.address,
-          outputTokenSymbol: outputToken.symbol,
-          inputTokenAmount: leveragedAerodromeQuote.inputAmount,
-          outputTokenAmount: leveragedAerodromeQuote.outputAmount,
-          swapDataDebtCollateral:
-            leveragedAerodromeQuote.swapDataDebtCollateral,
-          swapDataInputOutputToken:
-            leveragedAerodromeQuote.swapDataInputOutputToken,
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          isMinting
-            ? leveragedAerodromeQuote.inputAmount
-            : leveragedAerodromeQuote.outputAmount,
-          tx,
-        )
-      }
       case FlashMintContractType.leveragedZeroEx: {
-        const { inputTokenAmount } = request
         if (
           !swapQuoteProviderV2 ||
           !swapQuoteOutputProviderV2 ||
@@ -362,7 +154,7 @@ export class FlashMintQuoteProvider
         const leveragedQuote = await leveragedZeroExQuoteProvider.getQuote({
           ...request,
           chainId,
-          inputAmount: inputTokenAmount!,
+          inputAmount: inputTokenAmount,
           outputAmount: request.indexTokenAmount,
           taker: flashmintContract,
         })

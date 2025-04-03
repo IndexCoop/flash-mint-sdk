@@ -278,9 +278,7 @@ export class LeveragedZeroExQuoteProvider
     const inputOutputToken = isMinting ? inputTokenAddress : outputTokenAddress
 
     // Only fetch input/output swap data if collateral token is not the same as payment token
-    if (
-      !isAddressEqual(inputOutputToken, collateralToken) // TOOD: && setTokenSymbol !== InterestCompoundingETHIndex.symbol
-    ) {
+    if (!isAddressEqual(inputOutputToken, collateralToken)) {
       if (isMinting) {
         const targetBuyAmount = collateralShortfall.mul(1005).div(1000)
         const minBuyAmount = collateralShortfall

@@ -5,7 +5,6 @@ import {
   BasicIssuanceModulePolygonAddress,
   Contracts,
   DebtIssuanceModuleV2Address,
-  IndexDebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
 import {
@@ -47,11 +46,6 @@ export function getIssuanceModule(
     case IndexCoopEthereum2xIndex.symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
-        isDebtIssuance: true,
-      }
-    case 'wsETH2':
-      return {
-        address: IndexDebtIssuanceModuleV2Address,
         isDebtIssuance: true,
       }
     case InterestCompoundingETHIndex.symbol:
