@@ -51,12 +51,12 @@ const outputToken: QuoteToken = {
 
 // Add a RPC URL e.g. from Alchemy
 const rpcUrl = ''
-// Use the 0x swap quote provider configured to your needs e.g. custom base url -
-// or provide your own adapter implementing the `SwapQuoteProvider` interface
-const zeroexSwapQuoteProvider = new ZeroExSwapQuoteProvider()
+// Use the 0x v2 swap quote provider configured with your API key or provide your 
+// own adapter implementing the `SwapQuoteProviderV2` interface.
+const zeroexV2SwapQuoteProvider = new ZeroExV2SwapQuoteProvider()
 const quoteProvider = new FlashMintQuoteProvider(
   rpcUrl,
-  zeroexSwapQuoteProvider
+  zeroexV2SwapQuoteProvider
 )
 const quote = await quoteProvider.getQuote({
   isMinting: true,
@@ -99,7 +99,7 @@ returned by the `FlashMintQuoteProvider`.
 ...
 const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider
+      zeroexV2SwapQuoteProvider
     )
 const quote = await quoteProvider.getQuote({...})
 let tx = quote.tx
@@ -108,12 +108,6 @@ tx.gasLimit = gasEstimate
 const res = await signer.sendTransaction(tx)
 console.log(res.hash)
 ```
-
-Alternatively, you can use the swap data returned by the individual providers to
-construct the tx yourself which then has to be executed on the correct FlashMint
-contract for that specific Index token.
-Use the [utility](./src/utils/contracts.ts) functions for easily obtaining
-the correct addresses and contracts.
 
 ## Development
 
@@ -143,6 +137,6 @@ is still TBD. 🚧 In the meantime just open an issue.
 
 ## License
 
-Copyright © 2024 Index Coop.
+Copyright © 2025 Index Coop.
 
 [MIT License](./LICENSE)
