@@ -6,7 +6,6 @@ import { ETH } from 'constants/tokens'
 import {
   getLifiSwapQuoteProvider,
   getLocalHostProviderUrl,
-  getZeroExSwapQuoteProvider,
   getZeroExV2SwapQuoteProvider,
   wei,
 } from 'tests/utils'
@@ -19,7 +18,6 @@ import {
 
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
-const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 const zeroExV2SwapQuoteProvider = getZeroExV2SwapQuoteProvider()
 const lifiSwapQuoteProvider = getLifiSwapQuoteProvider()
 
@@ -44,7 +42,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
+      zeroExV2SwapQuoteProvider,
     )
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
       'Index token not supported',
@@ -65,7 +63,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      getZeroExSwapQuoteProvider(ChainId.Arbitrum),
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -97,7 +94,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -132,7 +128,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       getLocalHostProviderUrl(ChainId.Base),
-      getZeroExSwapQuoteProvider(ChainId.Base),
       getZeroExV2SwapQuoteProvider(),
       lifiSwapQuoteProvider,
     )
@@ -168,7 +163,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      getZeroExSwapQuoteProvider(ChainId.Arbitrum),
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -200,7 +194,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -236,7 +229,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
       getZeroExV2SwapQuoteProvider(),
       lifiSwapQuoteProvider,
     )
@@ -271,7 +263,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       getLocalHostProviderUrl(ChainId.Base),
-      getZeroExSwapQuoteProvider(ChainId.Base),
       getZeroExV2SwapQuoteProvider(),
       lifiSwapQuoteProvider,
     )

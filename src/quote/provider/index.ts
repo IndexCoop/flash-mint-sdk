@@ -20,7 +20,7 @@ import type {
 } from 'flashmint'
 import { LeveragedZeroExQuoteProvider } from 'quote/flashmint/leveraged-zeroex'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
-import type { SwapQuoteProvider, SwapQuoteProviderV2 } from '../swap'
+import type { SwapQuoteProviderV2 } from '../swap'
 
 export enum FlashMintContractType {
   hyeth = 0,
@@ -57,20 +57,14 @@ export class FlashMintQuoteProvider
 {
   constructor(
     private readonly rpcUrl: string,
-    private readonly swapQuoteProvider: SwapQuoteProvider,
-    private readonly swapQuoteProviderV2?: SwapQuoteProviderV2,
+    private readonly swapQuoteProviderV2: SwapQuoteProviderV2,
     private readonly swapQuoteOutputProviderV2?: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
     request: FlashMintQuoteRequest,
   ): Promise<FlashMintQuote | null> {
-    const {
-      rpcUrl,
-      swapQuoteProvider,
-      swapQuoteProviderV2,
-      swapQuoteOutputProviderV2,
-    } = this
+    const { rpcUrl, swapQuoteProviderV2, swapQuoteOutputProviderV2 } = this
     const provider = getRpcProvider(rpcUrl)
     const { inputToken, inputTokenAmount, isMinting, outputToken, slippage } =
       request
