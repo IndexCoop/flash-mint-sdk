@@ -5,7 +5,6 @@ import {
   FlashMintHyEthTransactionBuilder,
   LeveragedAerodromeBuilder,
   LeveragedExtendedTransactionBuilder,
-  LeveragedTransactionBuilder,
   LeveragedZeroExBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
@@ -18,7 +17,6 @@ import { LeveragedMorphoAaveLmBuilder } from 'flashmint/builders/leveraged-morph
 import { LeveragedMorphoAaveLmQuoteProvider } from 'quote/flashmint/leveraged-morpho-aave'
 import { StaticSwapQuoteProvider } from 'quote/swap/adapters/static'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
-import { LeveragedQuoteProvider } from '../flashmint/leveraged'
 import { LeveragedExtendedQuoteProvider } from '../flashmint/leveraged-extended'
 import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
 import { buildQuoteResponse, getContractType } from './utils'
@@ -26,7 +24,6 @@ import { buildQuoteResponse, getContractType } from './utils'
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import type {
   FlashMintLeveragedAerodromBuildRequest,
-  FlashMintLeveragedBuildRequest,
   FlashMintLeveragedExtendedBuildRequest,
   FlashMintLeveragedZeroExBuilderBuildRequest,
   FlashMintZeroExBuildRequest,
@@ -152,38 +149,6 @@ export class FlashMintQuoteProvider
           chainId,
           contractType,
           inputOutputTokenAmount,
-          tx,
-        )
-      }
-      case FlashMintContractType.leveraged: {
-        const leveragedQuoteProvider = new LeveragedQuoteProvider(
-          rpcUrl,
-          swapQuoteProvider,
-        )
-        const leveragedQuote = await leveragedQuoteProvider.getQuote({
-          ...request,
-          indexTokenAmount,
-        })
-        if (!leveragedQuote) return null
-        const builder = new LeveragedTransactionBuilder(rpcUrl)
-        const txRequest: FlashMintLeveragedBuildRequest = {
-          isMinting,
-          indexToken: indexToken.address,
-          indexTokenSymbol: indexToken.symbol,
-          indexTokenAmount,
-          inputOutputToken: inputOutputToken.address,
-          inputOutputTokenSymbol: inputOutputToken.symbol,
-          inputOutputTokenAmount: leveragedQuote.inputOutputTokenAmount,
-          swapDataDebtCollateral: leveragedQuote.swapDataDebtCollateral,
-          swapDataPaymentToken: leveragedQuote.swapDataPaymentToken,
-        }
-        const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          leveragedQuote.inputOutputTokenAmount,
           tx,
         )
       }
