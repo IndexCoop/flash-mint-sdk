@@ -1,15 +1,10 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
-import {
-  QuoteTokens,
-  type TestFactory,
-  getTestFactoryZeroExV2,
-  wei,
-} from 'tests/utils'
+import { ETH } from 'constants/tokens'
+import { type TestFactory, getTestFactoryZeroExV2, wei } from 'tests/utils'
 
 const chainId = ChainId.Arbitrum
 const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
-const { eth } = QuoteTokens
 
 describe('ETH2X (Arbitrum)', () => {
   let factory: TestFactory
@@ -20,7 +15,7 @@ describe('ETH2X (Arbitrum)', () => {
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: eth2x,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
@@ -33,7 +28,7 @@ describe('ETH2X (Arbitrum)', () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: eth2x,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,

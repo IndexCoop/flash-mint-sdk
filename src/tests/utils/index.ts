@@ -1,7 +1,6 @@
 export * from './erc20'
 export * from './factories'
 export * from './factory'
-export { QuoteTokens } from './quoteTokens'
 export * from './lido'
 export * from './providers'
 export * from './signers'

@@ -3,12 +3,11 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import { noopSwapData } from 'constants/swapdata'
-import { USDC, WETH } from 'constants/tokens'
+import { ETH, USDC, WETH } from 'constants/tokens'
 import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
 
 import {
-  QuoteTokens,
   getLocalHostProviderUrl,
   getZeroExV2SwapQuoteProvider,
 } from 'tests/utils'
@@ -20,7 +19,6 @@ const rpcUrl = getLocalHostProviderUrl(chainId)
 const swapQuoteProvider = getZeroExV2SwapQuoteProvider()
 
 describe('FlashMintHyEthQuoteProvider()', () => {
-  const { eth } = QuoteTokens
   const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
   const indexToken = hyeth
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
@@ -28,7 +26,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
   test('returns a quote for minting w/ ETH', async () => {
     const request = {
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
@@ -122,7 +120,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     const request = {
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
