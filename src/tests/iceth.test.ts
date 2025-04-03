@@ -28,7 +28,7 @@ describe('icETH (mainnet)', () => {
     expect(balance.gt(0)).toBe(true)
   })
 
-  test.skip('can redeem for ETH', async () => {
+  test('can redeem for ETH', async () => {
     await factory.fetchQuote({
       isMinting: false,
       inputToken: iceth,
@@ -45,6 +45,18 @@ describe('icETH (mainnet)', () => {
       isMinting: false,
       inputToken: iceth,
       outputToken: getTokenByChainAndSymbol(chainId, 'stETH'),
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
+      slippage: 0.5,
+    })
+    await factory.executeTx()
+  })
+
+  test.skip('can redeem for USDC', async () => {
+    await factory.fetchQuote({
+      isMinting: false,
+      inputToken: iceth,
+      outputToken: getTokenByChainAndSymbol(chainId, 'USDC'),
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
