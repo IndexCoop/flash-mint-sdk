@@ -79,9 +79,6 @@ export class FlashMintQuoteProvider
     }
     switch (contractType) {
       case FlashMintContractType.hyeth: {
-        if (!swapQuoteProviderV2) {
-          throw new Error('400')
-        }
         const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
           rpcUrl,
           swapQuoteProviderV2,
@@ -126,11 +123,7 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.leveragedZeroEx: {
-        if (
-          !swapQuoteProviderV2 ||
-          !swapQuoteOutputProviderV2 ||
-          inputTokenAmount === undefined
-        ) {
+        if (!swapQuoteOutputProviderV2 || inputTokenAmount === undefined) {
           throw new Error('400')
         }
         const leveragedZeroExQuoteProvider = new LeveragedZeroExQuoteProvider(
@@ -182,9 +175,6 @@ export class FlashMintQuoteProvider
         )
       }
       case FlashMintContractType.zeroEx: {
-        if (!swapQuoteProviderV2) {
-          throw new Error('400')
-        }
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           rpcUrl,
           swapQuoteProviderV2,
