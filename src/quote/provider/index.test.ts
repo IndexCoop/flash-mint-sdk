@@ -90,6 +90,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputToken: ETH,
       outputToken: hyeth,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
@@ -190,6 +191,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputToken: hyeth,
       outputToken: usdc,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(

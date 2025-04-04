@@ -24,6 +24,7 @@ describe('hyETH', () => {
       inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('3').toString(),
+      inputTokenAmount: wei('4').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -34,7 +35,8 @@ describe('hyETH', () => {
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(chainId, 'WETH'),
       outputToken: indexToken,
-      indexTokenAmount: wei('3').toString(),
+      indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('2').toString(),
       slippage: 0.5,
     })
     await wrapETH(quote.inputAmount, factory.getSigner(), chainId)
@@ -47,31 +49,28 @@ describe('hyETH', () => {
       inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('550').toString(),
+      inputTokenAmount: wei('1000').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
   })
 
-  // TODO:
-  test.skip('can mint with USDC', async () => {
+  test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('2500', 6).toString(),
       slippage: 0.5,
     })
     const whale = '0x7713974908Be4BEd47172370115e8b1219F4A5f0'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
-      wei('100000', quote.inputToken.decimals),
+      wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
       factory.getProvider(),
-    )
-    const usdcBalance = await balanceOf(
-      factory.getSigner(),
-      quote.inputToken.address,
     )
     await factory.executeTx()
   })
@@ -82,6 +81,7 @@ describe('hyETH', () => {
       inputToken: indexToken,
       outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -93,6 +93,7 @@ describe('hyETH', () => {
       inputToken: indexToken,
       outputToken: ETH,
       indexTokenAmount: wei('200').toString(),
+      inputTokenAmount: wei('200').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()
@@ -104,6 +105,7 @@ describe('hyETH', () => {
       inputToken: indexToken,
       outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
+      inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
     })
     await factory.executeTx()

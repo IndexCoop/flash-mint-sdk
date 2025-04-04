@@ -35,6 +35,7 @@ export class ComponentQuotesProvider {
     isMinting: boolean,
     inputToken: QuoteToken,
     outputToken: QuoteToken,
+    inputAmount: bigint,
   ): Promise<ComponentQuotesResult | null> {
     if (components.length === 0 || positions.length === 0) return null
     if (components.length !== positions.length) return null
@@ -70,6 +71,7 @@ export class ComponentQuotesProvider {
             component,
             amount,
             inputTokenAddress,
+            inputAmount,
             this.slippage,
           )
           quotePromises.push(quotePromise)

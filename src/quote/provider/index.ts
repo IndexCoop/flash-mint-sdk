@@ -79,15 +79,20 @@ export class FlashMintQuoteProvider
     }
     switch (contractType) {
       case FlashMintContractType.hyeth: {
+        if (!swapQuoteOutputProviderV2 || inputTokenAmount === undefined) {
+          throw new Error('400')
+        }
         const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
           rpcUrl,
           swapQuoteProviderV2,
+          swapQuoteOutputProviderV2,
         )
         const hyethQuote = await hyethQuoteProvider.getQuote({
           isMinting,
           inputToken,
           outputToken,
           indexTokenAmount: indexTokenAmount.toBigInt(),
+          inputAmount: BigInt(inputTokenAmount),
           slippage,
         })
         if (!hyethQuote) return null

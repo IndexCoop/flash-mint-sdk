@@ -4,10 +4,9 @@ import { isAddressEqual } from '@indexcoop/tokenlists'
 import { Contracts } from 'constants/contracts'
 import { WETH } from 'constants/tokens'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
-import { wei } from 'utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import type { BigNumber } from '@ethersproject/bignumber'
+import { BigNumber } from '@ethersproject/bignumber'
 import type { SwapQuoteProviderV2 } from 'quote/swap'
 
 export class MorphoQuoteProvider {
@@ -31,9 +30,9 @@ export class MorphoQuoteProvider {
     component: string,
     position: bigint,
     inputToken: string,
+    inputAmount: bigint,
     slippage: number,
   ): Promise<bigint | null> {
-    const { taker } = this
     const tokenContract = this.getTokenContract(component)
     const ethAmount: BigNumber = await tokenContract.previewMint(position)
 
@@ -43,8 +42,7 @@ export class MorphoQuoteProvider {
     const minBuyAmount = ethAmount
     const maxBuyAmount = ethAmount.mul(1005).div(1000)
 
-    // TODO: determine max sell amount
-    const maxSellAmount = wei('3000', 6)
+    const maxSellAmount = BigNumber.from(inputAmount.toString())
 
     const sellAmount = await getSellAmount(
       1,
@@ -56,16 +54,7 @@ export class MorphoQuoteProvider {
       maxSellAmount,
     )
 
-    const quote = await this.swapQuoteProvider.getSwapQuote({
-      chainId: 1,
-      inputToken,
-      outputToken: this.weth,
-      inputAmount: sellAmount.toString(),
-      slippage,
-      taker,
-    })
-    if (!quote) return null
-    return BigInt(quote.outputAmount)
+    return sellAmount.toBigInt()
   }
 
   async getRedeemQuote(
