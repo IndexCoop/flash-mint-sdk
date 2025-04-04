@@ -15,6 +15,7 @@ export class MorphoQuoteProvider {
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProviderV2,
+    private readonly swapQuoteOutputProvider?: SwapQuoteProviderV2,
   ) {}
 
   getTokenContract(address: string): Contract {
@@ -37,6 +38,20 @@ export class MorphoQuoteProvider {
     const ethAmount: BigNumber = await tokenContract.previewMint(position)
 
     if (isAddressEqual(inputToken, this.weth)) return ethAmount.toBigInt()
+
+    if (this.swapQuoteOutputProvider) {
+      const quote = await this.swapQuoteOutputProvider.getSwapQuote({
+        chainId: 1,
+        inputToken,
+        outputToken: this.weth,
+        outputAmount: ethAmount.toString(),
+        slippage,
+        taker: this.taker,
+      })
+      if (quote !== null) {
+        return BigInt(quote.inputAmount)
+      }
+    }
 
     const targetBuyAmount = ethAmount.mul(1001).div(1000)
     const minBuyAmount = ethAmount

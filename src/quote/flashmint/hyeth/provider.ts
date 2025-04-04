@@ -84,6 +84,7 @@ export class FlashMintHyEthQuoteProvider
       wethAddress,
       this.rpcUrl,
       this.swapQuoteProvider,
+      this.swapQuoteOutputProvider,
     )
     const quoteResult = await quoteProvider.getComponentQuotes(
       components,
