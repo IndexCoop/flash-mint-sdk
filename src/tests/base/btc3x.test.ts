@@ -22,6 +22,7 @@ describe('BTC3X (Base)', () => {
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: indexToken,
@@ -34,6 +35,7 @@ describe('BTC3X (Base)', () => {
 
   test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
@@ -55,6 +57,7 @@ describe('BTC3X (Base)', () => {
   test.only('can mint with WETH', async () => {
     const quote = await factory.fetchQuote({
       isMinting: true,
+      chainId,
       inputToken: weth,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
@@ -71,6 +74,7 @@ describe('BTC3X (Base)', () => {
 
   test.only('can redeem to ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: ETH,
@@ -83,6 +87,7 @@ describe('BTC3X (Base)', () => {
 
   test('can redeem to USDC', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: usdc,

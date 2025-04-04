@@ -13,6 +13,7 @@ describe.skip('ETH3X (Base)', () => {
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: eth3x,
@@ -25,6 +26,7 @@ describe.skip('ETH3X (Base)', () => {
 
   test('can redeem with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: eth3x,
       outputToken: ETH,
