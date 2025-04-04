@@ -14,6 +14,7 @@ describe('ETH2X (Arbitrum)', () => {
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: eth2x,
@@ -26,6 +27,7 @@ describe('ETH2X (Arbitrum)', () => {
 
   test('can redeem with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: eth2x,
       outputToken: ETH,
