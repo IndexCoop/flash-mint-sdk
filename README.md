@@ -63,6 +63,7 @@ const quoteProvider = new FlashMintQuoteProvider(
   lifiSwapQuoteProvider
 )
 const quote = await quoteProvider.getQuote({
+  chainId: 1,
   isMinting: true,
   inputToken,
   outputToken,

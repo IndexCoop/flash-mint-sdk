@@ -34,6 +34,7 @@ describe('FlashMintQuoteProvider()', () => {
       symbol: 'AMKT',
     }
     const request: FlashMintQuoteRequest = {
+      chainId,
       isMinting: true,
       inputToken,
       outputToken,
@@ -54,6 +55,7 @@ describe('FlashMintQuoteProvider()', () => {
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Arbitrum,
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
       outputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X'),
@@ -86,6 +88,7 @@ describe('FlashMintQuoteProvider()', () => {
 
   test('returns a quote for minting hyETH', async () => {
     const request: FlashMintQuoteRequest = {
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: hyeth,
@@ -120,6 +123,7 @@ describe('FlashMintQuoteProvider()', () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Base].FlashMintLeveragedZeroEx
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Base,
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(ChainId.Base, 'USDC'),
       outputToken: getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x'),
@@ -155,6 +159,7 @@ describe('FlashMintQuoteProvider()', () => {
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Arbitrum,
       isMinting: false,
       inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X'),
       outputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
@@ -187,6 +192,7 @@ describe('FlashMintQuoteProvider()', () => {
 
   test('returns a quote for redeeming hyETH', async () => {
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Mainnet,
       isMinting: false,
       inputToken: hyeth,
       outputToken: usdc,
@@ -222,6 +228,7 @@ describe('FlashMintQuoteProvider()', () => {
     const expectedContract =
       Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx_AaveV2
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Mainnet,
       isMinting: false,
       inputToken: iceth,
       outputToken: ETH,
@@ -256,6 +263,7 @@ describe('FlashMintQuoteProvider()', () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Base].FlashMintLeveragedZeroEx
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Base,
       isMinting: false,
       inputToken: getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x'),
       outputToken: getTokenByChainAndSymbol(ChainId.Base, 'USDC'),

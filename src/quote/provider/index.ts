@@ -6,7 +6,6 @@ import {
   LeveragedZeroExBuilder,
   ZeroExTransactionBuilder,
 } from 'flashmint'
-import { getRpcProvider } from 'utils/rpc-provider'
 
 import { Contracts } from 'constants/contracts'
 import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
@@ -29,6 +28,7 @@ export enum FlashMintContractType {
 }
 
 export interface FlashMintQuoteRequest {
+  chainId: number
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
@@ -65,18 +65,24 @@ export class FlashMintQuoteProvider
     request: FlashMintQuoteRequest,
   ): Promise<FlashMintQuote | null> {
     const { rpcUrl, swapQuoteProviderV2, swapQuoteOutputProviderV2 } = this
-    const provider = getRpcProvider(rpcUrl)
-    const { inputToken, inputTokenAmount, isMinting, outputToken, slippage } =
-      request
+    const {
+      chainId,
+      inputToken,
+      inputTokenAmount,
+      isMinting,
+      outputToken,
+      slippage,
+    } = request
+
     const indexTokenAmount = BigNumber.from(request.indexTokenAmount)
     const indexToken = isMinting ? outputToken : inputToken
     const inputOutputToken = isMinting ? inputToken : outputToken
-    const network = await provider.getNetwork()
-    const chainId = network.chainId
+
     const contractType = getContractType(indexToken.symbol, chainId)
     if (contractType === null) {
       throw new Error('Index token not supported')
     }
+
     switch (contractType) {
       case FlashMintContractType.hyeth: {
         if (!swapQuoteOutputProviderV2 || inputTokenAmount === undefined) {
