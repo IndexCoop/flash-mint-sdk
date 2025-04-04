@@ -1,7 +1,7 @@
 import { Exchange } from 'utils'
 
 import type { BigNumber } from '@ethersproject/bignumber'
-import type { SwapData, SwapDataV2, SwapDataV3, SwapDataV5 } from 'utils'
+import type { SwapData, SwapDataV2, SwapDataV5 } from 'utils'
 import { isAddress } from 'viem'
 
 export function isEmptyString(data: string): boolean {
@@ -13,7 +13,7 @@ export function isInvalidAmount(amount: BigNumber): boolean {
 }
 
 export function isValidSwapData(
-  swapData: SwapData | SwapDataV3 | SwapDataV5 | null,
+  swapData: SwapData | SwapDataV5 | null,
 ): boolean {
   if (!swapData) return false
   if (swapData.exchange === Exchange.None) {

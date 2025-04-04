@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
-  QuoteTokens,
   type TestFactory,
   getTestFactoryZeroExV2,
   transferFromWhale,
@@ -12,7 +12,6 @@ import {
 
 describe('uSUI3x (Base)', () => {
   const chainId = ChainId.Base
-  const { eth } = QuoteTokens
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI3x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
@@ -23,8 +22,9 @@ describe('uSUI3x (Base)', () => {
 
   test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
-      inputToken: eth,
+      inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('0.5').toString(),
@@ -35,6 +35,7 @@ describe('uSUI3x (Base)', () => {
 
   test.skip('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
@@ -55,6 +56,7 @@ describe('uSUI3x (Base)', () => {
 
   test('can mint with WETH', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: weth,
       outputToken: indexToken,
@@ -72,9 +74,10 @@ describe('uSUI3x (Base)', () => {
 
   test('can redeem to ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
-      outputToken: eth,
+      outputToken: ETH,
       indexTokenAmount: wei('1').toString(),
       inputTokenAmount: wei('1').toString(),
       slippage: 0.5,
@@ -84,6 +87,7 @@ describe('uSUI3x (Base)', () => {
 
   test.skip('can redeem to USDC', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: usdc,

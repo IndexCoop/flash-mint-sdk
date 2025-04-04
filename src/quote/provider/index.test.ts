@@ -6,7 +6,6 @@ import { ETH } from 'constants/tokens'
 import {
   getLifiSwapQuoteProvider,
   getLocalHostProviderUrl,
-  getZeroExSwapQuoteProvider,
   getZeroExV2SwapQuoteProvider,
   wei,
 } from 'tests/utils'
@@ -19,7 +18,6 @@ import {
 
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
-const zeroexSwapQuoteProvider = getZeroExSwapQuoteProvider(chainId)
 const zeroExV2SwapQuoteProvider = getZeroExV2SwapQuoteProvider()
 const lifiSwapQuoteProvider = getLifiSwapQuoteProvider()
 
@@ -36,6 +34,7 @@ describe('FlashMintQuoteProvider()', () => {
       symbol: 'AMKT',
     }
     const request: FlashMintQuoteRequest = {
+      chainId,
       isMinting: true,
       inputToken,
       outputToken,
@@ -44,7 +43,7 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
+      zeroExV2SwapQuoteProvider,
     )
     await expect(quoteProvider.getQuote(request)).rejects.toThrow(
       'Index token not supported',
@@ -56,6 +55,7 @@ describe('FlashMintQuoteProvider()', () => {
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Arbitrum,
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
       outputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X'),
@@ -65,7 +65,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      getZeroExSwapQuoteProvider(ChainId.Arbitrum),
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -89,15 +88,16 @@ describe('FlashMintQuoteProvider()', () => {
 
   test('returns a quote for minting hyETH', async () => {
     const request: FlashMintQuoteRequest = {
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: hyeth,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -123,6 +123,7 @@ describe('FlashMintQuoteProvider()', () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Base].FlashMintLeveragedZeroEx
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Base,
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(ChainId.Base, 'USDC'),
       outputToken: getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x'),
@@ -132,7 +133,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       getLocalHostProviderUrl(ChainId.Base),
-      getZeroExSwapQuoteProvider(ChainId.Base),
       getZeroExV2SwapQuoteProvider(),
       lifiSwapQuoteProvider,
     )
@@ -159,6 +159,7 @@ describe('FlashMintQuoteProvider()', () => {
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
     const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Arbitrum,
       isMinting: false,
       inputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X'),
       outputToken: getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC'),
@@ -168,7 +169,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      getZeroExSwapQuoteProvider(ChainId.Arbitrum),
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -192,15 +192,16 @@ describe('FlashMintQuoteProvider()', () => {
 
   test('returns a quote for redeeming hyETH', async () => {
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Mainnet,
       isMinting: false,
       inputToken: hyeth,
       outputToken: usdc,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
       zeroExV2SwapQuoteProvider,
       lifiSwapQuoteProvider,
     )
@@ -227,6 +228,7 @@ describe('FlashMintQuoteProvider()', () => {
     const expectedContract =
       Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx_AaveV2
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Mainnet,
       isMinting: false,
       inputToken: iceth,
       outputToken: ETH,
@@ -236,7 +238,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      zeroexSwapQuoteProvider,
       getZeroExV2SwapQuoteProvider(),
       lifiSwapQuoteProvider,
     )
@@ -262,6 +263,7 @@ describe('FlashMintQuoteProvider()', () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Base].FlashMintLeveragedZeroEx
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Base,
       isMinting: false,
       inputToken: getTokenByChainAndSymbol(ChainId.Base, 'uSOL3x'),
       outputToken: getTokenByChainAndSymbol(ChainId.Base, 'USDC'),
@@ -271,7 +273,6 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quoteProvider = new FlashMintQuoteProvider(
       getLocalHostProviderUrl(ChainId.Base),
-      getZeroExSwapQuoteProvider(ChainId.Base),
       getZeroExV2SwapQuoteProvider(),
       lifiSwapQuoteProvider,
     )

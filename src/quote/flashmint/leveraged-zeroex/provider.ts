@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import {
   getTokenByChainAndAddress,
+  getTokenByChainAndSymbol,
   isAddressEqual,
 } from '@indexcoop/tokenlists'
 
@@ -277,9 +278,7 @@ export class LeveragedZeroExQuoteProvider
     const inputOutputToken = isMinting ? inputTokenAddress : outputTokenAddress
 
     // Only fetch input/output swap data if collateral token is not the same as payment token
-    if (
-      !isAddressEqual(inputOutputToken, collateralToken) // TOOD: && setTokenSymbol !== InterestCompoundingETHIndex.symbol
-    ) {
+    if (!isAddressEqual(inputOutputToken, collateralToken)) {
       if (isMinting) {
         const targetBuyAmount = collateralShortfall.mul(1005).div(1000)
         const minBuyAmount = collateralShortfall
@@ -332,12 +331,20 @@ export class LeveragedZeroExQuoteProvider
             : BigNumber.from(outputAmount)
         }
       } else {
+        const isStEth = isAddressEqual(
+          collateralToken,
+          getTokenByChainAndSymbol(1, 'stETH').address,
+        )
+        // Smol hack to make stETH work with sellEntireBalance
+        const inputAmount = isStEth
+          ? estimatedInputOutputAmount.mul(1000).div(1010)
+          : estimatedInputOutputAmount
         const quoteRequest: SwapQuoteRequestV2 = {
           inputToken: collateralToken,
           outputToken: outputTokenAddress,
           chainId,
           slippage,
-          inputAmount: estimatedInputOutputAmount.toString(),
+          inputAmount: inputAmount.toString(),
           sellEntireBalance: true,
           taker,
         }

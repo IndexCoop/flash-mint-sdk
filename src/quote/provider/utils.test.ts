@@ -21,7 +21,7 @@ describe('buildQuoteResponse()', () => {
     }
     const quoteAmount = wei(100, 6)
     const tx = {
-      to: Contracts[ChainId.Mainnet].FlashMintWrapped,
+      to: Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx,
       value: wei(1),
     }
     const response = buildQuoteResponse(
@@ -34,7 +34,7 @@ describe('buildQuoteResponse()', () => {
     expect(response).toEqual({
       chainId: 8453,
       contractType: FlashMintContractType.leveragedZeroEx,
-      contract: Contracts[ChainId.Mainnet].FlashMintWrapped,
+      contract: Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx,
       isMinting: true,
       inputToken: usdc,
       outputToken: getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x'),

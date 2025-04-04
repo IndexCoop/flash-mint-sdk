@@ -14,6 +14,7 @@ describe('BTC2X (mainnet)', () => {
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: btc2x,
@@ -26,6 +27,7 @@ describe('BTC2X (mainnet)', () => {
 
   test('can redeem with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: btc2x,
       outputToken: ETH,

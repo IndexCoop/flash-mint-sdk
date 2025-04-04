@@ -8,7 +8,6 @@ import type { Wallet } from '@ethersproject/wallet'
 import type {
   FlashMintQuote,
   FlashMintQuoteRequest,
-  SwapQuoteProvider,
   SwapQuoteProviderV2,
 } from 'quote'
 
@@ -90,14 +89,12 @@ export class TestFactory {
   constructor(
     rpcUrl: string,
     signer: Wallet,
-    swapQuoteProvider: SwapQuoteProvider,
-    swapQuoteProviderV2?: SwapQuoteProviderV2,
+    swapQuoteProviderV2: SwapQuoteProviderV2,
     swapQuoteOutputProviderV2?: SwapQuoteProviderV2,
   ) {
     const provider = new JsonRpcProvider(rpcUrl)
     this.quoteProvider = new FlashMintQuoteProvider(
       rpcUrl,
-      swapQuoteProvider,
       swapQuoteProviderV2,
       swapQuoteOutputProviderV2,
     )

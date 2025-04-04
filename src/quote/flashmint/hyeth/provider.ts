@@ -19,6 +19,7 @@ export interface FlashMintHyEthQuoteRequest {
   inputToken: QuoteToken
   outputToken: QuoteToken
   indexTokenAmount: bigint
+  inputAmount: bigint
   slippage: number
 }
 
@@ -41,13 +42,21 @@ export class FlashMintHyEthQuoteProvider
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProviderV2,
+    // If provided, this provider will be used to fetch quotes for output amounts
+    private readonly swapQuoteOutputProvider?: SwapQuoteProviderV2,
   ) {}
 
   async getQuote(
     request: FlashMintHyEthQuoteRequest,
   ): Promise<FlashMintHyEthQuote | null> {
-    const { indexTokenAmount, inputToken, isMinting, outputToken, slippage } =
-      request
+    const {
+      indexTokenAmount,
+      inputAmount,
+      inputToken,
+      isMinting,
+      outputToken,
+      slippage,
+    } = request
 
     // Only relevant for minting ERC-20's
     const swapDataInputTokenToEth = isMinting
@@ -75,6 +84,7 @@ export class FlashMintHyEthQuoteProvider
       wethAddress,
       this.rpcUrl,
       this.swapQuoteProvider,
+      this.swapQuoteOutputProvider,
     )
     const quoteResult = await quoteProvider.getComponentQuotes(
       components,
@@ -82,6 +92,7 @@ export class FlashMintHyEthQuoteProvider
       isMinting,
       inputToken,
       outputToken,
+      inputAmount,
     )
     if (!quoteResult) return null
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
@@ -90,6 +101,7 @@ export class FlashMintHyEthQuoteProvider
       slippage,
       isMinting,
     )
+
     return {
       indexTokenAmount,
       inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),

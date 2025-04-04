@@ -20,6 +20,7 @@ export class ComponentQuotesProvider {
     readonly wethAddress: string,
     readonly rpcUrl: string,
     readonly swapQuoteProvider: SwapQuoteProviderV2,
+    readonly swapQuoteOutputProvider?: SwapQuoteProviderV2,
   ) {}
 
   isMorpho(token: string) {
@@ -35,11 +36,12 @@ export class ComponentQuotesProvider {
     isMinting: boolean,
     inputToken: QuoteToken,
     outputToken: QuoteToken,
+    inputAmount: bigint,
   ): Promise<ComponentQuotesResult | null> {
     if (components.length === 0 || positions.length === 0) return null
     if (components.length !== positions.length) return null
 
-    const { swapQuoteProvider } = this
+    const { swapQuoteProvider, swapQuoteOutputProvider } = this
 
     const inputTokenAddress = this.getTokenAddressOrWeth(inputToken)
     const outputTokenAddress = this.getTokenAddressOrWeth(outputToken)
@@ -64,12 +66,14 @@ export class ComponentQuotesProvider {
         const morphoQuoteProvider = new MorphoQuoteProvider(
           this.rpcUrl,
           swapQuoteProvider,
+          swapQuoteOutputProvider,
         )
         if (isMinting) {
           const quotePromise = morphoQuoteProvider.getMintQuote(
             component,
             amount,
             inputTokenAddress,
+            inputAmount,
             this.slippage,
           )
           quotePromises.push(quotePromise)

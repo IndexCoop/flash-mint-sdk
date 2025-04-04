@@ -39,16 +39,6 @@ export const IndexCoopEthereum3xIndex: Token = {
   symbol: 'ETH3X',
 }
 
-export const IndexCoopInverseBitcoinIndex: Token = {
-  addressArbitrum: '0x80e58AEA88BCCaAE19bCa7f0e420C1387Cc087fC',
-  symbol: 'iBTC1X',
-}
-
-export const IndexCoopInverseEthereumIndex: Token = {
-  addressArbitrum: '0x749654601a286833aD30357246400D2933b1C89b',
-  symbol: 'iETH1X',
-}
-
 export const InterestCompoundingETHIndex: Token = {
   symbol: 'icETH',
   address: '0x7C07F7aBe10CE8e33DC6C5aD68FE033085256A84',
@@ -66,11 +56,6 @@ export const ETH = {
   symbol: 'ETH',
   address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   decimals: 18,
-}
-
-export const MATIC: Token = {
-  symbol: 'MATIC',
-  addressPolygon: '0x0000000000000000000000000000000000001010',
 }
 
 export const stETH: Token = {

@@ -22,6 +22,7 @@ describe('uSOL2x (Base)', () => {
 
   test.only('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: indexToken,
@@ -34,6 +35,7 @@ describe('uSOL2x (Base)', () => {
 
   test.skip('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
@@ -54,6 +56,7 @@ describe('uSOL2x (Base)', () => {
 
   test('can mint with WETH', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: weth,
       outputToken: indexToken,
@@ -71,6 +74,7 @@ describe('uSOL2x (Base)', () => {
 
   test('can redeem to ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: ETH,
@@ -83,6 +87,7 @@ describe('uSOL2x (Base)', () => {
 
   test('can redeem to USDC', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: usdc,

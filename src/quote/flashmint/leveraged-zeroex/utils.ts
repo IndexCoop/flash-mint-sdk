@@ -30,8 +30,6 @@ export async function getZeroExResponse(
     priceParams.append('sellEntireBalance', 'true')
   }
 
-  // console.log('Fetching data with params:', priceParams.toString())
-
   const headers = {
     '0x-api-key': process.env.ZEROEX_API_KEY,
     '0x-version': 'v2',
@@ -77,7 +75,6 @@ export async function fetchZeroExData(
     isQuote,
     sellEntireBalance,
   )
-  // console.log("Fetched Data:", priceResponse);
 
   return priceResponse
 }
@@ -117,13 +114,6 @@ export async function getSellAmount(
     response = await getZeroExResponse(chainId, sellToken, buyToken, sellAmount)
     buyAmount = BigNumber.from(response.buyAmount)
     sellAmount = BigNumber.from(response.sellAmount)
-    // console.log({
-    //   buyAmount: buyAmount.toString(),
-    //   sellAmount: sellAmount.toString(),
-    //   targetBuyAmount: targetBuyAmount.toString(),
-    //   maxBuyAmount: maxBuyAmount.toString(),
-    //   minBuyAmount: minBuyAmount.toString(),
-    // })
     requestNum++
   }
   if (buyAmount.lt(minBuyAmount) || buyAmount.gt(maxBuyAmount)) {
