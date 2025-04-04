@@ -19,6 +19,7 @@ describe('hyETH', () => {
 
   test('can mint with ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: indexToken,
@@ -31,6 +32,7 @@ describe('hyETH', () => {
 
   test.skip('can mint with WETH', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: getTokenByChainAndSymbol(chainId, 'WETH'),
       outputToken: indexToken,
@@ -44,6 +46,7 @@ describe('hyETH', () => {
 
   test.skip('can mint with ETH (large amout)', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: ETH,
       outputToken: indexToken,
@@ -56,6 +59,7 @@ describe('hyETH', () => {
 
   test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
+      chainId,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
@@ -76,6 +80,7 @@ describe('hyETH', () => {
 
   test('can redeem to ETH', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: ETH,
@@ -88,6 +93,7 @@ describe('hyETH', () => {
 
   test.skip('can redeem to ETH (large amount)', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: ETH,
@@ -100,6 +106,7 @@ describe('hyETH', () => {
 
   test('can redeem to USDC', async () => {
     await factory.fetchQuote({
+      chainId,
       isMinting: false,
       inputToken: indexToken,
       outputToken: ETH,

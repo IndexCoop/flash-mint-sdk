@@ -22,6 +22,7 @@ describe.skip('DPI (mainnet)', () => {
       factory.getProvider(),
     )
     await factory.fetchQuote({
+      chainId: 1,
       isMinting: false,
       inputToken: DPI,
       outputToken: ETH,

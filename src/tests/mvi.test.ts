@@ -23,6 +23,7 @@ describe.skip('MVI (mainnet)', () => {
       factory.getProvider(),
     )
     await factory.fetchQuote({
+      chainId: 1,
       isMinting: false,
       inputToken: MVI,
       outputToken: ETH,

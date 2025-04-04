@@ -30,6 +30,7 @@ describe('icETH (mainnet)', () => {
 
   test('can redeem for ETH', async () => {
     await factory.fetchQuote({
+      chainId: 1,
       isMinting: false,
       inputToken: iceth,
       outputToken: ETH,
@@ -42,6 +43,7 @@ describe('icETH (mainnet)', () => {
 
   test('can redeem for stETH', async () => {
     await factory.fetchQuote({
+      chainId: 1,
       isMinting: false,
       inputToken: iceth,
       outputToken: getTokenByChainAndSymbol(chainId, 'stETH'),
@@ -54,6 +56,7 @@ describe('icETH (mainnet)', () => {
 
   test.skip('can redeem for USDC', async () => {
     await factory.fetchQuote({
+      chainId: 1,
       isMinting: false,
       inputToken: iceth,
       outputToken: getTokenByChainAndSymbol(chainId, 'USDC'),
