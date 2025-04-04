@@ -7,7 +7,7 @@ env:
   ARBITRUM_ALCHEMY_API: ${{ secrets.ARBITRUM_ALCHEMY_API }}
   BASE_ALCHEMY_API: ${{ secrets.BASE_ALCHEMY_API }}
   MAINNET_ALCHEMY_API: ${{ secrets.MAINNET_ALCHEMY_API }}
-  LIFI_API_KEY: $${ secrets.LIFI_API_KEY }}
+  LIFI_API_KEY: ${{ secrets.LIFI_API_KEY }}
   ZEROEX_API_KEY: ${{ secrets.ZEROEX_API_KEY }}
 
 on:
