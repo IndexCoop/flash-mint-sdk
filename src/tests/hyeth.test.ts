@@ -2,7 +2,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ETH } from 'constants/tokens'
 import {
   type TestFactory,
-  balanceOf,
   getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
