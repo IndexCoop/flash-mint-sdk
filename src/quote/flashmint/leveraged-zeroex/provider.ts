@@ -95,6 +95,8 @@ export class LeveragedZeroExQuoteProvider
     const { collateralObtainedOrSold, swapDataDebtCollateral } =
       debtCollateralResult
 
+    if (!swapDataDebtCollateral) return null
+
     const { swapDataInputOutputToken, estimatedInputOutputAmount } =
       await this.getSwapDataInputOutputToken(
         request,
@@ -137,46 +139,62 @@ export class LeveragedZeroExQuoteProvider
     const minBuyAmount = debtAmount
     const maxBuyAmount = debtAmount.mul(1005).div(1000)
 
-    let result: SwapQuoteV2 | null = null
+    const collateralAmount = BigNumber.from(
+      leveragedTokenData.collateralAmount.toString(),
+    )
 
-    if (this.swapQuoteOutputProvider) {
-      const quoteRequest: SwapQuoteRequestV2 = {
-        chainId,
-        inputToken: leveragedTokenData.collateralToken,
-        outputToken: leveragedTokenData.debtToken,
-        outputAmount: targetBuyAmount.toString(),
-        slippage,
-        taker,
-      }
+    const inputToken = leveragedTokenData.collateralToken
+    const outputToken = leveragedTokenData.debtToken
 
-      result = await this.swapQuoteOutputProvider.getSwapQuote(quoteRequest)
+    const outputQuoteRequest: SwapQuoteRequestV2 = {
+      chainId,
+      inputToken,
+      outputToken,
+      outputAmount: targetBuyAmount.toString(),
+      slippage,
+      taker,
     }
 
-    if (!result) {
-      // Fallback in case LiFi doesn't return a output amount quote - or is not set.
+    const swapQuotePromise =
+      this.swapQuoteOutputProvider?.getSwapQuote(outputQuoteRequest)
+
+    const sellAmountPromise = (async () => {
       const sellAmount = await getSellAmount(
         chainId,
-        leveragedTokenData.collateralToken,
-        leveragedTokenData.debtToken,
+        inputToken,
+        outputToken,
         targetBuyAmount,
         minBuyAmount,
         maxBuyAmount,
-        BigNumber.from(leveragedTokenData.collateralAmount.toString()),
+        collateralAmount,
       )
 
-      const quoteRequest: SwapQuoteRequestV2 = {
+      const fallbackQuoteRequest: SwapQuoteRequestV2 = {
         chainId,
-        inputToken: leveragedTokenData.collateralToken,
-        outputToken: leveragedTokenData.debtToken,
+        inputToken,
+        outputToken,
         inputAmount: sellAmount.toString(),
         slippage,
         taker,
       }
 
-      result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+      return this.swapQuoteProvider.getSwapQuote(fallbackQuoteRequest)
+    })()
+
+    const [swapQuoteResult, sellAmountResult] = await Promise.allSettled([
+      swapQuotePromise,
+      sellAmountPromise,
+    ])
+
+    let result: SwapQuoteV2 | null = null
+
+    if (swapQuoteResult.status === 'fulfilled' && swapQuoteResult.value) {
+      result = swapQuoteResult.value
+    } else if (sellAmountResult.status === 'fulfilled') {
+      result = sellAmountResult.value
     }
 
-    if (!result || !result.swapData) return null
+    if (!result) return null
 
     const { inputAmount, swapData } = result
     const collateralSold = BigNumber.from(inputAmount)
@@ -284,34 +302,34 @@ export class LeveragedZeroExQuoteProvider
         const minBuyAmount = collateralShortfall
         const maxBuyAmount = collateralShortfall.mul(101).div(100)
 
-        let result: SwapQuoteV2 | null = null
+        const inputToken = inputTokenAddress
+        const outputToken = collateralToken
 
-        if (this.swapQuoteOutputProvider) {
-          const quoteRequest: SwapQuoteRequestV2 = {
-            chainId,
-            inputToken: inputTokenAddress,
-            outputToken: collateralToken,
-            outputAmount: targetBuyAmount.toString(),
-            slippage,
-            taker,
-          }
-
-          result = await this.swapQuoteOutputProvider.getSwapQuote(quoteRequest)
+        const quoteRequest: SwapQuoteRequestV2 = {
+          chainId,
+          inputToken,
+          outputToken,
+          outputAmount: targetBuyAmount.toString(),
+          slippage,
+          taker,
         }
 
-        if (!result) {
+        const swapQuotePromise =
+          this.swapQuoteOutputProvider?.getSwapQuote(quoteRequest)
+
+        const sellAmountPromise = (async () => {
           // Fallback in case LiFi doesn't return a output amount quote - or is not set.
           const sellAmount = await getSellAmount(
             chainId,
-            inputTokenAddress,
-            collateralToken,
+            inputToken,
+            outputToken,
             targetBuyAmount,
             minBuyAmount,
             maxBuyAmount,
             BigNumber.from(inputAmount),
           )
 
-          const quoteRequest: SwapQuoteRequestV2 = {
+          const fallbackQuoteRequest: SwapQuoteRequestV2 = {
             chainId,
             inputToken: inputTokenAddress,
             outputToken: collateralToken,
@@ -320,7 +338,19 @@ export class LeveragedZeroExQuoteProvider
             taker,
           }
 
-          result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
+          return this.swapQuoteProvider.getSwapQuote(fallbackQuoteRequest)
+        })()
+
+        const [swapQuoteResult, sellAmountResult] = await Promise.allSettled([
+          swapQuotePromise,
+          sellAmountPromise,
+        ])
+
+        let result: SwapQuoteV2 | null = null
+        if (swapQuoteResult.status === 'fulfilled' && swapQuoteResult.value) {
+          result = swapQuoteResult.value
+        } else if (sellAmountResult.status === 'fulfilled') {
+          result = sellAmountResult.value
         }
 
         if (result?.swapData) {

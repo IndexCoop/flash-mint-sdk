@@ -71,8 +71,7 @@ export class MorphoQuoteProvider {
     if (
       swapQuoteResult &&
       swapQuoteResult.status === 'fulfilled' &&
-      swapQuoteResult.value !== null &&
-      swapQuoteResult.value !== undefined
+      swapQuoteResult.value
     ) {
       return BigInt(swapQuoteResult.value.inputAmount)
     }
