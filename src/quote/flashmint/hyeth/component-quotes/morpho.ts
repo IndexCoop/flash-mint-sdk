@@ -39,27 +39,21 @@ export class MorphoQuoteProvider {
 
     if (isAddressEqual(inputToken, this.weth)) return ethAmount.toBigInt()
 
-    if (this.swapQuoteOutputProvider) {
-      const quote = await this.swapQuoteOutputProvider.getSwapQuote({
-        chainId: 1,
-        inputToken,
-        outputToken: this.weth,
-        outputAmount: ethAmount.toString(),
-        slippage,
-        taker: this.taker,
-      })
-      if (quote !== null) {
-        return BigInt(quote.inputAmount)
-      }
-    }
+    const swapQuotePromise = this.swapQuoteOutputProvider?.getSwapQuote({
+      chainId: 1,
+      inputToken,
+      outputToken: this.weth,
+      outputAmount: ethAmount.toString(),
+      slippage,
+      taker: this.taker,
+    })
 
     const targetBuyAmount = ethAmount.mul(1001).div(1000)
     const minBuyAmount = ethAmount
     const maxBuyAmount = ethAmount.mul(1005).div(1000)
-
     const maxSellAmount = BigNumber.from(inputAmount.toString())
 
-    const sellAmount = await getSellAmount(
+    const sellAmountPromise = getSellAmount(
       1,
       inputToken,
       this.weth,
@@ -69,7 +63,25 @@ export class MorphoQuoteProvider {
       maxSellAmount,
     )
 
-    return sellAmount.toBigInt()
+    const [swapQuoteResult, sellAmountResult] = await Promise.allSettled([
+      swapQuotePromise,
+      sellAmountPromise,
+    ])
+
+    if (
+      swapQuoteResult &&
+      swapQuoteResult.status === 'fulfilled' &&
+      swapQuoteResult.value !== null &&
+      swapQuoteResult.value !== undefined
+    ) {
+      return BigInt(swapQuoteResult.value.inputAmount)
+    }
+
+    if (sellAmountResult.status === 'fulfilled') {
+      return sellAmountResult.value.toBigInt()
+    }
+
+    return null
   }
 
   async getRedeemQuote(
