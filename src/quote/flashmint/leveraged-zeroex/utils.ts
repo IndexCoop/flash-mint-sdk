@@ -42,43 +42,6 @@ export async function getZeroExResponse(
   return response.data
 }
 
-/**
- * Fetch ZeroEx data, either from cache or API.
- *
- * @param sellToken - The token to sell.
- * @param buyToken - The token to buy.
- * @param sellAmount - The amount of the sell token.
- * @param blockRange - The max block difference to use cached data.
- * @param flashMintAddress - The taker address.
- * @param isQuote - Whether to fetch a quote or a price.
- * @param blockNumber - block number for which to check the range
- * @returns Cached or fresh response from 0x API.
- */
-export async function fetchZeroExData(
-  sellToken: string,
-  buyToken: string,
-  sellAmount: BigNumber,
-  blockRange: number,
-  flashMintAddress: string,
-  isQuote: boolean,
-  blockNumber: number,
-  chainId: number,
-  sellEntireBalance = true,
-) {
-  // Fetch new data from API
-  const priceResponse = await getZeroExResponse(
-    chainId,
-    sellToken,
-    buyToken,
-    sellAmount,
-    flashMintAddress,
-    isQuote,
-    sellEntireBalance,
-  )
-
-  return priceResponse
-}
-
 export async function getSellAmount(
   chainId: number,
   sellToken: string,

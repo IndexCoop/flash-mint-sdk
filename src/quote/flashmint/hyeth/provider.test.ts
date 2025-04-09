@@ -29,6 +29,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputToken: ETH,
       outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
+      inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
@@ -51,6 +52,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputToken: weth,
       outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
+      inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
@@ -80,13 +82,13 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     )
   })
 
-  // TODO:
   test.skip('returns a quote for minting w/ USDC', async () => {
     const request = {
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei(1).toBigInt(),
+      inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
@@ -122,6 +124,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputToken: indexToken,
       outputToken: ETH,
       indexTokenAmount: wei(1).toBigInt(),
+      inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
@@ -143,6 +146,7 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputToken: indexToken,
       outputToken: usdc,
       indexTokenAmount: wei(1).toBigInt(),
+      inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
     const quoteProvider = new FlashMintHyEthQuoteProvider(
