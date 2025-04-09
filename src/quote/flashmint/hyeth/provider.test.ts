@@ -82,7 +82,6 @@ describe('FlashMintHyEthQuoteProvider()', () => {
     )
   })
 
-  // TODO:
   test.skip('returns a quote for minting w/ USDC', async () => {
     const request = {
       isMinting: true,
