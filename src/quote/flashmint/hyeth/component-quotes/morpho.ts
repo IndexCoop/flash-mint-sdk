@@ -39,8 +39,9 @@ export class MorphoQuoteProvider {
 
     if (isAddressEqual(inputToken, this.weth)) return ethAmount.toBigInt()
 
+    let swapQuotePromise = null
     if (this.swapQuoteOutputProvider) {
-      const quote = await this.swapQuoteOutputProvider.getSwapQuote({
+      swapQuotePromise = this.swapQuoteOutputProvider.getSwapQuote({
         chainId: 1,
         inputToken,
         outputToken: this.weth,
@@ -48,9 +49,6 @@ export class MorphoQuoteProvider {
         slippage,
         taker: this.taker,
       })
-      if (quote !== null) {
-        return BigInt(quote.inputAmount)
-      }
     }
 
     const targetBuyAmount = ethAmount.mul(1001).div(1000)
@@ -59,7 +57,7 @@ export class MorphoQuoteProvider {
 
     const maxSellAmount = BigNumber.from(inputAmount.toString())
 
-    const sellAmount = await getSellAmount(
+    const sellAmountPromise = getSellAmount(
       1,
       inputToken,
       this.weth,
@@ -69,7 +67,11 @@ export class MorphoQuoteProvider {
       maxSellAmount,
     )
 
-    return sellAmount.toBigInt()
+    const swapQuote = await swapQuotePromise
+    if (swapQuote?.inputAmount != null) {
+      return BigInt(swapQuote.inputAmount)
+    }
+    return (await sellAmountPromise).toBigInt()
   }
 
   async getRedeemQuote(
