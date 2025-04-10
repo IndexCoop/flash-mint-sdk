@@ -1,7 +1,7 @@
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 
 import type { BigNumber } from '@ethersproject/bignumber'
-import type { SwapQuoteProviderV2, SwapQuoteRequestV2 } from 'quote/swap'
+import type { SwapQuoteRequestV2, ZeroExV2SwapQuoteProvider } from 'quote/swap'
 import type { FlashMintLeveragedZeroExQuoteRequest } from './provider'
 
 export async function getFallbackQuote(
@@ -12,7 +12,7 @@ export async function getFallbackQuote(
   maxBuyAmount: BigNumber,
   maxSellAmount: BigNumber,
   request: FlashMintLeveragedZeroExQuoteRequest,
-  swapQuoteProvider: SwapQuoteProviderV2,
+  swapQuoteProvider: ZeroExV2SwapQuoteProvider,
 ) {
   const { chainId, slippage, taker } = request
 
@@ -24,6 +24,7 @@ export async function getFallbackQuote(
     minBuyAmount,
     maxBuyAmount,
     maxSellAmount,
+    swapQuoteProvider,
   )
 
   if (!sellAmount) {
