@@ -1,3 +1,4 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { isAddressEqual } from '@indexcoop/tokenlists'
 
@@ -6,8 +7,7 @@ import { WETH } from 'constants/tokens'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
-import { BigNumber } from '@ethersproject/bignumber'
-import type { SwapQuoteProviderV2 } from 'quote/swap'
+import type { SwapQuoteProviderV2, ZeroExV2SwapQuoteProvider } from 'quote/swap'
 
 export class MorphoQuoteProvider {
   readonly taker = Contracts[1].FlashMintHyEthV3
@@ -65,13 +65,17 @@ export class MorphoQuoteProvider {
       minBuyAmount,
       maxBuyAmount,
       maxSellAmount,
+      this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
     )
 
     const swapQuote = await swapQuotePromise
     if (swapQuote?.inputAmount != null) {
       return BigInt(swapQuote.inputAmount)
     }
-    return (await sellAmountPromise).toBigInt()
+
+    const sellAmount = await sellAmountPromise
+    if (sellAmount === null) return null
+    return sellAmount.toBigInt()
   }
 
   async getRedeemQuote(

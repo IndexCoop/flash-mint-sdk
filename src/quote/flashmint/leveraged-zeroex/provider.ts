@@ -22,6 +22,7 @@ import type {
   SwapQuoteProviderV2,
   SwapQuoteRequestV2,
   SwapQuoteV2,
+  ZeroExV2SwapQuoteProvider,
 } from '../../swap'
 
 export interface FlashMintLeveragedZeroExQuoteRequest {
@@ -164,7 +165,7 @@ export class LeveragedZeroExQuoteProvider
       maxBuyAmount,
       BigNumber.from(leveragedTokenData.collateralAmount.toString()),
       request,
-      this.swapQuoteProvider,
+      this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
     )
 
     // Should await quoteOutputPromise first and only wait for fallback promise if first one returns nullish value
@@ -306,7 +307,7 @@ export class LeveragedZeroExQuoteProvider
           maxBuyAmount,
           BigNumber.from(inputAmount),
           request,
-          this.swapQuoteProvider,
+          this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
         )
 
         // Should await quoteOutputPromise first and only wait for fallback promise if first one returns nullish value

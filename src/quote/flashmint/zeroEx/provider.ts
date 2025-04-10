@@ -45,7 +45,8 @@ export class ZeroExQuoteProvider
       request
 
     if (isMinting) {
-      throw new Error('Minting not supported.')
+      console.warn('Minting not supported.')
+      return null
     }
 
     const indexToken = isMinting ? outputToken : inputToken

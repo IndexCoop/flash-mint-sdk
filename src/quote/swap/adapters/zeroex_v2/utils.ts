@@ -1,4 +1,5 @@
 import { Exchange } from 'utils'
+import { arbitrum, base } from 'viem/chains'
 import type { ZeroExApiV2SwapResponse } from './types'
 
 /**
@@ -31,7 +32,10 @@ export const exchangeFrom0xSource: { [key: string]: Exchange } = {
 // docs: https://0x.org/docs/api#tag/Sources
 export function getExcludedSources(chainId: number) {
   switch (chainId) {
-    // For now, no need to exclude any sources.
+    case arbitrum.id:
+      return 'WOOFi_V2'
+    case base.id:
+      return 'WOOFi_V2'
     default:
       return ''
   }

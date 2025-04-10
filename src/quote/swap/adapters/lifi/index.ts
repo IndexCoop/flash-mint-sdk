@@ -25,7 +25,12 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProviderV2 {
     } = request
 
     if ((!inputAmount && !outputAmount) || (inputAmount && outputAmount)) {
-      throw new Error('Error - either input or output amount must be set')
+      console.warn(
+        'Error - either input or output amount must be set',
+        inputToken,
+        outputToken,
+      )
+      return null
     }
 
     try {
@@ -45,7 +50,8 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProviderV2 {
       )
 
       if (!result || !result.transactionRequest) {
-        throw new Error('no estimate')
+        console.warn('No Li.Fi estimate')
+        return null
       }
 
       return {
@@ -61,7 +67,7 @@ export class LiFiSwapQuoteProvider implements SwapQuoteProviderV2 {
         },
       }
     } catch (error) {
-      console.log('Error getting LiFi swap quote.')
+      console.warn('Error getting LiFi swap quote.')
       return null
     }
   }

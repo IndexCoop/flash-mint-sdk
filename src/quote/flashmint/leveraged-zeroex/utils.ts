@@ -1,46 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
-import axios from 'axios'
 
-export async function getZeroExResponse(
-  chainId: number,
-  sellToken: string,
-  buyToken: string,
-  sellAmount: BigNumber,
-  taker: string | undefined = undefined,
-  isQuote = false,
-  sellEntireBalance = true,
-): Promise<any> {
-  if (isQuote && taker === undefined) {
-    throw new Error('taker is required when getting actual quote')
-  }
-  const priceParams = new URLSearchParams({
-    chainId: chainId.toString(),
-    sellToken,
-    buyToken,
-    sellAmount: sellAmount.toString(),
-  })
-  if (taker !== undefined) {
-    priceParams.append('taker', taker)
-  }
-  if (
-    sellEntireBalance &&
-    !isAddressEqual(sellToken, getTokenByChainAndSymbol(1, 'stETH').address)
-  ) {
-    priceParams.append('sellEntireBalance', 'true')
-  }
-
-  const headers = {
-    '0x-api-key': process.env.ZEROEX_API_KEY,
-    '0x-version': 'v2',
-  }
-
-  const endpoint = isQuote ? 'quote' : 'price'
-  const url = `https://api.0x.org/swap/allowance-holder/${endpoint}?${priceParams.toString()}`
-
-  const response = await axios.get(url, { headers })
-  return response.data
-}
+import type { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
 
 export async function getSellAmount(
   chainId: number,
@@ -50,23 +11,38 @@ export async function getSellAmount(
   minBuyAmount: BigNumber,
   maxBuyAmount: BigNumber,
   maxSellAmount: BigNumber,
+  swapQuoteProvider: ZeroExV2SwapQuoteProvider,
   maxRequests = 10,
 ) {
   if (targetBuyAmount.gt(maxBuyAmount) || targetBuyAmount.lt(minBuyAmount)) {
-    throw new Error('targetBuyAmount not in range')
+    console.warn('targetBuyAmount not in range')
+    return null
   }
-  let response = await getZeroExResponse(
-    chainId,
+
+  const isStEth = isAddressEqual(
     sellToken,
-    buyToken,
-    maxSellAmount,
+    getTokenByChainAndSymbol(1, 'stETH').address,
   )
-  let sellAmount = BigNumber.from(response.sellAmount)
-  let buyAmount = BigNumber.from(response.buyAmount)
+  let response = await swapQuoteProvider.getPriceQuote({
+    chainId,
+    inputToken: sellToken,
+    outputToken: buyToken,
+    slippage: 0.5,
+    inputAmount: maxSellAmount.toString(),
+    sellEntireBalance: !isStEth,
+  })
+  if (!response) {
+    console.warn('Initial price response is null for getSellAmount()')
+    return null
+  }
+
+  let sellAmount = BigNumber.from(response?.inputAmount)
+  let buyAmount = BigNumber.from(response?.outputAmount)
   if (buyAmount.lt(minBuyAmount)) {
-    throw new Error(
+    console.warn(
       `Buy amount obtained for maxSellAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()}`,
     )
+    return null
   }
   let requestNum = 0
   while (
@@ -74,13 +50,26 @@ export async function getSellAmount(
     requestNum < maxRequests
   ) {
     sellAmount = sellAmount.mul(targetBuyAmount).div(buyAmount)
-    response = await getZeroExResponse(chainId, sellToken, buyToken, sellAmount)
-    buyAmount = BigNumber.from(response.buyAmount)
-    sellAmount = BigNumber.from(response.sellAmount)
+    response = await swapQuoteProvider.getPriceQuote({
+      chainId,
+      inputToken: sellToken,
+      outputToken: buyToken,
+      slippage: 0.5,
+      inputAmount: sellAmount.toString(),
+      sellEntireBalance: !isStEth,
+    })
+    if (response) {
+      buyAmount = BigNumber.from(response.outputAmount)
+      sellAmount = BigNumber.from(response.inputAmount)
+    } else {
+      console.warn('Response is null for getSellAmount()')
+      return null
+    }
     requestNum++
   }
   if (buyAmount.lt(minBuyAmount) || buyAmount.gt(maxBuyAmount)) {
-    throw new Error('exceeded max requests')
+    console.warn('Exceeded max requests')
+    return null
   }
   return sellAmount
 }
