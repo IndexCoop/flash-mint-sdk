@@ -71,7 +71,10 @@ export class MorphoQuoteProvider {
     if (swapQuote?.inputAmount != null) {
       return BigInt(swapQuote.inputAmount)
     }
-    return (await sellAmountPromise).toBigInt()
+
+    const sellAmount = await sellAmountPromise
+    if (sellAmount === null) return null
+    return sellAmount.toBigInt()
   }
 
   async getRedeemQuote(

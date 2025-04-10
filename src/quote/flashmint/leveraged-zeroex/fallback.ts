@@ -26,6 +26,11 @@ export async function getFallbackQuote(
     maxSellAmount,
   )
 
+  if (!sellAmount) {
+    console.warn('Can not determine sell amount for fallback quote')
+    return null
+  }
+
   const quoteRequest: SwapQuoteRequestV2 = {
     chainId,
     inputToken,

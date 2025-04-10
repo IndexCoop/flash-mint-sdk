@@ -53,7 +53,8 @@ export async function getSellAmount(
   maxRequests = 10,
 ) {
   if (targetBuyAmount.gt(maxBuyAmount) || targetBuyAmount.lt(minBuyAmount)) {
-    throw new Error('targetBuyAmount not in range')
+    console.warn('targetBuyAmount not in range')
+    return null
   }
   let response = await getZeroExResponse(
     chainId,
@@ -64,9 +65,10 @@ export async function getSellAmount(
   let sellAmount = BigNumber.from(response.sellAmount)
   let buyAmount = BigNumber.from(response.buyAmount)
   if (buyAmount.lt(minBuyAmount)) {
-    throw new Error(
+    console.warn(
       `Buy amount obtained for maxSellAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()}`,
     )
+    return null
   }
   let requestNum = 0
   while (
@@ -80,7 +82,8 @@ export async function getSellAmount(
     requestNum++
   }
   if (buyAmount.lt(minBuyAmount) || buyAmount.gt(maxBuyAmount)) {
-    throw new Error('exceeded max requests')
+    console.warn('exceeded max requests')
+    return null
   }
   return sellAmount
 }
