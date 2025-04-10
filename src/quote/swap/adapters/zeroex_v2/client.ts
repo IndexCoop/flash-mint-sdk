@@ -18,7 +18,6 @@ export async function getClientV2(
   }
   const endpoint = isPriceQuote ? 'price' : 'quote'
   const url = `https://api.0x.org/swap/allowance-holder/${endpoint}?${path}`
-  console.log(url)
   const res = await axios.get(url, config)
   return res.data as
     | ZeroExApiV2SwapResponse
