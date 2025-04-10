@@ -34,7 +34,8 @@ export class ZeroExV2SwapQuoteProvider implements SwapQuoteProviderV2 {
     }
 
     if (!isZeroExApiV2SwapResponse(res)) {
-      throw new Error('Invalid response format from ZeroEx API')
+      console.warn('Invalid response format from ZeroEx API v2')
+      return null
     }
 
     const swapResponse: ZeroExApiV2SwapResponse = res
