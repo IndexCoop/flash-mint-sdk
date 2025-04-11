@@ -137,6 +137,14 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 2. add a new [builder](./src/flashmint/builders/) and [quote provider](./src/quote/)
 3. The new quote provider has to be integrated into the [FlashMintQuoteProvider](./src/quote/indexQuoteProvider.ts)
 
+## Debugging
+
+```
+cast run --rpc-url http://127.0.0.1:8545/ 0x8ea51dd6cec3e1bea98b143715fe9a1375ca7e01c120f0065cb4ef6c0e0dd23a // mainnet
+cast run --rpc-url http://127.0.0.1:8453/ 0x362c844b7a1ecd5feb14e389eccd68d34373281892e5a6d387131ed9bfef9b01 // base
+cast run --rpc-url http://127.0.0.1:8548/ 0x5434cd90c4b06faed9d77d256e5d569b94c1ef88217d25e82bc6cf1b84153b69 // arbitrum
+```
+
 ## Contributing
 
 We will encourage contributing and open dialog how to improve the SDK. How though
