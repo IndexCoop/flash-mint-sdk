@@ -96,12 +96,17 @@ export class LeveragedZeroExQuoteProvider
     const { collateralObtainedOrSold, swapDataDebtCollateral } =
       debtCollateralResult
 
-    const { swapDataInputOutputToken, estimatedInputOutputAmount } =
+    const swapDataInputOutputTokenResult =
       await this.getSwapDataInputOutputToken(
         request,
         leveragedTokenData,
         collateralObtainedOrSold,
       )
+
+    if (!swapDataInputOutputTokenResult) return null
+
+    const { swapDataInputOutputToken, estimatedInputOutputAmount } =
+      swapDataInputOutputTokenResult
 
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
       estimatedInputOutputAmount,
@@ -233,7 +238,7 @@ export class LeveragedZeroExQuoteProvider
   ): Promise<{
     swapDataInputOutputToken: SwapDataV2
     estimatedInputOutputAmount: BigNumber
-  }> {
+  } | null> {
     const {
       chainId,
       inputAmount,
@@ -245,12 +250,6 @@ export class LeveragedZeroExQuoteProvider
     } = request
     const { collateralAmount, collateralToken } = leveragedTokenData
 
-    // By default the input/output swap data can be empty (as it would be ignored)
-    let swapDataInputOutputToken: SwapDataV2 = {
-      swapTarget: AddressZero,
-      callData: HashZero,
-    }
-
     // Relevant when issuing
     const collateralShortfall = BigNumber.from(collateralAmount).sub(
       collateralObtainedOrSold,
@@ -261,7 +260,7 @@ export class LeveragedZeroExQuoteProvider
     )
 
     // Default if collateral token should be equal to input/output token
-    let estimatedInputOutputAmount = isMinting
+    const estimatedInputOutputAmount = isMinting
       ? collateralShortfall
       : leftoverCollateral
 
@@ -310,24 +309,19 @@ export class LeveragedZeroExQuoteProvider
           this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
         )
 
-        // Should await quoteOutputPromise first and only wait for fallback promise if first one returns nullish value
+        // Should await quoteOutputPromise first and only wait for fallback promise
+        // if first one returns nullish value
         const result: SwapQuoteV2 | null =
           (await quoteOutputPromise) ?? (await fallbackQuotePromise)
 
-        if (result?.swapData) {
-          const { inputAmount, outputAmount, swapData } = result
-          swapDataInputOutputToken = swapData
-          estimatedInputOutputAmount = isMinting
-            ? BigNumber.from(inputAmount)
-            : BigNumber.from(outputAmount)
-        }
+        return getSwapDataInputOutputResultOrNull(result, isMinting)
       } else {
         const isStEth = isAddressEqual(
           collateralToken,
           getTokenByChainAndSymbol(1, 'stETH').address,
         )
         // Smol hack to make stETH work with sellEntireBalance
-        const inputAmount = isStEth
+        const requestInputAmout = isStEth
           ? estimatedInputOutputAmount.mul(1000).div(1010)
           : estimatedInputOutputAmount
         const quoteRequest: SwapQuoteRequestV2 = {
@@ -335,21 +329,37 @@ export class LeveragedZeroExQuoteProvider
           outputToken: outputTokenAddress,
           chainId,
           slippage,
-          inputAmount: inputAmount.toString(),
+          inputAmount: requestInputAmout.toString(),
           sellEntireBalance: true,
           taker,
         }
         const result = await this.swapQuoteProvider.getSwapQuote(quoteRequest)
-        if (result?.swapData) {
-          const { inputAmount, outputAmount, swapData } = result
-          swapDataInputOutputToken = swapData
-          estimatedInputOutputAmount = isMinting
-            ? BigNumber.from(inputAmount)
-            : BigNumber.from(outputAmount)
-        }
-      }
-    }
 
-    return { swapDataInputOutputToken, estimatedInputOutputAmount }
+        return getSwapDataInputOutputResultOrNull(result, isMinting)
+      }
+    } else {
+      // Collateral token is the same as input/output token
+      const swapDataInputOutputToken: SwapDataV2 = {
+        swapTarget: AddressZero,
+        callData: HashZero,
+      }
+      return { swapDataInputOutputToken, estimatedInputOutputAmount }
+    }
+  }
+}
+
+function getSwapDataInputOutputResultOrNull(
+  result: SwapQuoteV2 | null,
+  isMinting: boolean,
+) {
+  if (!result || !result.swapData) return null
+
+  const estimatedInputOutputAmount = isMinting
+    ? BigNumber.from(result.inputAmount)
+    : BigNumber.from(result.outputAmount)
+
+  return {
+    swapDataInputOutputToken: result.swapData,
+    estimatedInputOutputAmount,
   }
 }
