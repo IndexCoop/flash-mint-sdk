@@ -1,6 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-import { WETH } from 'constants/tokens'
 import {
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
@@ -54,7 +53,7 @@ export class ZeroExQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
 
-    const wethAddress = getTokenByChainAndSymbol(chainId, WETH.symbol)?.address
+    const wethAddress = getTokenByChainAndSymbol(chainId, 'WETH')?.address
     if (wethAddress === undefined) {
       console.error('Error - WETH address not defined')
       return null

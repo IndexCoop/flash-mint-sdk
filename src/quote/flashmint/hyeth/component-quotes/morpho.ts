@@ -1,9 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { isAddressEqual } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 
 import { Contracts } from 'constants/contracts'
-import { WETH } from 'constants/tokens'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
@@ -11,7 +10,7 @@ import type { SwapQuoteProviderV2, ZeroExV2SwapQuoteProvider } from 'quote/swap'
 
 export class MorphoQuoteProvider {
   readonly taker = Contracts[1].FlashMintHyEthV3
-  readonly weth = WETH.address!
+  readonly weth = getTokenByChainAndSymbol(1, 'WETH').address
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProviderV2,
