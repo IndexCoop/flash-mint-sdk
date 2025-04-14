@@ -13,7 +13,6 @@ import {
   IndexCoopBitcoin2xIndex,
   IndexCoopBitcoin3xIndex,
   IndexCoopEthereum2xIndex,
-  InterestCompoundingETHIndex,
   MetaverseIndex,
 } from 'constants/tokens'
 
@@ -73,7 +72,9 @@ describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
 
   test('returns debt issuance module v2 for icETH', async () => {
     const expectedModule = DebtIssuanceModuleV2Address
-    const issuanceModule = getIssuanceModule(InterestCompoundingETHIndex.symbol)
+    const issuanceModule = getIssuanceModule(
+      getTokenByChainAndSymbol(ChainId.Mainnet, 'icETH').symbol,
+    )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
