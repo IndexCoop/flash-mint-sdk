@@ -6,6 +6,7 @@ import { Contracts } from 'constants/contracts'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
+import type { SellAmountError } from 'quote/flashmint/leveraged-zeroex/utils'
 import type { SwapQuoteProviderV2, ZeroExV2SwapQuoteProvider } from 'quote/swap'
 
 export class MorphoQuoteProvider {
@@ -56,25 +57,34 @@ export class MorphoQuoteProvider {
 
     const maxSellAmount = BigNumber.from(inputAmount.toString())
 
-    const sellAmountPromise = getSellAmount(
-      1,
-      inputToken,
-      this.weth,
-      targetBuyAmount,
-      minBuyAmount,
-      maxBuyAmount,
-      maxSellAmount,
-      this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
-    )
+    try {
+      const sellAmountPromise = getSellAmount(
+        1,
+        inputToken,
+        this.weth,
+        targetBuyAmount,
+        minBuyAmount,
+        maxBuyAmount,
+        maxSellAmount,
+        this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
+      )
 
-    const swapQuote = await swapQuotePromise
-    if (swapQuote?.inputAmount != null) {
-      return BigInt(swapQuote.inputAmount)
+      const swapQuote = await swapQuotePromise
+      if (swapQuote?.inputAmount != null) {
+        return BigInt(swapQuote.inputAmount)
+      }
+
+      const sellAmount = await sellAmountPromise
+      if (sellAmount === null) return null
+      return sellAmount.toBigInt()
+    } catch (error) {
+      console.warn(
+        'Can not determine sell amount for fallback quote:',
+        (error as SellAmountError).code,
+        (error as SellAmountError).message,
+      )
+      return null
     }
-
-    const sellAmount = await sellAmountPromise
-    if (sellAmount === null) return null
-    return sellAmount.toBigInt()
   }
 
   async getRedeemQuote(
