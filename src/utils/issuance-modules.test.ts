@@ -3,25 +3,17 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import {
   BasicIssuanceModuleAddress,
-  BasicIssuanceModulePolygonAddress,
   Contracts,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from 'constants/contracts'
-import {
-  DefiPulseIndex,
-  IndexCoopBitcoin2xIndex,
-  IndexCoopBitcoin3xIndex,
-  IndexCoopEthereum2xIndex,
-  MetaverseIndex,
-} from 'constants/tokens'
 
 import { getIssuanceModule } from './issuance-modules'
 
 describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
   test('returns debt issuance module v2 for BTC2X', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
-    const issuanceModule = getIssuanceModule(IndexCoopBitcoin2xIndex.symbol)
+    const issuanceModule = getIssuanceModule('BTC2X')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
@@ -35,7 +27,7 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
 
   test('returns debt issuance module v2 for ETH2X', async () => {
     const expectedModule = IndexDebtIssuanceModuleV2Address_v2
-    const issuanceModule = getIssuanceModule(IndexCoopEthereum2xIndex.symbol)
+    const issuanceModule = getIssuanceModule('ETH2X')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
@@ -58,14 +50,14 @@ describe('getIssuanceModule() - Mainnet - IndexProtocol', () => {
 describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
   test('returns basic issuance module for DPI', async () => {
     const expectedModule = BasicIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(DefiPulseIndex.symbol)
+    const issuanceModule = getIssuanceModule('DPI')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(false)
   })
 
   test('returns basic issuance module for MVI', async () => {
     const expectedModule = BasicIssuanceModuleAddress
-    const issuanceModule = getIssuanceModule(MetaverseIndex.symbol)
+    const issuanceModule = getIssuanceModule('MVI')
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(false)
   })
@@ -83,20 +75,14 @@ describe('getIssuanceModule() - Mainnet - SetProtocol', () => {
 describe('getIssuanceModule() - Arbitrum', () => {
   test('returns debt issuance module v3 for BTC2X on Arbitrum', async () => {
     const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
-    const issuanceModule = getIssuanceModule(
-      IndexCoopBitcoin2xIndex.symbol,
-      ChainId.Arbitrum,
-    )
+    const issuanceModule = getIssuanceModule('BTC2X', ChainId.Arbitrum)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
 
   test('returns debt issuance module v3 for BTC3X', async () => {
     const expectedModule = Contracts[ChainId.Arbitrum].DebtIssuanceModuleV3
-    const issuanceModule = getIssuanceModule(
-      IndexCoopBitcoin3xIndex.symbol,
-      ChainId.Arbitrum,
-    )
+    const issuanceModule = getIssuanceModule('BTC3X', ChainId.Arbitrum)
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
   })
@@ -200,17 +186,5 @@ describe('getIssuanceModule() - Base', () => {
     )
     expect(issuanceModule.address).toEqual(expectedModule)
     expect(issuanceModule.isDebtIssuance).toBe(true)
-  })
-})
-
-describe('getIssuanceModule() - Polygon', () => {
-  test('returns basic issuance module for any other index', async () => {
-    const expectedAddress = BasicIssuanceModulePolygonAddress
-    const issuanceModule = getIssuanceModule(
-      MetaverseIndex.symbol,
-      ChainId.Polygon,
-    )
-    expect(issuanceModule.address).toEqual(expectedAddress)
-    expect(issuanceModule.isDebtIssuance).toBe(false)
   })
 })
