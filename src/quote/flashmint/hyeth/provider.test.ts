@@ -3,7 +3,7 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { ChainId } from 'constants/chains'
 import { noopSwapData } from 'constants/swapdata'
-import { ETH, USDC, WETH } from 'constants/tokens'
+import { ETH } from 'constants/tokens'
 import { Exchange } from 'utils'
 import { wei } from 'utils/numbers'
 
@@ -17,6 +17,9 @@ import { FlashMintHyEthQuoteProvider } from './provider'
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
 const swapQuoteProvider = getZeroExV2SwapQuoteProvider()
+
+const USDC = getTokenByChainAndSymbol(chainId, 'USDC')
+const WETH = getTokenByChainAndSymbol(chainId, 'WETH')
 
 describe('FlashMintHyEthQuoteProvider()', () => {
   const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
