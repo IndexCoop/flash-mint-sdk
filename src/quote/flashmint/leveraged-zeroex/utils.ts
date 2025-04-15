@@ -10,6 +10,7 @@ export async function getSellAmount(
   targetBuyAmount: BigNumber,
   minBuyAmount: BigNumber,
   maxBuyAmount: BigNumber,
+  startSellAmount: BigNumber,
   maxSellAmount: BigNumber,
   swapQuoteProvider: ZeroExV2SwapQuoteProvider,
   maxRequests = 10,
@@ -28,7 +29,7 @@ export async function getSellAmount(
     inputToken: sellToken,
     outputToken: buyToken,
     slippage: 0.5,
-    inputAmount: maxSellAmount.toString(),
+    inputAmount: startSellAmount.toString(),
     sellEntireBalance: !isStEth,
   })
   if (!response) {
@@ -38,12 +39,14 @@ export async function getSellAmount(
 
   let sellAmount = BigNumber.from(response?.inputAmount)
   let buyAmount = BigNumber.from(response?.outputAmount)
-  if (buyAmount.lt(minBuyAmount)) {
+
+  if (buyAmount.lt(minBuyAmount) && sellAmount.gt(maxSellAmount)) {
     console.warn(
-      `Buy amount obtained for maxSellAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()}`,
+      `BuyAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()} and sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()})`,
     )
     return null
   }
+
   let requestNum = 0
   while (
     (buyAmount.lt(minBuyAmount) || buyAmount.gt(maxBuyAmount)) &&
@@ -63,6 +66,13 @@ export async function getSellAmount(
       sellAmount = BigNumber.from(response.inputAmount)
     } else {
       console.warn('Response is null for getSellAmount()')
+      return null
+    }
+
+    if (buyAmount.lt(minBuyAmount) && sellAmount.gt(maxSellAmount)) {
+      console.warn(
+        `BuyAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()} and sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()})`,
+      )
       return null
     }
     requestNum++
