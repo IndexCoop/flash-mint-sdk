@@ -20,6 +20,18 @@ describe('convertTo0xSlippage()', () => {
   })
 
   it('should convert slippage to 0x slippage format (bps)', () => {
+    const slippage = 1.093097
+    const result = convertTo0xSlippage(slippage)
+    expect(result).toBe(109)
+  })
+
+  it('should convert slippage to 0x slippage format (bps)', () => {
+    const slippage = 1.1
+    const result = convertTo0xSlippage(slippage)
+    expect(result).toBe(110)
+  })
+
+  it('should convert slippage to 0x slippage format (bps)', () => {
     const slippage = 0
     const result = convertTo0xSlippage(slippage)
     expect(result).toBe(0)
