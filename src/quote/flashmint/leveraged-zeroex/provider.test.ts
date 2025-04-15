@@ -93,7 +93,7 @@ describe('LeveragedZeroExQuoteProvider()', () => {
       outputToken: ETH,
       inputAmount: wei(1).toString(),
       outputAmount: wei(1).toString(),
-      slippage: 0.5,
+      slippage: 1.0,
       taker: takerArb,
     }
 
@@ -114,7 +114,7 @@ describe('LeveragedZeroExQuoteProvider()', () => {
       outputToken: usdc,
       inputAmount: wei(1).toString(),
       outputAmount: wei(1).toString(),
-      slippage: 0.5,
+      slippage: 1.0,
       taker: takerArb,
     }
 
