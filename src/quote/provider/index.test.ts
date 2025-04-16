@@ -13,6 +13,7 @@ import {
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
+  FlashMintQuoteProviderErrorCode,
   type FlashMintQuoteRequest,
 } from '.'
 
@@ -26,6 +27,7 @@ const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 
 async function getQuote(request: FlashMintQuoteRequest) {
+  const rpcUrl = getLocalHostProviderUrl(request.chainId)
   const quoteProvider = new FlashMintQuoteProvider(
     rpcUrl,
     zeroExV2SwapQuoteProvider,
@@ -57,15 +59,17 @@ describe('FlashMintQuoteProvider()', () => {
       rpcUrl,
       zeroExV2SwapQuoteProvider,
     )
-    await expect(quoteProvider.getQuote(request)).rejects.toThrow(
-      'Index token not supported',
+    const quoteResult = await quoteProvider.getQuote(request)
+    expect(quoteResult.success).toBe(false)
+    if (quoteResult.success) fail()
+    expect(quoteResult.error.code).toBe(
+      FlashMintQuoteProviderErrorCode.INDEX_TOKEN_NOT_SUPPORTED,
     )
   })
 
   test('returns a quote for minting ETH2X (Arbitrum)', async () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
-    const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
     const request: FlashMintQuoteRequest = {
       chainId: ChainId.Arbitrum,
       isMinting: true,
@@ -151,7 +155,6 @@ describe('FlashMintQuoteProvider()', () => {
   test('returns a quote for redeeming ETH2X', async () => {
     const FlashMintLeveragedZeroEx =
       Contracts[ChainId.Arbitrum].FlashMintLeveragedZeroEx
-    const rpcUrl = getLocalHostProviderUrl(ChainId.Arbitrum)
     const request: FlashMintQuoteRequest = {
       chainId: ChainId.Arbitrum,
       isMinting: false,

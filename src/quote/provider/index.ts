@@ -22,7 +22,7 @@ import type { QuoteProvider, QuoteToken } from '../interfaces'
 import type { Result } from '../interfaces'
 import type { SwapQuoteProviderV2 } from '../swap'
 
-enum FlashMintQuoteProviderErrorCode {
+export enum FlashMintQuoteProviderErrorCode {
   CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
   ENCODING_ERROR = 'ENCODING_ERROR',
   INDEX_TOKEN_NOT_SUPPORTED = 'INDEX_TOKEN_NOT_SUPPORTED',
