@@ -25,6 +25,18 @@ const FlashMintHyEthAddress = Contracts[ChainId.Mainnet].FlashMintHyEthV3
 const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
 const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
 
+async function getQuote(request: FlashMintQuoteRequest) {
+  const quoteProvider = new FlashMintQuoteProvider(
+    rpcUrl,
+    zeroExV2SwapQuoteProvider,
+    lifiSwapQuoteProvider,
+  )
+  const quoteResult = await quoteProvider.getQuote(request)
+  expect(quoteResult.success).toBe(true)
+  if (!quoteResult.success) fail()
+  return quoteResult.data
+}
+
 describe('FlashMintQuoteProvider()', () => {
   test('throws if token is unsupported', async () => {
     const inputToken = usdc
@@ -63,13 +75,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(300, 6).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      rpcUrl,
-      zeroExV2SwapQuoteProvider,
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Arbitrum)
     expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
     expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
@@ -96,13 +102,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      rpcUrl,
-      zeroExV2SwapQuoteProvider,
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Mainnet)
     expect(quote.contractType).toEqual(FlashMintContractType.hyeth)
     expect(quote.contract).toEqual(FlashMintHyEthAddress)
@@ -131,13 +131,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(300, 6).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      getLocalHostProviderUrl(ChainId.Base),
-      getZeroExV2SwapQuoteProvider(),
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Base)
     expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
     expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
@@ -167,13 +161,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      rpcUrl,
-      zeroExV2SwapQuoteProvider,
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Arbitrum)
     expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
     expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
@@ -200,13 +188,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      rpcUrl,
-      zeroExV2SwapQuoteProvider,
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Mainnet)
     expect(quote.contractType).toEqual(FlashMintContractType.hyeth)
     expect(quote.contract).toEqual(FlashMintHyEthAddress)
@@ -236,13 +218,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      rpcUrl,
-      getZeroExV2SwapQuoteProvider(),
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Mainnet)
     expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
     expect(quote.contract).toEqual(expectedContract)
@@ -271,13 +247,7 @@ describe('FlashMintQuoteProvider()', () => {
       inputTokenAmount: wei(1).toString(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintQuoteProvider(
-      getLocalHostProviderUrl(ChainId.Base),
-      getZeroExV2SwapQuoteProvider(),
-      lifiSwapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+    const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Base)
     expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
     expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)

@@ -111,9 +111,10 @@ export class TestFactory {
   }
 
   async fetchQuote(config: FlashMintQuoteRequest): Promise<FlashMintQuote> {
-    const quote = await this.quoteProvider.getQuote(config)
-    expect(quote).toBeDefined()
-    if (!quote) fail()
+    const quoteResult = await this.quoteProvider.getQuote(config)
+    expect(quoteResult.success).toBe(true)
+    if (!quoteResult.success) fail()
+    const quote = quoteResult.data
     expect(quote.isMinting).toEqual(config.isMinting)
     expect(quote.indexTokenAmount.toString()).toEqual(config.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)

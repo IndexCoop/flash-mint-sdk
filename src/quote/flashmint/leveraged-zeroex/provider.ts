@@ -24,8 +24,7 @@ export enum LeveragedZeroExErrorCode {
 
 import type { SwapDataV2 } from 'utils'
 import type { Address } from 'viem'
-import type { QuoteProvider, QuoteToken } from '../../interfaces'
-import type { Result } from '../../interfaces'
+import type { QuoteProvider, QuoteToken, Result } from '../../interfaces'
 import type {
   SwapQuoteProviderV2,
   SwapQuoteRequestV2,

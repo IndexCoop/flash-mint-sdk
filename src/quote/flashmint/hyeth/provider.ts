@@ -10,7 +10,7 @@ import {
   getInputTokenToEthSwapData,
 } from './swap-data'
 
-import type { QuoteProvider, QuoteToken } from 'quote/interfaces'
+import type { QuoteProvider, QuoteToken, Result } from 'quote/interfaces'
 import type { SwapQuoteProviderV2 } from 'quote/swap'
 import type { SwapData } from 'utils'
 
@@ -48,7 +48,7 @@ export class FlashMintHyEthQuoteProvider
 
   async getQuote(
     request: FlashMintHyEthQuoteRequest,
-  ): Promise<FlashMintHyEthQuote | null> {
+  ): Promise<Result<FlashMintHyEthQuote>> {
     const {
       indexTokenAmount,
       inputAmount,
@@ -73,7 +73,15 @@ export class FlashMintHyEthQuoteProvider
 
     const componentsSwapData = getComponentsSwapData(components)
 
-    if (componentsSwapData.length !== components.length) return null
+    if (componentsSwapData.length !== components.length) {
+      return {
+        success: false,
+        error: {
+          code: 'ComponentsSwapDataError',
+          message: 'Components swap data length mismatch',
+        },
+      }
+    }
 
     // Mainnet only for now
     const chainId = 1
@@ -94,7 +102,17 @@ export class FlashMintHyEthQuoteProvider
       outputToken,
       inputAmount,
     )
-    if (!quoteResult) return null
+
+    if (!quoteResult) {
+      return {
+        success: false,
+        error: {
+          code: 'ComponentQuotesError',
+          message: 'Error fetching component quotes',
+        },
+      }
+    }
+
     const inputOutputTokenAmount = slippageAdjustedTokenAmount(
       BigNumber.from(quoteResult.inputOutputTokenAmount.toString()),
       isMinting ? inputToken.decimals : outputToken.decimals,
@@ -103,11 +121,14 @@ export class FlashMintHyEthQuoteProvider
     )
 
     return {
-      indexTokenAmount,
-      inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
-      componentsSwapData,
-      swapDataInputTokenToEth,
-      swapDataEthToInputOutputToken,
+      success: true,
+      data: {
+        indexTokenAmount,
+        inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
+        componentsSwapData,
+        swapDataInputTokenToEth,
+        swapDataEthToInputOutputToken,
+      },
     }
   }
 }

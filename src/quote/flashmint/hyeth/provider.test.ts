@@ -11,8 +11,9 @@ import {
   getLocalHostProviderUrl,
   getZeroExV2SwapQuoteProvider,
 } from 'tests/utils'
-
 import { FlashMintHyEthQuoteProvider } from './provider'
+
+import type { FlashMintHyEthQuoteRequest } from './provider'
 
 const chainId = ChainId.Mainnet
 const rpcUrl = getLocalHostProviderUrl(chainId)
@@ -20,6 +21,17 @@ const swapQuoteProvider = getZeroExV2SwapQuoteProvider()
 
 const USDC = getTokenByChainAndSymbol(chainId, 'USDC')
 const WETH = getTokenByChainAndSymbol(chainId, 'WETH')
+
+async function getQuote(request: FlashMintHyEthQuoteRequest) {
+  const quoteProvider = new FlashMintHyEthQuoteProvider(
+    rpcUrl,
+    swapQuoteProvider,
+  )
+  const quoteResult = await quoteProvider.getQuote(request)
+  expect(quoteResult.success).toBe(true)
+  if (!quoteResult.success) fail()
+  return quoteResult.data
+}
 
 describe('FlashMintHyEthQuoteProvider()', () => {
   const hyeth = getTokenByChainAndSymbol(chainId, 'hyETH')
@@ -35,12 +47,9 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(
-      rpcUrl,
-      swapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+
+    const quote = await getQuote(request)
+
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     const componentSwapDataIssue = [noopSwapData]
@@ -58,12 +67,9 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(
-      rpcUrl,
-      swapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+
+    const quote = await getQuote(request)
+
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     expect(quote.componentsSwapData.length).toBe(1)
@@ -94,12 +100,9 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(
-      rpcUrl,
-      swapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+
+    const quote = await getQuote(request)
+
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     expect(quote.componentsSwapData.length).toBe(1)
@@ -130,12 +133,9 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(
-      rpcUrl,
-      swapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+
+    const quote = await getQuote(request)
+
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     expect(quote.componentsSwapData.length).toBe(1)
@@ -152,12 +152,9 @@ describe('FlashMintHyEthQuoteProvider()', () => {
       inputAmount: wei(1).toBigInt(),
       slippage: 0.5,
     }
-    const quoteProvider = new FlashMintHyEthQuoteProvider(
-      rpcUrl,
-      swapQuoteProvider,
-    )
-    const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
+
+    const quote = await getQuote(request)
+
     expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
     expect(quote.inputOutputTokenAmount > 0).toBe(true)
     expect(quote.componentsSwapData.length).toBe(1)
