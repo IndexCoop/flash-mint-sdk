@@ -2,21 +2,14 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
-import { Contracts } from 'constants/contracts'
 import { ZeroExV2SwapQuoteProvider } from 'quote/swap'
-import { getLocalHostProviderUrl } from 'tests/utils'
 
 import { getSellAmount } from './utils'
 
 const chainId = ChainId.Base
-const rpcUrl = getLocalHostProviderUrl(chainId)
 
-const FlashMintLeveragedZeroExAddress =
-  Contracts[chainId].FlashMintLeveragedZeroEx
-const eth = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 const wethAddress = getTokenByChainAndSymbol(chainId, 'WETH').address
-const btc2x = getTokenByChainAndSymbol(chainId, 'BTC2X')
 
 describe('getSellAmount', () => {
   beforeEach((): void => {
@@ -53,7 +46,8 @@ describe('getSellAmount', () => {
   })
 
   test('returns null when maxSellAmount is too low', async () => {
-    const maxSellAmount = BigNumber.from(100 * 10 ** 6)
+    const startSellAmount = BigNumber.from(900 * 10 ** 6)
+    const maxSellAmount = BigNumber.from(1000 * 10 ** 6)
     const sellAmount = await getSellAmount(
       chainId,
       sellToken,
