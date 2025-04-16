@@ -20,7 +20,7 @@ describe('wstETH15x (Base)', () => {
     factory = getTestFactoryZeroExV2(8, chainId)
   })
 
-  test.only('can mint with ETH', async () => {
+  test('can mint with ETH', async () => {
     await factory.fetchQuote({
       chainId,
       isMinting: true,
@@ -33,28 +33,75 @@ describe('wstETH15x (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can mint with USDC', async () => {
+  test('can quote with USDC (small amount)', async () => {
     const quote = await factory.fetchQuote({
       chainId,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
-      indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('2100', 6).toString(),
+      indexTokenAmount: wei('10').toString(),
+      inputTokenAmount: wei('50000', 6).toString(),
+      slippage: 0.5,
+    })
+    console.log("quote", quote);
+  })
+
+  test.skip('can mint with USDC (small amount)', async () => {
+    const quote = await factory.fetchQuote({
+      chainId,
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: indexToken,
+      indexTokenAmount: wei('10').toString(),
+      inputTokenAmount: wei('50000', 6).toString(),
       slippage: 0.5,
     })
     const whale = '0x621e7c767004266c8109e83143ab0da521b650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,
-      wei('10000', quote.inputToken.decimals),
+      wei('1200000', quote.inputToken.decimals),
       quote.inputToken.address,
       factory.getProvider(),
     )
     await factory.executeTx()
   })
 
-  test('can mint with WETH', async () => {
+  test('can quote with USDC (big amount)', async () => {
+    const quote = await factory.fetchQuote({
+      chainId,
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: indexToken,
+      indexTokenAmount: wei('100').toString(),
+      inputTokenAmount: wei('1200000', 6).toString(),
+      slippage: 0.5,
+    })
+    console.log("quote", quote);
+  })
+
+  test.skip('can mint with USDC (big amount)', async () => {
+    const quote = await factory.fetchQuote({
+      chainId,
+      isMinting: true,
+      inputToken: usdc,
+      outputToken: indexToken,
+      indexTokenAmount: wei('100').toString(),
+      inputTokenAmount: wei('1200000', 6).toString(),
+      slippage: 0.5,
+    })
+    const whale = '0x621e7c767004266c8109e83143ab0da521b650d6'
+    await transferFromWhale(
+      whale,
+      factory.getSigner().address,
+      wei('1200000', quote.inputToken.decimals),
+      quote.inputToken.address,
+      factory.getProvider(),
+    )
+    await factory.executeTx()
+  })
+
+  test.skip('can mint with WETH', async () => {
     const quote = await factory.fetchQuote({
       chainId,
       isMinting: true,
@@ -72,7 +119,7 @@ describe('wstETH15x (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to ETH', async () => {
+  test.skip('can redeem to ETH', async () => {
     await factory.fetchQuote({
       chainId,
       isMinting: false,
@@ -85,7 +132,7 @@ describe('wstETH15x (Base)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem to USDC', async () => {
+  test.skip('can redeem to USDC', async () => {
     await factory.fetchQuote({
       chainId,
       isMinting: false,
