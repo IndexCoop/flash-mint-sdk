@@ -15,9 +15,17 @@ import {
 } from 'utils/leveraged-token-data'
 import { slippageAdjustedTokenAmount } from 'utils/slippage'
 
+export enum LeveragedZeroExErrorCode {
+  IS_AAVE_NULL = 'IS_AAVE_NULL',
+  LEVERAGED_TOKEN_DATA_NULL = 'LEVERAGED_TOKEN_DATA_NULL',
+  DEBT_COLLATERAL_SWAP_DATA_NULL = 'DEBT_COLLATERAL_SWAP_DATA_NULL',
+  INPUT_OUTPUT_SWAP_DATA_NULL = 'INPUT_OUTPUT_SWAP_DATA_NULL',
+}
+
 import type { SwapDataV2 } from 'utils'
 import type { Address } from 'viem'
 import type { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { Result } from '../../interfaces'
 import type {
   SwapQuoteProviderV2,
   SwapQuoteRequestV2,
@@ -60,7 +68,7 @@ export class LeveragedZeroExQuoteProvider
 
   async getQuote(
     request: FlashMintLeveragedZeroExQuoteRequest,
-  ): Promise<FlashMintLeveragedZeroExQuote | null> {
+  ): Promise<Result<FlashMintLeveragedZeroExQuote>> {
     const { chainId, inputToken, isMinting, outputToken, slippage } = request
 
     const indexTokenAmount = BigNumber.from(
@@ -68,13 +76,26 @@ export class LeveragedZeroExQuoteProvider
     )
     const indexToken = isMinting ? outputToken : inputToken
 
-    const isAave = await usesAaveLeverageModule(
+    const isAaveResult = await usesAaveLeverageModule(
       indexToken.address,
       chainId,
       this.rpcUrl,
     )
 
-    const leveragedTokenData = await getLeveragedZeroExTokenData(
+    if (!isAaveResult.success) {
+      return {
+        success: false,
+        error: {
+          code: LeveragedZeroExErrorCode.IS_AAVE_NULL,
+          message: 'Error fetching AAVE status',
+          originalError: isAaveResult.error,
+        },
+      }
+    }
+
+    const isAave = isAaveResult.data
+
+    const leveragedTokenDataResult = await getLeveragedZeroExTokenData(
       {
         indexTokenAddress: indexToken.address as Address,
         indexTokenAmount: indexTokenAmount.toBigInt(),
@@ -85,13 +106,41 @@ export class LeveragedZeroExQuoteProvider
       this.rpcUrl,
     )
 
-    if (leveragedTokenData === null) return null
+    if (!leveragedTokenDataResult.success) {
+      return {
+        success: false,
+        error: {
+          code: LeveragedZeroExErrorCode.LEVERAGED_TOKEN_DATA_NULL,
+          message: 'Error fetching leveraged token data',
+          originalError: leveragedTokenDataResult.error,
+        },
+      }
+    }
+
+    const leveragedTokenData = leveragedTokenDataResult.data
+
+    if (!leveragedTokenData) {
+      return {
+        success: false,
+        error: {
+          code: LeveragedZeroExErrorCode.LEVERAGED_TOKEN_DATA_NULL,
+          message: 'Error leveraged token data is null',
+        },
+      }
+    }
 
     const debtCollateralResult = isMinting
       ? await this.getSwapDataDebtToCollateral(leveragedTokenData, request)
       : await this.getSwapDataCollateralToDebt(leveragedTokenData, request)
 
-    if (!debtCollateralResult) return null
+    if (!debtCollateralResult)
+      return {
+        success: false,
+        error: {
+          code: LeveragedZeroExErrorCode.DEBT_COLLATERAL_SWAP_DATA_NULL,
+          message: 'Error fetching debt/collateral swap data',
+        },
+      }
 
     const { collateralObtainedOrSold, swapDataDebtCollateral } =
       debtCollateralResult
@@ -103,7 +152,14 @@ export class LeveragedZeroExQuoteProvider
         collateralObtainedOrSold,
       )
 
-    if (!swapDataInputOutputTokenResult) return null
+    if (!swapDataInputOutputTokenResult)
+      return {
+        success: false,
+        error: {
+          code: LeveragedZeroExErrorCode.INPUT_OUTPUT_SWAP_DATA_NULL,
+          message: 'Error fetching input/output swap data',
+        },
+      }
 
     const { swapDataInputOutputToken, estimatedInputOutputAmount } =
       swapDataInputOutputTokenResult
@@ -116,17 +172,20 @@ export class LeveragedZeroExQuoteProvider
     )
 
     return {
-      inputAmount: (isMinting
-        ? inputOutputTokenAmount
-        : indexTokenAmount
-      ).toString(),
-      outputAmount: (isMinting
-        ? indexTokenAmount
-        : inputOutputTokenAmount
-      ).toString(),
-      swapDataDebtCollateral,
-      swapDataInputOutputToken,
-      isAave,
+      success: true,
+      data: {
+        inputAmount: (isMinting
+          ? inputOutputTokenAmount
+          : indexTokenAmount
+        ).toString(),
+        outputAmount: (isMinting
+          ? indexTokenAmount
+          : inputOutputTokenAmount
+        ).toString(),
+        swapDataDebtCollateral,
+        swapDataInputOutputToken,
+        isAave,
+      },
     }
   }
 

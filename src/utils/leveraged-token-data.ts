@@ -5,6 +5,7 @@ import { FlashMintAbis } from 'utils/abis'
 import { createClientWithUrl } from 'utils/clients'
 
 import type { BigNumber } from '@ethersproject/bignumber'
+import type { Result } from 'quote/interfaces'
 import type { Address } from 'viem'
 
 export interface LeveragedTokenData {
@@ -34,7 +35,7 @@ export async function getLeveragedZeroExTokenData(
   params: GetLeveragedTokenDataParams,
   chainId: number,
   rpcUrl: string,
-): Promise<LeveragedZeroExTokenData | null> {
+): Promise<Result<LeveragedZeroExTokenData | null>> {
   try {
     const { indexTokenAddress, indexTokenAmount, isIssuance, isAave } = params
     const isIcEth = isAddressEqual(
@@ -52,9 +53,17 @@ export async function getLeveragedZeroExTokenData(
       functionName: 'getLeveragedTokenData',
       args: [indexTokenAddress, indexTokenAmount, isIssuance, isAave],
     })
-    return data as LeveragedZeroExTokenData | null
+    return {
+      success: true,
+      data: data as LeveragedZeroExTokenData | null,
+    }
   } catch (error) {
-    console.error('Error getting leveraged zeroex token data:', error)
-    return null
+    return {
+      success: false,
+      error: {
+        code: 'GetLeveragedZeroExTokenDataError',
+        message: `Error getting leveraged zeroex token data: ${error}`,
+      },
+    }
   }
 }

@@ -33,15 +33,15 @@ async function getArbQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
     swapQuoteProviderZeroExV2,
     swapQuoteOutputProvider,
   )
-  const quote = await quoteProvider.getQuote(request)
-  if (!quote) fail()
-  return quote
+  const quoteResult = await quoteProvider.getQuote(request)
+  expect(quoteResult.success).toBe(true)
+  if (!quoteResult.success) fail()
+  return quoteResult.data
 }
 
 describe('LeveragedZeroExQuoteProvider()', () => {
   const indexToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
   const usdc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC')
-  const weth = getTokenByChainAndSymbol(ChainId.Arbitrum, 'WETH')
 
   test('returns quote for ETH2X - minting w/ ETH', async () => {
     const request = {
@@ -134,9 +134,10 @@ async function getQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
     swapQuoteProviderZeroExV2,
     swapQuoteOutputProvider,
   )
-  const quote = await quoteProvider.getQuote(request)
-  if (!quote) fail()
-  return quote
+  const quoteResult = await quoteProvider.getQuote(request)
+  expect(quoteResult.success).toBe(true)
+  if (!quoteResult.success) fail()
+  return quoteResult.data
 }
 
 function validateSwapData(swapData: SwapDataV2) {

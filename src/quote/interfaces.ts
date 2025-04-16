@@ -1,5 +1,12 @@
+export type Result<T> =
+  | { success: true; data: T }
+  | {
+      success: false
+      error: { code: string; message: string; originalError?: unknown }
+    }
+
 export interface QuoteProvider<R, Q> {
-  getQuote(request: R): Promise<Q | null>
+  getQuote(request: R): Promise<Result<Q>>
 }
 
 export interface QuoteToken {
