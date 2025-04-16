@@ -20,6 +20,11 @@ export async function getSellAmount(
     return null
   }
 
+  if (startSellAmount.gt(maxSellAmount)) {
+    console.warn('startSellAmount not in range')
+    return null
+  }
+
   const isStEth = isAddressEqual(
     sellToken,
     getTokenByChainAndSymbol(1, 'stETH').address,
@@ -40,7 +45,7 @@ export async function getSellAmount(
   let sellAmount = BigNumber.from(response?.inputAmount)
   let buyAmount = BigNumber.from(response?.outputAmount)
 
-  if (buyAmount.lt(minBuyAmount) && sellAmount.gt(maxSellAmount)) {
+  if (sellAmount.gt(maxSellAmount)) {
     console.warn(
       `BuyAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()} and sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()})`,
     )
@@ -69,7 +74,7 @@ export async function getSellAmount(
       return null
     }
 
-    if (buyAmount.lt(minBuyAmount) && sellAmount.gt(maxSellAmount)) {
+    if (sellAmount.gt(maxSellAmount)) {
       console.warn(
         `BuyAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()} and sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()})`,
       )

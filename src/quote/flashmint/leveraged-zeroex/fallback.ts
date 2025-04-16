@@ -20,7 +20,8 @@ export async function getFallbackQuote(
   // Ideas:
   // - Cache data on the backend regarding current exchange rates between token pairs (for example from past requests)
   // - Use startSellAmount = targetBuyAmount * cachedExchangeRate
-  const startSellAmount = maxSellAmount
+  // Note: Reduced the startSellAmount to slightly below the max to avoid it getting "short-circuited" on the first request
+  const startSellAmount = maxSellAmount.mul(90).div(100);
   const sellAmount = await getSellAmount(
     chainId,
     inputToken,
