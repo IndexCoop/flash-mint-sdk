@@ -47,7 +47,7 @@ export async function getSellAmount(
 
   if (sellAmount.gt(maxSellAmount)) {
     console.warn(
-      `BuyAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()} and sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()})`,
+        `sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()}) - corresponding buy amount: (${buyAmount.toString()})`,
     )
     return null
   }
@@ -76,7 +76,7 @@ export async function getSellAmount(
 
     if (sellAmount.gt(maxSellAmount)) {
       console.warn(
-        `BuyAmount (${buyAmount.toString()}) is less than specified minBuyAmount ${minBuyAmount.toString()} and sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()})`,
+        `sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()}) - corresponding buy amount: (${buyAmount.toString()})`,
       )
       return null
     }
