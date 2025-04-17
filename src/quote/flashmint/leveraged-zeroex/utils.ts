@@ -5,8 +5,10 @@ import type { ZeroExV2SwapQuoteProvider } from 'quote/swap/adapters/zeroex_v2'
 
 export enum SellAmountErrorCode {
   INVALID_TARGET_BUY_AMOUNT = 'INVALID_TARGET_BUY_AMOUNT',
+  START_SELL_AMOUNT_NOT_IN_RANGE = 'START_SELL_AMOUNT_NOT_IN_RANGE',
   PRICE_QUOTE_NULL = 'PRICE_QUOTE_NULL',
   BUY_AMOUNT_OUT_OF_RANGE = 'BUY_AMOUNT_OUT_OF_RANGE',
+  SELL_AMOUNT_GREATER_THAN_MAX = 'SELL_AMOUNT_GREATER_THAN_MAX',
   MAX_REQUESTS_EXCEEDED = 'MAX_REQUESTS_EXCEEDED',
 }
 
@@ -26,6 +28,7 @@ export async function getSellAmount(
   targetBuyAmount: BigNumber,
   minBuyAmount: BigNumber,
   maxBuyAmount: BigNumber,
+  startSellAmount: BigNumber,
   maxSellAmount: BigNumber,
   swapQuoteProvider: ZeroExV2SwapQuoteProvider,
   maxRequests = 10,
@@ -34,6 +37,13 @@ export async function getSellAmount(
     throw new SellAmountError(
       SellAmountErrorCode.INVALID_TARGET_BUY_AMOUNT,
       `Target buy amount (${targetBuyAmount.toString()}) is not within the valid range (${minBuyAmount.toString()} - ${maxBuyAmount.toString()}).`,
+    )
+  }
+
+  if (startSellAmount.gt(maxSellAmount)) {
+    throw new SellAmountError(
+      SellAmountErrorCode.START_SELL_AMOUNT_NOT_IN_RANGE,
+      `Start sell amount not in range: ${startSellAmount}; maxSellAmount: ${maxSellAmount}`,
     )
   }
 
@@ -48,7 +58,7 @@ export async function getSellAmount(
     inputToken: sellToken,
     outputToken: buyToken,
     slippage: 0.5,
-    inputAmount: maxSellAmount.toString(),
+    inputAmount: startSellAmount.toString(),
     sellEntireBalance: !isStEth,
   })
 
@@ -62,10 +72,10 @@ export async function getSellAmount(
   let sellAmount = BigNumber.from(response.inputAmount)
   let buyAmount = BigNumber.from(response.outputAmount)
 
-  if (buyAmount.lt(minBuyAmount)) {
+  if (sellAmount.gt(maxSellAmount)) {
     throw new SellAmountError(
-      SellAmountErrorCode.BUY_AMOUNT_OUT_OF_RANGE,
-      `Obtained buy amount (${buyAmount.toString()}) is less than the specified minimum (${minBuyAmount.toString()}).`,
+      SellAmountErrorCode.SELL_AMOUNT_GREATER_THAN_MAX,
+      `Error sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()}) - corresponding buy amount: (${buyAmount.toString()})`,
     )
   }
 
@@ -93,6 +103,14 @@ export async function getSellAmount(
 
     buyAmount = BigNumber.from(response.outputAmount)
     sellAmount = BigNumber.from(response.inputAmount)
+
+    if (sellAmount.gt(maxSellAmount)) {
+      throw new SellAmountError(
+        SellAmountErrorCode.SELL_AMOUNT_GREATER_THAN_MAX,
+        `Error sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()}) - corresponding buy amount: (${buyAmount.toString()})`,
+      )
+    }
+
     requestNum++
   }
 

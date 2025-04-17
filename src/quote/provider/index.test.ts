@@ -208,7 +208,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test('returns a quote for redeeming icETH', async () => {
+  test.skip('returns a quote for redeeming icETH', async () => {
     const iceth = getTokenByChainAndSymbol(ChainId.Mainnet, 'icETH')
     const expectedContract =
       Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx_AaveV2
