@@ -1,8 +1,8 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
+import { ETH } from 'constants/tokens'
 import {
   type TestFactory,
-  getAlchemyProviderUrl,
   getTestFactoryZeroExV2,
   transferFromWhale,
   wei,
@@ -10,39 +10,40 @@ import {
 
 describe('wstETH15x (Base)', () => {
   const chainId = ChainId.Base
-  const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
-  const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
   const factory: TestFactory = getTestFactoryZeroExV2(8, chainId)
+  const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
+  const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
 
   const testCases = [
-    { setAmount: '1', usdcAmount: '5000' },
-    { setAmount: '10', usdcAmount: '50000' },
+    { setAmount: '1', inputAmount: '2', inputToken: 'ETH' },
+    { setAmount: '10', inputAmount: '35', inputToken: 'ETH' },
+    { setAmount: '1', inputAmount: '5000', inputToken: 'USDC' },
+    { setAmount: '10', inputAmount: '50000', inputToken: 'USDC' },
   ]
 
-  const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
-  const alchemyUrl = getAlchemyProviderUrl(chainId)
-
-  for (const { setAmount, usdcAmount } of testCases) {
-    describe(`SetAmount: ${setAmount} - usdcAmount ${usdcAmount}`, () => {
+  for (const {
+    setAmount,
+    inputAmount,
+    inputToken: inputTokenSymbol,
+  } of testCases) {
+    describe(`SetAmount: ${setAmount} - inputAmount ${inputAmount}`, () => {
       let quote: any
 
       beforeAll(async () => {
-        const localHostProvider = factory.getProvider()
+        factory.resetFork(chainId)
 
-        // Reset fork to latest block to ensure accurate quote
-        await localHostProvider.send('hardhat_reset', [
-          {
-            forking: { jsonRpcUrl: alchemyUrl },
-          },
-        ])
+        const inputToken =
+          inputTokenSymbol === 'ETH'
+            ? ETH
+            : getTokenByChainAndSymbol(chainId, inputTokenSymbol)
 
         quote = await factory.fetchQuote({
           chainId,
           isMinting: true,
-          inputToken: usdc,
+          inputToken: inputToken!,
           outputToken: indexToken,
           indexTokenAmount: wei(setAmount).toString(),
-          inputTokenAmount: wei(usdcAmount, 6).toString(),
+          inputTokenAmount: wei(inputAmount, inputToken!.decimals).toString(),
           slippage: 0.5,
         })
       })
@@ -56,84 +57,18 @@ describe('wstETH15x (Base)', () => {
           throw new Error("Can't mint without quote")
         }
 
-        await transferFromWhale(
-          whale,
-          factory.getSigner().address,
-          quote.inputOutputAmount,
-          quote.inputToken.address,
-          factory.getProvider(),
-        )
+        if (inputTokenSymbol !== 'ETH') {
+          await transferFromWhale(
+            whale,
+            factory.getSigner().address,
+            quote.inputOutputAmount,
+            quote.inputToken.address,
+            factory.getProvider(),
+          )
+        }
 
         await factory.executeTx()
       })
     })
   }
 })
-
-// describe.skip('wstETH15x (Base)', () => {
-//   const chainId = ChainId.Base
-//   const indexToken = getTokenByChainAndSymbol(chainId, 'wstETH15x')
-//   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
-//   const weth = getTokenByChainAndSymbol(chainId, 'WETH')
-//   let factory: TestFactory
-//   beforeAll(async () => {
-//     factory = getTestFactoryZeroExV2(8, chainId)
-//   })
-
-//   test('can mint with ETH', async () => {
-//     await factory.fetchQuote({
-//       chainId,
-//       isMinting: true,
-//       inputToken: ETH,
-//       outputToken: indexToken,
-//       indexTokenAmount: wei('1').toString(),
-//       inputTokenAmount: wei('1.1').toString(),
-//       slippage: 0.5,
-//     })
-//     await factory.executeTx()
-//   })
-
-//   test.skip('can mint with WETH', async () => {
-//     const quote = await factory.fetchQuote({
-//       chainId,
-//       isMinting: true,
-//       inputToken: weth,
-//       outputToken: indexToken,
-//       indexTokenAmount: wei('1').toString(),
-//       inputTokenAmount: wei('1.1').toString(),
-//       slippage: 0.5,
-//     })
-//     await wrapETH(
-//       quote.inputAmount.mul(BigNumber.from(2)),
-//       factory.getSigner(),
-//       chainId,
-//     )
-//     await factory.executeTx()
-//   })
-
-//   test.skip('can redeem to ETH', async () => {
-//     await factory.fetchQuote({
-//       chainId,
-//       isMinting: false,
-//       inputToken: indexToken,
-//       outputToken: ETH,
-//       indexTokenAmount: wei('1').toString(),
-//       inputTokenAmount: wei('1').toString(),
-//       slippage: 0.5,
-//     })
-//     await factory.executeTx()
-//   })
-
-//   test.skip('can redeem to USDC', async () => {
-//     await factory.fetchQuote({
-//       chainId,
-//       isMinting: false,
-//       inputToken: indexToken,
-//       outputToken: usdc,
-//       indexTokenAmount: wei('1').toString(),
-//       inputTokenAmount: wei('1').toString(),
-//       slippage: 0.5,
-//     })
-//     await factory.executeTx()
-//   })
-// })
