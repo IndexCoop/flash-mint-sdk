@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
-import { ZeroExV2SwapQuoteProvider } from 'quote/swap'
+import { getZeroExV2SwapQuoteProvider } from 'tests/utils'
 
 import { getSellAmount } from './utils'
 
@@ -22,9 +22,7 @@ describe('getSellAmount', () => {
   const minBuyAmount = targetBuyAmount.mul(999).div(1000)
   const maxBuyAmount = targetBuyAmount.mul(1001).div(1000)
   const startSellAmount = BigNumber.from(1632 * 10 ** 6)
-  const swapQuoteProvider = new ZeroExV2SwapQuoteProvider(
-    process.env.ZEROEX_API_KEY!,
-  )
+  const swapQuoteProvider = getZeroExV2SwapQuoteProvider()
 
   test('returns non null when maxSellAmount is large enough', async () => {
     const maxSellAmount = BigNumber.from(4000 * 10 ** 6)
@@ -45,22 +43,24 @@ describe('getSellAmount', () => {
     expect(sellAmount.lte(maxSellAmount)).toBe(true)
   })
 
-  test('returns null when maxSellAmount is too low', async () => {
+  test('throws error when maxSellAmount is too low', async () => {
     const startSellAmount = BigNumber.from(900 * 10 ** 6)
     const maxSellAmount = BigNumber.from(1000 * 10 ** 6)
-    const sellAmount = await getSellAmount(
-      chainId,
-      sellToken,
-      buyToken,
-      targetBuyAmount,
-      minBuyAmount,
-      maxBuyAmount,
-      startSellAmount,
-      maxSellAmount,
-      swapQuoteProvider,
-    )
-    console.log('sellAmount', sellAmount)
 
-    expect(sellAmount == null).toBe(true)
+    await expect(
+      getSellAmount(
+        chainId,
+        sellToken,
+        buyToken,
+        targetBuyAmount,
+        minBuyAmount,
+        maxBuyAmount,
+        startSellAmount,
+        maxSellAmount,
+        swapQuoteProvider,
+      ),
+    ).rejects.toMatchObject({
+      code: 'SELL_AMOUNT_GREATER_THAN_MAX',
+    })
   })
 })
