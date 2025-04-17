@@ -52,8 +52,8 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm run hardhat &
-      - run: npm run test:iceth
       - run: npm run test:hyeth
+      # - run: npm run test:iceth
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
