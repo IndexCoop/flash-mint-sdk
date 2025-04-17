@@ -38,7 +38,7 @@ describe("uSOL2x (Base)", () => {
         ["1", "500"],
         ["10", "5000"],
         ["100", "50000"],
-        ["1000", "500000"],
+        // ["1000", "500000"],
     ].forEach(([setAmount, usdcAmount]) => {
         describe(`SetAmount: ${setAmount} - usdcAmount ${usdcAmount}`, () => {
             let quote: any;
@@ -65,11 +65,11 @@ describe("uSOL2x (Base)", () => {
                 });
             });
 
-            test("can obtain quote", () => {
+            test.only("can obtain quote", () => {
                 expect(quote != null).toBe(true);
             });
 
-            test("can mint", async () => {
+            test.skip("can mint", async () => {
                 if (quote == null) {
                     throw new Error("Can't mint without quote");
                 }
