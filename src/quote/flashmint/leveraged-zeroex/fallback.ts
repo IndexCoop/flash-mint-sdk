@@ -17,6 +17,13 @@ export async function getFallbackQuote(
 ) {
   const { chainId, slippage, taker } = request
 
+  // TODO: Use a better startSellAmount to make the search shorter / more precise
+  // Ideas:
+  // - Cache data on the backend regarding current exchange rates between token pairs (for example from past requests)
+  // - Use startSellAmount = targetBuyAmount * cachedExchangeRate
+  // Note: Reduced the startSellAmount to slightly below the max to avoid it getting "short-circuited" on the first request
+  const startSellAmount = maxSellAmount.mul(90).div(100)
+
   try {
     const sellAmount = await getSellAmount(
       chainId,
@@ -25,6 +32,7 @@ export async function getFallbackQuote(
       targetBuyAmount,
       minBuyAmount,
       maxBuyAmount,
+      startSellAmount,
       maxSellAmount,
       swapQuoteProvider,
     )

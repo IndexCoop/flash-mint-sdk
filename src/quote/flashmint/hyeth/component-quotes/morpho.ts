@@ -57,7 +57,7 @@ export class MorphoQuoteProvider {
 
     const maxSellAmount = BigNumber.from(inputAmount.toString())
     // TODO: Review if we can select better start sell amount
-    const startSellAmount = maxSellAmount.mul(90).div(100);
+    const startSellAmount = maxSellAmount.mul(90).div(100)
 
     try {
       const sellAmountPromise = getSellAmount(
@@ -67,6 +67,7 @@ export class MorphoQuoteProvider {
         targetBuyAmount,
         minBuyAmount,
         maxBuyAmount,
+        startSellAmount,
         maxSellAmount,
         this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
       )
