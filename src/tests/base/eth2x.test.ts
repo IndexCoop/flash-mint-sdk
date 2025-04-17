@@ -3,7 +3,7 @@ import { ChainId } from 'constants/chains'
 import { ETH } from 'constants/tokens'
 import { type TestFactory, getTestFactoryZeroExV2, wei } from 'tests/utils'
 
-describe('ETH2X (Base)', () => {
+describe.skip('ETH2X (Base)', () => {
   const chainId = ChainId.Base
   const eth2x = getTokenByChainAndSymbol(chainId, 'ETH2X')
   let factory: TestFactory

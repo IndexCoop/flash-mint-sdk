@@ -56,6 +56,8 @@ export class MorphoQuoteProvider {
     const maxBuyAmount = ethAmount.mul(1005).div(1000)
 
     const maxSellAmount = BigNumber.from(inputAmount.toString())
+    // TODO: Review if we can select better start sell amount
+    const startSellAmount = maxSellAmount.mul(90).div(100);
 
     try {
       const sellAmountPromise = getSellAmount(

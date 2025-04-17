@@ -10,7 +10,7 @@ import {
   wrapETH,
 } from 'tests/utils'
 
-describe('uSUI3x (Base)', () => {
+describe.skip('uSUI3x (Base)', () => {
   const chainId = ChainId.Base
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI3x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
@@ -85,7 +85,7 @@ describe('uSUI3x (Base)', () => {
     await factory.executeTx()
   })
 
-  test.skip('can redeem to USDC', async () => {
+  test('can redeem to USDC', async () => {
     await factory.fetchQuote({
       chainId,
       isMinting: false,

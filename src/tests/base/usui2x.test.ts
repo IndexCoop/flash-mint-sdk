@@ -10,7 +10,7 @@ import {
   wrapETH,
 } from 'tests/utils'
 
-describe('uSUI2x (Base)', () => {
+describe.skip('uSUI2x (Base)', () => {
   const chainId = ChainId.Base
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI2x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')

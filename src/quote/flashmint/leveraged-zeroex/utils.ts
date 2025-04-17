@@ -26,6 +26,7 @@ export async function getSellAmount(
   targetBuyAmount: BigNumber,
   minBuyAmount: BigNumber,
   maxBuyAmount: BigNumber,
+  startSellAmount: BigNumber,
   maxSellAmount: BigNumber,
   swapQuoteProvider: ZeroExV2SwapQuoteProvider,
   maxRequests = 10,
@@ -35,6 +36,11 @@ export async function getSellAmount(
       SellAmountErrorCode.INVALID_TARGET_BUY_AMOUNT,
       `Target buy amount (${targetBuyAmount.toString()}) is not within the valid range (${minBuyAmount.toString()} - ${maxBuyAmount.toString()}).`,
     )
+  }
+
+  if (startSellAmount.gt(maxSellAmount)) {
+    console.warn('startSellAmount not in range')
+    return null
   }
 
   const isStEth = isAddressEqual(
@@ -48,7 +54,7 @@ export async function getSellAmount(
     inputToken: sellToken,
     outputToken: buyToken,
     slippage: 0.5,
-    inputAmount: maxSellAmount.toString(),
+    inputAmount: startSellAmount.toString(),
     sellEntireBalance: !isStEth,
   })
 
@@ -59,13 +65,12 @@ export async function getSellAmount(
     )
   }
 
-  let sellAmount = BigNumber.from(response.inputAmount)
-  let buyAmount = BigNumber.from(response.outputAmount)
+  let sellAmount = BigNumber.from(response?.inputAmount)
+  let buyAmount = BigNumber.from(response?.outputAmount)
 
-  if (buyAmount.lt(minBuyAmount)) {
-    throw new SellAmountError(
-      SellAmountErrorCode.BUY_AMOUNT_OUT_OF_RANGE,
-      `Obtained buy amount (${buyAmount.toString()}) is less than the specified minimum (${minBuyAmount.toString()}).`,
+  if (sellAmount.gt(maxSellAmount)) {
+    console.warn(
+        `sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()}) - corresponding buy amount: (${buyAmount.toString()})`,
     )
   }
 
@@ -91,8 +96,12 @@ export async function getSellAmount(
       )
     }
 
-    buyAmount = BigNumber.from(response.outputAmount)
-    sellAmount = BigNumber.from(response.inputAmount)
+    if (sellAmount.gt(maxSellAmount)) {
+      console.warn(
+        `sellAmount ${sellAmount.toString()} is larger than maxSellAmount (${maxSellAmount.toString()}) - corresponding buy amount: (${buyAmount.toString()})`,
+      )
+      return null
+    }
     requestNum++
   }
 
