@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { AddressZero, EthAddress } from 'constants/addresses'
 import { noopSwapData } from 'constants/swapdata'
-import { ETH, WETH } from 'constants/tokens'
+import { ETH } from 'constants/tokens'
 import type { QuoteToken } from 'quote/interfaces'
 import { Exchange, type SwapData } from 'utils'
+
+const WETH = getTokenByChainAndSymbol(1, 'WETH')
 
 export function getComponentsSwapData(components: string[]): SwapData[] {
   return components.map(() => noopSwapData)

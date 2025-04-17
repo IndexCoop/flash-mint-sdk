@@ -13,10 +13,12 @@ describe('buildQuoteResponse()', () => {
     const usdc = getTokenByChainAndSymbol(ChainId.Base, 'USDC')
     const indexToken = getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x')
     const request: FlashMintQuoteRequest = {
+      chainId: ChainId.Base,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei(1).toString(),
+      inputTokenAmount: wei(1.5).toString(),
       slippage: 0.1,
     }
     const quoteAmount = wei(100, 6)

@@ -1,17 +1,17 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { isAddressEqual } from '@indexcoop/tokenlists'
+import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 
 import { Contracts } from 'constants/contracts'
-import { WETH } from 'constants/tokens'
 import { getSellAmount } from 'quote/flashmint/leveraged-zeroex/utils'
 import { getRpcProvider } from 'utils/rpc-provider'
 
+import type { SellAmountError } from 'quote/flashmint/leveraged-zeroex/utils'
 import type { SwapQuoteProviderV2, ZeroExV2SwapQuoteProvider } from 'quote/swap'
 
 export class MorphoQuoteProvider {
   readonly taker = Contracts[1].FlashMintHyEthV3
-  readonly weth = WETH.address!
+  readonly weth = getTokenByChainAndSymbol(1, 'WETH').address
   constructor(
     private readonly rpcUrl: string,
     private readonly swapQuoteProvider: SwapQuoteProviderV2,
@@ -56,26 +56,38 @@ export class MorphoQuoteProvider {
     const maxBuyAmount = ethAmount.mul(1005).div(1000)
 
     const maxSellAmount = BigNumber.from(inputAmount.toString())
+    // TODO: Review if we can select better start sell amount
+    const startSellAmount = maxSellAmount.mul(90).div(100)
 
-    const sellAmountPromise = getSellAmount(
-      1,
-      inputToken,
-      this.weth,
-      targetBuyAmount,
-      minBuyAmount,
-      maxBuyAmount,
-      maxSellAmount,
-      this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
-    )
+    try {
+      const sellAmountPromise = getSellAmount(
+        1,
+        inputToken,
+        this.weth,
+        targetBuyAmount,
+        minBuyAmount,
+        maxBuyAmount,
+        startSellAmount,
+        maxSellAmount,
+        this.swapQuoteProvider as ZeroExV2SwapQuoteProvider,
+      )
 
-    const swapQuote = await swapQuotePromise
-    if (swapQuote?.inputAmount != null) {
-      return BigInt(swapQuote.inputAmount)
+      const swapQuote = await swapQuotePromise
+      if (swapQuote?.inputAmount != null) {
+        return BigInt(swapQuote.inputAmount)
+      }
+
+      const sellAmount = await sellAmountPromise
+      if (sellAmount === null) return null
+      return sellAmount.toBigInt()
+    } catch (error) {
+      console.warn(
+        'Can not determine sell amount for fallback quote:',
+        (error as SellAmountError).code,
+        (error as SellAmountError).message,
+      )
+      return null
     }
-
-    const sellAmount = await sellAmountPromise
-    if (sellAmount === null) return null
-    return sellAmount.toBigInt()
   }
 
   async getRedeemQuote(

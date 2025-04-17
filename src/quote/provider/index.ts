@@ -19,7 +19,15 @@ import type {
 } from 'flashmint'
 import { LeveragedZeroExQuoteProvider } from 'quote/flashmint/leveraged-zeroex'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
+import type { Result } from '../interfaces'
 import type { SwapQuoteProviderV2 } from '../swap'
+
+export enum FlashMintQuoteProviderErrorCode {
+  CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
+  ENCODING_ERROR = 'ENCODING_ERROR',
+  INDEX_TOKEN_NOT_SUPPORTED = 'INDEX_TOKEN_NOT_SUPPORTED',
+  QUOTE_FAILED = 'QUOTE_FAILED',
+}
 
 export enum FlashMintContractType {
   hyeth = 0,
@@ -63,7 +71,7 @@ export class FlashMintQuoteProvider
 
   async getQuote(
     request: FlashMintQuoteRequest,
-  ): Promise<FlashMintQuote | null> {
+  ): Promise<Result<FlashMintQuote>> {
     const { rpcUrl, swapQuoteProviderV2, swapQuoteOutputProviderV2 } = this
     const {
       chainId,
@@ -79,21 +87,35 @@ export class FlashMintQuoteProvider
     const inputOutputToken = isMinting ? inputToken : outputToken
 
     const contractType = getContractType(indexToken.symbol, chainId)
+
     if (contractType === null) {
-      throw new Error('Index token not supported')
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.INDEX_TOKEN_NOT_SUPPORTED,
+          message: `Unsupported index token: ${indexToken.symbol}`,
+        },
+      }
     }
 
     switch (contractType) {
       case FlashMintContractType.hyeth: {
         if (!swapQuoteOutputProviderV2 || inputTokenAmount === undefined) {
-          throw new Error('400')
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.CONFIGURATION_ERROR,
+              message: 'Swap quote output provider is not configured correctly',
+            },
+          }
         }
+
         const hyethQuoteProvider = new FlashMintHyEthQuoteProvider(
           rpcUrl,
           swapQuoteProviderV2,
           swapQuoteOutputProviderV2,
         )
-        const hyethQuote = await hyethQuoteProvider.getQuote({
+        const hyethQuoteResult = await hyethQuoteProvider.getQuote({
           isMinting,
           inputToken,
           outputToken,
@@ -101,7 +123,19 @@ export class FlashMintQuoteProvider
           inputAmount: BigInt(inputTokenAmount),
           slippage,
         })
-        if (!hyethQuote) return null
+
+        if (!hyethQuoteResult.success)
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.QUOTE_FAILED,
+              message: 'Error fetching hyETH quote.',
+              originalError: hyethQuoteResult.error,
+            },
+          }
+
+        const hyethQuote = hyethQuoteResult.data
+
         const inputOutputTokenAmount = BigNumber.from(
           hyethQuote.inputOutputTokenAmount.toString(),
         )
@@ -124,39 +158,76 @@ export class FlashMintQuoteProvider
             hyethQuote.swapDataEthToInputOutputToken,
         }
         const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          inputOutputTokenAmount,
-          tx,
-        )
+
+        if (!tx) {
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.ENCODING_ERROR,
+              message: 'Error encoding hyETH transaction.',
+            },
+          }
+        }
+
+        return {
+          success: true,
+          data: buildQuoteResponse(
+            request,
+            chainId,
+            contractType,
+            inputOutputTokenAmount,
+            tx,
+          ),
+        }
       }
       case FlashMintContractType.leveragedZeroEx: {
         if (!swapQuoteOutputProviderV2 || inputTokenAmount === undefined) {
-          throw new Error('400')
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.CONFIGURATION_ERROR,
+              message: 'Swap quote output provider is not configured correctly',
+            },
+          }
         }
+
         const leveragedZeroExQuoteProvider = new LeveragedZeroExQuoteProvider(
           rpcUrl,
           swapQuoteProviderV2,
           swapQuoteOutputProviderV2,
         )
+
         const isIcEth = isAddressEqual(
           indexToken.address,
           getTokenByChainAndSymbol(1, 'icETH').address,
         )
+
         const flashmintContract = isIcEth
           ? Contracts[1].FlashMintLeveragedZeroEx_AaveV2
           : Contracts[chainId].FlashMintLeveragedZeroEx
-        const leveragedQuote = await leveragedZeroExQuoteProvider.getQuote({
-          ...request,
-          chainId,
-          inputAmount: inputTokenAmount,
-          outputAmount: request.indexTokenAmount,
-          taker: flashmintContract,
-        })
-        if (!leveragedQuote) return null
+
+        const leveragedQuoteResult =
+          await leveragedZeroExQuoteProvider.getQuote({
+            ...request,
+            chainId,
+            inputAmount: inputTokenAmount,
+            outputAmount: request.indexTokenAmount,
+            taker: flashmintContract,
+          })
+
+        if (!leveragedQuoteResult.success) {
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.QUOTE_FAILED,
+              message: 'Error fetching leveragedZeroEx quote.',
+              originalError: leveragedQuoteResult.error,
+            },
+          }
+        }
+
+        const leveragedQuote = leveragedQuoteResult.data
+
         const builder = new LeveragedZeroExBuilder(rpcUrl)
         const txRequest: FlashMintLeveragedZeroExBuilderBuildRequest = {
           chainId,
@@ -172,29 +243,55 @@ export class FlashMintQuoteProvider
           isAave: leveragedQuote.isAave,
         }
         const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          BigNumber.from(
-            isMinting
-              ? leveragedQuote.inputAmount
-              : leveragedQuote.outputAmount,
+        if (!tx) {
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.ENCODING_ERROR,
+              message: 'Error encoding leveragedZeroEx transaction.',
+            },
+          }
+        }
+
+        return {
+          success: true,
+          data: buildQuoteResponse(
+            request,
+            chainId,
+            contractType,
+            BigNumber.from(
+              isMinting
+                ? leveragedQuote.inputAmount
+                : leveragedQuote.outputAmount,
+            ),
+            tx,
           ),
-          tx,
-        )
+        }
       }
       case FlashMintContractType.zeroEx: {
         const zeroExQuoteProvider = new ZeroExQuoteProvider(
           rpcUrl,
           swapQuoteProviderV2,
         )
-        const zeroExQuote = await zeroExQuoteProvider.getQuote({
+
+        const zeroExQuoteResult = await zeroExQuoteProvider.getQuote({
           ...request,
           indexTokenAmount,
         })
-        if (!zeroExQuote) return null
+
+        if (!zeroExQuoteResult.success) {
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.QUOTE_FAILED,
+              message: 'Error fetching zeroex quote.',
+              originalError: zeroExQuoteResult.error,
+            },
+          }
+        }
+
+        const zeroExQuote = zeroExQuoteResult.data
+
         const builder = new ZeroExTransactionBuilder(rpcUrl)
         const txRequest: FlashMintZeroExBuildRequest = {
           isMinting,
@@ -207,17 +304,28 @@ export class FlashMintQuoteProvider
           componentQuotes: zeroExQuote.componentQuotes,
         }
         const tx = await builder.build(txRequest)
-        if (!tx) return null
-        return buildQuoteResponse(
-          request,
-          chainId,
-          contractType,
-          zeroExQuote.inputOutputTokenAmount,
-          tx,
-        )
+
+        if (!tx) {
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.ENCODING_ERROR,
+              message: 'Error encoding zeroex transaction.',
+            },
+          }
+        }
+
+        return {
+          success: true,
+          data: buildQuoteResponse(
+            request,
+            chainId,
+            contractType,
+            zeroExQuote.inputOutputTokenAmount,
+            tx,
+          ),
+        }
       }
-      default:
-        return null
     }
   }
 }

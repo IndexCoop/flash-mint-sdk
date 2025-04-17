@@ -1,5 +1,6 @@
 import { Exchange } from 'utils'
 
+// Used for hyETH only (old swap data format)
 export const noopSwapData: {
   path: string[]
   fees: number[]

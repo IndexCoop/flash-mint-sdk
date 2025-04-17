@@ -7,11 +7,6 @@ import {
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
 } from '../constants/contracts'
-import {
-  IndexCoopBitcoin2xIndex,
-  IndexCoopEthereum2xIndex,
-  InterestCompoundingETHIndex,
-} from '../constants/tokens'
 
 export interface IssuanceModule {
   address: string
@@ -42,13 +37,13 @@ export function getIssuanceModule(
   // Mainnet
   switch (tokenSymbol) {
     case getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH').symbol:
-    case IndexCoopBitcoin2xIndex.symbol:
-    case IndexCoopEthereum2xIndex.symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC2X').symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH2X').symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
         isDebtIssuance: true,
       }
-    case InterestCompoundingETHIndex.symbol:
+    case 'icETH':
       return { address: DebtIssuanceModuleV2Address, isDebtIssuance: true }
     default:
       return { address: BasicIssuanceModuleAddress, isDebtIssuance: false }

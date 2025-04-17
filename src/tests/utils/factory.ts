@@ -1,6 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { FlashMintQuoteProvider } from 'quote'
-import { approveErc20, balanceOf } from './'
+import { approveErc20, balanceOf, getAlchemyProviderUrl } from './'
 
 import type { BigNumber } from '@ethersproject/bignumber'
 import type { Wallet } from '@ethersproject/wallet'
@@ -111,9 +111,10 @@ export class TestFactory {
   }
 
   async fetchQuote(config: FlashMintQuoteRequest): Promise<FlashMintQuote> {
-    const quote = await this.quoteProvider.getQuote(config)
-    expect(quote).toBeDefined()
-    if (!quote) fail()
+    const quoteResult = await this.quoteProvider.getQuote(config)
+    expect(quoteResult.success).toBe(true)
+    if (!quoteResult.success) fail()
+    const quote = quoteResult.data
     expect(quote.isMinting).toEqual(config.isMinting)
     expect(quote.indexTokenAmount.toString()).toEqual(config.indexTokenAmount)
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
@@ -127,5 +128,16 @@ export class TestFactory {
 
   getSigner(): Wallet {
     return this.txFactory.signer
+  }
+
+  async resetFork(chainId: number) {
+    const alchemyUrl = getAlchemyProviderUrl(chainId)
+    const localHostProvider = this.getProvider()
+    // Reset fork to latest block to ensure accurate quote
+    await localHostProvider.send('hardhat_reset', [
+      {
+        forking: { jsonRpcUrl: alchemyUrl },
+      },
+    ])
   }
 }

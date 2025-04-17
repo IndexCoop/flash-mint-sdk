@@ -1,6 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
-import { WETH } from 'constants/tokens'
 import {
   getFlashMintZeroExContractForToken,
   getIssuanceModule,
@@ -11,7 +10,7 @@ import { ComponentsQuoteProvider } from './componentsQuoteProvider'
 
 import type { BigNumber } from '@ethersproject/bignumber'
 import type { JsonRpcProvider } from '@ethersproject/providers'
-import type { QuoteProvider, QuoteToken } from '../../interfaces'
+import type { QuoteProvider, QuoteToken, Result } from '../../interfaces'
 import type { SwapQuoteProviderV2 } from '../../swap'
 
 export interface FlashMintZeroExQuoteRequest {
@@ -38,15 +37,20 @@ export class ZeroExQuoteProvider
 
   async getQuote(
     request: FlashMintZeroExQuoteRequest,
-  ): Promise<FlashMintZeroExQuote | null> {
+  ): Promise<Result<FlashMintZeroExQuote>> {
     const { rpcUrl, swapQuoteProvider } = this
     const provider = getRpcProvider(rpcUrl)
     const { inputToken, indexTokenAmount, isMinting, outputToken, slippage } =
       request
 
     if (isMinting) {
-      console.warn('Minting not supported.')
-      return null
+      return {
+        success: false,
+        error: {
+          code: 'MintingNotSupported',
+          message: 'Minting is not supported for this provider.',
+        },
+      }
     }
 
     const indexToken = isMinting ? outputToken : inputToken
@@ -54,10 +58,15 @@ export class ZeroExQuoteProvider
     const network = await provider.getNetwork()
     const chainId = network.chainId
 
-    const wethAddress = getTokenByChainAndSymbol(chainId, WETH.symbol)?.address
+    const wethAddress = getTokenByChainAndSymbol(chainId, 'WETH')?.address
     if (wethAddress === undefined) {
-      console.error('Error - WETH address not defined')
-      return null
+      return {
+        success: false,
+        error: {
+          code: 'WETHAddressNotDefined',
+          message: 'WETH address not defined for this chain.',
+        },
+      }
     }
 
     const { components, positions } = await getRequiredComponents(
@@ -74,6 +83,7 @@ export class ZeroExQuoteProvider
       wethAddress,
       swapQuoteProvider,
     )
+
     const quoteResult = await quoteProvider.getComponentQuotes(
       components,
       positions,
@@ -81,7 +91,17 @@ export class ZeroExQuoteProvider
       inputToken,
       outputToken,
     )
-    if (!quoteResult) return null
+
+    if (!quoteResult) {
+      return {
+        success: false,
+        error: {
+          code: 'QuoteResultNull',
+          message: 'Quote result is null.',
+        },
+      }
+    }
+
     const {
       componentQuotes,
       inputOutputTokenAmount: estimatedInputOutputAmount,
@@ -95,10 +115,14 @@ export class ZeroExQuoteProvider
       slippage,
       isMinting,
     )
+
     return {
-      componentQuotes,
-      indexTokenAmount,
-      inputOutputTokenAmount,
+      success: true,
+      data: {
+        componentQuotes,
+        indexTokenAmount,
+        inputOutputTokenAmount,
+      },
     }
   }
 }
