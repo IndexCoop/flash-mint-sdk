@@ -1,5 +1,6 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ETH } from 'constants/tokens'
+import { getAlchemyProviderUrl } from 'tests/utils'
 import { wei } from 'utils'
 import { StaticSwapQuoteProvider } from './'
 
@@ -13,17 +14,19 @@ describe('StaticSwapQuoteProvider', () => {
       isMinting: true,
       inputToken: ETH,
       outputToken: ETH2X,
-      // TODO:
       inputAmount: wei(1).toBigInt(),
       outputAmount: wei(1).toBigInt(),
       slippage: 0.5,
       taker,
     }
-    // fIXME: rpc url
-    const provider = new StaticSwapQuoteProvider(
-      process.env.MAINNET_ALCHEMY_API!,
-    )
+    const rpcUrl = getAlchemyProviderUrl(request.chainId)
+    const provider = new StaticSwapQuoteProvider(rpcUrl)
     const quote = await provider.getSwapQuote(request)
     console.log(quote)
+    if (!quote) fail()
+    expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
+    expect(quote.tx.to).toBe('0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0')
+    expect(quote.tx.data).toBeDefined()
+    expect(quote.tx.value === BigInt(quote.inputAmount)).toBe(true)
   })
 })

@@ -81,7 +81,7 @@ export class StaticSwapQuoteProvider {
       request,
       swapData.swapDataDebtForCollateral,
       swapData.swapDataInputToken,
-      quoteAmount,
+      inputOutputAmount,
     )
 
     return {
