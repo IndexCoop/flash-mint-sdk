@@ -76,7 +76,7 @@ export class StaticSwapQuoteProvider {
     const result = await publicClient.simulateContract({
       address: contractAddress,
       abi,
-      functionName: 'getIssueExactSet',
+      functionName: isMinting ? 'getIssueExactSet' : 'getRedeemExactSet',
       args: [
         indexToken.address as Address,
         indexTokenAmount,
