@@ -1,5 +1,7 @@
+import { BigNumber } from '@ethersproject/bignumber'
 import { getQuote } from 'quote/swap/adapters/static/quote'
 import { getSwapData } from 'quote/swap/adapters/static/swap-data'
+import { slippageAdjustedTokenAmount } from 'utils'
 
 import type { QuoteToken } from 'quote/interfaces'
 import type { Address } from 'viem'
@@ -59,10 +61,12 @@ export class StaticSwapQuoteProvider {
       this.rpcUrl,
     )
 
-    console.log('data', quoteAmount.toString())
-
-    // TODO: apply slippage
-    const inputOutputAmount = quoteAmount
+    const inputOutputAmount = slippageAdjustedTokenAmount(
+      BigNumber.from(quoteAmount.toString()),
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      slippage,
+      isMinting,
+    ).toBigInt()
 
     const inputAmount = (
       isMinting ? inputOutputAmount : indexTokenAmount
