@@ -18,6 +18,12 @@ const testCases: TestCase[] = [
   //   inputToken: 'ETH',
   // },
   {
+    indexToken: 'ETH3X',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
     indexToken: 'BTC2X',
     setAmount: '1',
     inputAmount: '1',
@@ -29,6 +35,12 @@ const testCases: TestCase[] = [
   //   inputAmount: '1',
   //   inputToken: 'ETH',
   // },
+  {
+    indexToken: 'BTC3X',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
   {
     indexToken: 'ETH2X',
     setAmount: '1',
@@ -42,22 +54,28 @@ const testCases: TestCase[] = [
   //   inputToken: 'USDC',
   // },
   {
+    indexToken: 'ETH3X',
+    setAmount: '10',
+    inputAmount: '50000',
+    inputToken: 'USDC',
+  },
+  {
     indexToken: 'BTC2X',
+    setAmount: '10',
+    inputAmount: '50000',
+    inputToken: 'USDC',
+  },
+  {
+    indexToken: 'BTC3X',
     setAmount: '1',
     inputAmount: '5000',
     inputToken: 'USDC',
   },
-  // {
-  //   indexToken: 'BTC2X',
-  //   setAmount: '10',
-  //   inputAmount: '50000',
-  //   inputToken: 'USDC',
-  // },
 ]
 
-describe('Mainnet', () => {
-  const chainId = ChainId.Mainnet
-  const whale = '0x768145BcC76a744E7F267b515d6E2488BdA48f0d'
+describe('Arbitrum', () => {
+  const chainId = ChainId.Arbitrum
+  const whale = '0x0F896345B538Ac140Ac84f3367a65a34eFD8fcBf'
   let factory: TestFactory
 
   for (const testCase of testCases) {

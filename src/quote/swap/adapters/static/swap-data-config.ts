@@ -431,6 +431,54 @@ export const SwapDataConfig: {
           pool: zeroAddress,
         },
       },
+    }, // Add this to the 42161 chain section:
+    'BTC3X': {
+      '0xaf88d065e77c8cC2239327C5EDb3A432268e5831': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+            '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+          ],
+          fees: [100, 500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+            '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+          ],
+          fees: [100, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+            '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+            '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+          ],
+          fees: [100, 500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+            '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+            '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+          ],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
     },
     'ETH3X': {
       '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1': {
