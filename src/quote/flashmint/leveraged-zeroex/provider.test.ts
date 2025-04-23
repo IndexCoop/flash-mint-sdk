@@ -155,7 +155,7 @@ function shouldBeNoOpSwapData(swapData: SwapDataV2) {
   expect(swapData.callData).toBe(HashZero)
 }
 
-describe('LeveragedQuoteProvider() - Base', () => {
+describe('LeveragedZeroExQuoteProvider() - Base', () => {
   const usdc = getTokenByChainAndSymbol(ChainId.Base, 'USDC')
   const uSOL2x = getTokenByChainAndSymbol(ChainId.Base, 'uSOL2x')
 
