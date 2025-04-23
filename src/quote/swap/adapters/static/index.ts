@@ -1,6 +1,5 @@
-import { ABI, getContract } from 'quote/swap/adapters/static/contracts'
+import { getQuote } from 'quote/swap/adapters/static/quote'
 import { getSwapData } from 'quote/swap/adapters/static/swap-data'
-import { createClientWithUrl } from 'utils/clients'
 
 import type { QuoteToken } from 'quote/interfaces'
 import type { Address } from 'viem'
@@ -48,47 +47,22 @@ export class StaticSwapQuoteProvider {
 
     const indexToken = isMinting ? outputToken : inputToken
 
-    const publicClient = createClientWithUrl(chainId, this.rpcUrl)!
-
-    const contractAddress = getContract(chainId, indexToken.address as Address)
-    const abi = ABI[contractAddress]
-
-    // TODO: get swap data debt for collateral, swap data input/output token
     const swapData = getSwapData(request)
 
-    // const swapDataDebtForCollateral: SwapData = {
-    //   path: [
-    //     '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    //     '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-    //   ],
-    //   fees: [500],
-    //   exchange: 3,
-    //   pool: AddressZero,
-    // }
+    const quoteAmount = await getQuote(
+      isMinting,
+      indexToken.address as Address,
+      indexTokenAmount,
+      swapData.swapDataDebtForCollateral,
+      swapData.swapDataInputToken,
+      chainId,
+      this.rpcUrl,
+    )
 
-    // const swapDataInputToken: SwapData = {
-    //   path: ['0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'],
-    //   fees: [],
-    //   exchange: 0,
-    //   pool: AddressZero,
-    // }
-
-    const result = await publicClient.simulateContract({
-      address: contractAddress,
-      abi,
-      functionName: isMinting ? 'getIssueExactSet' : 'getRedeemExactSet',
-      args: [
-        indexToken.address as Address,
-        indexTokenAmount,
-        swapData.swapDataDebtForCollateral,
-        swapData.swapDataInputToken,
-      ],
-    })
-
-    console.log('data', result.result)
+    console.log('data', quoteAmount.toString())
 
     // TODO: apply slippage
-    const inputOutputAmount = result.result
+    const inputOutputAmount = quoteAmount
 
     const inputAmount = (
       isMinting ? inputOutputAmount : indexTokenAmount
