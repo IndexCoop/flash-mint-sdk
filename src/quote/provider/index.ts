@@ -8,10 +8,12 @@ import {
 } from 'flashmint'
 
 import { Contracts } from 'constants/contracts'
-import { LeveragedZeroExQuoteProvider } from 'quote/flashmint/leveraged-zeroex'
-import { StaticQuoteProvider } from 'quote/swap/adapters/static'
-import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
-import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
+import {
+  FlashMintHyEthQuoteProvider,
+  LeveragedZeroExQuoteProvider,
+  ZeroExQuoteProvider,
+} from 'quote/flashmint/'
+import { StaticQuoteProvider } from 'quote/swap/adapters/'
 import { buildQuoteResponse, getContractType } from './utils'
 
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
