@@ -35,6 +35,7 @@
     "test:iceth": "npm test src/tests/iceth.test.ts",
     "test:static-mainnet": "npm test src/tests/static/mainnet.test.ts",
     "test:static-arbitrum": "npm test src/tests/static/arbitrum.test.ts",
+    "test:static-base": "npm test src/tests/static/base.test.ts",
     "test:watch": "jest --watch"
   },
   "keywords": [

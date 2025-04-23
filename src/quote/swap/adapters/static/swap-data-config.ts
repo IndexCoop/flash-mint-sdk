@@ -139,6 +139,90 @@ export const SwapDataConfig: {
     },
   },
   8453: {
+    'ETH2X': {
+      '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+          tickSpacing: [100],
+        },
+      },
+      '0x4200000000000000000000000000000000000006': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'ETH3X': {
+      '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+          tickSpacing: [100],
+        },
+      },
+      '0x4200000000000000000000000000000000000006': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
     'BTC2X': {
       '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': {
         contract: 'FlashMintLeveragedMorphoAaveLM',
@@ -184,6 +268,26 @@ export const SwapDataConfig: {
           exchange: 7,
           pool: zeroAddress,
           tickSpacing: [100],
+        },
+      },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoAaveLM',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+          ],
+          fees: [],
+          exchange: 7,
+          pool: zeroAddress,
+          tickSpacing: [100],
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+          tickSpacing: [],
         },
       },
     },
@@ -234,8 +338,28 @@ export const SwapDataConfig: {
           tickSpacing: [100],
         },
       },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoAaveLM',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+          ],
+          fees: [],
+          exchange: 7,
+          pool: zeroAddress,
+          tickSpacing: [100],
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+          tickSpacing: [],
+        },
+      },
     },
-    'uSOL2X': {
+    'uSOL2x': {
       '0x4200000000000000000000000000000000000006': {
         contract: 'FlashMintLeveragedMorphoV2',
         swapDataDebtForCollateral: {

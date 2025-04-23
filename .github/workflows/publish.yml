@@ -90,10 +90,22 @@ jobs:
       - run: npm run build --if-present
       - run: npm run hardhat:arbitrum &
       - run: npm run test:static-arbitrum
+  e2e-static-base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm run hardhat:base &
+      - run: npm run test:static-base
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: [build, e2e-mainnet, e2e-static-mainnet, e2e-static-arbitrum]
+    needs: [build, e2e-mainnet, e2e-static-mainnet, e2e-static-arbitrum, e2e-static-base]
     steps:
       - uses: actions/checkout@v4
         with:

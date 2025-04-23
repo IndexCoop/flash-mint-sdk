@@ -20,12 +20,16 @@ export async function getQuote(
   console.log('contractAddress', contractAddress)
   const abi = ABI[contractAddress]
 
+  const contractHasFiveArgs =
+    contractAddress === '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42' || // FlashMintLeveragedMorphoV2
+    contractAddress === '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8' // FlashMintLeveragedMorphoAaveLM
+
   const result = await publicClient.simulateContract({
     address: contractAddress,
     abi,
     functionName: isMinting ? 'getIssueExactSet' : 'getRedeemExactSet',
     args:
-      chainId === 8453 && isMinting
+      chainId === 8453 && isMinting && contractHasFiveArgs
         ? [
             indexToken,
             indexTokenAmount,

@@ -29,6 +29,16 @@ export function getSwapData(request: StaticQuoteRequest) {
         fees: data.swapDataInputToken.fees.reverse(),
       },
     }
+
+    if (
+      'tickSpacing' in data.swapDataDebtForCollateral &&
+      'tickSpacing' in data.swapDataInputToken
+    ) {
+      data.swapDataInputToken.tickSpacing =
+        data.swapDataInputToken.tickSpacing.reverse()
+      data.swapDataInputToken.tickSpacing =
+        data.swapDataInputToken.tickSpacing.reverse()
+    }
   }
 
   return data
