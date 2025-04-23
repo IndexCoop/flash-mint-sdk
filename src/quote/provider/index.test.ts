@@ -121,7 +121,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.only('returns a quote for minting uSOL3x', async () => {
+  test('returns a quote for minting uSOL3x', async () => {
     const request: FlashMintQuoteRequest = {
       chainId: ChainId.Base,
       isMinting: true,
@@ -232,7 +232,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
-  test.only('returns a quote for redeeming uSOL3x', async () => {
+  test.skip('returns a quote for redeeming uSOL3x', async () => {
     const request: FlashMintQuoteRequest = {
       chainId: ChainId.Base,
       isMinting: false,
