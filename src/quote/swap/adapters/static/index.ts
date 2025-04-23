@@ -57,6 +57,7 @@ export class StaticQuoteProvider {
       isMinting,
       indexToken.address as Address,
       indexTokenAmount,
+      maxInputAmount,
       swapData.swapDataDebtForCollateral,
       swapData.swapDataInputToken,
       chainId,

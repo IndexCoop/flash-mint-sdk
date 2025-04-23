@@ -286,6 +286,61 @@ export const SwapDataConfig: {
         },
       },
     },
+    'uSOL3x': {
+      '0x4200000000000000000000000000000000000006': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          pool: zeroAddress,
+          poolIds: [],
+          tickSpacing: [100, 200],
+        },
+        swapDataInputToken: {
+          path: [
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          pool: zeroAddress,
+          poolIds: [],
+          tickSpacing: [200],
+        },
+      },
+      '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          pool: zeroAddress,
+          poolIds: [],
+          tickSpacing: [100, 200],
+        },
+        swapDataInputToken: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          pool: zeroAddress,
+          poolIds: [],
+          tickSpacing: [100, 200],
+        },
+      },
+    },
     'uSUI2X': {
       '0x4200000000000000000000000000000000000006': {
         contract: 'FlashMintLeveragedMorphoV2',
