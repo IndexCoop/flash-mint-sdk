@@ -2,11 +2,11 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ETH } from 'constants/tokens'
 import { getAlchemyProviderUrl } from 'tests/utils'
 import { wei } from 'utils'
-import { StaticSwapQuoteProvider } from './'
+import { StaticQuoteProvider } from './'
 
 const taker = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
 
-describe('StaticSwapQuoteProvider', () => {
+describe('StaticQuoteProvider', () => {
   test('getting a quote for minting', async () => {
     const ETH2X = getTokenByChainAndSymbol(1, 'ETH2X')
     const request = {
@@ -20,8 +20,8 @@ describe('StaticSwapQuoteProvider', () => {
       taker,
     }
     const rpcUrl = getAlchemyProviderUrl(request.chainId)
-    const provider = new StaticSwapQuoteProvider(rpcUrl)
-    const quote = await provider.getSwapQuote(request)
+    const provider = new StaticQuoteProvider(rpcUrl)
+    const quote = await provider.getQuote(request)
     console.log(quote)
     if (!quote) fail()
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)

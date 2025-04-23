@@ -7,7 +7,7 @@ import { slippageAdjustedTokenAmount } from 'utils'
 import type { QuoteToken } from 'quote/interfaces'
 import type { Address, TransactionRequest } from 'viem'
 
-export interface StaticProviderQuoteRequest {
+export interface StaticQuoteRequest {
   chainId: number
   isMinting: boolean
   inputToken: QuoteToken
@@ -18,7 +18,7 @@ export interface StaticProviderQuoteRequest {
   taker: string
 }
 
-export interface StaticSwapQuoteProviderQuote {
+export interface StaticQuoteProviderQuote {
   chainId: number
   isMinting: boolean
   inputToken: QuoteToken
@@ -29,12 +29,12 @@ export interface StaticSwapQuoteProviderQuote {
   tx: TransactionRequest
 }
 
-export class StaticSwapQuoteProvider {
+export class StaticQuoteProvider {
   constructor(readonly rpcUrl: string) {}
 
-  async getSwapQuote(
-    request: StaticProviderQuoteRequest,
-  ): Promise<StaticSwapQuoteProviderQuote | null> {
+  async getQuote(
+    request: StaticQuoteRequest,
+  ): Promise<StaticQuoteProviderQuote | null> {
     const {
       chainId,
       // TODO:
