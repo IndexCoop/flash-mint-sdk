@@ -1,5 +1,4 @@
-import FlashMintLeveragedAbi from 'constants/abis/FlashMintLeveraged.json'
-
+import { ABI, getContract } from 'quote/swap/adapters/static/contracts'
 import { getSwapData } from 'quote/swap/adapters/static/swap-data'
 import { createClientWithUrl } from 'utils/clients'
 
@@ -53,15 +52,8 @@ export class StaticSwapQuoteProvider {
 
     // TODO: get swap data debt for collateral, swap data input/output token
     const swapData = getSwapData(request)
-    // console.log(swapData)
-
-    // FIXME: use from swap data config
-    // Contracts[]
-    const contractAddress = '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
-
-    // TODO: add ABIs[contractAddress]
-
-    console.log(indexToken.address, indexTokenAmount.toString())
+    const contractAddress = getContract(chainId, indexToken.address as Address)
+    const abi = ABI[contractAddress]
 
     // const swapDataDebtForCollateral: SwapData = {
     //   path: [
@@ -81,8 +73,8 @@ export class StaticSwapQuoteProvider {
     // }
 
     const result = await publicClient.simulateContract({
-      address: contractAddress as Address,
-      abi: FlashMintLeveragedAbi,
+      address: contractAddress,
+      abi,
       functionName: 'getIssueExactSet',
       args: [
         indexToken.address as Address,
