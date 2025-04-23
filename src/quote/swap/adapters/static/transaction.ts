@@ -3,10 +3,10 @@ import { encodeFunctionData } from 'viem'
 
 import type { SwapData, SwapDataV5 } from 'utils'
 import type { Address, TransactionRequest } from 'viem'
-import type { StaticProviderQuoteRequest } from './'
+import type { StaticQuoteRequest } from './'
 
 export function buildTransaction(
-  request: StaticProviderQuoteRequest,
+  request: StaticQuoteRequest,
   swapDataDebtForCollateral: SwapData | SwapDataV5,
   swapDataInputToken: SwapData | SwapDataV5,
   quoteAmount: bigint,
