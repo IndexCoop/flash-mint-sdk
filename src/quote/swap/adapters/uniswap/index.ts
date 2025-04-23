@@ -72,7 +72,6 @@ export class UniswapSwapQuoteProvider implements SwapQuoteProviderV2 {
         // TODO:
         slippage,
         swapData: {
-          // FIXME:
           swapTarget: res.methodParameters.to,
           callData: res.methodParameters.calldata,
         },
