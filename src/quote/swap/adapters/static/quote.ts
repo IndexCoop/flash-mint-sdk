@@ -17,7 +17,6 @@ export async function getQuote(
   const publicClient = createClientWithUrl(chainId, rpcUrl)!
 
   const contractAddress = getContract(chainId, indexToken)
-  console.log('contractAddress', contractAddress)
   const abi = ABI[contractAddress]
 
   const contractHasFiveArgs =
