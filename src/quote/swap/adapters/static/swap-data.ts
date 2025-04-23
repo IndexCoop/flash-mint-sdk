@@ -13,8 +13,23 @@ export function getSwapData(request: StaticQuoteRequest) {
     inputOutputToken.address,
     chainId,
   )
-  const data = tokenData[inputTokenAddress]
-  // TODO: reverse paths + fees for redemptions
-  console.log(data)
+  let data = tokenData[inputTokenAddress]
+
+  if (!isMinting) {
+    data = {
+      ...data,
+      swapDataDebtForCollateral: {
+        ...data.swapDataDebtForCollateral,
+        path: data.swapDataDebtForCollateral.path.reverse(),
+        fees: data.swapDataDebtForCollateral.fees.reverse(),
+      },
+      swapDataInputToken: {
+        ...data.swapDataInputToken,
+        path: data.swapDataInputToken.path.reverse(),
+        fees: data.swapDataInputToken.fees.reverse(),
+      },
+    }
+  }
+
   return data
 }

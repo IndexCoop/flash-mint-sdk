@@ -83,7 +83,7 @@ class TxTestFactory {
 }
 
 export class TestFactory {
-  private quote: FlashMintQuote | null = null
+  quote: FlashMintQuote | null = null
   private quoteProvider: FlashMintQuoteProvider
   private txFactory: TxTestFactory
   constructor(
