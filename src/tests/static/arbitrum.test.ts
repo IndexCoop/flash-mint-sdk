@@ -73,6 +73,60 @@ const testCases: TestCase[] = [
   },
 ]
 
+/** 
+const testCases: TestCase[] = [
+  {
+    indexToken: 'BTC2xETH',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
+    indexToken: 'BTC2xETH',
+    setAmount: '1',
+    inputAmount: '100',
+    inputToken: 'USDC',
+  },
+  {
+    indexToken: 'ETH2xBTC',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
+    indexToken: 'ETH2xBTC',
+    setAmount: '1',
+    inputAmount: '100',
+    inputToken: 'USDC',
+  },
+  {
+    indexToken: 'iETH1X',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
+    indexToken: 'iETH1X',
+    setAmount: '1',
+    inputAmount: '100',
+    inputToken: 'USDC',
+  },
+  // FIXME: missing swap data
+  {
+    indexToken: 'iBTC1X',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
+    indexToken: 'iBTC1X',
+    setAmount: '1',
+    inputAmount: '100',
+    inputToken: 'USDC',
+  },
+]
+  */
+
 describe('Arbitrum', () => {
   const chainId = ChainId.Arbitrum
   const whale = '0x0F896345B538Ac140Ac84f3367a65a34eFD8fcBf'
