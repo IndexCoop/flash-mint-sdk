@@ -77,7 +77,7 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - run: npm run hardhat &
-      - run: npm run test test:static-mainnet
+      - run: npm run test:static-mainnet
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
