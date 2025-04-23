@@ -13,9 +13,9 @@ describe('StaticSwapQuoteProvider', () => {
       isMinting: true,
       inputToken: ETH,
       outputToken: ETH2X,
-      indexTokenAmount: wei(1).toBigInt(),
       // TODO:
       inputAmount: wei(1).toBigInt(),
+      outputAmount: wei(1).toBigInt(),
       slippage: 0.5,
       taker,
     }

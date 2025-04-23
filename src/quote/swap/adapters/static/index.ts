@@ -1,32 +1,32 @@
 import { BigNumber } from '@ethersproject/bignumber'
 import { getQuote } from 'quote/swap/adapters/static/quote'
 import { getSwapData } from 'quote/swap/adapters/static/swap-data'
+import { buildTransaction } from 'quote/swap/adapters/static/transaction'
 import { slippageAdjustedTokenAmount } from 'utils'
 
 import type { QuoteToken } from 'quote/interfaces'
-import type { Address } from 'viem'
+import type { Address, TransactionRequest } from 'viem'
 
 export interface StaticProviderQuoteRequest {
   chainId: number
   isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
-  // TODO: change to input/output amount
-  indexTokenAmount: bigint
   inputAmount: bigint
+  outputAmount: bigint
   slippage: number
   taker: string
 }
 
 export interface StaticSwapQuoteProviderQuote {
   chainId: number
+  isMinting: boolean
   inputToken: QuoteToken
   outputToken: QuoteToken
   inputAmount: string
   outputAmount: string
   slippage: number
-  // TODO:
-  //   swapData: SwapDataV2 | null
+  tx: TransactionRequest
 }
 
 export class StaticSwapQuoteProvider {
@@ -37,8 +37,7 @@ export class StaticSwapQuoteProvider {
   ): Promise<StaticSwapQuoteProviderQuote | null> {
     const {
       chainId,
-      indexTokenAmount,
-      // TODO: use when doing static contract call
+      // TODO:
       inputAmount: maxInputAmount,
       inputToken,
       isMinting,
@@ -48,6 +47,9 @@ export class StaticSwapQuoteProvider {
     } = request
 
     const indexToken = isMinting ? outputToken : inputToken
+    const indexTokenAmount = isMinting
+      ? request.outputAmount
+      : request.inputAmount
 
     const swapData = getSwapData(request)
 
@@ -75,14 +77,22 @@ export class StaticSwapQuoteProvider {
       isMinting ? indexTokenAmount : inputOutputAmount
     ).toString()
 
+    const tx = buildTransaction(
+      request,
+      swapData.swapDataDebtForCollateral,
+      swapData.swapDataInputToken,
+      quoteAmount,
+    )
+
     return {
       chainId,
+      isMinting,
       inputToken,
       outputToken,
       inputAmount,
       outputAmount,
       slippage,
-      // TODO: add call data encoded for issue/redeem function?
+      tx,
     }
   }
 }
