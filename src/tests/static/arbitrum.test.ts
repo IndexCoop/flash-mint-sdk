@@ -148,7 +148,7 @@ describe('Arbitrum', () => {
           : getTokenByChainAndSymbol(chainId, inputTokenSymbol)!
 
       beforeAll(async () => {
-        factory = getTestFactoryZeroExV2(0, chainId)
+        factory = getTestFactoryZeroExV2(2, chainId)
         await factory.resetFork(chainId)
       })
 

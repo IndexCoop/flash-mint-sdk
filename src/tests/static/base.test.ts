@@ -17,20 +17,19 @@ const testCases: TestCase[] = [
     inputAmount: '5000',
     inputToken: 'USDC',
   },
-  // FIXME:
-  // {
-  //   indexToken: 'BTC2X',
-  //   setAmount: '10',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  // {
-  //   indexToken: 'BTC3X',
-  //   setAmount: '1',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  // FIXME:
+  {
+    indexToken: 'BTC2X',
+    setAmount: '10',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
+    indexToken: 'BTC3X',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  // FIXME: redeeming fails
   // {
   //   indexToken: 'uSOL2x',
   //   setAmount: '1',
@@ -55,6 +54,42 @@ const testCases: TestCase[] = [
   //   inputAmount: '5000',
   //   inputToken: 'USDC',
   // },
+  // {
+  //   indexToken: 'uSUI2x',
+  //   setAmount: '1',
+  //   inputAmount: '1',
+  //   inputToken: 'ETH',
+  // },
+  // {
+  //   indexToken: 'uSUI2x',
+  //   setAmount: '1',
+  //   inputAmount: '5000',
+  //   inputToken: 'USDC',
+  // },
+  // {
+  //   indexToken: 'uSUI3x',
+  //   setAmount: '1',
+  //   inputAmount: '1',
+  //   inputToken: 'ETH',
+  // },
+  // {
+  //   indexToken: 'uSUI3x',
+  //   setAmount: '1',
+  //   inputAmount: '5000',
+  //   inputToken: 'USDC',
+  // },
+  {
+    indexToken: 'wstETH15x',
+    setAmount: '1',
+    inputAmount: '1',
+    inputToken: 'ETH',
+  },
+  {
+    indexToken: 'wstETH15x',
+    setAmount: '1',
+    inputAmount: '5000',
+    inputToken: 'USDC',
+  },
 ]
 
 describe('Mainnet', () => {
@@ -77,7 +112,7 @@ describe('Mainnet', () => {
           : getTokenByChainAndSymbol(chainId, inputTokenSymbol)!
 
       beforeAll(async () => {
-        factory = getTestFactoryZeroExV2(0, chainId)
+        factory = getTestFactoryZeroExV2(3, chainId)
         await factory.resetFork(chainId)
       })
 
