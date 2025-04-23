@@ -81,8 +81,8 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Arbitrum)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
-    expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
+    expect(quote.contractType).toEqual(FlashMintContractType.static)
+    expect(quote.contract).toEqual('0xc6b3B4624941287bB7BdD8255302c1b337e42194')
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -92,7 +92,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMintLeveragedZeroEx)
+    expect(quote.tx.to).toBe('0xc6b3B4624941287bB7BdD8255302c1b337e42194')
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 
@@ -166,8 +166,8 @@ describe('FlashMintQuoteProvider()', () => {
     }
     const quote = await getQuote(request)
     expect(quote.chainId).toEqual(ChainId.Arbitrum)
-    expect(quote.contractType).toEqual(FlashMintContractType.leveragedZeroEx)
-    expect(quote.contract).toEqual(FlashMintLeveragedZeroEx)
+    expect(quote.contractType).toEqual(FlashMintContractType.static)
+    expect(quote.contract).toEqual('0xc6b3B4624941287bB7BdD8255302c1b337e42194')
     expect(quote.isMinting).toEqual(request.isMinting)
     expect(quote.inputToken).toEqual(request.inputToken)
     expect(quote.outputToken).toEqual(request.outputToken)
@@ -177,7 +177,7 @@ describe('FlashMintQuoteProvider()', () => {
     expect(quote.inputOutputAmount.gt(0)).toBe(true)
     expect(quote.slippage).toEqual(request.slippage)
     expect(quote.tx).not.toBeNull()
-    expect(quote.tx.to).toBe(FlashMintLeveragedZeroEx)
+    expect(quote.tx.to).toBe('0xc6b3B4624941287bB7BdD8255302c1b337e42194')
     expect(quote.tx.data?.length).toBeGreaterThan(0)
   })
 

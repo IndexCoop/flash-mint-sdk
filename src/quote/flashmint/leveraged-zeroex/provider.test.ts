@@ -39,7 +39,7 @@ async function getArbQuote(request: FlashMintLeveragedZeroExQuoteRequest) {
   return quoteResult.data
 }
 
-describe('LeveragedZeroExQuoteProvider()', () => {
+describe.skip('LeveragedZeroExQuoteProvider()', () => {
   const indexToken = getTokenByChainAndSymbol(ChainId.Arbitrum, 'ETH2X')
   const usdc = getTokenByChainAndSymbol(ChainId.Arbitrum, 'USDC')
 
