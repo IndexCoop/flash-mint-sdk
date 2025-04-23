@@ -31,11 +31,11 @@ describe.skip('ZeroExQuoteProvider', () => {
     }
     const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    expect(quote.componentQuotes.length).toBeGreaterThan(0)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.inputOutputTokenAmount).toBeDefined()
-    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    if (!quote.success) fail()
+    expect(quote.data.componentQuotes.length).toBeGreaterThan(0)
+    expect(quote.data.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.data.inputOutputTokenAmount).toBeDefined()
+    expect(quote.data.inputOutputTokenAmount.gt(0)).toBe(true)
   })
 
   test('returns a quote for redeeming MVI', async () => {
@@ -50,10 +50,10 @@ describe.skip('ZeroExQuoteProvider', () => {
     }
     const quoteProvider = new ZeroExQuoteProvider(rpcUrl, swapQuoteProvider)
     const quote = await quoteProvider.getQuote(request)
-    if (!quote) fail()
-    expect(quote.componentQuotes.length).toBeGreaterThan(0)
-    expect(quote.indexTokenAmount).toEqual(request.indexTokenAmount)
-    expect(quote.inputOutputTokenAmount).toBeDefined()
-    expect(quote.inputOutputTokenAmount.gt(0)).toBe(true)
+    if (!quote.success) fail()
+    expect(quote.data.componentQuotes.length).toBeGreaterThan(0)
+    expect(quote.data.indexTokenAmount).toEqual(request.indexTokenAmount)
+    expect(quote.data.inputOutputTokenAmount).toBeDefined()
+    expect(quote.data.inputOutputTokenAmount.gt(0)).toBe(true)
   })
 })
