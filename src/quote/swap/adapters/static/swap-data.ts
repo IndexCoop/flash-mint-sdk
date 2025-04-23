@@ -1,9 +1,9 @@
 import { getTokenAddressOrWeth } from 'utils'
 import { SwapDataConfig } from './swap-data-config'
 
-import type { StaticProviderQuoteRequest } from './'
+import type { StaticQuoteRequest } from './'
 
-export function getSwapData(request: StaticProviderQuoteRequest) {
+export function getSwapData(request: StaticQuoteRequest) {
   const { chainId, inputToken, outputToken, isMinting } = request
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
@@ -14,5 +14,7 @@ export function getSwapData(request: StaticProviderQuoteRequest) {
     chainId,
   )
   const data = tokenData[inputTokenAddress]
+  // TODO: reverse paths + fees for redemptions
+  console.log(data)
   return data
 }
