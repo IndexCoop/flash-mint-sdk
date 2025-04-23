@@ -50,10 +50,11 @@ export class StaticSwapQuoteProvider {
 
     const publicClient = createClientWithUrl(chainId, this.rpcUrl)!
 
-    // TODO: get swap data debt for collateral, swap data input/output token
-    const swapData = getSwapData(request)
     const contractAddress = getContract(chainId, indexToken.address as Address)
     const abi = ABI[contractAddress]
+
+    // TODO: get swap data debt for collateral, swap data input/output token
+    const swapData = getSwapData(request)
 
     // const swapDataDebtForCollateral: SwapData = {
     //   path: [

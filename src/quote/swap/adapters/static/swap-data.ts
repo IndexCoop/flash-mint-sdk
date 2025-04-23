@@ -1,17 +1,18 @@
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { getTokenAddressOrWeth } from 'utils'
 import { SwapDataConfig } from './swap-data-config'
 
 import type { StaticProviderQuoteRequest } from './'
 
 export function getSwapData(request: StaticProviderQuoteRequest) {
   const { chainId, inputToken, outputToken, isMinting } = request
-  const allTokensForChain = SwapDataConfig[chainId]
-  // console.log(allTokensForChain, isMinting)
   const indexToken = isMinting ? outputToken : inputToken
+  const inputOutputToken = isMinting ? inputToken : outputToken
+  const allTokensForChain = SwapDataConfig[chainId]
   const tokenData = allTokensForChain[indexToken.symbol]
-  // FIXME: check tokens for ETH and use WETH instead if necessary
-  const WETH = getTokenByChainAndSymbol(chainId, 'WETH')
-  const data = tokenData[WETH!.address]
-  console.log(data)
+  const inputTokenAddress = getTokenAddressOrWeth(
+    inputOutputToken.address,
+    chainId,
+  )
+  const data = tokenData[inputTokenAddress]
   return data
 }
