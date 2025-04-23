@@ -59,13 +59,12 @@ const testCases: TestCase[] = [
     inputAmount: '50000',
     inputToken: 'USDC',
   },
-  // FIXME: works locally but not in CI?
-  //   {
-  //     indexToken: 'BTC2X',
-  //     setAmount: '10',
-  //     inputAmount: '50000',
-  //     inputToken: 'USDC',
-  //   },
+  {
+    indexToken: 'BTC2X',
+    setAmount: '10',
+    inputAmount: '50000',
+    inputToken: 'USDC',
+  },
   {
     indexToken: 'BTC3X',
     setAmount: '1',
@@ -112,7 +111,6 @@ const testCases: TestCase[] = [
     inputAmount: '100',
     inputToken: 'USDC',
   },
-  // FIXME: missing swap data
   {
     indexToken: 'iBTC1X',
     setAmount: '1',
