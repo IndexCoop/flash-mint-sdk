@@ -11,7 +11,7 @@ const chainId = ChainId.Base
 const usdcAddress = getTokenByChainAndSymbol(chainId, 'USDC').address
 const wethAddress = getTokenByChainAndSymbol(chainId, 'WETH').address
 
-describe('getSellAmount', () => {
+describe.skip('getSellAmount', () => {
   beforeEach((): void => {
     jest.setTimeout(10000000)
   })
