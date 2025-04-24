@@ -500,6 +500,7 @@ export const SwapDataConfig: {
           fees: [],
           exchange: 7,
           tickSpacing: [100, 200],
+          poolIds: [],
           pool: zeroAddress,
         },
         swapDataInputToken: {
