@@ -34,8 +34,8 @@ export function getSwapData(request: StaticQuoteRequest) {
       'tickSpacing' in data.swapDataDebtForCollateral &&
       'tickSpacing' in data.swapDataInputToken
     ) {
-      data.swapDataInputToken.tickSpacing =
-        data.swapDataInputToken.tickSpacing.reverse()
+      data.swapDataDebtForCollateral.tickSpacing =
+        data.swapDataDebtForCollateral.tickSpacing.reverse()
       data.swapDataInputToken.tickSpacing =
         data.swapDataInputToken.tickSpacing.reverse()
     }
