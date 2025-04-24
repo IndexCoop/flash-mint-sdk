@@ -1,5 +1,6 @@
 import { ABI, getContract } from 'quote/swap/adapters/static/contracts'
 import { createClientWithUrl } from 'utils/clients'
+import { base } from 'viem/chains'
 
 import type { SwapData, SwapDataV5 } from 'utils'
 import type { Address } from 'viem'
@@ -28,7 +29,7 @@ export async function getQuote(
     abi,
     functionName: isMinting ? 'getIssueExactSet' : 'getRedeemExactSet',
     args:
-      chainId === 8453 && isMinting && contractHasFiveArgs
+      chainId === base.id && isMinting && contractHasFiveArgs
         ? [
             indexToken,
             indexTokenAmount,
