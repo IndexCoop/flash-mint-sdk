@@ -37,7 +37,6 @@ export class StaticQuoteProvider {
   ): Promise<StaticQuoteProviderQuote | null> {
     const {
       chainId,
-      // TODO:
       inputAmount: maxInputAmount,
       inputToken,
       isMinting,

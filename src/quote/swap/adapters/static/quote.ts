@@ -32,8 +32,7 @@ export async function getQuote(
         ? [
             indexToken,
             indexTokenAmount,
-            // FIXME: have to use max input amount?
-            BigInt(0),
+            maxInputAmount,
             swapDataDebtForCollateral,
             swapDataInputToken,
           ]
