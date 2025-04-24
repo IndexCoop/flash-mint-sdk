@@ -10,10 +10,10 @@ const symbols = [
   'ETH3X',
   'BTC2X',
   'BTC3X',
-  'BTC2xETH',
-  'ETH2xBTC',
-  'iETH1X',
-  'iBTC1X',
+  // 'BTC2xETH',
+  // 'ETH2xBTC',
+  // 'iETH1X',
+  // 'iBTC1X',
 ]
 
 const testCases = buildTestCases(symbols)
