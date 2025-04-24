@@ -353,6 +353,18 @@ export class FlashMintQuoteProvider
           }
         }
 
+        let txRequest: TransactionRequest = {
+          to: staticQuoteResult.tx.to ?? undefined,
+          data: staticQuoteResult.tx.data,
+        }
+
+        if (staticQuoteResult.tx.value) {
+          txRequest = {
+            ...txRequest,
+            value: BigNumber.from(staticQuoteResult.tx.value.toString()),
+          }
+        }
+
         return {
           success: true,
           data: buildQuoteResponse(
@@ -364,11 +376,7 @@ export class FlashMintQuoteProvider
                 ? staticQuoteResult.inputAmount
                 : staticQuoteResult.outputAmount,
             ),
-            {
-              to: staticQuoteResult.tx.to ?? undefined,
-              value: staticQuoteResult.tx.value,
-              data: staticQuoteResult.tx.data,
-            },
+            txRequest,
           ),
         }
       }
