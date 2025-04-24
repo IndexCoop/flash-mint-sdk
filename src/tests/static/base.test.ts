@@ -1,99 +1,25 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { ETH } from 'constants/tokens'
+import { buildTestCases } from 'tests/static/utils'
 import { getTestFactoryZeroExV2, transferFromWhale, wei } from 'tests/utils'
-import type { TestCase, TestFactory } from 'tests/utils'
+import type { TestFactory } from 'tests/utils'
 
-const testCases: TestCase[] = [
-  {
-    indexToken: 'ETH2X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'ETH2X',
-    setAmount: '1',
-    inputAmount: '5000',
-    inputToken: 'USDC',
-  },
-  {
-    indexToken: 'BTC2X',
-    setAmount: '10',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'BTC3X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  // FIXME: redeeming fails
-  // {
-  //   indexToken: 'uSOL2x',
-  //   setAmount: '1',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  // {
-  //   indexToken: 'uSOL2x',
-  //   setAmount: '1',
-  //   inputAmount: '5000',
-  //   inputToken: 'USDC',
-  // },
-  // {
-  //   indexToken: 'uSOL3x',
-  //   setAmount: '1',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  // {
-  //   indexToken: 'uSOL3x',
-  //   setAmount: '1',
-  //   inputAmount: '5000',
-  //   inputToken: 'USDC',
-  // },
-  // {
-  //   indexToken: 'uSUI2x',
-  //   setAmount: '1',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  // {
-  //   indexToken: 'uSUI2x',
-  //   setAmount: '1',
-  //   inputAmount: '5000',
-  //   inputToken: 'USDC',
-  // },
-  // {
-  //   indexToken: 'uSUI3x',
-  //   setAmount: '1',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  // {
-  //   indexToken: 'uSUI3x',
-  //   setAmount: '1',
-  //   inputAmount: '5000',
-  //   inputToken: 'USDC',
-  // },
-  {
-    indexToken: 'wstETH15x',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  // FIXME: redeeming fails - once in a while
-  // {
-  //   indexToken: 'wstETH15x',
-  //   setAmount: '1',
-  //   inputAmount: '5000',
-  //   inputToken: 'USDC',
-  // },
+const symbols = [
+  'ETH2X',
+  'ETH3X',
+  'BTC2X',
+  'BTC3X',
+  'uSOL2x',
+  'uSOL3x',
+  'uSUI2x',
+  'uSUI3x',
+  'wstETH15x',
 ]
 
-describe('Mainnet', () => {
+const testCases = buildTestCases(symbols)
+
+describe('Base', () => {
   const chainId = ChainId.Base
   const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
   let factory: TestFactory

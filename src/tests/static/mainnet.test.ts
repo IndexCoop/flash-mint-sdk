@@ -1,59 +1,13 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { ETH } from 'constants/tokens'
+import { buildTestCases } from 'tests/static/utils'
 import { getTestFactoryZeroExV2, transferFromWhale, wei } from 'tests/utils'
-import type { TestCase, TestFactory } from 'tests/utils'
+import type { TestFactory } from 'tests/utils'
 
-const testCases: TestCase[] = [
-  {
-    indexToken: 'ETH2X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  // {
-  //   indexToken: 'ETH2X',
-  //   setAmount: '10',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  {
-    indexToken: 'BTC2X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  // {
-  //   indexToken: 'BTC2X',
-  //   setAmount: '10',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  {
-    indexToken: 'ETH2X',
-    setAmount: '1',
-    inputAmount: '5000',
-    inputToken: 'USDC',
-  },
-  // {
-  //   indexToken: 'ETH2X',
-  //   setAmount: '10',
-  //   inputAmount: '50000',
-  //   inputToken: 'USDC',
-  // },
-  {
-    indexToken: 'BTC2X',
-    setAmount: '1',
-    inputAmount: '5000',
-    inputToken: 'USDC',
-  },
-  // {
-  //   indexToken: 'BTC2X',
-  //   setAmount: '10',
-  //   inputAmount: '50000',
-  //   inputToken: 'USDC',
-  // },
-]
+const symbols = ['ETH2X', 'BTC2X']
+
+const testCases = buildTestCases(symbols)
 
 describe('Mainnet', () => {
   const chainId = ChainId.Mainnet

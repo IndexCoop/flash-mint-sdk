@@ -1,130 +1,22 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { ETH } from 'constants/tokens'
+import { buildTestCases } from 'tests/static/utils'
 import { getTestFactoryZeroExV2, transferFromWhale, wei } from 'tests/utils'
-import type { TestCase, TestFactory } from 'tests/utils'
+import type { TestFactory } from 'tests/utils'
 
-const testCases: TestCase[] = [
-  {
-    indexToken: 'ETH2X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  // {
-  //   indexToken: 'ETH2X',
-  //   setAmount: '10',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  {
-    indexToken: 'ETH3X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'BTC2X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  // {
-  //   indexToken: 'BTC2X',
-  //   setAmount: '10',
-  //   inputAmount: '1',
-  //   inputToken: 'ETH',
-  // },
-  {
-    indexToken: 'BTC3X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'ETH2X',
-    setAmount: '1',
-    inputAmount: '5000',
-    inputToken: 'USDC',
-  },
-  // {
-  //   indexToken: 'ETH2X',
-  //   setAmount: '10',
-  //   inputAmount: '50000',
-  //   inputToken: 'USDC',
-  // },
-  {
-    indexToken: 'ETH3X',
-    setAmount: '10',
-    inputAmount: '50000',
-    inputToken: 'USDC',
-  },
-  {
-    indexToken: 'BTC2X',
-    setAmount: '10',
-    inputAmount: '50000',
-    inputToken: 'USDC',
-  },
-  {
-    indexToken: 'BTC3X',
-    setAmount: '1',
-    inputAmount: '5000',
-    inputToken: 'USDC',
-  },
+const symbols = [
+  'ETH2X',
+  'ETH3X',
+  'BTC2X',
+  'BTC3X',
+  'BTC2xETH',
+  'ETH2xBTC',
+  'iETH1X',
+  'iBTC1X',
 ]
 
-/** 
-const testCases: TestCase[] = [
-  {
-    indexToken: 'BTC2xETH',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'BTC2xETH',
-    setAmount: '1',
-    inputAmount: '100',
-    inputToken: 'USDC',
-  },
-  {
-    indexToken: 'ETH2xBTC',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'ETH2xBTC',
-    setAmount: '1',
-    inputAmount: '100',
-    inputToken: 'USDC',
-  },
-  {
-    indexToken: 'iETH1X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'iETH1X',
-    setAmount: '1',
-    inputAmount: '100',
-    inputToken: 'USDC',
-  },
-  {
-    indexToken: 'iBTC1X',
-    setAmount: '1',
-    inputAmount: '1',
-    inputToken: 'ETH',
-  },
-  {
-    indexToken: 'iBTC1X',
-    setAmount: '1',
-    inputAmount: '100',
-    inputToken: 'USDC',
-  },
-]
-  */
+const testCases = buildTestCases(symbols)
 
 describe('Arbitrum', () => {
   const chainId = ChainId.Arbitrum
