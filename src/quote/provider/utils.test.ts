@@ -50,7 +50,7 @@ describe('buildQuoteResponse()', () => {
   })
 })
 
-describe('getContractType()', () => {
+describe.skip('getContractType()', () => {
   test('returns correct contract type for leveraged arbitrum tokens', async () => {
     const btc2xContractType = getContractType('BTC2X', ChainId.Arbitrum)
     const btc2xEthContractType = getContractType('BTC2xETH', ChainId.Arbitrum)

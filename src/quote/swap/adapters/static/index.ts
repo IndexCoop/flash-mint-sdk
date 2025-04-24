@@ -1,0 +1,98 @@
+import { BigNumber } from '@ethersproject/bignumber'
+import { getQuote } from 'quote/swap/adapters/static/quote'
+import { getSwapData } from 'quote/swap/adapters/static/swap-data'
+import { buildTransaction } from 'quote/swap/adapters/static/transaction'
+import { slippageAdjustedTokenAmount } from 'utils'
+
+import type { QuoteToken } from 'quote/interfaces'
+import type { Address, TransactionRequest } from 'viem'
+
+export interface StaticQuoteRequest {
+  chainId: number
+  isMinting: boolean
+  inputToken: QuoteToken
+  outputToken: QuoteToken
+  inputAmount: bigint
+  outputAmount: bigint
+  slippage: number
+  taker: string
+}
+
+export interface StaticQuoteProviderQuote {
+  chainId: number
+  isMinting: boolean
+  inputToken: QuoteToken
+  outputToken: QuoteToken
+  inputAmount: string
+  outputAmount: string
+  slippage: number
+  tx: TransactionRequest
+}
+
+export class StaticQuoteProvider {
+  constructor(readonly rpcUrl: string) {}
+
+  async getQuote(
+    request: StaticQuoteRequest,
+  ): Promise<StaticQuoteProviderQuote | null> {
+    const {
+      chainId,
+      inputAmount: maxInputAmount,
+      inputToken,
+      isMinting,
+      outputToken,
+      slippage,
+      taker,
+    } = request
+
+    const indexToken = isMinting ? outputToken : inputToken
+    const indexTokenAmount = isMinting
+      ? request.outputAmount
+      : request.inputAmount
+
+    const swapData = getSwapData(request)
+
+    const quoteAmount = await getQuote(
+      isMinting,
+      indexToken.address as Address,
+      indexTokenAmount,
+      maxInputAmount,
+      swapData.swapDataDebtForCollateral,
+      swapData.swapDataInputToken,
+      chainId,
+      this.rpcUrl,
+    )
+
+    const inputOutputAmount = slippageAdjustedTokenAmount(
+      BigNumber.from(quoteAmount.toString()),
+      isMinting ? inputToken.decimals : outputToken.decimals,
+      slippage,
+      isMinting,
+    ).toBigInt()
+
+    const inputAmount = (
+      isMinting ? inputOutputAmount : indexTokenAmount
+    ).toString()
+    const outputAmount = (
+      isMinting ? indexTokenAmount : inputOutputAmount
+    ).toString()
+
+    const tx = buildTransaction(
+      request,
+      swapData.swapDataDebtForCollateral,
+      swapData.swapDataInputToken,
+      inputOutputAmount,
+    )
+
+    return {
+      chainId,
+      isMinting,
+      inputToken,
+      outputToken,
+      inputAmount,
+      outputAmount,
+      slippage,
+      tx,
+    }
+  }
+}

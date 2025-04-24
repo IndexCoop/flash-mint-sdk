@@ -10,7 +10,7 @@ import {
   wrapETH,
 } from 'tests/utils'
 
-describe.skip('uSUI2x (Base)', () => {
+describe('uSUI2x (Base)', () => {
   const chainId = ChainId.Base
   const indexToken = getTokenByChainAndSymbol(chainId, 'uSUI2x')
   const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
@@ -20,7 +20,7 @@ describe.skip('uSUI2x (Base)', () => {
     factory = getTestFactoryZeroExV2(6, chainId)
   })
 
-  test.only('can mint with ETH', async () => {
+  test('can mint with ETH', async () => {
     await factory.fetchQuote({
       chainId,
       isMinting: true,
@@ -33,17 +33,17 @@ describe.skip('uSUI2x (Base)', () => {
     await factory.executeTx()
   })
 
-  test.skip('can mint with USDC', async () => {
+  test('can mint with USDC', async () => {
     const quote = await factory.fetchQuote({
       chainId,
       isMinting: true,
       inputToken: usdc,
       outputToken: indexToken,
       indexTokenAmount: wei('1').toString(),
-      inputTokenAmount: wei('500').toString(),
+      inputTokenAmount: wei('1000', 6).toString(),
       slippage: 0.5,
     })
-    const whale = '0x8dB0f952B8B6A462445C732C41Ec2937bCae9c35'
+    const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
     await transferFromWhale(
       whale,
       factory.getSigner().address,

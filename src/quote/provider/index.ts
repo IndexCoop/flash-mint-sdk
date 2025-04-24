@@ -8,8 +8,12 @@ import {
 } from 'flashmint'
 
 import { Contracts } from 'constants/contracts'
-import { FlashMintHyEthQuoteProvider } from '../flashmint/hyeth'
-import { ZeroExQuoteProvider } from '../flashmint/zeroEx'
+import {
+  FlashMintHyEthQuoteProvider,
+  LeveragedZeroExQuoteProvider,
+  ZeroExQuoteProvider,
+} from 'quote/flashmint/'
+import { StaticQuoteProvider } from 'quote/swap/adapters/'
 import { buildQuoteResponse, getContractType } from './utils'
 
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
@@ -17,7 +21,6 @@ import type {
   FlashMintLeveragedZeroExBuilderBuildRequest,
   FlashMintZeroExBuildRequest,
 } from 'flashmint'
-import { LeveragedZeroExQuoteProvider } from 'quote/flashmint/leveraged-zeroex'
 import type { QuoteProvider, QuoteToken } from '../interfaces'
 import type { Result } from '../interfaces'
 import type { SwapQuoteProviderV2 } from '../swap'
@@ -33,6 +36,7 @@ export enum FlashMintContractType {
   hyeth = 0,
   leveragedZeroEx = 1,
   zeroEx = 2,
+  static = 3,
 }
 
 export interface FlashMintQuoteRequest {
@@ -323,6 +327,48 @@ export class FlashMintQuoteProvider
             contractType,
             zeroExQuote.inputOutputTokenAmount,
             tx,
+          ),
+        }
+      }
+      case FlashMintContractType.static: {
+        const staticQuoteProvider = new StaticQuoteProvider(rpcUrl)
+        const staticQuoteResult = await staticQuoteProvider.getQuote({
+          chainId,
+          isMinting,
+          inputToken,
+          outputToken,
+          inputAmount: BigInt(inputTokenAmount ?? 0),
+          outputAmount: BigInt(request.indexTokenAmount),
+          slippage,
+          taker: '0x0',
+        })
+
+        if (!staticQuoteResult) {
+          return {
+            success: false,
+            error: {
+              code: FlashMintQuoteProviderErrorCode.QUOTE_FAILED,
+              message: 'Error fetching static quote.',
+            },
+          }
+        }
+
+        return {
+          success: true,
+          data: buildQuoteResponse(
+            request,
+            chainId,
+            contractType,
+            BigNumber.from(
+              isMinting
+                ? staticQuoteResult.inputAmount
+                : staticQuoteResult.outputAmount,
+            ),
+            {
+              to: staticQuoteResult.tx.to ?? undefined,
+              value: staticQuoteResult.tx.value,
+              data: staticQuoteResult.tx.data,
+            },
           ),
         }
       }

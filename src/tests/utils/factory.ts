@@ -41,7 +41,7 @@ class TxTestFactory {
     const gasEstimate = await this.provider.estimateGas(tx)
     tx.gasLimit = gasEstimate
     const res = await signer.sendTransaction(tx)
-    res.wait()
+    await res.wait()
     const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
     expect(balanceAfter.gte(balanceBefore.add(quote.indexTokenAmount))).toBe(
       true,
@@ -74,7 +74,7 @@ class TxTestFactory {
       tx.gasLimit = gasEstimate
     }
     const res = await signer.sendTransaction(tx)
-    res.wait()
+    await res.wait()
     const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
     expect(balanceAfter.lte(balanceBefore.sub(quote.indexTokenAmount))).toBe(
       true,
@@ -83,7 +83,7 @@ class TxTestFactory {
 }
 
 export class TestFactory {
-  private quote: FlashMintQuote | null = null
+  quote: FlashMintQuote | null = null
   private quoteProvider: FlashMintQuoteProvider
   private txFactory: TxTestFactory
   constructor(

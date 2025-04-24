@@ -55,14 +55,14 @@ export function getContractType(
   chainId: number,
 ): FlashMintContractType | null {
   if (chainId === ChainId.Arbitrum || chainId === ChainId.Base) {
-    return FlashMintContractType.leveragedZeroEx
+    return FlashMintContractType.static
   }
 
-  if (
-    token === eth2x.symbol ||
-    token === btc2x.symbol ||
-    token === iceth.symbol
-  ) {
+  if (token === btc2x.symbol || token === eth2x.symbol) {
+    return FlashMintContractType.static
+  }
+
+  if (token === iceth.symbol) {
     return FlashMintContractType.leveragedZeroEx
   }
 
