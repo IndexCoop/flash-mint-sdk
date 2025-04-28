@@ -20,7 +20,6 @@ describe.skip('MVI (mainnet)', () => {
       factory.getSigner().address,
       wei('2'),
       MVI.address,
-      factory.getProvider(),
     )
     await factory.fetchQuote({
       chainId: 1,

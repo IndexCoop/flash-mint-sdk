@@ -2,7 +2,6 @@ import { viem } from 'hardhat'
 export { wei } from 'utils/numbers'
 import type { Signer } from '@ethersproject/abstract-signer'
 import { BigNumber } from '@ethersproject/bignumber'
-import type { JsonRpcProvider } from '@ethersproject/providers'
 import { getContract, parseAbi } from 'viem'
 import type { Address } from 'viem'
 
@@ -68,27 +67,21 @@ export async function transferFromWhale(
   to: string,
   amount: BigNumber,
   erc20Address: string,
-  provider: JsonRpcProvider,
 ) {
-  // 1. Get your in-memory clients
-  const publicClient = await viem.getPublicClient() // read-only RPC :contentReference[oaicite:0]{index=0}
-  const testClient = await viem.getTestClient() // evm test methods :contentReference[oaicite:1]{index=1}
+  const publicClient = await viem.getPublicClient()
+  const testClient = await viem.getTestClient()
   const walletClient = await viem.getWalletClient({
-    // signer for any address
     address: whale,
-  }) // :contentReference[oaicite:2]{index=2}
+  })
 
-  // 2. Impersonate the whale
-  await testClient.impersonateAccount({ address: whale }) // :contentReference[oaicite:3]{index=3}
+  await testClient.impersonateAccount({ address: whale })
 
-  // 3. Bind an ERC20 contract instance to those clients
   const token = getContract({
     address: erc20Address as Address,
     abi: parseAbi(abi),
     client: { public: publicClient, wallet: walletClient },
-  }) // :contentReference[oaicite:4]{index=4}
+  })
 
-  // 4. Check the whale’s balance
   const balance = await token.read.balanceOf([whale])
   if (balance < amount) {
     throw new Error(
@@ -96,15 +89,12 @@ export async function transferFromWhale(
     )
   }
 
-  // 5. Send the transfer
   const txHash = await token.write.transfer([to, amount], {
     account: whale,
     gas: 100_000n,
   })
 
-  // 6. Wait for confirmation (so the token shows up in `to`)
   await publicClient.waitForTransactionReceipt({ hash: txHash })
 
-  // 7. Stop impersonating
   await testClient.stopImpersonatingAccount({ address: whale }) // :contentReference[oaicite:5]{index=5}
 }

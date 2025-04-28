@@ -49,7 +49,6 @@ describe('uSUI2x (Base)', () => {
       factory.getSigner().address,
       wei('10000', quote.inputToken.decimals),
       quote.inputToken.address,
-      factory.getProvider(),
     )
     await factory.executeTx()
   })
