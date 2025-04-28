@@ -24,7 +24,7 @@ describe('icETH (mainnet)', () => {
       iceth.address,
       factory.getProvider(),
     )
-    const balance = await balanceOf(factory.getSigner(), iceth.address)
+    const balance = await balanceOf(factory.getSigner().address, iceth.address)
     expect(balance.gt(0)).toBe(true)
   })
 

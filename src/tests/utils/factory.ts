@@ -1,4 +1,6 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
+import { ethers, viem } from 'hardhat'
+
 import { FlashMintQuoteProvider } from 'quote'
 import { approveErc20, balanceOf, getAlchemyProviderUrl } from './'
 
@@ -10,6 +12,7 @@ import type {
   FlashMintQuoteRequest,
   SwapQuoteProviderV2,
 } from 'quote'
+import type { Address, Hex, PublicClient } from 'viem'
 
 class TxTestFactory {
   constructor(
@@ -22,27 +25,44 @@ class TxTestFactory {
    * @param quote a flash mint quote
    */
   async testMinting(quote: FlashMintQuote) {
-    const { signer } = this
+    const [signer] = await ethers.getSigners()
     const indexToken = quote.outputToken
     const tx = quote.tx
     if (!tx) fail()
-    const balanceBefore: BigNumber = await balanceOf(signer, indexToken.address)
+    const balanceBefore: BigNumber = await balanceOf(
+      signer.address,
+      indexToken.address,
+    )
     if (quote.inputToken.symbol !== 'ETH') {
       await approveErc20(
         quote.inputToken.address,
         quote.contract,
         quote.inputOutputAmount,
-        signer,
+        signer.address,
       )
     }
     // Automatically adding from as it seems like estimateGas won't recognize
     // the impersonated balance if `from` is not set.
     tx.from = this.signer.address
-    const gasEstimate = await this.provider.estimateGas(tx)
+    const publicClient: PublicClient = await viem.getPublicClient()
+    const gasEstimate = await publicClient.estimateGas({
+      // from: this.signer.address,
+      to: tx.to as Address,
+      data: tx.data as Hex,
+      value: BigInt(tx.value?.toString() ?? '0'),
+    })
     tx.gasLimit = gasEstimate
-    const res = await signer.sendTransaction(tx)
+    const res = await signer.sendTransaction({
+      // from: this.signer.address,
+      to: tx.to as Address,
+      data: tx.data as Hex,
+      value: BigInt(tx.value?.toString() ?? '0'),
+    })
     await res.wait()
-    const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
+    const balanceAfter: BigNumber = await balanceOf(
+      signer.address,
+      indexToken.address,
+    )
     expect(balanceAfter.gte(balanceBefore.add(quote.indexTokenAmount))).toBe(
       true,
     )
@@ -54,14 +74,17 @@ class TxTestFactory {
    * @param gasLimit override gas limit
    */
   async testRedeeming(quote: FlashMintQuote, gasLimit?: BigNumber) {
-    const { signer } = this
+    const [signer] = await ethers.getSigners()
     const indexToken = quote.inputToken
-    const balanceBefore: BigNumber = await balanceOf(signer, indexToken.address)
+    const balanceBefore: BigNumber = await balanceOf(
+      signer.address,
+      indexToken.address,
+    )
     await approveErc20(
       indexToken.address,
       quote.contract,
       quote.indexTokenAmount,
-      signer,
+      signer.address,
     )
     const tx = quote.tx
     if (!tx) fail()
@@ -70,12 +93,15 @@ class TxTestFactory {
     tx.from = this.signer.address
     tx.gasLimit = gasLimit
     if (!gasLimit) {
-      const gasEstimate = await this.provider.estimateGas(tx)
+      const gasEstimate = await ethers.provider.estimateGas(tx)
       tx.gasLimit = gasEstimate
     }
     const res = await signer.sendTransaction(tx)
     await res.wait()
-    const balanceAfter: BigNumber = await balanceOf(signer, indexToken.address)
+    const balanceAfter: BigNumber = await balanceOf(
+      signer.address,
+      indexToken.address,
+    )
     expect(balanceAfter.lte(balanceBefore.sub(quote.indexTokenAmount))).toBe(
       true,
     )
