@@ -52,6 +52,11 @@ export class StaticQuoteProvider {
 
     const swapData = getSwapData(request)
 
+    if (!swapData) {
+      console.error('Error fetching quote swap data')
+      return null
+    }
+
     const quoteAmountResult = await getQuote(
       isMinting,
       indexToken.address as Address,
