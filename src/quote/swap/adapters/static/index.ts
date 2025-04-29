@@ -52,7 +52,7 @@ export class StaticQuoteProvider {
 
     const swapData = getSwapData(request)
 
-    const quoteAmount = await getQuote(
+    const quoteAmountResult = await getQuote(
       isMinting,
       indexToken.address as Address,
       indexTokenAmount,
@@ -62,6 +62,16 @@ export class StaticQuoteProvider {
       chainId,
       this.rpcUrl,
     )
+
+    if (!quoteAmountResult.success) {
+      console.error(
+        `Error fetching quote: ${quoteAmountResult.error.message}`,
+        quoteAmountResult.error.originalError,
+      )
+      return null
+    }
+
+    const quoteAmount = quoteAmountResult.data
 
     const inputOutputAmount = slippageAdjustedTokenAmount(
       BigNumber.from(quoteAmount.toString()),
