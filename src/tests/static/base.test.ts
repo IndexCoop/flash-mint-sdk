@@ -9,7 +9,7 @@ const symbols = [
   'ETH2X',
   'ETH3X',
   'BTC2X',
-  'BTC3X',
+  // 'BTC3X',
   // 'uSOL2x',
   // 'uSOL3x',
   // 'uSUI2x',
