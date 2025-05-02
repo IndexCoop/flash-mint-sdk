@@ -130,6 +130,12 @@ export class TestFactory {
     return this.txFactory.signer
   }
 
+  async getBlockNumber(): Promise<number> {
+    const provider = this.getProvider()
+    const blockNumber = await provider.getBlockNumber()
+    return blockNumber
+  }
+
   async resetFork(chainId: number) {
     const alchemyUrl = getAlchemyProviderUrl(chainId)
     const localHostProvider = this.getProvider()
