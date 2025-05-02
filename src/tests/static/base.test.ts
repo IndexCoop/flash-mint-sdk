@@ -41,6 +41,8 @@ describe('Base', () => {
       beforeAll(async () => {
         factory = getTestFactoryZeroExV2(3, chainId)
         await factory.resetFork(chainId)
+        const blockNumber = await factory.getBlockNumber()
+        console.log(blockNumber)
       })
 
       test('can obtain mint quote', async () => {

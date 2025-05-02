@@ -149,7 +149,6 @@ export const SwapDataConfig: {
           ],
           fees: [500],
           exchange: 3,
-          poolIds: [],
           pool: zeroAddress,
         },
         swapDataInputToken: {
@@ -160,8 +159,6 @@ export const SwapDataConfig: {
           fees: [500],
           exchange: 3,
           pool: zeroAddress,
-          poolIds: [],
-          tickSpacing: [100],
         },
       },
       '0x4200000000000000000000000000000000000006': {
@@ -173,14 +170,12 @@ export const SwapDataConfig: {
           ],
           fees: [500],
           exchange: 3,
-          poolIds: [],
           pool: zeroAddress,
         },
         swapDataInputToken: {
           path: [],
           fees: [],
           exchange: 3,
-          poolIds: [],
           pool: zeroAddress,
         },
       },
@@ -195,7 +190,6 @@ export const SwapDataConfig: {
           ],
           fees: [500],
           exchange: 3,
-          poolIds: [],
           pool: zeroAddress,
         },
         swapDataInputToken: {
@@ -205,9 +199,7 @@ export const SwapDataConfig: {
           ],
           fees: [500],
           exchange: 3,
-          poolIds: [],
           pool: zeroAddress,
-          tickSpacing: [100],
         },
       },
       '0x4200000000000000000000000000000000000006': {
@@ -225,7 +217,6 @@ export const SwapDataConfig: {
           path: [],
           fees: [],
           exchange: 3,
-          poolIds: [],
           pool: zeroAddress,
         },
       },
