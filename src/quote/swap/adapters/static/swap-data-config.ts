@@ -642,6 +642,7 @@ export const SwapDataConfig: {
           fees: [],
           exchange: 0,
           tickSpacing: [],
+          poolIds: [],
           pool: zeroAddress,
         },
       },
