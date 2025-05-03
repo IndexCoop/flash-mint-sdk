@@ -1,6 +1,5 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import type { StaticQuoteRequest } from 'quote/swap/adapters/static'
-import { SwapDataV5 } from 'utils'
 import { base } from 'viem/chains'
 import { getSwapData } from './swap-data'
 
