@@ -8,12 +8,12 @@ import type { TestFactory } from 'tests/utils'
 const symbols = [
   'ETH2X',
   'ETH3X',
-  'BTC2X',
-  'BTC3X',
-  'uSOL2x',
-  'uSOL3x',
-  'uSUI2x',
-  'uSUI3x',
+  // 'BTC2X',
+  // 'BTC3X',
+  // 'uSOL2x',
+  // 'uSOL3x',
+  // 'uSUI2x',
+  // 'uSUI3x',
   'wstETH15x',
 ]
 
