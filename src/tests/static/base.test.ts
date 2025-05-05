@@ -39,8 +39,10 @@ describe('Base', () => {
           : getTokenByChainAndSymbol(chainId, inputTokenSymbol)!
 
       beforeAll(async () => {
-        factory = getTestFactoryZeroExV2(3, chainId)
+        factory = getTestFactoryZeroExV2(0, chainId)
         await factory.resetFork(chainId)
+        const blockNumber = await factory.getBlockNumber()
+        console.log(blockNumber)
       })
 
       test('can obtain mint quote', async () => {

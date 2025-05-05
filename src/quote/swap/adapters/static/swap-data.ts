@@ -19,28 +19,19 @@ export function getSwapData(request: StaticQuoteRequest) {
     if (!data) return null
 
     if (!isMinting) {
-      data = {
-        ...data,
-        swapDataDebtForCollateral: {
-          ...data.swapDataDebtForCollateral,
-          path: data.swapDataDebtForCollateral.path.reverse(),
-          fees: data.swapDataDebtForCollateral.fees.reverse(),
-        },
-        swapDataInputToken: {
-          ...data.swapDataInputToken,
-          path: data.swapDataInputToken.path.reverse(),
-          fees: data.swapDataInputToken.fees.reverse(),
-        },
-      }
+      data = structuredClone(data)
+
+      data.swapDataDebtForCollateral.path.reverse()
+      data.swapDataDebtForCollateral.fees.reverse()
+      data.swapDataInputToken.path.reverse()
+      data.swapDataInputToken.fees.reverse()
 
       if (
         'tickSpacing' in data.swapDataDebtForCollateral &&
         'tickSpacing' in data.swapDataInputToken
       ) {
-        data.swapDataDebtForCollateral.tickSpacing =
-          data.swapDataDebtForCollateral.tickSpacing.reverse()
-        data.swapDataInputToken.tickSpacing =
-          data.swapDataInputToken.tickSpacing.reverse()
+        data.swapDataDebtForCollateral.tickSpacing.reverse()
+        data.swapDataInputToken.tickSpacing.reverse()
       }
     }
 
