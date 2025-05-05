@@ -1,17 +1,17 @@
 import type { SwapData, SwapDataV5 } from 'utils'
 import { zeroAddress } from 'viem'
 
-export const SwapDataConfig: {
-  [chainId: number]: {
-    [indexTokenSymbol: string]: {
-      [inputToken: string]: {
+export const SwapDataConfig: Readonly<{
+  [chainId: number]: Readonly<{
+    [indexTokenSymbol: string]: Readonly<{
+      [inputToken: string]: Readonly<{
         contract: string
         swapDataDebtForCollateral: SwapData | SwapDataV5
         swapDataInputToken: SwapData | SwapDataV5
-      }
-    }
-  }
-} = {
+      }>
+    }>
+  }>
+}> = {
   1: {
     'ETH2X': {
       '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2': {
