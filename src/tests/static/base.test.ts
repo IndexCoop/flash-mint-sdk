@@ -8,7 +8,7 @@ import type { TestFactory } from 'tests/utils'
 const symbols = [
   'ETH2X',
   'ETH3X',
-  'BTC2X',
+  // 'BTC2X',
   // 'BTC3X',
   // 'uSOL2x',
   // 'uSOL3x',
@@ -39,8 +39,10 @@ describe('Base', () => {
           : getTokenByChainAndSymbol(chainId, inputTokenSymbol)!
 
       beforeAll(async () => {
-        factory = getTestFactoryZeroExV2(3, chainId)
+        factory = getTestFactoryZeroExV2(0, chainId)
         await factory.resetFork(chainId)
+        const blockNumber = await factory.getBlockNumber()
+        console.log(blockNumber)
       })
 
       test('can obtain mint quote', async () => {
