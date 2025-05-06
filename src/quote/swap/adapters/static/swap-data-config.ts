@@ -465,6 +465,33 @@ export const SwapDataConfig: Readonly<{
           tickSpacing: [100, 200],
         },
       },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
+        },
+      },
     },
     'uSOL3x': {
       '0x4200000000000000000000000000000000000006': {
@@ -517,6 +544,33 @@ export const SwapDataConfig: Readonly<{
           exchange: 7,
           pool: zeroAddress,
           poolIds: [],
+          tickSpacing: [100, 200],
+        },
+      },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            '0x4200000000000000000000000000000000000006',
+            '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
           tickSpacing: [100, 200],
         },
       },
@@ -575,6 +629,33 @@ export const SwapDataConfig: Readonly<{
           pool: zeroAddress,
         },
       },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0xb0505e5a99abd03d94a1169e638B78EDfEd26ea4',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            '0x4200000000000000000000000000000000000006',
+            '0xb0505e5a99abd03d94a1169e638B78EDfEd26ea4',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
+        },
+      },
     },
     'uSUI3x': {
       '0x4200000000000000000000000000000000000006': {
@@ -628,6 +709,33 @@ export const SwapDataConfig: Readonly<{
           tickSpacing: [100, 200],
           poolIds: [],
           pool: zeroAddress,
+        },
+      },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+            '0xb0505e5a99abd03d94a1169e638B78EDfEd26ea4',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            '0x4200000000000000000000000000000000000006',
+            '0xb0505e5a99abd03d94a1169e638B78EDfEd26ea4',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 200],
         },
       },
     },
