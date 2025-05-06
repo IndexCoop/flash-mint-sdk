@@ -813,6 +813,32 @@ export const SwapDataConfig: Readonly<{
           pool: zeroAddress,
         },
       },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedMorphoV2',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x4200000000000000000000000000000000000006',
+            '0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452',
+          ],
+          fees: [],
+          exchange: 7,
+          tickSpacing: [1],
+          poolIds: [],
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            '0x4200000000000000000000000000000000000006',
+            '0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452',
+          ],
+          fees: [],
+          exchange: 7,
+          poolIds: [],
+          pool: zeroAddress,
+          tickSpacing: [100, 1],
+        },
+      },
     },
   },
   42161: {
