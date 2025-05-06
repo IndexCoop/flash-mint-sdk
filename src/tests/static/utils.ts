@@ -34,7 +34,9 @@ export function getWhale(symbol: string, chainId: number): string {
         ? '0x768145BcC76a744E7F267b515d6E2488BdA48f0d'
         : '0xE940ae8cF59fE2709BBc572CBAD2633fB45Abf46' // WBTC
     case 42161:
-      return '0x0F896345B538Ac140Ac84f3367a65a34eFD8fcBf' // WBTC
+      return symbol === 'USDC'
+        ? '0x0F896345B538Ac140Ac84f3367a65a34eFD8fcBf'
+        : '0x8Cc94Dc843e1eA7a19805E0Cca43001123512b6a' // WBTC
     default:
       throw new Error('Unsupported chainId')
   }
