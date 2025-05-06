@@ -161,6 +161,27 @@ export const SwapDataConfig: Readonly<{
           pool: zeroAddress,
         },
       },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
       '0x4200000000000000000000000000000000000006': {
         contract: 'FlashMintLeveragedExtended',
         swapDataDebtForCollateral: {
@@ -195,6 +216,27 @@ export const SwapDataConfig: Readonly<{
         swapDataInputToken: {
           path: [
             '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf': {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [
+            '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+            '0x4200000000000000000000000000000000000006',
+          ],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [
+            '0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf',
             '0x4200000000000000000000000000000000000006',
           ],
           fees: [500],

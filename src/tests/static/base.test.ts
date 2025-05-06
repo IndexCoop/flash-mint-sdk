@@ -1,7 +1,7 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from 'constants/chains'
 import { ETH } from 'constants/tokens'
-import { buildTestCases } from 'tests/static/utils'
+import { buildTestCases, getWhale } from 'tests/static/utils'
 import { getTestFactoryZeroExV2, transferFromWhale, wei } from 'tests/utils'
 import type { TestFactory } from 'tests/utils'
 
@@ -17,11 +17,10 @@ const symbols = [
   'wstETH15x',
 ]
 
-const testCases = buildTestCases(symbols)
+const testCases = buildTestCases(symbols, ChainId.Base)
 
 describe('Base', () => {
   const chainId = ChainId.Base
-  const whale = '0x621e7c767004266c8109e83143ab0Da521B650d6'
   let factory: TestFactory
 
   for (const testCase of testCases) {
@@ -67,6 +66,7 @@ describe('Base', () => {
         }
 
         if (inputTokenSymbol !== 'ETH') {
+          const whale = getWhale(inputTokenSymbol, chainId)
           await transferFromWhale(
             whale,
             factory.getSigner().address,
