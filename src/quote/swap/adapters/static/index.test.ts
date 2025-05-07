@@ -51,4 +51,27 @@ describe('StaticQuoteProvider', () => {
     expect(quote.tx.to).toBe('0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0')
     expect(quote.tx.data).toBeDefined()
   })
+
+  test('getting a quote for redeeming icETH', async () => {
+    const icETH = getTokenByChainAndSymbol(1, 'icETH')
+    const request = {
+      chainId: 1,
+      isMinting: false,
+      inputToken: icETH,
+      outputToken: ETH,
+      inputAmount: wei(1).toBigInt(),
+      outputAmount: wei(1).toBigInt(),
+      slippage: 0.5,
+      taker,
+    }
+    const rpcUrl = getAlchemyProviderUrl(request.chainId)
+    const provider = new StaticQuoteProvider(rpcUrl)
+    const quote = await provider.getQuote(request)
+    if (!quote) fail()
+    console.log(quote)
+    expect(quote.isMinting).toBe(false)
+    expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
+    expect(quote.tx.to).toBe('0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1')
+    expect(quote.tx.data).toBeDefined()
+  })
 })
