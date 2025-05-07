@@ -1,7 +1,10 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
-import type { StaticQuoteRequest } from 'quote/swap/adapters/static'
+import { ETH } from 'constants/tokens'
+import { Exchange } from 'utils'
 import { base } from 'viem/chains'
 import { getSwapData } from './swap-data'
+
+import type { StaticQuoteRequest } from 'quote/swap/adapters/static'
 
 describe('Static swap data', () => {
   test('returns null for unsupported chain', () => {
@@ -64,6 +67,39 @@ describe('Static swap data', () => {
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       ],
       pool: '0x0000000000000000000000000000000000000000',
+    })
+  })
+
+  test('reverses swap data for redeeming icETH', () => {
+    const request: StaticQuoteRequest = {
+      chainId: 1,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(1, 'icETH'),
+      outputToken: ETH,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    expect(result.swapDataDebtForCollateral).toEqual({
+      exchange: Exchange.Curve,
+      fees: [],
+      path: [
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      ],
+      pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
+    })
+    expect(result.swapDataInputToken).toEqual({
+      exchange: Exchange.Curve,
+      fees: [],
+      path: [
+        '0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84',
+        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+      ],
+      pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
     })
   })
 
