@@ -11,7 +11,7 @@ const symbols = [
   'BTC2X',
   'BTC3X',
   // 'BTC2xETH',
-  // 'ETH2xBTC',
+  'ETH2xBTC',
   // 'iETH1X',
   // 'iBTC1X',
 ]
