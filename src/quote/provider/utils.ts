@@ -63,7 +63,7 @@ export function getContractType(
   }
 
   if (token === iceth.symbol) {
-    return FlashMintContractType.leveragedZeroEx
+    return FlashMintContractType.static
   }
 
   if (token === hyeth.symbol) {
