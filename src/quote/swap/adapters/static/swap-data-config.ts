@@ -1197,7 +1197,7 @@ export const SwapDataConfig: Readonly<{
             '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
           ],
           fees: [500],
-          exchange: 0,
+          exchange: 3,
           pool: zeroAddress,
         },
       },
