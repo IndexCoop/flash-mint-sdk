@@ -19,7 +19,6 @@ describe.skip('DPI (mainnet)', () => {
       factory.getSigner().address,
       wei('2'),
       DPI.address,
-      factory.getProvider(),
     )
     await factory.fetchQuote({
       chainId: 1,

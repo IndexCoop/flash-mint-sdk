@@ -72,7 +72,6 @@ describe('Base', () => {
             factory.getSigner().address,
             factory.quote.inputOutputAmount,
             factory.quote.inputToken.address,
-            factory.getProvider(),
           )
         }
 

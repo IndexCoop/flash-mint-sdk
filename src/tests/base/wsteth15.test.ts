@@ -63,7 +63,6 @@ describe('wstETH15x (Base)', () => {
             factory.getSigner().address,
             quote.inputOutputAmount,
             quote.inputToken.address,
-            factory.getProvider(),
           )
         }
 
