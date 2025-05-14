@@ -9,6 +9,7 @@ env:
   MAINNET_ALCHEMY_API: ${{ secrets.MAINNET_ALCHEMY_API }}
   LIFI_API_KEY: ${{ secrets.LIFI_API_KEY }}
   ZEROEX_API_KEY: ${{ secrets.ZEROEX_API_KEY }}
+  ALCHEMY_API_KEY: ${{ secrets.ALCHEMY_API_KEY }}
 
 on:
   push:
@@ -41,7 +42,7 @@ jobs:
       #- run: npm run test:utils
       #- run: npm run test:builders
       #- run: npm run test:quotes
-  e2e-mainnet:
+  e2e:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,60 +56,10 @@ jobs:
       - name: Wait for hardhat nodes to start
         run: sleep 10
       - run: npm run test:hardhat
-      # - run: npm run test:iceth
-  # e2e-base:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version-file: '.nvmrc'
-  #         cache: 'npm'
-  #     - run: npm ci
-  #     - run: npm run build --if-present
-  #     - run: npm run hardhat:base &
-  #     - run: npm run test src/tests/base/wsteth15.test.ts
-  e2e-static-mainnet:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm run hardhat &
-      - run: npm run test:static-mainnet
-      - run: npm run test:iceth
-  e2e-static-arbitrum:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm run hardhat:arbitrum &
-      - run: npm run test:static-arbitrum
-  e2e-static-base:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build --if-present
-      - run: npm run hardhat:base &
-      - run: npm run test:static-base
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: [build, e2e-mainnet, e2e-static-mainnet, e2e-static-arbitrum, e2e-static-base]
+    needs: [build, e2e]
     steps:
       - uses: actions/checkout@v4
         with:
