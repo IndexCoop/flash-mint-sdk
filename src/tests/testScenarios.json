@@ -74,5 +74,30 @@
                 { "symbol": "WETH", "exchangeRate": 2 }
             ]
         }
+    },
+    "1": {
+        "ETH2X": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 300 },
+                { "symbol": "ETH", "exchangeRate": 0.1 },
+                { "symbol": "WETH", "exchangeRate": 0.1 }
+            ]
+        },
+        "BTC2X": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 3000 },
+                { "symbol": "ETH", "exchangeRate": 1 },
+                { "symbol": "WETH", "exchangeRate": 1 }
+            ]
+        },
+        "hyETH": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "ETH", "exchangeRate": 2 },
+                { "symbol": "WETH", "exchangeRate": 2 }
+            ]
+        }
     }
 }

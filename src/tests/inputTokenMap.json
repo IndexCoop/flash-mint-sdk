@@ -12,5 +12,16 @@
     "ETH": {
       "whale": "0x621e7c767004266c8109e83143ab0Da521B650d6"
     }
+  },
+  "1": {
+    "USDC": {
+      "whale": "0x8EB8a3b98659Cce290402893d0123abb75E3ab28"
+    },
+    "WETH": {
+      "whale": "0x8EB8a3b98659Cce290402893d0123abb75E3ab28"
+    },
+    "ETH": {
+      "whale": "0x8EB8a3b98659Cce290402893d0123abb75E3ab28"
+    }
   }
 }
