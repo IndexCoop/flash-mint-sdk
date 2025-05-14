@@ -31,7 +31,6 @@
     "test:builders": "npm test src/flashmint/",
     "test:quotes": "npm test src/quote/",
     "test:utils": "npm test src/utils",
-    "test:base": "npm test src/tests/base",
     "test:hyeth": "npm test src/tests/hyeth.test.ts",
     "test:iceth": "npm test src/tests/iceth.test.ts",
     "test:static-mainnet": "npm test src/tests/static/mainnet.test.ts",
