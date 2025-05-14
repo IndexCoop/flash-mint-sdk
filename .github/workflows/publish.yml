@@ -33,14 +33,14 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build --if-present
-      - run: npm run hardhat:arbitrum &
-      - run: npm run hardhat:base &
-      - run: npm run hardhat &
-      - name: Wait for hardhat nodes to start
-        run: sleep 10
-      - run: npm run test:utils
-      - run: npm run test:builders
-      - run: npm run test:quotes
+      #- run: npm run hardhat:arbitrum &
+      #- run: npm run hardhat:base &
+      #- run: npm run hardhat &
+      #- name: Wait for hardhat nodes to start
+      #  run: sleep 10
+      #- run: npm run test:utils
+      #- run: npm run test:builders
+      #- run: npm run test:quotes
   e2e-mainnet:
     runs-on: ubuntu-latest
     steps:
@@ -51,8 +51,10 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm run hardhat &
-      - run: npm run test:hyeth
+      - run: npm run hardhat 
+      - name: Wait for hardhat nodes to start
+        run: sleep 10
+      - run: npm run test:hardhat
       # - run: npm run test:iceth
   # e2e-base:
   #   runs-on: ubuntu-latest

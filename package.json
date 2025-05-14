@@ -27,6 +27,7 @@
     "lint": "biome lint ./src",
     "lint:fix": "biome check --write ./src",
     "test": "jest",
+    "test:hardhat": "hardhat test",
     "test:builders": "npm test src/flashmint/",
     "test:quotes": "npm test src/quote/",
     "test:utils": "npm test src/utils",
