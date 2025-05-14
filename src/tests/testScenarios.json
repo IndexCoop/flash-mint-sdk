@@ -1,9 +1,14 @@
 {
     "8453": {
         "uSOL2x": {
-            "setToken": "0x0A0Fbd86d2dEB53D7C65fecF8622c2Fa0DCdc9c6",
             "setAmounts": ["1", "10", "100"],
             "inputTokens": [{ "symbol": "USDC", "exchangeRate": 500 }]
+        },
+        "BTC2X": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 800 }
+            ]
         }
     }
 }

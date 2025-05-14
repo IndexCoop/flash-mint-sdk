@@ -1,6 +1,7 @@
 import { expect } from "chai";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { ethers } from "ethers";
+import { getTokenByChainAndSymbol } from "@indexcoop/tokenlists";
 
 import rpcConfig from "./rpcConfig.json";
 import scenarios from "./testScenarios.json";
@@ -33,17 +34,17 @@ const blockNumbers: Record<string, number> = {
     "42161": 328930000,
 };
 
-// Minimal ERC20 ABI for decimals + transfer
+// Minimal ERC20 ABI for decimals + transfer + approve + balanceOf
 const ERC20_ABI = [
     "function decimals() view returns (uint8)",
     "function transfer(address to,uint256 amount) returns (bool)",
-    "function approve(address to,uint256 amount)",
+    "function approve(address spender,uint256 amount) returns (bool)",
+    "function balanceOf(address owner) view returns (uint256)",
 ];
 
-describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function () {
+describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", function () {
     for (const [cid, products] of Object.entries(scenarios)) {
         const chainId = Number(cid);
-        // upstream RPC we fork from
         const upstreamRpc = rpcConfig[cid].endsWith("/")
             ? `${rpcConfig[cid]}${ALCHEMY_KEY}`
             : `${rpcConfig[cid]}/${ALCHEMY_KEY}`;
@@ -53,7 +54,6 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
             let flashProvider: FlashMintQuoteProvider;
 
             before(function () {
-                // build your FlashMintQuoteProvider against the local node
                 const zeroEx = getZeroExV2SwapQuoteProvider();
                 const lifi = getLifiSwapQuoteProvider();
                 flashProvider = new FlashMintQuoteProvider(
@@ -63,14 +63,14 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
                 );
             });
 
-            for (const [productName, cfg] of Object.entries(products)) {
-                const outputToken = {
-                    address: cfg.setToken,
-                    decimals: cfg.decimals,
-                    symbol: productName,
-                };
+            for (const [productSymbol, cfg] of Object.entries(products)) {
+                // derive the SetToken info from the symbol
+                const indexToken = getTokenByChainAndSymbol(
+                    chainId,
+                    productSymbol
+                );
 
-                describe(`  • product ${productName}`, function () {
+                describe(`  • product ${productSymbol}`, function () {
                     for (const setAmtStr of cfg.setAmounts) {
                         const setAmt = wei(setAmtStr).toString();
 
@@ -95,7 +95,7 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
                                 const whale = mapEntry.whale as string;
 
                                 describe(`      • via ${sym}`, function () {
-                                    let quote: Awaited<
+                                    let mintQuote: Awaited<
                                         ReturnType<
                                             FlashMintQuoteProvider["getQuote"]
                                         >
@@ -103,9 +103,11 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
                                     let taker: string;
                                     let maxIn: ethers.BigNumber;
                                     let erc20Whale: ethers.Contract;
+                                    let setTokenContract: ethers.Contract;
+                                    let mintedAmount: ethers.BigNumber;
 
                                     before(async function () {
-                                        // reset & fork local node
+                                        // reset & fork
                                         await localProvider.send(
                                             "hardhat_reset",
                                             [
@@ -122,17 +124,15 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
                                             []
                                         );
 
-                                        // impersonate the whale
+                                        // impersonate whale and pick taker
                                         await localProvider.send(
                                             "hardhat_impersonateAccount",
                                             [whale]
                                         );
-
-                                        // pick the default local account as taker
                                         [taker] =
                                             await localProvider.listAccounts();
 
-                                        // load token decimals
+                                        // compute maxIn = setAmt × exchangeRate ÷ 10^(18 − inputDecimals)
                                         const tokenContract =
                                             new ethers.Contract(
                                                 inputToken.address,
@@ -141,8 +141,6 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
                                             );
                                         const dec =
                                             await tokenContract.decimals();
-
-                                        // compute maxIn = setAmt₍wei₎ × exchangeRate ÷ 10^(18−decimals)
                                         const bnSet =
                                             ethers.BigNumber.from(setAmt);
                                         const rate =
@@ -151,90 +149,224 @@ describe("🏭 SDK parameterized mint tests (FlashMintQuoteProvider)", function 
                                             10
                                         ).pow(18 - dec);
                                         maxIn = bnSet.mul(rate).div(scale);
-                                        console.log(
-                                            "maxIn",
-                                            ethers.utils.formatUnits(maxIn, dec)
-                                        );
 
-                                        // build the quote request
+                                        // fetch mint quote
                                         const request: FlashMintQuoteRequest = {
                                             chainId,
                                             isMinting: true,
                                             inputToken,
-                                            outputToken,
+                                            outputToken: indexToken,
                                             indexTokenAmount: setAmt,
                                             inputTokenAmount: maxIn.toString(),
                                             slippage: 0.5,
                                             taker,
                                         };
-
-                                        // fetch via the local fork
                                         const result =
                                             await flashProvider.getQuote(
                                                 request
                                             );
-                                        if (!result.success) {
+                                        if (!result.success)
                                             fail(
                                                 `Quote failed: ${result.error?.message}`
                                             );
-                                        }
-                                        quote = result.data;
+                                        mintQuote = result.data;
 
-                                        const whaleSigner =
-                                            localProvider.getSigner(whale);
+                                        // prepare contracts
                                         erc20Whale = new ethers.Contract(
                                             inputToken.address,
                                             ERC20_ABI,
-                                            whaleSigner
+                                            localProvider.getSigner(whale)
+                                        );
+                                        setTokenContract = new ethers.Contract(
+                                            indexToken.address,
+                                            ERC20_ABI,
+                                            localProvider.getSigner(taker)
                                         );
                                     });
 
                                     it("returns a valid mint quote", function () {
-                                        expect(quote.chainId).to.equal(chainId);
-                                        expect(quote.isMinting).to.be.true;
-                                        expect(quote.contractType).to.be.oneOf([
+                                        expect(mintQuote.chainId).to.equal(
+                                            chainId
+                                        );
+                                        expect(mintQuote.isMinting).to.be.true;
+                                        expect(
+                                            mintQuote.contractType
+                                        ).to.be.oneOf([
                                             FlashMintContractType.static,
                                             FlashMintContractType.hyeth,
                                         ]);
                                         expect(
                                             ethers.BigNumber.from(
-                                                quote.inputAmount
+                                                mintQuote.inputAmount
                                             )
-                                        ).to.be.gte(ethers.BigNumber.from("0"));
-                                        expect(quote.indexTokenAmount).to.equal(
-                                            setAmt
+                                        ).to.be.gte(0);
+                                        expect(
+                                            mintQuote.indexTokenAmount
+                                        ).to.equal(setAmt);
+                                        expect(mintQuote.slippage).to.equal(
+                                            0.5
                                         );
-                                        expect(quote.slippage).to.equal(0.5);
-                                        expect(quote.tx.to).to.match(
+                                        expect(mintQuote.tx.to).to.match(
                                             /^0x[0-9a-fA-F]{40}$/
                                         );
-                                        expect(quote.tx.data).to.be.a("string")
-                                            .and.not.empty;
+                                        expect(mintQuote.tx.data).to.be.a(
+                                            "string"
+                                        ).and.not.empty;
                                     });
 
-                                    it("executes on-chain mint", async function () {
-                                        await erc20Whale.transfer(taker, maxIn);
+                                    describe("      ✓ execute mint", function () {
+                                        let balanceBefore: ethers.BigNumber;
 
-                                        const takerSigner =
-                                            localProvider.getSigner(taker);
+                                        before(async function () {
+                                            // fund taker
+                                            await erc20Whale.transfer(
+                                                taker,
+                                                maxIn
+                                            );
 
-                                        const erc20 =
-                                            erc20Whale.connect(takerSigner);
-                                        await erc20.approve(quote.tx.to, maxIn);
+                                            // approve & execute
+                                            const takerSigner =
+                                                localProvider.getSigner(taker);
+                                            const erc20Taker =
+                                                erc20Whale.connect(takerSigner);
+                                            await erc20Taker.approve(
+                                                mintQuote.tx.to,
+                                                maxIn
+                                            );
 
-                                        const tx =
-                                            await takerSigner.sendTransaction({
-                                                to: quote.tx.to,
-                                                data: quote.tx.data!,
-                                                value: quote.tx.value
-                                                    ? ethers.BigNumber.from(
-                                                          quote.tx.value
-                                                      )
-                                                    : undefined,
-                                                gasLimit: 5_000_000,
+                                            balanceBefore =
+                                                await setTokenContract.balanceOf(
+                                                    taker
+                                                );
+                                            const tx =
+                                                await takerSigner.sendTransaction(
+                                                    {
+                                                        to: mintQuote.tx.to,
+                                                        data: mintQuote.tx
+                                                            .data!,
+                                                        value: mintQuote.tx
+                                                            .value
+                                                            ? ethers.BigNumber.from(
+                                                                  mintQuote.tx
+                                                                      .value
+                                                              )
+                                                            : undefined,
+                                                        gasLimit: 5_000_000,
+                                                    }
+                                                );
+                                            await tx.wait();
+                                        });
+
+                                        it("minted correct amount", async function () {
+                                            const balanceAfter =
+                                                await setTokenContract.balanceOf(
+                                                    taker
+                                                );
+                                            mintedAmount =
+                                                balanceAfter.sub(balanceBefore);
+                                            expect(mintedAmount).to.equal(
+                                                ethers.BigNumber.from(setAmt)
+                                            );
+                                        });
+
+                                        describe("      ◦ redeem", function () {
+                                            let redeemQuote: Awaited<
+                                                ReturnType<
+                                                    FlashMintQuoteProvider["getQuote"]
+                                                >
+                                            >["data"];
+                                            let postRedeemSetBalance: ethers.BigNumber;
+
+                                            before(async function () {
+                                                // fetch redeem quote
+                                                const redeemReq: FlashMintQuoteRequest =
+                                                    {
+                                                        chainId,
+                                                        isMinting: false,
+                                                        inputToken: indexToken,
+                                                        outputToken: inputToken,
+                                                        indexTokenAmount:
+                                                            setAmt,
+                                                        inputTokenAmount:
+                                                            mintedAmount.toString(),
+                                                        slippage: 0.5,
+                                                        taker,
+                                                    };
+                                                const res =
+                                                    await flashProvider.getQuote(
+                                                        redeemReq
+                                                    );
+                                                if (!res.success)
+                                                    fail(
+                                                        `Redeem quote failed: ${res.error?.message}`
+                                                    );
+                                                redeemQuote = res.data;
+
+                                                // approve set tokens to redeem
+                                                const takerSigner =
+                                                    localProvider.getSigner(
+                                                        taker
+                                                    );
+                                                await setTokenContract
+                                                    .connect(takerSigner)
+                                                    .approve(
+                                                        redeemQuote.tx.to,
+                                                        mintedAmount
+                                                    );
+
+                                                const inBefore =
+                                                    await new ethers.Contract(
+                                                        inputToken.address,
+                                                        ERC20_ABI,
+                                                        localProvider
+                                                    ).balanceOf(taker);
+
+                                                const tx =
+                                                    await takerSigner.sendTransaction(
+                                                        {
+                                                            to: redeemQuote.tx
+                                                                .to,
+                                                            data: redeemQuote.tx
+                                                                .data!,
+                                                            value: redeemQuote
+                                                                .tx.value
+                                                                ? ethers.BigNumber.from(
+                                                                      redeemQuote
+                                                                          .tx
+                                                                          .value
+                                                                  )
+                                                                : undefined,
+                                                            gasLimit: 5_000_000,
+                                                        }
+                                                    );
+                                                await tx.wait();
+
+                                                // record balances before & after
+                                                postRedeemSetBalance =
+                                                    await setTokenContract.balanceOf(
+                                                        taker
+                                                    );
+
+                                                const inAfter =
+                                                    await new ethers.Contract(
+                                                        inputToken.address,
+                                                        ERC20_ABI,
+                                                        localProvider
+                                                    ).balanceOf(taker);
+
+                                                expect(inAfter).to.be.gt(
+                                                    inBefore
+                                                );
                                             });
-                                        const receipt = await tx.wait();
-                                        expect(receipt.status).to.equal(1);
+
+                                            it("burned the set tokens", function () {
+                                                expect(
+                                                    postRedeemSetBalance
+                                                ).to.equal(
+                                                    ethers.BigNumber.from(0)
+                                                );
+                                            });
+                                        });
                                     });
                                 });
                             }
