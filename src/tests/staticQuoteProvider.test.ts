@@ -1,5 +1,6 @@
 import { expect } from "chai";
 import { JsonRpcProvider } from "@ethersproject/providers";
+import { ETH } from "constants/tokens";
 import { ethers } from "ethers";
 import { getTokenByChainAndSymbol } from "@indexcoop/tokenlists";
 
@@ -69,6 +70,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                     chainId,
                     productSymbol
                 );
+                console.log("indexToken", indexToken);
 
                 describe(`  • product ${productSymbol}`, function () {
                     for (const setAmtStr of cfg.setAmounts) {
@@ -87,11 +89,13 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                         `Missing mapping for chain ${cid} token ${sym}`
                                     );
                                 }
-                                const inputToken = {
-                                    address: mapEntry.address as string,
-                                    decimals: mapEntry.decimals as number,
-                                    symbol: sym,
-                                };
+                                const inputToken =
+                                    sym == "ETH"
+                                        ? ETH
+                                        : getTokenByChainAndSymbol(
+                                              chainId,
+                                              sym
+                                          );
                                 const whale = mapEntry.whale as string;
 
                                 describe(`      • via ${sym}`, function () {
@@ -140,15 +144,23 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 localProvider
                                             );
                                         const dec =
-                                            await tokenContract.decimals();
+                                            sym == "ETH"
+                                                ? 18
+                                                : await tokenContract.decimals();
                                         const bnSet =
                                             ethers.BigNumber.from(setAmt);
-                                        const rate =
-                                            ethers.BigNumber.from(exchangeRate);
+                                        // Supports up to 0.001 units of precision on the exchange rate
+                                        const ratePrecision = 1000;
+                                        const rate = ethers.BigNumber.from(
+                                            exchangeRate * ratePrecision
+                                        );
                                         const scale = ethers.BigNumber.from(
                                             10
                                         ).pow(18 - dec);
-                                        maxIn = bnSet.mul(rate).div(scale);
+                                        maxIn = bnSet
+                                            .mul(rate)
+                                            .div(ratePrecision)
+                                            .div(scale);
 
                                         // fetch mint quote
                                         const request: FlashMintQuoteRequest = {
@@ -171,12 +183,14 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                             );
                                         mintQuote = result.data;
 
-                                        // prepare contracts
-                                        erc20Whale = new ethers.Contract(
-                                            inputToken.address,
-                                            ERC20_ABI,
-                                            localProvider.getSigner(whale)
-                                        );
+                                        if (sym != "ETH") {
+                                            // prepare contracts
+                                            erc20Whale = new ethers.Contract(
+                                                inputToken.address,
+                                                ERC20_ABI,
+                                                localProvider.getSigner(whale)
+                                            );
+                                        }
                                         setTokenContract = new ethers.Contract(
                                             indexToken.address,
                                             ERC20_ABI,
@@ -218,21 +232,26 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                         let balanceBefore: ethers.BigNumber;
 
                                         before(async function () {
-                                            // fund taker
-                                            await erc20Whale.transfer(
-                                                taker,
-                                                maxIn
-                                            );
-
                                             // approve & execute
                                             const takerSigner =
                                                 localProvider.getSigner(taker);
-                                            const erc20Taker =
-                                                erc20Whale.connect(takerSigner);
-                                            await erc20Taker.approve(
-                                                mintQuote.tx.to,
-                                                maxIn
-                                            );
+
+                                            if (sym != "ETH") {
+                                                // fund taker
+                                                await erc20Whale.transfer(
+                                                    taker,
+                                                    maxIn
+                                                );
+
+                                                const erc20Taker =
+                                                    erc20Whale.connect(
+                                                        takerSigner
+                                                    );
+                                                await erc20Taker.approve(
+                                                    mintQuote.tx.to,
+                                                    maxIn
+                                                );
+                                            }
 
                                             balanceBefore =
                                                 await setTokenContract.balanceOf(
@@ -315,11 +334,13 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     );
 
                                                 const inBefore =
-                                                    await new ethers.Contract(
-                                                        inputToken.address,
-                                                        ERC20_ABI,
-                                                        localProvider
-                                                    ).balanceOf(taker);
+                                                    sym == "ETH"
+                                                        ? await takerSigner.getBalance()
+                                                        : await new ethers.Contract(
+                                                              inputToken.address,
+                                                              ERC20_ABI,
+                                                              localProvider
+                                                          ).balanceOf(taker);
 
                                                 const tx =
                                                     await takerSigner.sendTransaction(
@@ -348,11 +369,13 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     );
 
                                                 const inAfter =
-                                                    await new ethers.Contract(
-                                                        inputToken.address,
-                                                        ERC20_ABI,
-                                                        localProvider
-                                                    ).balanceOf(taker);
+                                                    sym == "ETH"
+                                                        ? await takerSigner.getBalance()
+                                                        : await new ethers.Contract(
+                                                              inputToken.address,
+                                                              ERC20_ABI,
+                                                              localProvider
+                                                          ).balanceOf(taker);
 
                                                 expect(inAfter).to.be.gt(
                                                     inBefore

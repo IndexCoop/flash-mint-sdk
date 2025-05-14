@@ -1,13 +1,77 @@
 {
     "8453": {
+        "uSUI2x": {
+            "setAmounts": ["1", "10", "20"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 500 },
+                { "symbol": "ETH", "exchangeRate": 0.3 },
+                { "symbol": "WETH", "exchangeRate": 0.3 }
+            ]
+        },
+        "uSUI3x": {
+            "setAmounts": ["1", "10", "20"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 500 },
+                { "symbol": "ETH", "exchangeRate": 0.3 },
+                { "symbol": "WETH", "exchangeRate": 0.3 }
+            ]
+        },
         "uSOL2x": {
             "setAmounts": ["1", "10", "100"],
-            "inputTokens": [{ "symbol": "USDC", "exchangeRate": 500 }]
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 500 },
+                { "symbol": "ETH", "exchangeRate": 0.3 },
+                { "symbol": "WETH", "exchangeRate": 0.3 }
+            ]
+        },
+        "uSOL3x": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 500 },
+                { "symbol": "ETH", "exchangeRate": 0.3 },
+                { "symbol": "WETH", "exchangeRate": 0.3 }
+            ]
         },
         "BTC2X": {
             "setAmounts": ["1", "10", "100"],
             "inputTokens": [
-                { "symbol": "USDC", "exchangeRate": 800 }
+                { "symbol": "USDC", "exchangeRate": 800 },
+                { "symbol": "cbBTC", "exchangeRate": 0.2 },
+                { "symbol": "ETH", "exchangeRate": 0.5 },
+                { "symbol": "WETH", "exchangeRate": 0.5 }
+            ]
+        },
+        "BTC3X": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 800 },
+                { "symbol": "cbBTC", "exchangeRate": 0.2 },
+                { "symbol": "ETH", "exchangeRate": 0.5 },
+                { "symbol": "WETH", "exchangeRate": 0.5 }
+            ]
+        },
+        "ETH2X": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 800 },
+                { "symbol": "ETH", "exchangeRate": 0.5 },
+                { "symbol": "WETH", "exchangeRate": 0.5 }
+            ]
+        },
+        "ETH3X": {
+            "setAmounts": ["1", "10", "100"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 800 },
+                { "symbol": "ETH", "exchangeRate": 0.5 },
+                { "symbol": "WETH", "exchangeRate": 0.5 }
+            ]
+        },
+        "wstETH15x": {
+            "setAmounts": ["1", "10"],
+            "inputTokens": [
+                { "symbol": "USDC", "exchangeRate": 5000 },
+                { "symbol": "ETH", "exchangeRate": 2 },
+                { "symbol": "WETH", "exchangeRate": 2 }
             ]
         }
     }

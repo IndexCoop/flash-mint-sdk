@@ -1,8 +1,16 @@
 {
   "8453": {
     "USDC": {
-      "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
       "whale": "0x3304E22DDaa22bCdC5fCa2269b418046aE7b566A"
+    },
+    "cbBTC": {
+      "whale": "0x9d719096fF38c8D6652Cd95233e58452f4F4a2f0"
+    },
+    "WETH": {
+      "whale": "0x621e7c767004266c8109e83143ab0Da521B650d6"
+    },
+    "ETH": {
+      "whale": "0x621e7c767004266c8109e83143ab0Da521B650d6"
     }
   }
 }
