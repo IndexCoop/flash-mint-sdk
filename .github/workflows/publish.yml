@@ -52,7 +52,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build --if-present
-      - run: npm run hardhat 
+      - run: npm run hardhat &
       - name: Wait for hardhat nodes to start
         run: sleep 10
       - run: npm run test:hardhat
