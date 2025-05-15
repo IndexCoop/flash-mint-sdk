@@ -79,6 +79,11 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                 }
                 const inputToken =
                   sym === 'ETH' ? ETH : getTokenByChainAndSymbol(chainId, sym)
+
+                if(inputToken === null) {
+                    throw new Error(`Input token not found for symbol ${sym} on chain ${chainId}`)
+                }
+
                 const whale = mapEntry.whale as string
 
                 describe(`      • via ${sym}`, () => {
