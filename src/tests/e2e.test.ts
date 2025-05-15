@@ -164,6 +164,9 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                         [taker] =
                                             await localProvider.listAccounts();
 
+                                        const topUp = ethers.utils.parseEther("1000000").toHexString();
+                                        await localProvider.send("hardhat_setBalance", [taker, topUp]);
+
                                         // compute maxIn = setAmt × exchangeRate ÷ 10^(18 − inputDecimals)
                                         const tokenContract =
                                             new ethers.Contract(
