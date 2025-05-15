@@ -22,39 +22,39 @@ const testScenarios: TestScenarios = {
     uSUI2x: {
       setAmounts: ["1", "10", "20"],
       inputTokens: [
-        { symbol: "USDC", exchangeRate: 500 },
-        { symbol: "ETH",  exchangeRate: 0.3 },
-        { symbol: "WETH", exchangeRate: 0.3 },
+        { symbol: "USDC", exchangeRate: 1000 },
+        { symbol: "ETH",  exchangeRate: 0.5 },
+        { symbol: "WETH", exchangeRate: 0.5 },
       ],
     },
     uSUI3x: {
       setAmounts: ["1", "10", "20"],
       inputTokens: [
-        { symbol: "USDC", exchangeRate: 500 },
-        { symbol: "ETH",  exchangeRate: 0.3 },
-        { symbol: "WETH", exchangeRate: 0.3 },
+        { symbol: "USDC", exchangeRate: 1000 },
+        { symbol: "ETH",  exchangeRate: 0.5 },
+        { symbol: "WETH", exchangeRate: 0.5 },
       ],
     },
     uSOL2x: {
       setAmounts: ["1", "10", "100"],
       inputTokens: [
-        { symbol: "USDC", exchangeRate: 500 },
-        { symbol: "ETH",  exchangeRate: 0.3 },
-        { symbol: "WETH", exchangeRate: 0.3 },
+        { symbol: "USDC", exchangeRate: 1000 },
+        { symbol: "ETH",  exchangeRate: 0.5 },
+        { symbol: "WETH", exchangeRate: 0.5 },
       ],
     },
     uSOL3x: {
       setAmounts: ["1", "10", "100"],
       inputTokens: [
-        { symbol: "USDC", exchangeRate: 500 },
-        { symbol: "ETH",  exchangeRate: 0.3 },
-        { symbol: "WETH", exchangeRate: 0.3 },
+        { symbol: "USDC", exchangeRate: 1000 },
+        { symbol: "ETH",  exchangeRate: 0.5 },
+        { symbol: "WETH", exchangeRate: 0.5 },
       ],
     },
     BTC2X: {
       setAmounts: ["1", "10", "100"],
       inputTokens: [
-        { symbol: "USDC",  exchangeRate: 800 },
+        { symbol: "USDC",  exchangeRate: 2000 },
         { symbol: "cbBTC", exchangeRate: 0.2 },
         { symbol: "ETH",   exchangeRate: 0.5 },
         { symbol: "WETH",  exchangeRate: 0.5 },
@@ -72,7 +72,7 @@ const testScenarios: TestScenarios = {
     ETH2X: {
       setAmounts: ["1", "10", "100"],
       inputTokens: [
-        { symbol: "USDC", exchangeRate: 800 },
+        { symbol: "USDC", exchangeRate: 2000 },
         { symbol: "ETH",  exchangeRate: 0.5 },
         { symbol: "WETH", exchangeRate: 0.5 },
       ],
@@ -80,7 +80,7 @@ const testScenarios: TestScenarios = {
     ETH3X: {
       setAmounts: ["1", "10", "100"],
       inputTokens: [
-        { symbol: "USDC", exchangeRate: 800 },
+        { symbol: "USDC", exchangeRate: 2000 },
         { symbol: "ETH",  exchangeRate: 0.5 },
         { symbol: "WETH", exchangeRate: 0.5 },
       ],
