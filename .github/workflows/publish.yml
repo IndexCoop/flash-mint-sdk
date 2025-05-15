@@ -50,8 +50,6 @@ jobs:
       - name: Wait for hardhat nodes to start
         run: sleep 10
       - run: npm run test:hardhat src/tests/e2e.test.ts
-        env:
-          MAINNET_BLOCK_NUMBER: 22437572
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
