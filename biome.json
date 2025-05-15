@@ -22,7 +22,8 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "noForEach": "warn"
+        "noForEach": "warn",
+        "noExcessiveNestedTestSuites": "off"
       },
       "correctness": {
         "noUnusedImports": "error"
