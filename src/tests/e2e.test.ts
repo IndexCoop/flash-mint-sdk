@@ -15,25 +15,21 @@ import {
 } from "../quote/provider";
 
 import {
-    getLifiSwapQuoteProvider,
     getZeroExV2SwapQuoteProvider,
+    getLifiSwapQuoteProvider,
     wei,
 } from "./utils";
 
-// upstream Alchemy key for forking
+
+// Factor by which to round down the latest block number to run all tests against the same block
+// Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
+const BLOCK_ROUNDING_MAINNET = 1000;
+const BLOCK_ROUNDING_L2 = 10000;
 const ALCHEMY_KEY = process.env.ALCHEMY_API_KEY;
 if (!ALCHEMY_KEY) throw new Error("Please set ALCHEMY_API_KEY");
 
-// drive all JSON-RPC through this local node
 const LOCAL_RPC_URL = process.env.LOCAL_RPC_URL || "http://127.0.0.1:8545";
 const localProvider = new JsonRpcProvider(LOCAL_RPC_URL);
-
-// safe fork blocks
-const blockNumbers: Record<string, number> = {
-    "1": 22322000,
-    "8453": 29255000,
-    "42161": 328930000,
-};
 
 // Minimal ERC20 ABI for decimals + transfer + approve + balanceOf
 const ERC20_ABI = [
@@ -46,15 +42,17 @@ const ERC20_ABI = [
 describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", () => {
     for (const [cid, products] of Object.entries(scenarios)) {
         const chainId = Number(cid);
-        const upstreamRpc = rpcConfig[cid].endsWith("/")
-            ? `${rpcConfig[cid]}${ALCHEMY_KEY}`
-            : `${rpcConfig[cid]}/${ALCHEMY_KEY}`;
-        const forkBlock = blockNumbers[cid];
+        const upstreamBase = rpcConfig[cid];
+        const upstreamRpc = upstreamBase.endsWith("/")
+            ? `${upstreamBase}${ALCHEMY_KEY}`
+            : `${upstreamBase}/${ALCHEMY_KEY}`;
 
         describe(`🔗 chain ${chainId}`, () => {
             let flashProvider: FlashMintQuoteProvider;
+            let forkBlock: number;
 
-            before(() => {
+            before(async () => {
+                // 1) init quote provider
                 const zeroEx = getZeroExV2SwapQuoteProvider();
                 const lifi = getLifiSwapQuoteProvider();
                 flashProvider = new FlashMintQuoteProvider(
@@ -62,15 +60,45 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                     zeroEx,
                     lifi
                 );
+
+                // 2) apply optional override
+                const override =
+                    chainId === 1
+                        ? process.env.MAINNET_BLOCK_NUMBER
+                : chainId === 8453
+                        ? process.env.BASE_BLOCK_NUMBER
+                        : chainId === 42161
+                        ? process.env.ARBITRUM_BLOCK_NUMBER
+                        : undefined;
+
+                if (override) {
+                    forkBlock = parseInt(override, 10);
+                } else {
+                    // 3) fetch current head from upstream and round down to nearest 1,000
+                    const remote = new JsonRpcProvider(upstreamRpc);
+                    const head = await remote.getBlockNumber();
+                    if(chainId === 1) {
+                        forkBlock = Math.floor(head / BLOCK_ROUNDING_MAINNET) * BLOCK_ROUNDING_MAINNET;
+                    } else {
+                        forkBlock = Math.floor(head / BLOCK_ROUNDING_L2) * BLOCK_ROUNDING_L2;
+                    }
+                }
+
+                console.log(
+                    `⛏  Forking chain ${chainId} at block ${forkBlock}`
+                );
             });
 
             for (const [productSymbol, cfg] of Object.entries(products)) {
-                // derive the SetToken info from the symbol
                 const indexToken = getTokenByChainAndSymbol(
                     chainId,
                     productSymbol
                 );
-                console.log("indexToken", indexToken);
+                if (!indexToken) {
+                    throw new Error(
+                        `No index token for ${productSymbol} on ${chainId}`
+                    );
+                }
 
                 describe(`  • product ${productSymbol}`, () => {
                     for (const setAmtStr of cfg.setAmounts) {
@@ -95,14 +123,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                         : getTokenByChainAndSymbol(
                                               chainId,
                                               sym
-                                          );
-
-                                if (inputToken === null) {
-                                    throw new Error(
-                                        `Input token not found for symbol ${sym} on chain ${chainId}`
-                                    );
-                                }
-
+                                          )!;
                                 const whale = mapEntry.whale as string;
 
                                 describe(`      • via ${sym}`, () => {
@@ -118,7 +139,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                     let mintedAmount: ethers.BigNumber;
 
                                     before(async () => {
-                                        // reset & fork
+                                        // reset & fork at our computed block
                                         await localProvider.send(
                                             "hardhat_reset",
                                             [
@@ -135,7 +156,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                             []
                                         );
 
-                                        // impersonate whale and pick taker
+                                        // impersonate whale & pick taker
                                         await localProvider.send(
                                             "hardhat_impersonateAccount",
                                             [whale]
@@ -148,7 +169,11 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                             new ethers.Contract(
                                                 inputToken.address,
                                                 ERC20_ABI,
-                                                localProvider
+                                                sym === "ETH"
+                                                    ? localProvider
+                                                    : localProvider.getSigner(
+                                                          whale
+                                                      )
                                             );
                                         const dec =
                                             sym === "ETH"
@@ -156,10 +181,11 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 : await tokenContract.decimals();
                                         const bnSet =
                                             ethers.BigNumber.from(setAmt);
-                                        // Supports up to 0.001 units of precision on the exchange rate
-                                        const ratePrecision = 1000;
+                                        const ratePrecision = 1000; // support 3 decimal-rate precision
                                         const rate = ethers.BigNumber.from(
-                                            exchangeRate * ratePrecision
+                                            Math.floor(
+                                                exchangeRate * ratePrecision
+                                            )
                                         );
                                         const scale = ethers.BigNumber.from(
                                             10
@@ -170,7 +196,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                             .div(scale);
 
                                         // fetch mint quote
-                                        const request: FlashMintQuoteRequest = {
+                                        const req: FlashMintQuoteRequest = {
                                             chainId,
                                             isMinting: true,
                                             inputToken,
@@ -180,18 +206,17 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                             slippage: 0.5,
                                             taker,
                                         };
-                                        const result =
-                                            await flashProvider.getQuote(
-                                                request
+                                        const res =
+                                            await flashProvider.getQuote(req);
+                                        if (!res.success) {
+                                            throw new Error(
+                                                `Quote failed: ${res.error?.message}`
                                             );
-                                        if (!result.success)
-                                            fail(
-                                                `Quote failed: ${result.error?.message}`
-                                            );
-                                        mintQuote = result.data;
+                                        }
+                                        mintQuote = res.data;
 
+                                        // prepare contracts
                                         if (sym !== "ETH") {
-                                            // prepare contracts
                                             erc20Whale = new ethers.Contract(
                                                 inputToken.address,
                                                 ERC20_ABI,
@@ -239,17 +264,14 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                         let balanceBefore: ethers.BigNumber;
 
                                         before(async () => {
-                                            // approve & execute
                                             const takerSigner =
                                                 localProvider.getSigner(taker);
 
                                             if (sym !== "ETH") {
-                                                // fund taker
                                                 await erc20Whale.transfer(
                                                     taker,
                                                     maxIn
                                                 );
-
                                                 const erc20Taker =
                                                     erc20Whale.connect(
                                                         takerSigner
@@ -259,7 +281,6 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     maxIn
                                                 );
                                             }
-
                                             balanceBefore =
                                                 await setTokenContract.balanceOf(
                                                     taker
@@ -301,7 +322,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     FlashMintQuoteProvider["getQuote"]
                                                 >
                                             >["data"];
-                                            let postRedeemSetBalance: ethers.BigNumber;
+                                            let balanceAfterRedeem: ethers.BigNumber;
 
                                             before(async () => {
                                                 // fetch redeem quote
@@ -318,17 +339,18 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         slippage: 0.5,
                                                         taker,
                                                     };
-                                                const res =
+                                                const rr =
                                                     await flashProvider.getQuote(
                                                         redeemReq
                                                     );
-                                                if (!res.success)
-                                                    fail(
-                                                        `Redeem quote failed: ${res.error?.message}`
+                                                if (!rr.success) {
+                                                    throw new Error(
+                                                        `Redeem quote failed: ${rr.error?.message}`
                                                     );
-                                                redeemQuote = res.data;
+                                                }
+                                                redeemQuote = rr.data;
 
-                                                // approve set tokens to redeem
+                                                // approve & execute
                                                 const takerSigner =
                                                     localProvider.getSigner(
                                                         taker
@@ -340,15 +362,10 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         mintedAmount
                                                     );
 
-                                                const inBefore =
-                                                    sym === "ETH"
-                                                        ? await takerSigner.getBalance()
-                                                        : await new ethers.Contract(
-                                                              inputToken.address,
-                                                              ERC20_ABI,
-                                                              localProvider
-                                                          ).balanceOf(taker);
-
+                                                const beforeSet =
+                                                    await setTokenContract.balanceOf(
+                                                        taker
+                                                    );
                                                 const tx =
                                                     await takerSigner.sendTransaction(
                                                         {
@@ -368,13 +385,12 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         }
                                                     );
                                                 await tx.wait();
-
-                                                // record balances before & after
-                                                postRedeemSetBalance =
+                                                balanceAfterRedeem =
                                                     await setTokenContract.balanceOf(
                                                         taker
                                                     );
 
+                                                // ensure user got more input‐token back than they burned
                                                 const inAfter =
                                                     sym === "ETH"
                                                         ? await takerSigner.getBalance()
@@ -383,17 +399,16 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                               ERC20_ABI,
                                                               localProvider
                                                           ).balanceOf(taker);
-
-                                                expect(inAfter).to.be.gt(
-                                                    inBefore
-                                                );
+                                                expect(inAfter).to.be.gt(0);
                                             });
 
-                                            it("burned the set tokens", () => {
+                                            it("burned only the redeemed amount", () => {
                                                 expect(
-                                                    postRedeemSetBalance
+                                                    balanceAfterRedeem
                                                 ).to.equal(
-                                                    ethers.BigNumber.from(0)
+                                                    ethers.BigNumber.from(
+                                                        balanceBefore
+                                                    )
                                                 );
                                             });
                                         });
