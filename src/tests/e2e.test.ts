@@ -20,7 +20,6 @@ import {
     wei,
 } from "./utils";
 
-
 // Factor by which to round down the latest block number to run all tests against the same block
 // Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
 const BLOCK_ROUNDING_MAINNET = 1000;
@@ -65,22 +64,26 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                 const override =
                     chainId === 1
                         ? process.env.MAINNET_BLOCK_NUMBER
-                : chainId === 8453
+                        : chainId === 8453
                         ? process.env.BASE_BLOCK_NUMBER
                         : chainId === 42161
                         ? process.env.ARBITRUM_BLOCK_NUMBER
                         : undefined;
 
                 if (override) {
-                    forkBlock = parseInt(override, 10);
+                    forkBlock = Number.parseInt(override, 10);
                 } else {
                     // 3) fetch current head from upstream and round down to nearest 1,000
                     const remote = new JsonRpcProvider(upstreamRpc);
                     const head = await remote.getBlockNumber();
-                    if(chainId === 1) {
-                        forkBlock = Math.floor(head / BLOCK_ROUNDING_MAINNET) * BLOCK_ROUNDING_MAINNET;
+                    if (chainId === 1) {
+                        forkBlock =
+                            Math.floor(head / BLOCK_ROUNDING_MAINNET) *
+                            BLOCK_ROUNDING_MAINNET;
                     } else {
-                        forkBlock = Math.floor(head / BLOCK_ROUNDING_L2) * BLOCK_ROUNDING_L2;
+                        forkBlock =
+                            Math.floor(head / BLOCK_ROUNDING_L2) *
+                            BLOCK_ROUNDING_L2;
                     }
                 }
 
@@ -164,8 +167,13 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                         [taker] =
                                             await localProvider.listAccounts();
 
-                                        const topUp = ethers.utils.parseEther("1000000").toHexString();
-                                        await localProvider.send("hardhat_setBalance", [taker, topUp]);
+                                        const topUp = ethers.utils
+                                            .parseEther("1000000")
+                                            .toHexString();
+                                        await localProvider.send(
+                                            "hardhat_setBalance",
+                                            [taker, topUp]
+                                        );
 
                                         // compute maxIn = setAmt × exchangeRate ÷ 10^(18 − inputDecimals)
                                         const tokenContract =
@@ -352,6 +360,14 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     );
                                                 }
                                                 redeemQuote = rr.data;
+
+                                                const topUp = ethers.utils
+                                                    .parseEther("1000000")
+                                                    .toHexString();
+                                                await localProvider.send(
+                                                    "hardhat_setBalance",
+                                                    [taker, topUp]
+                                                );
 
                                                 // approve & execute
                                                 const takerSigner =
