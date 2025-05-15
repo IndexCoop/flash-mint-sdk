@@ -23,7 +23,7 @@
       "recommended": true,
       "complexity": {
         "noForEach": "warn",
-        "noExcessiveNestedTestSuites": "warn"
+        "noExcessiveNestedTestSuites": "off"
       },
       "correctness": {
         "noUnusedImports": "error"
