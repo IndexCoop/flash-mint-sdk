@@ -49,11 +49,39 @@ jobs:
       - run: npm run hardhat &
       - name: Wait for hardhat nodes to start
         run: sleep 10
-      - run: npm run test:hardhat src/tests/e2e.test.ts
+      - run: npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 1"
+  e2e-base:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm run hardhat &
+      - name: Wait for hardhat nodes to start
+        run: sleep 10
+      - run: npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 8453"
+  e2e-arb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm run hardhat &
+      - name: Wait for hardhat nodes to start
+        run: sleep 10
+      - run: npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 42161"
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: [build, e2e]
+    needs: [build, e2e, e2e-base, e2e-arb]
     steps:
       - uses: actions/checkout@v4
         with:

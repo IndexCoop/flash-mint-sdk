@@ -46,6 +46,7 @@ export interface FlashMintLeveragedZeroExQuoteRequest {
 export interface FlashMintLeveragedZeroExQuote {
   inputAmount: string
   outputAmount: string
+  quoteAmount: string
   swapDataDebtCollateral: SwapDataV2
   swapDataInputOutputToken: SwapDataV2
   isAave: boolean
@@ -181,6 +182,7 @@ export class LeveragedZeroExQuoteProvider
           ? indexTokenAmount
           : inputOutputTokenAmount
         ).toString(),
+        quoteAmount: estimatedInputOutputAmount.toString(),
         swapDataDebtCollateral,
         swapDataInputOutputToken,
         isAave,

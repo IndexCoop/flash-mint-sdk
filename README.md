@@ -137,6 +137,19 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 2. add a new [builder](./src/flashmint/builders/) and [quote provider](./src/quote/)
 3. The new quote provider has to be integrated into the [FlashMintQuoteProvider](./src/quote/indexQuoteProvider.ts)
 
+## Testing
+
+```
+// run all tests
+npm run test:hardhat src/tests/e2e.test.ts
+
+// run tests for a specific chain
+npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 1"
+
+// run tests for a specific product exiting on first failure
+npm run test:hardhat src/tests/e2e.test.ts -- --bail --grep "hyETH"
+```
+
 ## Debugging
 
 ```
