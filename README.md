@@ -143,6 +143,9 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 // run all tests
 npm run test:hardhat src/tests/e2e.test.ts
 
+// run tests for a specific chain
+npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 1"
+
 // run tests for a specific product exiting on first failure
 npm run test:hardhat src/tests/e2e.test.ts -- --bail --grep "hyETH"
 ```
