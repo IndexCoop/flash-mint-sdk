@@ -22,6 +22,7 @@ export function buildQuoteResponse(
   chainId: number,
   contractType: FlashMintContractType,
   inputOutputTokenAmount: BigNumber, // quote amount
+  quoteAmount: BigNumber, // no slippage
   tx: TransactionRequest,
 ): FlashMintQuote {
   const { isMinting, inputToken, outputToken, slippage } = request
@@ -38,6 +39,7 @@ export function buildQuoteResponse(
     outputAmount: isMinting ? indexTokenAmount : inputOutputTokenAmount,
     indexTokenAmount,
     inputOutputAmount: inputOutputTokenAmount,
+    quoteAmount,
     slippage,
     tx,
   }

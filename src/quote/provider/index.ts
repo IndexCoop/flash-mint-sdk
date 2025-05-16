@@ -60,6 +60,7 @@ export interface FlashMintQuote {
   outputAmount: BigNumber
   indexTokenAmount: BigNumber
   inputOutputAmount: BigNumber
+  quoteAmount: BigNumber
   slippage: number
   tx: TransactionRequest
 }
@@ -180,6 +181,7 @@ export class FlashMintQuoteProvider
             chainId,
             contractType,
             inputOutputTokenAmount,
+            BigNumber.from(hyethQuote.quoteAmount.toString()),
             tx,
           ),
         }
@@ -268,6 +270,7 @@ export class FlashMintQuoteProvider
                 ? leveragedQuote.inputAmount
                 : leveragedQuote.outputAmount,
             ),
+            BigNumber.from(leveragedQuote.quoteAmount),
             tx,
           ),
         }
@@ -326,6 +329,7 @@ export class FlashMintQuoteProvider
             chainId,
             contractType,
             zeroExQuote.inputOutputTokenAmount,
+            zeroExQuote.quoteAmmount,
             tx,
           ),
         }
@@ -376,6 +380,7 @@ export class FlashMintQuoteProvider
                 ? staticQuoteResult.inputAmount
                 : staticQuoteResult.outputAmount,
             ),
+            BigNumber.from(staticQuoteResult.quoteAmount.toString()),
             txRequest,
           ),
         }

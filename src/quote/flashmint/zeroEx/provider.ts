@@ -25,6 +25,7 @@ export interface FlashMintZeroExQuote {
   componentQuotes: string[]
   indexTokenAmount: BigNumber
   inputOutputTokenAmount: BigNumber
+  quoteAmmount: BigNumber
 }
 
 export class ZeroExQuoteProvider
@@ -122,6 +123,7 @@ export class ZeroExQuoteProvider
         componentQuotes,
         indexTokenAmount,
         inputOutputTokenAmount,
+        quoteAmmount: estimatedInputOutputAmount,
       },
     }
   }

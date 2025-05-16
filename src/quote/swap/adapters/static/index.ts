@@ -25,6 +25,7 @@ export interface StaticQuoteProviderQuote {
   outputToken: QuoteToken
   inputAmount: string
   outputAmount: string
+  quoteAmount: string
   slippage: number
   tx: TransactionRequest
 }
@@ -106,6 +107,7 @@ export class StaticQuoteProvider {
       outputToken,
       inputAmount,
       outputAmount,
+      quoteAmount: quoteAmount.toString(),
       slippage,
       tx,
     }

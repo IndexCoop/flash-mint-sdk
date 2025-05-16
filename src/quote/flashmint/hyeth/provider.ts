@@ -26,6 +26,7 @@ export interface FlashMintHyEthQuoteRequest {
 export interface FlashMintHyEthQuote {
   indexTokenAmount: bigint
   inputOutputTokenAmount: bigint
+  quoteAmount: bigint
   // Represents `swapDataEthToComponent` for minting
   // and `swapDataComponentToEth` for redeeming
   componentsSwapData: SwapData[]
@@ -125,6 +126,7 @@ export class FlashMintHyEthQuoteProvider
       data: {
         indexTokenAmount,
         inputOutputTokenAmount: inputOutputTokenAmount.toBigInt(),
+        quoteAmount: quoteResult.inputOutputTokenAmount,
         componentsSwapData,
         swapDataInputTokenToEth,
         swapDataEthToInputOutputToken,
