@@ -75,7 +75,7 @@ const testScenarios: TestScenarios = {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 2000 },
-        { symbol: 'ETH', exchangeRate: 0.5 },
+        // { symbol: 'ETH', exchangeRate: 0.5 },
         { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],
@@ -84,7 +84,7 @@ const testScenarios: TestScenarios = {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 2000 },
-        { symbol: 'ETH', exchangeRate: 0.5 },
+        // { symbol: 'ETH', exchangeRate: 0.5 },
         { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],
