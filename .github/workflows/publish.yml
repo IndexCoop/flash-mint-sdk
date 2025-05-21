@@ -49,7 +49,7 @@ jobs:
       - run: npm run hardhat &
       - name: Wait for hardhat nodes to start
         run: sleep 10
-      - run: npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 1"
+      - run: npm run test:e2e:mainnet
   e2e-base:
     runs-on: ubuntu-latest
     steps:
@@ -63,7 +63,7 @@ jobs:
       - run: npm run hardhat &
       - name: Wait for hardhat nodes to start
         run: sleep 10
-      - run: npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 8453"
+      - run: npm run test:e2e:base
   e2e-arb:
     runs-on: ubuntu-latest
     steps:
@@ -77,7 +77,7 @@ jobs:
       - run: npm run hardhat &
       - name: Wait for hardhat nodes to start
         run: sleep 10
-      - run: npm run test:hardhat src/tests/e2e.test.ts -- --grep "chain 42161"
+      - run: npm run test:e2e:arbitrum
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
