@@ -152,7 +152,7 @@ export class FlashMintQuoteProvider
           outputToken: outputToken.address,
           outputTokenSymbol: outputToken.symbol,
           inputTokenAmount: isMinting
-            ? inputOutputTokenAmount
+            ? BigNumber.from(inputTokenAmount)
             : indexTokenAmount,
           outputTokenAmount: isMinting
             ? indexTokenAmount
