@@ -12,13 +12,13 @@ import {
   FlashMintContractType,
   FlashMintQuoteProvider,
   type FlashMintQuoteRequest,
-} from '../quote/provider'
+} from '../../quote/provider'
 
 import {
   getLifiSwapQuoteProvider,
   getZeroExV2SwapQuoteProvider,
   wei,
-} from './utils'
+} from '../utils'
 
 // Factor by which to round down the latest block number to run all tests against the same block
 // Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
