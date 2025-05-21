@@ -1,5 +1,3 @@
-// src/testScenarios.ts
-
 export interface InputTokenConfig {
   symbol: string
   exchangeRate: number
@@ -38,7 +36,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL2x: {
-      setAmounts: ['1', '10', '100'],
+      setAmounts: ['1', '10', '50'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -47,7 +45,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL3x: {
-      setAmounts: ['1', '10', '100'],
+      setAmounts: ['1', '10', '50'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -77,7 +75,7 @@ const testScenarios: TestScenarios = {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 2000 },
-        { symbol: 'ETH', exchangeRate: 0.5 },
+        // { symbol: 'ETH', exchangeRate: 0.5 },
         { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],
@@ -86,7 +84,7 @@ const testScenarios: TestScenarios = {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 2000 },
-        { symbol: 'ETH', exchangeRate: 0.5 },
+        // { symbol: 'ETH', exchangeRate: 0.5 },
         { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],

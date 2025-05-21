@@ -15,7 +15,6 @@ export interface StaticQuoteRequest {
   inputAmount: bigint
   outputAmount: bigint
   slippage: number
-  taker: string
 }
 
 export interface StaticQuoteProviderQuote {
@@ -43,7 +42,6 @@ export class StaticQuoteProvider {
       isMinting,
       outputToken,
       slippage,
-      taker,
     } = request
 
     const indexToken = isMinting ? outputToken : inputToken

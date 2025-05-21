@@ -39,7 +39,7 @@ export function buildTransaction(
       return {
         to: contractAddress,
         data,
-        value: quoteAmount,
+        value: inputAmount,
       }
     } else {
       const data = encodeFunctionData({
@@ -49,7 +49,7 @@ export function buildTransaction(
           indexToken.address,
           outputAmount,
           inputToken.address,
-          quoteAmount,
+          inputAmount,
           swapDataDebtForCollateral,
           swapDataInputToken,
         ],

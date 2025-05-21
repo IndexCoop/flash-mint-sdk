@@ -152,7 +152,7 @@ export class FlashMintQuoteProvider
           outputToken: outputToken.address,
           outputTokenSymbol: outputToken.symbol,
           inputTokenAmount: isMinting
-            ? inputOutputTokenAmount
+            ? BigNumber.from(inputTokenAmount)
             : indexTokenAmount,
           outputTokenAmount: isMinting
             ? indexTokenAmount
@@ -344,7 +344,6 @@ export class FlashMintQuoteProvider
           inputAmount: BigInt(inputTokenAmount ?? 0),
           outputAmount: BigInt(request.indexTokenAmount),
           slippage,
-          taker: '0x0',
         })
 
         if (!staticQuoteResult) {

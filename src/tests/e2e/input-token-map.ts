@@ -1,5 +1,3 @@
-// src/inputTokenMap.ts
-
 export interface InputTokenMapEntry {
   whale: string
 }

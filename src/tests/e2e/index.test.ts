@@ -4,21 +4,21 @@ import { expect } from 'chai'
 import { ETH } from 'constants/tokens'
 import { ethers } from 'ethers'
 
-import inputTokenMap from './inputTokenMap'
-import rpcConfig from './rpcConfig'
-import scenarios from './testScenarios'
+import inputTokenMap from './input-token-map'
+import rpcConfig from './rpc-config'
+import scenarios from './test-scenarios'
 
 import {
   FlashMintContractType,
   FlashMintQuoteProvider,
   type FlashMintQuoteRequest,
-} from '../quote/provider'
+} from '../../quote/provider'
 
 import {
   getLifiSwapQuoteProvider,
   getZeroExV2SwapQuoteProvider,
   wei,
-} from './utils'
+} from '../utils'
 
 // Factor by which to round down the latest block number to run all tests against the same block
 // Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
@@ -254,7 +254,6 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           indexTokenAmount: setAmt,
                           inputTokenAmount: mintedAmount.toString(),
                           slippage: 0.5,
-                          taker,
                         }
                         const rr = await flashProvider.getQuote(redeemReq)
                         if (!rr.success) {
