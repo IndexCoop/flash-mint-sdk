@@ -344,7 +344,6 @@ export class FlashMintQuoteProvider
           inputAmount: BigInt(inputTokenAmount ?? 0),
           outputAmount: BigInt(request.indexTokenAmount),
           slippage,
-          taker: '0x0',
         })
 
         if (!staticQuoteResult) {

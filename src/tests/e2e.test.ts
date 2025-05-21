@@ -254,7 +254,6 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           indexTokenAmount: setAmt,
                           inputTokenAmount: mintedAmount.toString(),
                           slippage: 0.5,
-                          taker,
                         }
                         const rr = await flashProvider.getQuote(redeemReq)
                         if (!rr.success) {
