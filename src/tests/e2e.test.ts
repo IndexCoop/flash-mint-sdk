@@ -4,9 +4,9 @@ import { expect } from 'chai'
 import { ETH } from 'constants/tokens'
 import { ethers } from 'ethers'
 
-import inputTokenMap from './inputTokenMap'
-import rpcConfig from './rpcConfig'
-import scenarios from './testScenarios'
+import inputTokenMap from './input-token-map'
+import rpcConfig from './rpc-config'
+import scenarios from './test-scenarios'
 
 import {
   FlashMintContractType,

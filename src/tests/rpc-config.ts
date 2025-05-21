@@ -1,5 +1,3 @@
-// src/rpcConfig.ts
-
 export type RpcConfig = Record<number, string>
 
 const rpcConfig: RpcConfig = {

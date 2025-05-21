@@ -1,5 +1,3 @@
-// src/testScenarios.ts
-
 export interface InputTokenConfig {
   symbol: string
   exchangeRate: number
