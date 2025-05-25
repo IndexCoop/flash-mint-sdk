@@ -94,15 +94,16 @@ export class FlashMintQuoteProvider
         slippage,
     } = request
 
-      if(request.inputTokenAmount == null) {
-          throw new Error("Input token amount required for fixed input quote");
-      }
+    if(request.inputTokenAmount == null) {
+        throw new Error("Input token amount required for fixed input quote");
+    }
+
     const inputTokenAmount = BigNumber.from(request.inputTokenAmount);
     let indexTokenAmount = BigNumber.from(request.indexTokenAmount);
 
 
     const slippageBasisPoints = BigNumber.from(Math.max(Math.round(slippage * 100), 1))
-    let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
+    let remainingIterations = MAX_ITERATIONS_FIXED_INPUT;
     let factor = BigNumber.from(0)
     let currentInputAmount = inputTokenAmount
     const targetInputAmount =
@@ -138,7 +139,7 @@ export class FlashMintQuoteProvider
         remainingIterations--
     }
     while (
-        remainingIterations > 0 &&
+        remainingIterations > 1 &&
         factor != null &&
         currentInputAmount != null &&
         (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000)) ||
