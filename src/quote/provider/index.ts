@@ -109,8 +109,6 @@ export class FlashMintQuoteProvider
     const targetInputAmount =
         (inputTokenAmount.mul(BigNumber.from(10000).sub(slippageBasisPoints))).div(BigNumber.from(10000))
 
-    let savedQuote: Result<FlashMintQuote>;
-
     do {
         const flashmintQuoteResult = await this.getQuote(
             {
@@ -125,15 +123,16 @@ export class FlashMintQuoteProvider
 
         // If there is no FlashMint quote, return immediately
         if (!flashmintQuoteResult.success) return flashmintQuoteResult
-        savedQuote = flashmintQuoteResult
         currentInputAmount = flashmintQuoteResult.data.inputOutputAmount
+        console.log("currentInputAmount", currentInputAmount.toString());
+        console.log("targetInputAmount", targetInputAmount.toString());
 
         factor = (BigNumber.from(10000).mul(targetInputAmount)).div(currentInputAmount)
 
         if (factor.lt(1)) {
         factor = BigNumber.from(1)
         }
-        console.log('factor', factor)
+        console.log('factor', factor.toString())
 
         indexTokenAmount = (indexTokenAmount.mul(factor)).div(BigNumber.from(10000))
         remainingIterations--
@@ -146,7 +145,7 @@ export class FlashMintQuoteProvider
         currentInputAmount > inputTokenAmount)
     ) 
 
-    if (currentInputAmount > inputTokenAmount) {
+    if (currentInputAmount.gt(inputTokenAmount)) {
         throw new Error(
         `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmount}`,
         )
@@ -158,7 +157,18 @@ export class FlashMintQuoteProvider
         )
     }
 
-    return savedQuote
+    return await this.getQuote(
+        {
+            isMinting,
+            inputToken,
+            outputToken,
+            indexTokenAmount: indexTokenAmount.toString(),
+            inputTokenAmount: inputTokenAmount.toString(),
+            slippage: slippage,
+            chainId,
+        }
+    )
+
   }
 
   async getQuote(

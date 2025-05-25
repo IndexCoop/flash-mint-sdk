@@ -2,7 +2,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { getTokenByChainAndSymbol } from "@indexcoop/tokenlists";
 import { expect } from "chai";
 import { ETH } from "constants/tokens";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import inputTokenMap from "./input-token-map";
 import rpcConfig from "./rpc-config";
@@ -19,6 +19,7 @@ import {
     getZeroExV2SwapQuoteProvider,
     wei,
 } from "../utils";
+import { request } from "axios";
 
 // Factor by which to round down the latest block number to run all tests against the same block
 // Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
@@ -129,13 +130,14 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                           )!;
                                 const whale = mapEntry.whale as string;
 
-                                [true].forEach((FIXED_OUTPUT) =>
+                                [true, false].forEach((FIXED_OUTPUT) =>
                                     describe(`${
                                         FIXED_OUTPUT
                                             ? "FixedOutput"
                                             : "FixedInput"
                                     }     • via ${sym}`, () => {
                                         let taker: string;
+                                        let req: FlashMintQuoteRequest;
                                         let maxIn: ethers.BigNumber;
                                         let erc20Whale: ethers.Contract;
                                         let setTokenContract: ethers.Contract;
@@ -211,9 +213,13 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 .mul(rate)
                                                 .div(ratePrecision)
                                                 .div(scale);
+                                            console.log(
+                                                "maxIn",
+                                                maxIn.toString()
+                                            );
 
                                             // fetch mint quote
-                                            const req: FlashMintQuoteRequest = {
+                                            req = {
                                                 chainId,
                                                 isMinting: true,
                                                 inputToken,
@@ -235,13 +241,41 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         req
                                                     );
                                             } else {
-                                                console.log(
-                                                    "calling getFixedInputQuote"
-                                                );
-                                                res =
-                                                    await flashProvider.getFixedInputQuote(
+                                                const fixedOutputQuoteResult =
+                                                    await flashProvider.getQuote(
                                                         req
                                                     );
+                                                if (
+                                                    fixedOutputQuoteResult.success
+                                                ) {
+                                                    // This ensures that the fixed input test, is equivalent in terms of the set amount issued
+                                                    req.inputTokenAmount =
+                                                        fixedOutputQuoteResult.data.inputOutputAmount.toString();
+
+                                                    // This ensures that the initial indexToken amount is very inaccurate and the algorithm still finds the correct solution
+                                                    req.indexTokenAmount = BigNumber.from(req.indexTokenAmount).mul(2).toString();
+                                                    console.log(
+                                                        "calling getFixedInputQuote"
+                                                    );
+                                                    res =
+                                                        await flashProvider.getFixedInputQuote(
+                                                            req
+                                                        );
+                                                } else {
+                                                    throw new Error(
+                                                        `Prepartory output quote failed: ${fixedOutputQuoteResult.error?.message}`
+                                                    );
+                                                }
+                                            }
+                                            if (res.success) {
+                                                console.log(
+                                                    "response.inputAmount",
+                                                    res.data.inputOutputAmount.toString()
+                                                );
+                                                console.log(
+                                                    "response.indexTokenAmount",
+                                                    res.data.indexTokenAmount.toString()
+                                                );
                                             }
                                             if (!res.success) {
                                                 throw new Error(
@@ -295,6 +329,17 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 expect(
                                                     mintQuote.slippage
                                                 ).to.equal(0.5);
+                                            } else {
+                                                console.log("requestInputAmount", req.inputTokenAmount);
+                                                const toleranceBP = 5;
+                                                expect(
+                                                    mintQuote.inputOutputAmount
+                                                ).to.gte(BigNumber.from(10_000 - toleranceBP).mul(BigNumber.from(req.inputTokenAmount)).div(BigNumber.from(10000)));
+                                                expect(
+                                                    mintQuote.inputOutputAmount
+                                                ).to.lte(BigNumber.from(10_000 + toleranceBP).mul(BigNumber.from(req.inputTokenAmount)).div(BigNumber.from(10000)));
+                                                
+                                                // TODO: Add tests that verifies input amount set on tx
                                             }
                                             expect(mintQuote.tx.to).to.match(
                                                 /^0x[0-9a-fA-F]{40}$/
@@ -306,9 +351,12 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
 
                                         describe("      ✓ execute mint", () => {
                                             let balanceBefore: ethers.BigNumber;
+                                            let inputBalanceBefore: ethers.BigNumber;
+                                            let takerSigner: any;
+                                            let spentAmount: ethers.BigNumber;
 
                                             before(async () => {
-                                                const takerSigner =
+                                                takerSigner =
                                                     localProvider.getSigner(
                                                         taker
                                                     );
@@ -326,6 +374,9 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         mintQuote.tx.to,
                                                         maxIn
                                                     );
+                                                    inputBalanceBefore = await erc20Taker.balanceOf(taker);
+                                                } else {
+                                                    inputBalanceBefore = await takerSigner.getBalance();
                                                 }
                                                 balanceBefore =
                                                     await setTokenContract.balanceOf(
@@ -361,10 +412,31 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         balanceBefore
                                                     );
                                                 expect(mintedAmount).to.equal(
-                                                    ethers.BigNumber.from(
-                                                        setAmt
-                                                    )
+                                                    mintQuote.indexTokenAmount
                                                 );
+                                            });
+
+                                            it("spends correct amount", async () => {
+                                                let inputBalanceAfter =  sym !== 'ETH' ? await erc20Whale.balanceOf(taker) : await takerSigner.getBalance();
+                                                spentAmount =
+                                                    inputBalanceBefore.sub(
+                                                        inputBalanceAfter
+                                                    );
+                                                expect(spentAmount).to.lt(
+                                                    mintQuote.indexTokenAmount
+                                                );
+                                                if(!FIXED_OUTPUT) {
+                                                    let slippageBP = BigNumber.from(req.slippage * 100);
+                                                    let factor = BigNumber.from(10000).sub(slippageBP);
+                                                    let targetInput = BigNumber.from(req.inputTokenAmount).mul(factor).div(10000);
+                                                    console.log("targetInput", targetInput.toString());
+                                                    // TODO: Investigate why I need to set such high tolerance
+                                                    let toleranceBP = BigNumber.from(30);
+                                                    console.log("spentAmount", spentAmount.toString());
+                                                    expect(spentAmount).to.gte(
+                                                        targetInput.mul(BigNumber.from(10000).sub(toleranceBP)).div(10000)
+                                                    );
+                                                }
                                             });
 
                                             describe("      ◦ redeem", () => {
