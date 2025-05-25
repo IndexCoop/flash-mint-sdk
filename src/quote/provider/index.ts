@@ -25,6 +25,10 @@ import type { QuoteProvider, QuoteToken } from '../interfaces'
 import type { Result } from '../interfaces'
 import type { SwapQuoteProviderV2 } from '../swap'
 
+const MAX_ITERATIONS_FIXED_INPUT = 10
+// Maximum deviation from target fixed input to allow
+const MAX_DEVIATIION_FIXED_INPUT = BigNumber.from(5)
+
 export enum FlashMintQuoteProviderErrorCode {
   CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
   ENCODING_ERROR = 'ENCODING_ERROR',
@@ -73,6 +77,88 @@ export class FlashMintQuoteProvider
     private readonly swapQuoteProviderV2: SwapQuoteProviderV2,
     private readonly swapQuoteOutputProviderV2?: SwapQuoteProviderV2,
   ) {}
+
+  async getFixedInputQuote(
+      request: FlashMintQuoteRequest
+  ): Promise<Result<FlashMintQuote>> {
+      if(!request.isMinting) {
+          return this.getQuote(request);
+      }
+
+    console.log("getFlashMintQuote", request);
+    const {
+        chainId,
+        inputToken,
+        isMinting,
+        outputToken,
+        slippage,
+    } = request
+
+      if(request.inputTokenAmount == null) {
+          throw new Error("Input token amount required for fixed input quote");
+      }
+    const inputTokenAmount = BigNumber.from(request.inputTokenAmount);
+    let indexTokenAmount = BigNumber.from(request.indexTokenAmount);
+
+
+    const slippageBasisPoints = BigNumber.from(Math.max(Math.round(slippage * 100), 1))
+    let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
+    let factor = BigNumber.from(0)
+    let currentInputAmount = inputTokenAmount
+    const targetInputAmount =
+        (inputTokenAmount.mul(BigNumber.from(10000).sub(slippageBasisPoints))).div(BigNumber.from(10000))
+
+    let savedQuote: Result<FlashMintQuote>;
+
+    do {
+        const flashmintQuoteResult = await this.getQuote(
+            {
+                isMinting,
+                inputToken,
+                outputToken,
+                indexTokenAmount: indexTokenAmount.toString(),
+                slippage: 0,
+                chainId,
+            }
+        )
+
+        // If there is no FlashMint quote, return immediately
+        if (!flashmintQuoteResult.success) return flashmintQuoteResult
+        savedQuote = flashmintQuoteResult
+        currentInputAmount = flashmintQuoteResult.data.inputOutputAmount
+
+        factor = (BigNumber.from(10000).mul(targetInputAmount)).div(currentInputAmount)
+
+        if (factor.lt(1)) {
+        factor = BigNumber.from(1)
+        }
+        console.log('factor', factor)
+
+        indexTokenAmount = (indexTokenAmount.mul(factor)).div(BigNumber.from(10000))
+        remainingIterations--
+    }
+    while (
+        remainingIterations > 0 &&
+        factor != null &&
+        currentInputAmount != null &&
+        (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000)) ||
+        currentInputAmount > inputTokenAmount)
+    ) 
+
+    if (currentInputAmount > inputTokenAmount) {
+        throw new Error(
+        `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmount}`,
+        )
+    }
+
+    if (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000))) {
+        throw new Error(
+        `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
+        )
+    }
+
+    return savedQuote
+  }
 
   async getQuote(
     request: FlashMintQuoteRequest,
