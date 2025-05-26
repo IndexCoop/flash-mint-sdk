@@ -342,8 +342,19 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     mintQuote.inputOutputAmount
                                                 ).to.lte(BigNumber.from(10_000 + toleranceBP).mul(BigNumber.from(req.inputTokenAmount)).div(BigNumber.from(10000)));
                                                 
-                                                // TODO: Add tests that verifies input amount set on tx
                                             }
+
+                                            // Verify that requested inptu amount is represented 1:1 in the transaction 
+                                            if(sym === 'ETH') {
+                                                console.log("mintQuote", mintQuote);
+                                                expect(mintQuote.tx.value).to.eq(req.inputTokenAmount);
+                                            } else {
+                                                const inputAmountHex = BigNumber.from(req.inputTokenAmount).toHexString();
+                                                console.log("inputAmountHex", inputAmountHex);
+                                                console.log("tx.data", mintQuote.tx.data);
+                                                expect(mintQuote.tx.data.includes(inputAmountHex));
+                                            }
+
                                             expect(mintQuote.tx.to).to.match(
                                                 /^0x[0-9a-fA-F]{40}$/
                                             );
