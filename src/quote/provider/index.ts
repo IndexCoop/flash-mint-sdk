@@ -79,100 +79,93 @@ export class FlashMintQuoteProvider
   ) {}
 
   async getFixedInputQuote(
-      request: FlashMintQuoteRequest
+    request: FlashMintQuoteRequest,
   ): Promise<Result<FlashMintQuote>> {
-      if(!request.isMinting) {
-          return this.getQuote(request);
-      }
-
-    console.log("getFlashMintQuote", request);
-    const {
-        chainId,
-        inputToken,
-        isMinting,
-        outputToken,
-        slippage,
-    } = request
-
-    if(request.inputTokenAmount == null) {
-        throw new Error("Input token amount required for fixed input quote");
+    if (!request.isMinting) {
+      return this.getQuote(request)
     }
 
-    const inputTokenAmount = BigNumber.from(request.inputTokenAmount);
-    let indexTokenAmount = BigNumber.from(request.indexTokenAmount);
+    console.log('getFlashMintQuote', request)
+    const { chainId, inputToken, isMinting, outputToken, slippage } = request
 
+    if (request.inputTokenAmount == null) {
+      throw new Error('Input token amount required for fixed input quote')
+    }
 
-    const slippageBasisPoints = BigNumber.from(Math.max(Math.round(slippage * 100), 1))
-    let remainingIterations = MAX_ITERATIONS_FIXED_INPUT;
+    const inputTokenAmount = BigNumber.from(request.inputTokenAmount)
+    let indexTokenAmount = BigNumber.from(request.indexTokenAmount)
+
+    const slippageBasisPoints = BigNumber.from(
+      Math.max(Math.round(slippage * 100), 1),
+    )
+    let remainingIterations = MAX_ITERATIONS_FIXED_INPUT
     let factor = BigNumber.from(0)
     let currentInputAmount = inputTokenAmount
-    const targetInputAmount =
-        (inputTokenAmount.mul(BigNumber.from(10000).sub(slippageBasisPoints))).div(BigNumber.from(10000))
+    const targetInputAmount = inputTokenAmount
+      .mul(BigNumber.from(10000).sub(slippageBasisPoints))
+      .div(BigNumber.from(10000))
 
-    let flashmintQuoteResult: Result<FlashMintQuote>;
+    let flashmintQuoteResult: Result<FlashMintQuote>
     do {
-        flashmintQuoteResult = await this.getQuote(
-            {
-                isMinting,
-                inputToken,
-                outputToken,
-                indexTokenAmount: indexTokenAmount.toString(),
-                inputTokenAmount: outputToken.symbol === 'hyETH' ? request.inputTokenAmount : undefined,
-                slippage: 0,
-                chainId,
-            }
-        )
+      flashmintQuoteResult = await this.getQuote({
+        isMinting,
+        inputToken,
+        outputToken,
+        indexTokenAmount: indexTokenAmount.toString(),
+        inputTokenAmount:
+          outputToken.symbol === 'hyETH' ? request.inputTokenAmount : undefined,
+        slippage: 0,
+        chainId,
+      })
 
-        // If there is no FlashMint quote, return immediately
-        if (!flashmintQuoteResult.success) return flashmintQuoteResult
-        currentInputAmount = flashmintQuoteResult.data.inputOutputAmount
-        console.log("currentInputAmount", currentInputAmount.toString());
-        console.log("targetInputAmount", targetInputAmount.toString());
+      // If there is no FlashMint quote, return immediately
+      if (!flashmintQuoteResult.success) return flashmintQuoteResult
+      currentInputAmount = flashmintQuoteResult.data.inputOutputAmount
+      console.log('currentInputAmount', currentInputAmount.toString())
+      console.log('targetInputAmount', targetInputAmount.toString())
 
-        factor = (BigNumber.from(10000).mul(targetInputAmount)).div(currentInputAmount)
+      factor = BigNumber.from(10000)
+        .mul(targetInputAmount)
+        .div(currentInputAmount)
 
-        if (factor.lt(1)) {
+      if (factor.lt(1)) {
         factor = BigNumber.from(1)
-        }
-        console.log('factor', factor.toString())
+      }
+      console.log('factor', factor.toString())
 
-        indexTokenAmount = (indexTokenAmount.mul(factor)).div(BigNumber.from(10000))
-        remainingIterations--
-    }
-    while (
-        remainingIterations > 1 &&
-        factor != null &&
-        currentInputAmount != null &&
-        (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000)) ||
+      indexTokenAmount = indexTokenAmount.mul(factor).div(BigNumber.from(10000))
+      remainingIterations--
+    } while (
+      remainingIterations > 1 &&
+      factor != null &&
+      currentInputAmount != null &&
+      (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000)) ||
         currentInputAmount > inputTokenAmount)
-    ) 
+    )
 
     if (currentInputAmount.gt(inputTokenAmount)) {
-        throw new Error(
+      throw new Error(
         `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmount}`,
-        )
+      )
     }
 
     if (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000))) {
-        throw new Error(
+      throw new Error(
         `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
-        )
+      )
     }
 
-      return await this.getQuote(
-        {
-            isMinting,
-            inputToken,
-            outputToken,
-            indexTokenAmount: indexTokenAmount.toString(),
-            inputTokenAmount: inputTokenAmount.toString(),
-            // TODO: No idea why I needed to do this. Apparently hyEth applies slippage differently from other quote providers
-            // Arrived at this by trial and error
-            slippage: outputToken.symbol === 'hyETH' ? slippage / 2 : slippage,
-            chainId,
-        }
-    )
-
+    return await this.getQuote({
+      isMinting,
+      inputToken,
+      outputToken,
+      indexTokenAmount: indexTokenAmount.toString(),
+      inputTokenAmount: inputTokenAmount.toString(),
+      // TODO: No idea why I needed to do this. Apparently hyEth applies slippage differently from other quote providers
+      // Arrived at this by trial and error
+      slippage: outputToken.symbol === 'hyETH' ? slippage / 2 : slippage,
+      chainId,
+    })
   }
 
   async getQuote(
