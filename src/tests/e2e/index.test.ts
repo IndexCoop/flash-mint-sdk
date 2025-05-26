@@ -396,7 +396,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 const inputAmountHex =
                                                     BigNumber.from(
                                                         req.inputTokenAmount
-                                                    ).toHexString();
+                                                    ).toHexString().substring(2);
                                                 console.log(
                                                     "inputAmountHex",
                                                     inputAmountHex
@@ -409,7 +409,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     mintQuote.tx.data.includes(
                                                         inputAmountHex
                                                     )
-                                                );
+                                                ).to.be.true;
                                             }
 
                                             expect(mintQuote.tx.to).to.match(
