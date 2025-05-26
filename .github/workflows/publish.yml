@@ -64,6 +64,9 @@ jobs:
       - name: Wait for hardhat nodes to start
         run: sleep 10
       - run: npm run test:e2e:base
+        env:
+          # TODO: Remove once insufficient liquidity for uSOL etc. is solved
+          BASE_BLOCK_NUMBER: 30000000
   e2e-arb:
     runs-on: ubuntu-latest
     steps:
