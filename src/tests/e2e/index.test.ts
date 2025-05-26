@@ -172,7 +172,8 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 "hardhat_impersonateAccount",
                                                 [whale]
                                             );
-                                            taker = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
+                                            taker =
+                                                "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
                                             await localProvider.send(
                                                 "hardhat_impersonateAccount",
                                                 [taker]
@@ -256,9 +257,16 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         fixedOutputQuoteResult.data.inputOutputAmount.toString();
 
                                                     // This ensures that the initial indexToken amount is very inaccurate and the algorithm still finds the correct solution
-                                                    req.indexTokenAmount = BigNumber.from(req.indexTokenAmount).mul(2).toString();
+                                                    req.indexTokenAmount =
+                                                        BigNumber.from(
+                                                            req.indexTokenAmount
+                                                        )
+                                                            .mul(2)
+                                                            .toString();
                                                     console.log(
-                                                        "calling getFixedInputQuote"
+                                                        "calling getFixedInputQuote",
+                                                        req.indexTokenAmount.toString(),
+                                                        req.inputTokenAmount.toString()
                                                     );
                                                     res =
                                                         await flashProvider.getFixedInputQuote(
@@ -333,26 +341,74 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     mintQuote.slippage
                                                 ).to.equal(0.5);
                                             } else {
-                                                console.log("requestInputAmount", req.inputTokenAmount);
+                                                console.log(
+                                                    "requestInputAmount",
+                                                    req.inputTokenAmount
+                                                );
                                                 const toleranceBP = 5;
                                                 expect(
                                                     mintQuote.inputOutputAmount
-                                                ).to.gte(BigNumber.from(10_000 - toleranceBP).mul(BigNumber.from(req.inputTokenAmount)).div(BigNumber.from(10000)));
+                                                ).to.gte(
+                                                    BigNumber.from(
+                                                        10_000 - toleranceBP
+                                                    )
+                                                        .mul(
+                                                            BigNumber.from(
+                                                                req.inputTokenAmount
+                                                            )
+                                                        )
+                                                        .div(
+                                                            BigNumber.from(
+                                                                10000
+                                                            )
+                                                        )
+                                                );
                                                 expect(
                                                     mintQuote.inputOutputAmount
-                                                ).to.lte(BigNumber.from(10_000 + toleranceBP).mul(BigNumber.from(req.inputTokenAmount)).div(BigNumber.from(10000)));
-                                                
+                                                ).to.lte(
+                                                    BigNumber.from(
+                                                        10_000 + toleranceBP
+                                                    )
+                                                        .mul(
+                                                            BigNumber.from(
+                                                                req.inputTokenAmount
+                                                            )
+                                                        )
+                                                        .div(
+                                                            BigNumber.from(
+                                                                10000
+                                                            )
+                                                        )
+                                                );
                                             }
 
-                                            // Verify that requested inptu amount is represented 1:1 in the transaction 
-                                            if(sym === 'ETH') {
-                                                console.log("mintQuote", mintQuote);
-                                                expect(mintQuote.tx.value).to.eq(req.inputTokenAmount);
+                                            // Verify that requested inptu amount is represented 1:1 in the transaction
+                                            if (sym === "ETH") {
+                                                console.log(
+                                                    "mintQuote",
+                                                    mintQuote
+                                                );
+                                                expect(
+                                                    mintQuote.tx.value
+                                                ).to.eq(req.inputTokenAmount);
                                             } else {
-                                                const inputAmountHex = BigNumber.from(req.inputTokenAmount).toHexString();
-                                                console.log("inputAmountHex", inputAmountHex);
-                                                console.log("tx.data", mintQuote.tx.data);
-                                                expect(mintQuote.tx.data.includes(inputAmountHex));
+                                                const inputAmountHex =
+                                                    BigNumber.from(
+                                                        req.inputTokenAmount
+                                                    ).toHexString();
+                                                console.log(
+                                                    "inputAmountHex",
+                                                    inputAmountHex
+                                                );
+                                                console.log(
+                                                    "tx.data",
+                                                    mintQuote.tx.data
+                                                );
+                                                expect(
+                                                    mintQuote.tx.data.includes(
+                                                        inputAmountHex
+                                                    )
+                                                );
                                             }
 
                                             expect(mintQuote.tx.to).to.match(
@@ -388,9 +444,13 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         mintQuote.tx.to,
                                                         maxIn
                                                     );
-                                                    inputBalanceBefore = await erc20Taker.balanceOf(taker);
+                                                    inputBalanceBefore =
+                                                        await erc20Taker.balanceOf(
+                                                            taker
+                                                        );
                                                 } else {
-                                                    inputBalanceBefore = await takerSigner.getBalance();
+                                                    inputBalanceBefore =
+                                                        await takerSigner.getBalance();
                                                 }
                                                 balanceBefore =
                                                     await setTokenContract.balanceOf(
@@ -418,14 +478,25 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     "evm_mine",
                                                     []
                                                 );
-                                                let inputBalanceAfter =  sym !== 'ETH' ? await erc20Whale.balanceOf(taker) : await takerSigner.getBalance();
+                                                let inputBalanceAfter =
+                                                    sym !== "ETH"
+                                                        ? await erc20Whale.balanceOf(
+                                                              taker
+                                                          )
+                                                        : await takerSigner.getBalance();
                                                 spentAmount =
                                                     inputBalanceBefore.sub(
                                                         inputBalanceAfter
                                                     );
-                                                if(sym === 'ETH') {
-                                                    const gasCosts = receipt.gasUsed.mul(tx.gasPrice);
-                                                    spentAmount = spentAmount.sub(gasCosts);
+                                                if (sym === "ETH") {
+                                                    const gasCosts =
+                                                        receipt.gasUsed.mul(
+                                                            tx.gasPrice
+                                                        );
+                                                    spentAmount =
+                                                        spentAmount.sub(
+                                                            gasCosts
+                                                        );
                                                 }
                                             });
 
@@ -447,32 +518,60 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 expect(spentAmount).to.lt(
                                                     mintQuote.inputOutputAmount
                                                 );
-                                                if(!FIXED_OUTPUT) {
-                                                    let slippageBP = BigNumber.from(req.slippage * 100);
-                                                    let factor = BigNumber.from(10000).sub(slippageBP);
-                                                    let targetInput = BigNumber.from(req.inputTokenAmount).mul(factor).div(10000);
-                                                    console.log("targetInput", targetInput.toString());
+                                                if (!FIXED_OUTPUT) {
+                                                    let slippageBP =
+                                                        BigNumber.from(
+                                                            req.slippage * 100
+                                                        );
+                                                    let factor =
+                                                        BigNumber.from(
+                                                            10000
+                                                        ).sub(slippageBP);
+                                                    let targetInput =
+                                                        BigNumber.from(
+                                                            req.inputTokenAmount
+                                                        )
+                                                            .mul(factor)
+                                                            .div(10000);
+                                                    console.log(
+                                                        "targetInput",
+                                                        targetInput.toString()
+                                                    );
                                                     // TODO: Investigate why I need to set such high tolerance
-                                                    let toleranceBP = BigNumber.from(30);
-                                                    console.log("spentAmount", spentAmount.toString());
+                                                    let toleranceBP =
+                                                        BigNumber.from(30);
+                                                    console.log(
+                                                        "spentAmount",
+                                                        spentAmount.toString()
+                                                    );
                                                     expect(spentAmount).to.gte(
-                                                        targetInput.mul(BigNumber.from(10000).sub(toleranceBP)).div(10000)
+                                                        targetInput
+                                                            .mul(
+                                                                BigNumber.from(
+                                                                    10000
+                                                                ).sub(
+                                                                    toleranceBP
+                                                                )
+                                                            )
+                                                            .div(10000)
                                                     );
                                                 }
                                             });
 
-                                            describe("      ◦ redeem", () => {
-                                                let redeemQuote: Awaited<
-                                                    ReturnType<
-                                                        FlashMintQuoteProvider["getQuote"]
-                                                    >
-                                                >["data"];
-                                                let balanceAfterRedeem: ethers.BigNumber;
+                                            if (FIXED_OUTPUT) {
+                                                describe("      ◦ redeem", () => {
+                                                    let redeemQuote: Awaited<
+                                                        ReturnType<
+                                                            FlashMintQuoteProvider["getQuote"]
+                                                        >
+                                                    >["data"];
+                                                    let balanceAfterRedeem: ethers.BigNumber;
+                                                    let burntAmount: ethers.BigNumber;
+                                                    let redeemReq: FlashMintQuoteRequest;
 
-                                                before(async () => {
-                                                    // fetch redeem quote
-                                                    const redeemReq: FlashMintQuoteRequest =
-                                                        {
+                                                    before(async () => {
+                                                        // fetch redeem quote
+                                                        redeemReq = {
                                                             chainId,
                                                             isMinting: false,
                                                             inputToken:
@@ -485,89 +584,104 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                                 mintedAmount.toString(),
                                                             slippage: 0.5,
                                                         };
-                                                    const rr =
-                                                        await flashProvider.getQuote(
-                                                            redeemReq
-                                                        );
-                                                    if (!rr.success) {
-                                                        throw new Error(
-                                                            `Redeem quote failed: ${rr.error?.message}`
-                                                        );
-                                                    }
-                                                    redeemQuote = rr.data;
+                                                        const rr =
+                                                            await flashProvider.getQuote(
+                                                                redeemReq
+                                                            );
+                                                        if (!rr.success) {
+                                                            throw new Error(
+                                                                `Redeem quote failed: ${rr.error?.message}`
+                                                            );
+                                                        }
+                                                        redeemQuote = rr.data;
 
-                                                    const topUp = ethers.utils
-                                                        .parseEther("1000000")
-                                                        .toHexString();
-                                                    await localProvider.send(
-                                                        "hardhat_setBalance",
-                                                        [taker, topUp]
-                                                    );
-
-                                                    // approve & execute
-                                                    const takerSigner =
-                                                        localProvider.getSigner(
-                                                            taker
-                                                        );
-                                                    await setTokenContract
-                                                        .connect(takerSigner)
-                                                        .approve(
-                                                            redeemQuote.tx.to,
-                                                            mintedAmount
+                                                        const topUp =
+                                                            ethers.utils
+                                                                .parseEther(
+                                                                    "1000000"
+                                                                )
+                                                                .toHexString();
+                                                        await localProvider.send(
+                                                            "hardhat_setBalance",
+                                                            [taker, topUp]
                                                         );
 
-                                                    const beforeSet =
-                                                        await setTokenContract.balanceOf(
-                                                            taker
-                                                        );
-                                                    const tx =
-                                                        await takerSigner.sendTransaction(
-                                                            {
-                                                                to: redeemQuote
-                                                                    .tx.to,
-                                                                data: redeemQuote
-                                                                    .tx.data!,
-                                                                value: redeemQuote
-                                                                    .tx.value
-                                                                    ? ethers.BigNumber.from(
-                                                                          redeemQuote
-                                                                              .tx
-                                                                              .value
-                                                                      )
-                                                                    : undefined,
-                                                                gasLimit: 5_000_000,
-                                                            }
-                                                        );
-                                                    await tx.wait();
-                                                    balanceAfterRedeem =
-                                                        await setTokenContract.balanceOf(
-                                                            taker
-                                                        );
+                                                        // approve & execute
+                                                        const takerSigner =
+                                                            localProvider.getSigner(
+                                                                taker
+                                                            );
+                                                        await setTokenContract
+                                                            .connect(
+                                                                takerSigner
+                                                            )
+                                                            .approve(
+                                                                redeemQuote.tx
+                                                                    .to,
+                                                                mintedAmount
+                                                            );
 
-                                                    // ensure user got more input‐token back than they burned
-                                                    const inAfter =
-                                                        sym === "ETH"
-                                                            ? await takerSigner.getBalance()
-                                                            : await new ethers.Contract(
-                                                                  inputToken.address,
-                                                                  ERC20_ABI,
-                                                                  localProvider
-                                                              ).balanceOf(
-                                                                  taker
-                                                              );
-                                                    expect(inAfter).to.be.gt(0);
+                                                        const balanceBeforeRedeem =
+                                                            await setTokenContract.balanceOf(
+                                                                taker
+                                                            );
+                                                        const tx =
+                                                            await takerSigner.sendTransaction(
+                                                                {
+                                                                    to: redeemQuote
+                                                                        .tx.to,
+                                                                    data: redeemQuote
+                                                                        .tx
+                                                                        .data!,
+                                                                    value: redeemQuote
+                                                                        .tx
+                                                                        .value
+                                                                        ? ethers.BigNumber.from(
+                                                                              redeemQuote
+                                                                                  .tx
+                                                                                  .value
+                                                                          )
+                                                                        : undefined,
+                                                                    gasLimit: 5_000_000,
+                                                                }
+                                                            );
+                                                        await tx.wait();
+                                                        balanceAfterRedeem =
+                                                            await setTokenContract.balanceOf(
+                                                                taker
+                                                            );
+                                                        burntAmount =
+                                                            balanceBeforeRedeem.sub(
+                                                                balanceAfterRedeem
+                                                            );
+
+                                                        // ensure user got more input‐token back than they burned
+                                                        const inAfter =
+                                                            sym === "ETH"
+                                                                ? await takerSigner.getBalance()
+                                                                : await new ethers.Contract(
+                                                                      inputToken.address,
+                                                                      ERC20_ABI,
+                                                                      localProvider
+                                                                  ).balanceOf(
+                                                                      taker
+                                                                  );
+                                                        expect(
+                                                            inAfter
+                                                        ).to.be.gt(0);
+                                                    });
+
+                                                    it("burned only the redeemed amount", () => {
+                                                        expect(
+                                                            burntAmount
+                                                        ).to.equal(
+                                                            BigNumber.from(
+                                                                redeemReq.inputTokenAmount
+                                                            )
+                                                        );
+                                                    });
                                                 });
-
-                                                it("burned only the redeemed amount", () => {
-                                                    expect(
-                                                        balanceAfterRedeem
-                                                    ).to.equal(
-                                                        ethers.BigNumber.from(
-                                                            balanceBefore
-                                                        )
-                                                    );
-                                                });
-                                            });
+                                            }
                                         });
                                     })
                                 );

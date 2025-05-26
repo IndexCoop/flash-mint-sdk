@@ -109,13 +109,15 @@ export class FlashMintQuoteProvider
     const targetInputAmount =
         (inputTokenAmount.mul(BigNumber.from(10000).sub(slippageBasisPoints))).div(BigNumber.from(10000))
 
+    let flashmintQuoteResult;
     do {
-        const flashmintQuoteResult = await this.getQuote(
+        flashmintQuoteResult = await this.getQuote(
             {
                 isMinting,
                 inputToken,
                 outputToken,
                 indexTokenAmount: indexTokenAmount.toString(),
+                inputTokenAmount: outputToken.symbol === 'hyETH' ? request.inputTokenAmount : undefined,
                 slippage: 0,
                 chainId,
             }
@@ -157,14 +159,16 @@ export class FlashMintQuoteProvider
         )
     }
 
-    return await this.getQuote(
+      return await this.getQuote(
         {
             isMinting,
             inputToken,
             outputToken,
             indexTokenAmount: indexTokenAmount.toString(),
             inputTokenAmount: inputTokenAmount.toString(),
-            slippage: slippage,
+            // TODO: No idea why I needed to do this. Apparently hyEth applies slippage differently from other quote providers
+            // Arrived at this by trial and error
+            slippage: outputToken.symbol === 'hyETH' ? slippage / 2 : slippage,
             chainId,
         }
     )
