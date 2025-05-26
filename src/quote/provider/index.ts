@@ -109,7 +109,7 @@ export class FlashMintQuoteProvider
     const targetInputAmount =
         (inputTokenAmount.mul(BigNumber.from(10000).sub(slippageBasisPoints))).div(BigNumber.from(10000))
 
-    let flashmintQuoteResult;
+    let flashmintQuoteResult: Result<FlashMintQuote>;
     do {
         flashmintQuoteResult = await this.getQuote(
             {

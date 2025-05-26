@@ -10,6 +10,7 @@ import scenarios from "./test-scenarios";
 
 import {
     FlashMintContractType,
+    type FlashMintQuote,
     FlashMintQuoteProvider,
     type FlashMintQuoteRequest,
 } from "../../quote/provider";
@@ -19,7 +20,7 @@ import {
     getZeroExV2SwapQuoteProvider,
     wei,
 } from "../utils";
-import { request } from "axios";
+import type { Result } from "quote";
 
 // Factor by which to round down the latest block number to run all tests against the same block
 // Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
@@ -233,7 +234,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     maxIn.toString(),
                                                 slippage: 0.5,
                                             };
-                                            let res;
+                                            let res: Result<FlashMintQuote>;
                                             console.log(
                                                 "FIXED_OUTPUT",
                                                 FIXED_OUTPUT
@@ -478,7 +479,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     "evm_mine",
                                                     []
                                                 );
-                                                let inputBalanceAfter =
+                                                const inputBalanceAfter =
                                                     sym !== "ETH"
                                                         ? await erc20Whale.balanceOf(
                                                               taker
@@ -519,15 +520,15 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                     mintQuote.inputOutputAmount
                                                 );
                                                 if (!FIXED_OUTPUT) {
-                                                    let slippageBP =
+                                                    const slippageBP =
                                                         BigNumber.from(
                                                             req.slippage * 100
                                                         );
-                                                    let factor =
+                                                    const factor =
                                                         BigNumber.from(
                                                             10000
                                                         ).sub(slippageBP);
-                                                    let targetInput =
+                                                    const targetInput =
                                                         BigNumber.from(
                                                             req.inputTokenAmount
                                                         )
@@ -538,7 +539,7 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                         targetInput.toString()
                                                     );
                                                     // TODO: Investigate why I need to set such high tolerance
-                                                    let toleranceBP =
+                                                    const toleranceBP =
                                                         BigNumber.from(30);
                                                     console.log(
                                                         "spentAmount",
