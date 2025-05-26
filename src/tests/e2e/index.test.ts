@@ -172,8 +172,11 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                 "hardhat_impersonateAccount",
                                                 [whale]
                                             );
-                                            [taker] =
-                                                await localProvider.listAccounts();
+                                            taker = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
+                                            await localProvider.send(
+                                                "hardhat_impersonateAccount",
+                                                [taker]
+                                            );
 
                                             const topUp = ethers.utils
                                                 .parseEther("1000000")
@@ -399,7 +402,20 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                                             gasLimit: 5_000_000,
                                                         }
                                                     );
-                                                await tx.wait();
+                                                const receipt = await tx.wait();
+                                                await localProvider.send(
+                                                    "evm_mine",
+                                                    []
+                                                );
+                                                let inputBalanceAfter =  sym !== 'ETH' ? await erc20Whale.balanceOf(taker) : await takerSigner.getBalance();
+                                                spentAmount =
+                                                    inputBalanceBefore.sub(
+                                                        inputBalanceAfter
+                                                    );
+                                                if(sym === 'ETH') {
+                                                    const gasCosts = receipt.gasUsed.mul(tx.gasPrice);
+                                                    spentAmount = spentAmount.sub(gasCosts);
+                                                }
                                             });
 
                                             it("minted correct amount", async () => {
@@ -417,13 +433,8 @@ describe("🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)", 
                                             });
 
                                             it("spends correct amount", async () => {
-                                                let inputBalanceAfter =  sym !== 'ETH' ? await erc20Whale.balanceOf(taker) : await takerSigner.getBalance();
-                                                spentAmount =
-                                                    inputBalanceBefore.sub(
-                                                        inputBalanceAfter
-                                                    );
                                                 expect(spentAmount).to.lt(
-                                                    mintQuote.indexTokenAmount
+                                                    mintQuote.inputOutputAmount
                                                 );
                                                 if(!FIXED_OUTPUT) {
                                                     let slippageBP = BigNumber.from(req.slippage * 100);
