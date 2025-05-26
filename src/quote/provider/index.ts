@@ -33,6 +33,8 @@ export enum FlashMintQuoteProviderErrorCode {
   CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
   ENCODING_ERROR = 'ENCODING_ERROR',
   INDEX_TOKEN_NOT_SUPPORTED = 'INDEX_TOKEN_NOT_SUPPORTED',
+  OPTIMIZATION_FAILED_HIGHER_THAN_INPUT = 'OPTIMIZATION_FAILED_HIGHER_THAN_INPUT',
+  OPTIMIZATION_FAILED_MAX_DEVIATION = 'OPTIMIZATION_FAILED_MAX_DEVIATION',
   QUOTE_FAILED = 'QUOTE_FAILED',
 }
 
@@ -144,15 +146,23 @@ export class FlashMintQuoteProvider
     )
 
     if (currentInputAmount.gt(inputTokenAmount)) {
-      throw new Error(
-        `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmount}`,
-      )
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.OPTIMIZATION_FAILED_HIGHER_THAN_INPUT,
+          message: `Optimization result ${currentInputAmount} is higher than user input ${inputTokenAmount}`,
+        },
+      }
     }
 
     if (MAX_DEVIATIION_FIXED_INPUT.lt(Math.abs(Number(factor) - 10000))) {
-      throw new Error(
-        `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
-      )
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.OPTIMIZATION_FAILED_MAX_DEVIATION,
+          message: `Could not determine index amount to get within ${MAX_DEVIATIION_FIXED_INPUT} BP from given target input, final factor ${factor}`,
+        },
+      }
     }
 
     return await this.getQuote({
