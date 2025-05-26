@@ -161,9 +161,7 @@ export class FlashMintQuoteProvider
       outputToken,
       indexTokenAmount: indexTokenAmount.toString(),
       inputTokenAmount: inputTokenAmount.toString(),
-      // TODO: No idea why I needed to do this. Apparently hyEth applies slippage differently from other quote providers
-      // Arrived at this by trial and error
-      slippage: outputToken.symbol === 'hyETH' ? slippage / 2 : slippage,
+      slippage,
       chainId,
     })
   }
