@@ -1,11 +1,10 @@
-import { BigNumber } from '@ethersproject/bignumber'
 import { isAddressEqual } from '@indexcoop/tokenlists'
-import type { Address } from 'viem'
 
-import { slippageAdjustedTokenAmount } from 'utils'
 import { MorphoQuoteProvider } from './morpho'
 
+import type { BigNumber } from '@ethersproject/bignumber'
 import type { SwapQuoteProviderV2 } from 'quote/swap'
+import type { Address } from 'viem'
 import type { QuoteToken } from '../../../interfaces'
 
 interface ComponentQuotesResult {
@@ -99,15 +98,10 @@ export class ComponentQuotesProvider {
       .reduce((prevValue, currValue) => {
         return currValue + prevValue
       })
-    const adjustedAmount = slippageAdjustedTokenAmount(
-      BigNumber.from(inputOutputTokenAmount.toString()),
-      isMinting ? inputToken.decimals : outputToken.decimals,
-      this.slippage,
-      isMinting,
-    )
+
     return {
       componentQuotes: [],
-      inputOutputTokenAmount: adjustedAmount.toBigInt(),
+      inputOutputTokenAmount,
     }
   }
 

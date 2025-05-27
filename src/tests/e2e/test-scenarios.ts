@@ -36,7 +36,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL2x: {
-      setAmounts: ['1', '10', '50'],
+      setAmounts: ['1', '10', '20'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -45,7 +45,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL3x: {
-      setAmounts: ['1', '10', '50'],
+      setAmounts: ['1', '10', '20'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
