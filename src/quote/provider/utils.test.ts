@@ -21,6 +21,7 @@ describe('buildQuoteResponse()', () => {
       inputTokenAmount: wei(1.5).toString(),
       slippage: 0.1,
     }
+    const inputOutputTokenAmount = wei(99, 6)
     const quoteAmount = wei(100, 6)
     const tx = {
       to: Contracts[ChainId.Mainnet].FlashMintLeveragedZeroEx,
@@ -30,6 +31,7 @@ describe('buildQuoteResponse()', () => {
       request,
       8453,
       FlashMintContractType.leveragedZeroEx,
+      inputOutputTokenAmount,
       quoteAmount,
       tx,
     )
@@ -40,10 +42,11 @@ describe('buildQuoteResponse()', () => {
       isMinting: true,
       inputToken: usdc,
       outputToken: getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x'),
-      inputAmount: quoteAmount,
+      inputAmount: inputOutputTokenAmount,
       outputAmount: BigNumber.from(request.indexTokenAmount),
       indexTokenAmount: BigNumber.from(request.indexTokenAmount),
-      inputOutputAmount: quoteAmount,
+      inputOutputAmount: inputOutputTokenAmount,
+      quoteAmount,
       slippage: 0.1,
       tx,
     })
