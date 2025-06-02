@@ -10,26 +10,6 @@ type Client = PublicClient<
   typeof arbitrum | typeof base | typeof mainnet
 >
 
-export function createClient(chainId: number): Client | null {
-  if (chainId === ChainId.Arbitrum) {
-    return createPublicClient({
-      chain: arbitrum,
-      transport: http(process.env.ARBITRUM_ALCHEMY_API),
-    }) as Client
-  }
-  if (chainId === ChainId.Base) {
-    return createPublicClient({
-      chain: base,
-      transport: http(process.env.BASE_ALCHEMY_API),
-    }) as Client
-  }
-  if (chainId !== ChainId.Mainnet) return null
-  return createPublicClient({
-    chain: mainnet,
-    transport: http(process.env.MAINNET_ALCHEMY_API),
-  }) as Client
-}
-
 export function createClientWithUrl(
   chainId: number,
   rpcUrl: string,

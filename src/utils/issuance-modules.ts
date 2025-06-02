@@ -2,7 +2,6 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ChainId } from '../constants/chains'
 import {
   BasicIssuanceModuleAddress,
-  BasicIssuanceModulePolygonAddress,
   Contracts,
   DebtIssuanceModuleV2Address,
   IndexDebtIssuanceModuleV2Address_v2,
@@ -29,11 +28,6 @@ export function getIssuanceModule(
       isDebtIssuance: true,
     }
   }
-  if (chainId === ChainId.Polygon)
-    return {
-      address: BasicIssuanceModulePolygonAddress,
-      isDebtIssuance: false,
-    }
   // Mainnet
   switch (tokenSymbol) {
     case getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH').symbol:

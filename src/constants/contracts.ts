@@ -28,8 +28,5 @@ export const IndexDebtIssuanceModuleV2Address_v2 =
 export const BasicIssuanceModuleAddress =
   '0xd8EF3cACe8b4907117a45B0b125c68560532F94D'
 
-export const BasicIssuanceModulePolygonAddress =
-  '0x38E5462BBE6A72F79606c1A0007468aA4334A92b'
-
 export const DebtIssuanceModuleV2Address =
   '0x69a592D2129415a4A1d1b1E309C17051B7F28d57'
