@@ -8,8 +8,6 @@ Index's products.
 To find out more about the contracts, go to Index's smart contracts [repo](https://github.com/IndexCoop/index-coop-smart-contracts/tree/master/contracts/exchangeIssuance).
 
 This SDK currently supports the contracts listed [here](./src/constants/contracts.ts).
-Check out the [utility](./src/utils/contracts.ts) functions for easily obtaining
-the correct addresses and contracts on Mainnet, Arbitrum and Base.
 
 ## Install
 
@@ -62,7 +60,19 @@ const quoteProvider = new FlashMintQuoteProvider(
   zeroexV2SwapQuoteProvider,
   lifiSwapQuoteProvider
 )
+// Option 1 - get a quote for a specified index token amount
 const quote = await quoteProvider.getQuote({
+  chainId: 1,
+  isMinting: true,
+  inputToken,
+  outputToken,
+  indexTokenAmount: wei(1).toString(),
+  inputTokenAmount: wei(1).toString(),
+  slippage: 0.1,
+})
+// Option 2 - get a quote for a fixed input amount (am approx. indexTokenAmount 
+// should still be added to the request).
+await quoteProvider.getFixedInputQuote({
   chainId: 1,
   isMinting: true,
   inputToken,
@@ -124,7 +134,7 @@ When adding new .env vars do not forget to update the [publish.yml](.github/work
 
 ### Adding a new Index token
 
-0. add a test for determining the correct issuance module [here](./src/utils/issuanceModules.test.ts)
+0. add a test for determining the correct issuance module (only if using 0x) [here](./src/utils/issuance-modules.test.ts)
 1. add a test for determining the correct contract [here](./src/utils/contracts.test.ts)
 2. if there is a new FlashMint contract, add it as described [below](#adding-a-new-contract)
 3. add symbol to `function getContractType(token: string)` in [src/quote/provider/utils.ts](./src/quote//provider/utils.ts) and add a test
