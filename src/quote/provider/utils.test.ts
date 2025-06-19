@@ -151,6 +151,22 @@ describe('getContractType()', () => {
     expect(contractType).toBe(FlashMintContractType.static)
   })
 
+  test('returns correct contract type for uXRP2x', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Base, 'uXRP2x').symbol,
+      ChainId.Base,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
+  test('returns correct contract type for uXRP3x', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Base, 'uXRP3x').symbol,
+      ChainId.Base,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
   test('returns correct contract type for wstEth15x', async () => {
     const contractType = getContractType(
       getTokenByChainAndSymbol(ChainId.Base, 'wstETH15x').symbol,
