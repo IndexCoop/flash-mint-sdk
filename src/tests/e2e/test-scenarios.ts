@@ -53,6 +53,24 @@ const testScenarios: TestScenarios = {
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],
     },
+    uXRP2x: {
+      setAmounts: ['1', '10'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 1000 },
+        { symbol: 'ETH', exchangeRate: 0.5 },
+        { symbol: 'WETH', exchangeRate: 0.5 },
+        { symbol: 'cbBTC', exchangeRate: 0.01 },
+      ],
+    },
+    uXRP3x: {
+      setAmounts: ['1', '5'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 1000 },
+        { symbol: 'ETH', exchangeRate: 0.5 },
+        { symbol: 'WETH', exchangeRate: 0.5 },
+        { symbol: 'cbBTC', exchangeRate: 0.01 },
+      ],
+    },
     BTC2X: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
