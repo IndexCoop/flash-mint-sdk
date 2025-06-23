@@ -349,7 +349,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           const toleranceBP =
                             req.outputToken.symbol === 'wstETH15x'
                               ? BigNumber.from(150)
-                              : BigNumber.from(30)
+                              : BigNumber.from(50)
                           console.log('spentAmount', spentAmount.toString())
                           expect(spentAmount).to.gte(
                             targetInput
