@@ -6,6 +6,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
     DebtIssuanceModuleV3: '0x86B7C605C03B9bbb0F6A25FBBb63baF15d875193',
     ExchangeIssuanceZeroEx: '0x8760FCD90c82e1e95e55047b6b6A0F22dc07d7d1', // redeployed version (March 2025)
     FlashMintHyEthV3: '0xCb1eEA349f25288627f008C5e2a69b684bddDf49',
+    FlashMintLeveraged: '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48'
     FlashMintLeveragedZeroEx: '0x58093c03B4e7804D0127A6D0A5D86dcbd5652113',
     FlashMintLeveragedZeroEx_AaveV2:
       '0x8B46956eA9a87c0AD3cb71911dDdEd23bE10e04d',
