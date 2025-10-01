@@ -53,7 +53,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
       let flashProvider: FlashMintQuoteProvider
       let forkBlock: number
 
-      beforeAll(async () => {
+      before(async () => {
         // 1) init quote provider
         const zeroEx = getZeroExV2SwapQuoteProvider()
         const lifi = getLifiSwapQuoteProvider()
@@ -121,7 +121,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                     let mintQuote: Awaited<
                       ReturnType<FlashMintQuoteProvider['getQuote']>
                     >['data']
-                    beforeAll(async () => {
+                    before(async () => {
                       // reset & fork at our computed block
                       await localProvider.send('hardhat_reset', [
                         {
@@ -294,7 +294,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                       let takerSigner: any
                       let spentAmount: ethers.BigNumber
 
-                      beforeAll(async () => {
+                      before(async () => {
                         takerSigner = localProvider.getSigner(taker)
 
                         if (sym !== 'ETH') {
@@ -369,7 +369,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           let burntAmount: ethers.BigNumber
                           let redeemReq: FlashMintQuoteRequest
 
-                          beforeAll(async () => {
+                          before(async () => {
                             // fetch redeem quote
                             redeemReq = {
                               chainId,
