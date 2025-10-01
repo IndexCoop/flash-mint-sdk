@@ -141,4 +141,191 @@ describe('Static swap data', () => {
       tickSpacing: [1, 100],
     })
   })
+
+  describe('GOLD3x mainnet configuration', () => {
+    test('minting GOLD3x with USDT - direct swap to XAUt', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'USDT'),
+        outputToken: getTokenByChainAndSymbol(1, 'GOLD3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
+      expect(result.swapDataDebtForCollateral.path.length).toBe(2)
+      expect(result.swapDataInputToken.fees).toEqual([3000])
+    })
+
+    test('minting GOLD3x with USDC - routes through USDT', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'USDC'),
+        outputToken: getTokenByChainAndSymbol(1, 'GOLD3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
+      expect(result.swapDataInputToken.fees).toEqual([100, 3000])
+      expect(result.swapDataInputToken.path.length).toBe(3)
+    })
+
+    test('minting GOLD3x with WETH', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'WETH'),
+        outputToken: getTokenByChainAndSymbol(1, 'GOLD3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
+      expect(result.swapDataInputToken.fees).toEqual([3000])
+      expect(result.contract).toBe('FlashMintLeveraged')
+    })
+  })
+
+  describe('ETH3x mainnet configuration', () => {
+    test('minting ETH3x with USDT - 0.05% fee', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'USDT'),
+        outputToken: getTokenByChainAndSymbol(1, 'ETH3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([500])
+      expect(result.swapDataDebtForCollateral.path.length).toBe(2)
+      expect(result.contract).toBe('FlashMintLeveraged')
+    })
+
+    test('minting ETH3x with USDC', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'USDC'),
+        outputToken: getTokenByChainAndSymbol(1, 'ETH3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([500])
+      expect(result.swapDataInputToken.fees).toEqual([500])
+    })
+  })
+
+  describe('BTC3x mainnet configuration', () => {
+    test('minting BTC3x with USDT - 0.05% fee', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'USDT'),
+        outputToken: getTokenByChainAndSymbol(1, 'BTC3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([500])
+      expect(result.swapDataDebtForCollateral.path.length).toBe(2)
+      expect(result.contract).toBe('FlashMintLeveraged')
+    })
+
+    test('minting BTC3x with USDC', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 1,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(1, 'USDC'),
+        outputToken: getTokenByChainAndSymbol(1, 'BTC3x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([500])
+      expect(result.swapDataInputToken.fees).toEqual([3000])
+    })
+  })
+
+  describe('Arbitrum alt leverage tokens', () => {
+    test('minting ARB2x with USDC - routes through USDT0', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 42161,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(42161, 'USDC'),
+        outputToken: getTokenByChainAndSymbol(42161, 'ARB2x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
+      expect(result.swapDataDebtForCollateral.path.length).toBe(2)
+      expect(result.swapDataInputToken.fees).toEqual([100, 3000])
+      expect(result.contract).toBe('FlashMintLeveragedExtended')
+    })
+
+    test('minting AAVE2x with USDT0 - direct swap', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 42161,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(42161, 'USD₮0'),
+        outputToken: getTokenByChainAndSymbol(42161, 'AAVE2x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
+      expect(result.swapDataInputToken.fees).toEqual([3000])
+      expect(result.contract).toBe('FlashMintLeveragedExtended')
+    })
+
+    test('minting LINK2x with WETH - routes through USDT0', () => {
+      const request: StaticQuoteRequest = {
+        chainId: 42161,
+        isMinting: true,
+        inputToken: getTokenByChainAndSymbol(42161, 'WETH'),
+        outputToken: getTokenByChainAndSymbol(42161, 'LINK2x'),
+        outputAmount: BigInt(1),
+        inputAmount: BigInt(1),
+        slippage: 0.5,
+        taker: '0x',
+      }
+      const result = getSwapData(request)
+      if (!result) fail()
+      expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
+      expect(result.swapDataInputToken.fees).toEqual([500, 3000])
+      expect(result.swapDataInputToken.path.length).toBe(3)
+    })
+  })
 })
