@@ -132,7 +132,6 @@ const testScenarios: TestScenarios = {
       inputTokens: [
         { symbol: 'USDT', exchangeRate: 300 },
         { symbol: 'USDC', exchangeRate: 300 },
-        { symbol: 'ETH', exchangeRate: 0.1 },
         { symbol: 'WETH', exchangeRate: 0.1 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
@@ -151,7 +150,6 @@ const testScenarios: TestScenarios = {
       inputTokens: [
         { symbol: 'USDT', exchangeRate: 3000 },
         { symbol: 'USDC', exchangeRate: 3000 },
-        { symbol: 'ETH', exchangeRate: 1 },
         { symbol: 'WETH', exchangeRate: 1 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
