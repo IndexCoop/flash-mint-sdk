@@ -127,6 +127,16 @@ const testScenarios: TestScenarios = {
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
     },
+    ETH3x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDT', exchangeRate: 300 },
+        { symbol: 'USDC', exchangeRate: 300 },
+        { symbol: 'ETH', exchangeRate: 0.1 },
+        { symbol: 'WETH', exchangeRate: 0.1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
     BTC2X: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
@@ -134,6 +144,26 @@ const testScenarios: TestScenarios = {
         { symbol: 'ETH', exchangeRate: 1 },
         { symbol: 'WETH', exchangeRate: 1 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    BTC3x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDT', exchangeRate: 3000 },
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'ETH', exchangeRate: 1 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    GOLD3x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDT', exchangeRate: 50 },
+        { symbol: 'USDC', exchangeRate: 50 },
+        { symbol: 'WETH', exchangeRate: 0.5 },
+        { symbol: 'WBTC', exchangeRate: 0.02 },
+        { symbol: 'XAUt', exchangeRate: 0.02 },
       ],
     },
     hyETH: {
@@ -215,6 +245,36 @@ const testScenarios: TestScenarios = {
         { symbol: 'ETH', exchangeRate: 2 },
         { symbol: 'WETH', exchangeRate: 2 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    ARB2x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'USD₮0', exchangeRate: 3000 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+        { symbol: 'ARB', exchangeRate: 1 },
+      ],
+    },
+    AAVE2x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'USD₮0', exchangeRate: 3000 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+        { symbol: 'AAVE', exchangeRate: 0.5 },
+      ],
+    },
+    LINK2x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'USD₮0', exchangeRate: 3000 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+        { symbol: 'LINK', exchangeRate: 1 },
       ],
     },
   },

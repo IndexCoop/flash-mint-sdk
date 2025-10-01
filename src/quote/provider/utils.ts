@@ -15,6 +15,7 @@ const btc3x = getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC3x')
 const dpi = getTokenByChainAndSymbol(ChainId.Mainnet, 'DPI')
 const eth2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH2X')
 const eth3x = getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH3x')
+const gold3x = getTokenByChainAndSymbol(ChainId.Mainnet, 'GOLD3x')
 const mvi = getTokenByChainAndSymbol(ChainId.Mainnet, 'MVI')
 const hyeth = getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH')
 const iceth = getTokenByChainAndSymbol(ChainId.Mainnet, 'icETH')
@@ -69,6 +70,7 @@ export function getContractType(
         eth2x.symbol,
         btc3x.symbol,
         eth3x.symbol,
+        gold3x.symbol,
         iceth.symbol,
       ] as Symbol_[]
     ).includes(token as Symbol_)
