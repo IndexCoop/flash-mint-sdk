@@ -5,6 +5,7 @@ import {
   Contract,
   type InterfaceAbi,
   JsonRpcProvider,
+  JsonRpcSigner,
   parseEther,
   toBeHex,
 } from 'ethers'
@@ -228,8 +229,8 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                       mintQuote = res.data
 
                       // prepare contracts
-                      const whaleSigner = await localProvider.getSigner(whale)
-                      const takerSigner = await localProvider.getSigner(taker)
+                      const whaleSigner = new JsonRpcSigner(localProvider, whale)
+                      const takerSigner = new JsonRpcSigner(localProvider, taker)
                       if (sym !== 'ETH') {
                         erc20Whale = new Contract(
                           inputToken.address,
@@ -297,7 +298,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                       let spentAmount: bigint
 
                       before(async () => {
-                        takerSigner = await localProvider.getSigner(taker)
+                        takerSigner = new JsonRpcSigner(localProvider, taker)
 
                         if (sym !== 'ETH') {
                           await erc20Whale.transfer(taker, maxIn)
@@ -397,8 +398,10 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                             ])
 
                             // approve & execute
-                            const takerSigner =
-                              await localProvider.getSigner(taker)
+                            const takerSigner = new JsonRpcSigner(
+                              localProvider,
+                              taker,
+                            )
                             await setTokenContract
                               .connect(takerSigner)
                               .approve(redeemQuote.tx.to, mintedAmount)
