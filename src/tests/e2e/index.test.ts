@@ -254,7 +254,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                       ])
                       expect(BigInt(mintQuote.inputAmount) >= 0n).to.be.true
                       if (FIXED_OUTPUT) {
-                        expect(mintQuote.indexTokenAmount).to.equal(setAmt)
+                        expect(String(mintQuote.indexTokenAmount)).to.equal(setAmt)
                         expect(mintQuote.slippage).to.equal(0.5)
                       } else {
                         console.log('requestInputAmount', req.inputTokenAmount)
@@ -264,16 +264,19 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           ((10_000n - toleranceBP) * requestedAmount) / 10000n
                         const maxAmount =
                           ((10_000n + toleranceBP) * requestedAmount) / 10000n
-                        expect(BigInt(mintQuote.inputOutputAmount) >= minAmount)
-                          .to.be.true
-                        expect(BigInt(mintQuote.inputOutputAmount) <= maxAmount)
-                          .to.be.true
+                        const inputOutputAmount = BigInt(
+                          String(mintQuote.inputOutputAmount),
+                        )
+                        expect(inputOutputAmount >= minAmount).to.be.true
+                        expect(inputOutputAmount <= maxAmount).to.be.true
                       }
 
                       // Verify that requested input amount is represented 1:1 in the transaction
                       if (sym === 'ETH') {
                         console.log('mintQuote', mintQuote)
-                        expect(mintQuote.tx.value).to.eq(req.inputTokenAmount)
+                        expect(String(mintQuote.tx.value)).to.eq(
+                          req.inputTokenAmount,
+                        )
                       } else {
                         const inputAmountHex = BigInt(req.inputTokenAmount)
                           .toString(16)
@@ -335,14 +338,14 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           await setTokenContract.balanceOf(taker)
                         mintedAmount = balanceAfter - balanceBefore
                         expect(mintedAmount).to.equal(
-                          BigInt(mintQuote.indexTokenAmount),
+                          BigInt(String(mintQuote.indexTokenAmount)),
                         )
                       })
 
                       it('spends correct amount', async () => {
                         if (!FIXED_OUTPUT) {
-                          expect(spentAmount < BigInt(mintQuote.inputAmount)).to
-                            .be.true
+                          const inputAmount = BigInt(String(mintQuote.inputAmount))
+                          expect(spentAmount < inputAmount).to.be.true
                           const slippageBP = BigInt(
                             Math.floor(req.slippage * 100),
                           )
@@ -439,7 +442,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           it('burned only the redeemed amount', () => {
                             expect(
                               burntAmount ===
-                                BigInt(redeemReq.inputTokenAmount),
+                                BigInt(String(redeemReq.inputTokenAmount)),
                             ).to.be.true
                           })
                         })
