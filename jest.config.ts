@@ -21,4 +21,6 @@ export default {
   roots: ['src'],
   // Increased timeout due to long taking tests
   testTimeout: 1000000,
+  // Exclude e2e tests (they use Mocha via hardhat, not Jest)
+  testPathIgnorePatterns: ['/node_modules/', '/src/tests/e2e/'],
 }
