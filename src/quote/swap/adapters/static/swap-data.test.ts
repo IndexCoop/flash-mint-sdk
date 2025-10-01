@@ -49,7 +49,8 @@ describe('Static swap data', () => {
       taker: '0x',
     }
     const result = getSwapData(request)
-    if (!result) fail()
+    expect(result).toBeDefined()
+    if (!result) return
     expect(result.swapDataDebtForCollateral).toEqual({
       exchange: 3,
       fees: [500],
@@ -82,7 +83,8 @@ describe('Static swap data', () => {
       taker: '0x',
     }
     const result = getSwapData(request)
-    if (!result) fail()
+    expect(result).toBeDefined()
+    if (!result) return
     expect(result.swapDataDebtForCollateral).toEqual({
       exchange: Exchange.Curve,
       fees: [],
@@ -116,7 +118,8 @@ describe('Static swap data', () => {
       taker: '0x',
     }
     const result = getSwapData(request)
-    if (!result) fail()
+    expect(result).toBeDefined()
+    if (!result) return
     expect(result.swapDataDebtForCollateral).toEqual({
       exchange: 7,
       fees: [],
@@ -155,7 +158,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
       expect(result.swapDataDebtForCollateral.path.length).toBe(2)
       expect(result.swapDataInputToken.fees).toEqual([3000])
@@ -173,7 +177,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
       expect(result.swapDataInputToken.fees).toEqual([100, 3000])
       expect(result.swapDataInputToken.path.length).toBe(3)
@@ -191,7 +196,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
       expect(result.swapDataInputToken.fees).toEqual([3000])
       expect(result.contract).toBe('FlashMintLeveraged')
@@ -211,7 +217,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([500])
       expect(result.swapDataDebtForCollateral.path.length).toBe(2)
       expect(result.contract).toBe('FlashMintLeveraged')
@@ -229,7 +236,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([500])
       expect(result.swapDataInputToken.fees).toEqual([500])
     })
@@ -248,7 +256,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([500])
       expect(result.swapDataDebtForCollateral.path.length).toBe(2)
       expect(result.contract).toBe('FlashMintLeveraged')
@@ -266,7 +275,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([500])
       expect(result.swapDataInputToken.fees).toEqual([3000])
     })
@@ -285,7 +295,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
       expect(result.swapDataDebtForCollateral.path.length).toBe(2)
       expect(result.swapDataInputToken.fees).toEqual([100, 3000])
@@ -304,7 +315,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
       expect(result.swapDataInputToken.fees).toEqual([3000])
       expect(result.contract).toBe('FlashMintLeveragedExtended')
@@ -322,7 +334,8 @@ describe('Static swap data', () => {
         taker: '0x',
       }
       const result = getSwapData(request)
-      if (!result) fail()
+      expect(result).toBeDefined()
+    if (!result) return
       expect(result.swapDataDebtForCollateral.fees).toEqual([3000])
       expect(result.swapDataInputToken.fees).toEqual([500, 3000])
       expect(result.swapDataInputToken.path.length).toBe(3)

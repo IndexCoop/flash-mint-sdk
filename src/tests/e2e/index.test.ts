@@ -2,7 +2,8 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { expect } from 'chai'
 import { ETH } from 'constants/tokens'
-import { BigNumber, ethers } from 'ethers'
+import { ethers } from 'ethers'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import inputTokenMap from './input-token-map'
 import rpcConfig from './rpc-config'
@@ -52,7 +53,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
       let flashProvider: FlashMintQuoteProvider
       let forkBlock: number
 
-      before(async () => {
+      beforeAll(async () => {
         // 1) init quote provider
         const zeroEx = getZeroExV2SwapQuoteProvider()
         const lifi = getLifiSwapQuoteProvider()
@@ -120,7 +121,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                     let mintQuote: Awaited<
                       ReturnType<FlashMintQuoteProvider['getQuote']>
                     >['data']
-                    before(async () => {
+                    beforeAll(async () => {
                       // reset & fork at our computed block
                       await localProvider.send('hardhat_reset', [
                         {
@@ -293,7 +294,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                       let takerSigner: any
                       let spentAmount: ethers.BigNumber
 
-                      before(async () => {
+                      beforeAll(async () => {
                         takerSigner = localProvider.getSigner(taker)
 
                         if (sym !== 'ETH') {
@@ -368,7 +369,7 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           let burntAmount: ethers.BigNumber
                           let redeemReq: FlashMintQuoteRequest
 
-                          before(async () => {
+                          beforeAll(async () => {
                             // fetch redeem quote
                             redeemReq = {
                               chainId,

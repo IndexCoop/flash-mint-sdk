@@ -22,7 +22,8 @@ describe('StaticQuoteProvider', () => {
     const rpcUrl = getAlchemyProviderUrl(request.chainId)
     const provider = new StaticQuoteProvider(rpcUrl)
     const quote = await provider.getQuote(request)
-    if (!quote) fail()
+    expect(quote).toBeDefined()
+    if (!quote) return
     expect(quote.isMinting).toBe(true)
     expect(BigInt(quote.inputAmount) > BigInt(0)).toBe(true)
     expect(quote.tx.to).toBe('0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0')
@@ -45,7 +46,8 @@ describe('StaticQuoteProvider', () => {
     const rpcUrl = getAlchemyProviderUrl(request.chainId)
     const provider = new StaticQuoteProvider(rpcUrl)
     const quote = await provider.getQuote(request)
-    if (!quote) fail()
+    expect(quote).toBeDefined()
+    if (!quote) return
     expect(quote.isMinting).toBe(false)
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
     expect(quote.tx.to).toBe('0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0')
@@ -67,7 +69,8 @@ describe('StaticQuoteProvider', () => {
     const rpcUrl = getAlchemyProviderUrl(request.chainId)
     const provider = new StaticQuoteProvider(rpcUrl)
     const quote = await provider.getQuote(request)
-    if (!quote) fail()
+    expect(quote).toBeDefined()
+    if (!quote) return
     console.log(quote)
     expect(quote.isMinting).toBe(false)
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
