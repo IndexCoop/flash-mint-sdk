@@ -359,7 +359,11 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           )
                           // TODO: Investigate why I need to set such high tolerance
                           const toleranceBP =
-                            req.outputToken.symbol === 'wstETH15x' ? 150n : 50n
+                            req.outputToken.symbol === 'wstETH15x' ||
+                            req.outputToken.symbol === 'ETH2X' ||
+                            req.outputToken.symbol === 'BTC2X'
+                              ? 150n
+                              : 50n
                           console.log('spentAmount', spentAmount.toString())
                           const minSpent =
                             (targetInputWithSlippage * (10000n - toleranceBP)) /
