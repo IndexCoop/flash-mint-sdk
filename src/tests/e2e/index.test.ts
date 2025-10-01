@@ -1,14 +1,8 @@
+import { JsonRpcProvider } from '@ethersproject/providers'
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { expect } from 'chai'
 import { ETH } from 'constants/tokens'
-import {
-  Contract,
-  type InterfaceAbi,
-  JsonRpcProvider,
-  JsonRpcSigner,
-  parseEther,
-  toBeHex,
-} from 'ethers'
+import { BigNumber, ethers } from 'ethers'
 
 import inputTokenMap from './input-token-map'
 import rpcConfig from './rpc-config'
@@ -39,25 +33,17 @@ const LOCAL_RPC_URL = process.env.LOCAL_RPC_URL || 'http://127.0.0.1:8545'
 const localProvider = new JsonRpcProvider(LOCAL_RPC_URL)
 
 // Minimal ERC20 ABI for decimals + transfer + approve + balanceOf
-const ERC20_ABI: InterfaceAbi = [
+const ERC20_ABI = [
   'function decimals() view returns (uint8)',
   'function transfer(address to,uint256 amount) returns (bool)',
   'function approve(address spender,uint256 amount) returns (bool)',
   'function balanceOf(address owner) view returns (uint256)',
 ]
 
-// Type for ERC20 Contract with methods
-interface ERC20Contract extends Contract {
-  decimals(): Promise<number>
-  transfer(to: string, amount: bigint): Promise<any>
-  approve(spender: string, amount: bigint): Promise<any>
-  balanceOf(owner: string): Promise<bigint>
-}
-
 describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', () => {
   for (const [cid, products] of Object.entries(scenarios)) {
     const chainId = Number(cid)
-    const upstreamBase = rpcConfig[chainId]
+    const upstreamBase = rpcConfig[cid]
     const upstreamRpc = upstreamBase.endsWith('/')
       ? `${upstreamBase}${ALCHEMY_KEY}`
       : `${upstreamBase}/${ALCHEMY_KEY}`
@@ -127,11 +113,13 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                   }     • via ${sym}`, () => {
                     let taker: string
                     let req: FlashMintQuoteRequest
-                    let maxIn: bigint
-                    let erc20Whale: ERC20Contract
-                    let setTokenContract: ERC20Contract
-                    let mintedAmount: bigint
-                    let mintQuote: FlashMintQuote
+                    let maxIn: ethers.BigNumber
+                    let erc20Whale: ethers.Contract
+                    let setTokenContract: ethers.Contract
+                    let mintedAmount: ethers.BigNumber
+                    let mintQuote: Awaited<
+                      ReturnType<FlashMintQuoteProvider['getQuote']>
+                    >['data']
                     before(async () => {
                       // reset & fork at our computed block
                       await localProvider.send('hardhat_reset', [
@@ -153,25 +141,31 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                         taker,
                       ])
 
-                      const topUp = toBeHex(parseEther('1000000'))
+                      const topUp = ethers.utils
+                        .parseEther('1000000')
+                        .toHexString()
                       await localProvider.send('hardhat_setBalance', [
                         taker,
                         topUp,
                       ])
 
                       // compute maxIn = setAmt × exchangeRate ÷ 10^(18 − inputDecimals)
-                      const tokenContract = new Contract(
+                      const tokenContract = new ethers.Contract(
                         inputToken.address,
                         ERC20_ABI,
-                        localProvider,
+                        sym === 'ETH'
+                          ? localProvider
+                          : localProvider.getSigner(whale),
                       )
                       const dec =
                         sym === 'ETH' ? 18 : await tokenContract.decimals()
-                      const bnSet = BigInt(setAmt)
-                      const ratePrecision = 1000n // support 3 decimal-rate precision
-                      const rate = BigInt(Math.floor(exchangeRate * 1000))
-                      const scale = 10n ** BigInt(18 - Number(dec))
-                      maxIn = (bnSet * rate) / ratePrecision / scale
+                      const bnSet = ethers.BigNumber.from(setAmt)
+                      const ratePrecision = 1000 // support 3 decimal-rate precision
+                      const rate = ethers.BigNumber.from(
+                        Math.floor(exchangeRate * ratePrecision),
+                      )
+                      const scale = ethers.BigNumber.from(10).pow(18 - dec)
+                      maxIn = bnSet.mul(rate).div(ratePrecision).div(scale)
                       console.log('maxIn', maxIn.toString())
 
                       // fetch mint quote
@@ -198,9 +192,11 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                             fixedOutputQuoteResult.data.inputOutputAmount.toString()
 
                           // This ensures that the initial indexToken amount is very inaccurate and the algorithm still finds the correct solution
-                          req.indexTokenAmount = (
-                            BigInt(req.indexTokenAmount) * 2n
-                          ).toString()
+                          req.indexTokenAmount = BigNumber.from(
+                            req.indexTokenAmount,
+                          )
+                            .mul(2)
+                            .toString()
                           console.log(
                             'calling getFixedInputQuote',
                             req.indexTokenAmount.toString(),
@@ -229,20 +225,18 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                       mintQuote = res.data
 
                       // prepare contracts
-                      const whaleSigner = new JsonRpcSigner(localProvider, whale)
-                      const takerSigner = new JsonRpcSigner(localProvider, taker)
                       if (sym !== 'ETH') {
-                        erc20Whale = new Contract(
+                        erc20Whale = new ethers.Contract(
                           inputToken.address,
                           ERC20_ABI,
-                          whaleSigner,
-                        ) as ERC20Contract
+                          localProvider.getSigner(whale),
+                        )
                       }
-                      setTokenContract = new Contract(
+                      setTokenContract = new ethers.Contract(
                         indexToken.address,
                         ERC20_ABI,
-                        takerSigner,
-                      ) as ERC20Contract
+                        localProvider.getSigner(taker),
+                      )
                     })
 
                     it('returns a valid mint quote', () => {
@@ -252,42 +246,41 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                         FlashMintContractType.static,
                         FlashMintContractType.hyeth,
                       ])
-                      expect(BigInt(mintQuote.inputAmount) >= 0n).to.be.true
+                      expect(
+                        ethers.BigNumber.from(mintQuote.inputAmount),
+                      ).to.be.gte(0)
                       if (FIXED_OUTPUT) {
-                        expect(String(mintQuote.indexTokenAmount)).to.equal(setAmt)
+                        expect(mintQuote.indexTokenAmount).to.equal(setAmt)
                         expect(mintQuote.slippage).to.equal(0.5)
                       } else {
                         console.log('requestInputAmount', req.inputTokenAmount)
-                        const toleranceBP = 5n
-                        const requestedAmount = BigInt(req.inputTokenAmount)
-                        const minAmount =
-                          ((10_000n - toleranceBP) * requestedAmount) / 10000n
-                        const maxAmount =
-                          ((10_000n + toleranceBP) * requestedAmount) / 10000n
-                        const inputOutputAmount = BigInt(
-                          String(mintQuote.inputOutputAmount),
+                        const toleranceBP = 5
+                        expect(mintQuote.inputOutputAmount).to.gte(
+                          BigNumber.from(10_000 - toleranceBP)
+                            .mul(BigNumber.from(req.inputTokenAmount))
+                            .div(BigNumber.from(10000)),
                         )
-                        expect(inputOutputAmount >= minAmount).to.be.true
-                        expect(inputOutputAmount <= maxAmount).to.be.true
+                        expect(mintQuote.inputOutputAmount).to.lte(
+                          BigNumber.from(10_000 + toleranceBP)
+                            .mul(BigNumber.from(req.inputTokenAmount))
+                            .div(BigNumber.from(10000)),
+                        )
                       }
 
-                      // Verify that requested input amount is represented 1:1 in the transaction
+                      // Verify that requested inptu amount is represented 1:1 in the transaction
                       if (sym === 'ETH') {
                         console.log('mintQuote', mintQuote)
-                        expect(String(mintQuote.tx.value)).to.eq(
+                        expect(mintQuote.tx.value).to.eq(req.inputTokenAmount)
+                      } else {
+                        const inputAmountHex = BigNumber.from(
                           req.inputTokenAmount,
                         )
-                      } else {
-                        const inputAmountHex = BigInt(req.inputTokenAmount)
-                          .toString(16)
-                          .padStart(64, '0')
+                          .toHexString()
+                          .substring(2)
                         console.log('inputAmountHex', inputAmountHex)
                         console.log('tx.data', mintQuote.tx.data)
-                        expect(
-                          String(mintQuote.tx.data ?? '').includes(
-                            inputAmountHex,
-                          ),
-                        ).to.be.true
+                        expect(mintQuote.tx.data.includes(inputAmountHex)).to.be
+                          .true
                       }
 
                       expect(mintQuote.tx.to).to.match(/^0x[0-9a-fA-F]{40}$/)
@@ -295,13 +288,13 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                     })
 
                     describe('      ✓ execute mint', () => {
-                      let balanceBefore: bigint
-                      let inputBalanceBefore: bigint
+                      let balanceBefore: ethers.BigNumber
+                      let inputBalanceBefore: ethers.BigNumber
                       let takerSigner: any
-                      let spentAmount: bigint
+                      let spentAmount: ethers.BigNumber
 
                       before(async () => {
-                        takerSigner = new JsonRpcSigner(localProvider, taker)
+                        takerSigner = localProvider.getSigner(taker)
 
                         if (sym !== 'ETH') {
                           await erc20Whale.transfer(taker, maxIn)
@@ -309,15 +302,14 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                           await erc20Taker.approve(mintQuote.tx.to, maxIn)
                           inputBalanceBefore = await erc20Taker.balanceOf(taker)
                         } else {
-                          inputBalanceBefore =
-                            await takerSigner.provider.getBalance(taker)
+                          inputBalanceBefore = await takerSigner.getBalance()
                         }
                         balanceBefore = await setTokenContract.balanceOf(taker)
                         const tx = await takerSigner.sendTransaction({
                           to: mintQuote.tx.to,
-                          data: String(mintQuote.tx.data ?? ''),
+                          data: mintQuote.tx.data!,
                           value: mintQuote.tx.value
-                            ? BigInt(mintQuote.tx.value)
+                            ? ethers.BigNumber.from(mintQuote.tx.value)
                             : undefined,
                           gasLimit: 5_000_000,
                         })
@@ -325,64 +317,55 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                         const inputBalanceAfter =
                           sym !== 'ETH'
                             ? await erc20Whale.balanceOf(taker)
-                            : await takerSigner.provider.getBalance(taker)
-                        spentAmount = inputBalanceBefore - inputBalanceAfter
+                            : await takerSigner.getBalance()
+                        spentAmount = inputBalanceBefore.sub(inputBalanceAfter)
                         if (sym === 'ETH') {
-                          const gasCosts = receipt!.gasUsed * tx.gasPrice!
-                          spentAmount = spentAmount - gasCosts
+                          const gasCosts = receipt.gasUsed.mul(tx.gasPrice)
+                          spentAmount = spentAmount.sub(gasCosts)
                         }
                       })
 
                       it('minted correct amount', async () => {
                         const balanceAfter =
                           await setTokenContract.balanceOf(taker)
-                        mintedAmount = balanceAfter - balanceBefore
+                        mintedAmount = balanceAfter.sub(balanceBefore)
                         expect(mintedAmount).to.equal(
-                          BigInt(String(mintQuote.indexTokenAmount)),
+                          mintQuote.indexTokenAmount,
                         )
                       })
 
                       it('spends correct amount', async () => {
                         if (!FIXED_OUTPUT) {
-                          const inputAmount = BigInt(String(mintQuote.inputAmount))
-                          // Allow generous tolerance for slippage - spent can be more than quoted
-                          const maxSpent = (inputAmount * 10200n) / 10000n // 2% tolerance
-                          console.log('inputAmount', inputAmount.toString())
-                          console.log('spentAmount', spentAmount.toString())
-                          console.log('maxSpent', maxSpent.toString())
-                          expect(spentAmount <= maxSpent).to.be.true
-                          const slippageBP = BigInt(
-                            Math.floor(req.slippage * 100),
+                          expect(spentAmount).to.lt(mintQuote.inputAmount)
+                          const slippageBP = BigNumber.from(req.slippage * 100)
+                          const factor = BigNumber.from(10000).sub(slippageBP)
+                          const targetInput = BigNumber.from(
+                            req.inputTokenAmount,
                           )
-                          const factor = 10000n - slippageBP
-                          const targetInput = BigInt(req.inputTokenAmount)
-                          const targetInputWithSlippage =
-                            (targetInput * factor) / 10000n
-                          console.log(
-                            'targetInput',
-                            targetInputWithSlippage.toString(),
-                          )
+                            .mul(factor)
+                            .div(10000)
+                          console.log('targetInput', targetInput.toString())
                           // TODO: Investigate why I need to set such high tolerance
                           const toleranceBP =
-                            req.outputToken.symbol === 'wstETH15x' ||
-                            req.outputToken.symbol === 'ETH2X' ||
-                            req.outputToken.symbol === 'BTC2X' ||
-                            req.outputToken.symbol === 'hyETH'
-                              ? 200n
-                              : 50n
-                          const minSpent =
-                            (targetInputWithSlippage * (10000n - toleranceBP)) /
-                            10000n
-                          console.log('minSpent', minSpent.toString())
-                          expect(spentAmount >= minSpent).to.be.true
+                            req.outputToken.symbol === 'wstETH15x'
+                              ? BigNumber.from(150)
+                              : BigNumber.from(50)
+                          console.log('spentAmount', spentAmount.toString())
+                          expect(spentAmount).to.gte(
+                            targetInput
+                              .mul(BigNumber.from(10000).sub(toleranceBP))
+                              .div(10000),
+                          )
                         }
                       })
 
                       if (FIXED_OUTPUT) {
                         describe('      ◦ redeem', () => {
-                          let redeemQuote: FlashMintQuote
-                          let balanceAfterRedeem: bigint
-                          let burntAmount: bigint
+                          let redeemQuote: Awaited<
+                            ReturnType<FlashMintQuoteProvider['getQuote']>
+                          >['data']
+                          let balanceAfterRedeem: ethers.BigNumber
+                          let burntAmount: ethers.BigNumber
                           let redeemReq: FlashMintQuoteRequest
 
                           before(async () => {
@@ -404,17 +387,16 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                             }
                             redeemQuote = rr.data
 
-                            const topUp = toBeHex(parseEther('1000000'))
+                            const topUp = ethers.utils
+                              .parseEther('1000000')
+                              .toHexString()
                             await localProvider.send('hardhat_setBalance', [
                               taker,
                               topUp,
                             ])
 
                             // approve & execute
-                            const takerSigner = new JsonRpcSigner(
-                              localProvider,
-                              taker,
-                            )
+                            const takerSigner = localProvider.getSigner(taker)
                             await setTokenContract
                               .connect(takerSigner)
                               .approve(redeemQuote.tx.to, mintedAmount)
@@ -423,9 +405,9 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                               await setTokenContract.balanceOf(taker)
                             const tx = await takerSigner.sendTransaction({
                               to: redeemQuote.tx.to,
-                              data: String(redeemQuote.tx.data ?? ''),
+                              data: redeemQuote.tx.data!,
                               value: redeemQuote.tx.value
-                                ? BigInt(redeemQuote.tx.value)
+                                ? ethers.BigNumber.from(redeemQuote.tx.value)
                                 : undefined,
                               gasLimit: 5_000_000,
                             })
@@ -433,27 +415,24 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                             balanceAfterRedeem =
                               await setTokenContract.balanceOf(taker)
                             burntAmount =
-                              balanceBeforeRedeem - balanceAfterRedeem
+                              balanceBeforeRedeem.sub(balanceAfterRedeem)
 
                             // ensure user got more input‐token back than they burned
                             const inAfter =
                               sym === 'ETH'
-                                ? await takerSigner.provider.getBalance(taker)
-                                : await (
-                                    new Contract(
-                                      inputToken.address,
-                                      ERC20_ABI,
-                                      localProvider,
-                                    ) as ERC20Contract
+                                ? await takerSigner.getBalance()
+                                : await new ethers.Contract(
+                                    inputToken.address,
+                                    ERC20_ABI,
+                                    localProvider,
                                   ).balanceOf(taker)
-                            expect(inAfter > 0n).to.be.true
+                            expect(inAfter).to.be.gt(0)
                           })
 
                           it('burned only the redeemed amount', () => {
-                            expect(
-                              burntAmount ===
-                                BigInt(String(redeemReq.inputTokenAmount)),
-                            ).to.be.true
+                            expect(burntAmount).to.equal(
+                              BigNumber.from(redeemReq.inputTokenAmount),
+                            )
                           })
                         })
                       }
