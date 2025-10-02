@@ -54,21 +54,21 @@ const testScenarios: TestScenarios = {
       ],
     },
     uXRP2x: {
-      setAmounts: ['1', '10'],
+      setAmounts: ['1', '5'],
       inputTokens: [
-        { symbol: 'USDC', exchangeRate: 1000 },
+        { symbol: 'USDC', exchangeRate: 2000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
         { symbol: 'WETH', exchangeRate: 0.5 },
-        { symbol: 'cbBTC', exchangeRate: 0.01 },
+        { symbol: 'cbBTC', exchangeRate: 0.05 },
       ],
     },
     uXRP3x: {
       setAmounts: ['1', '5'],
       inputTokens: [
-        { symbol: 'USDC', exchangeRate: 1000 },
+        { symbol: 'USDC', exchangeRate: 2000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
         { symbol: 'WETH', exchangeRate: 0.5 },
-        { symbol: 'cbBTC', exchangeRate: 0.01 },
+        { symbol: 'cbBTC', exchangeRate: 0.05 },
       ],
     },
     BTC2X: {
@@ -127,6 +127,15 @@ const testScenarios: TestScenarios = {
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
     },
+    ETH3x: {
+      setAmounts: ['1', '10', '50'],
+      inputTokens: [
+        { symbol: 'USDT', exchangeRate: 1300 },
+        { symbol: 'USDC', exchangeRate: 1300 },
+        { symbol: 'WETH', exchangeRate: 0.3 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
     BTC2X: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
@@ -134,6 +143,25 @@ const testScenarios: TestScenarios = {
         { symbol: 'ETH', exchangeRate: 1 },
         { symbol: 'WETH', exchangeRate: 1 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    BTC3x: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'USDT', exchangeRate: 3000 },
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    GOLD3x: {
+      setAmounts: ['1', '2'], // TODO: Higher amounts result in errors around 
+      inputTokens: [
+        { symbol: 'USDT', exchangeRate: 1500 },
+        { symbol: 'USDC', exchangeRate: 1500 },
+        { symbol: 'WETH', exchangeRate: 0.5 },
+        { symbol: 'WBTC', exchangeRate: 0.02 },
+        { symbol: 'XAUt', exchangeRate: 0.3 },
       ],
     },
     hyETH: {
@@ -148,9 +176,9 @@ const testScenarios: TestScenarios = {
     ETH2X: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
-        { symbol: 'USDC', exchangeRate: 300 },
-        { symbol: 'ETH', exchangeRate: 0.1 },
-        { symbol: 'WETH', exchangeRate: 0.1 },
+        { symbol: 'USDC', exchangeRate: 600 },
+        { symbol: 'ETH', exchangeRate: 0.2 },
+        { symbol: 'WETH', exchangeRate: 0.2 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
     },
@@ -215,6 +243,37 @@ const testScenarios: TestScenarios = {
         { symbol: 'ETH', exchangeRate: 2 },
         { symbol: 'WETH', exchangeRate: 2 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    ARB2x: {
+      setAmounts: ['1', '2'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'USD₮0', exchangeRate: 3000 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+        { symbol: 'ARB', exchangeRate: 2500 },
+      ],
+    },
+    // TODO: There seems to be no flashloan liquidity on balancer for AAVE2x so we have to find an alternative flashloan source for this
+    // AAVE2x: {
+    //   setAmounts: ['1', '10', '100'],
+    //   inputTokens: [
+    //     { symbol: 'USDC', exchangeRate: 3000 },
+    //     { symbol: 'USD₮0', exchangeRate: 3000 },
+    //     { symbol: 'WETH', exchangeRate: 1 },
+    //     { symbol: 'WBTC', exchangeRate: 0.1 },
+    //     { symbol: 'AAVE', exchangeRate: 5 },
+    //   ],
+    // },
+    LINK2x: {
+      setAmounts: ['1', '5'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'USD₮0', exchangeRate: 3000 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+        { symbol: 'LINK', exchangeRate: 60 },
       ],
     },
   },

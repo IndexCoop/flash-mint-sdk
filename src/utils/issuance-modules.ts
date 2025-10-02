@@ -32,7 +32,10 @@ export function getIssuanceModule(
   switch (tokenSymbol) {
     case getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH').symbol:
     case getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC2X').symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC3x').symbol:
     case getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH2X').symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH3x').symbol:
+    case getTokenByChainAndSymbol(ChainId.Mainnet, 'GOLD3x').symbol:
       return {
         address: IndexDebtIssuanceModuleV2Address_v2,
         isDebtIssuance: true,

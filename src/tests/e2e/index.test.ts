@@ -145,6 +145,10 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                         .parseEther('1000000')
                         .toHexString()
                       await localProvider.send('hardhat_setBalance', [
+                        whale,
+                        topUp,
+                      ])
+                      await localProvider.send('hardhat_setBalance', [
                         taker,
                         topUp,
                       ])
