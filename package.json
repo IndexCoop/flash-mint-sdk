@@ -1,6 +1,6 @@
 {
   "name": "@indexcoop/flash-mint-sdk",
-  "version": "3.25.0",
+  "version": "4.0.0",
   "description": "The FlashMintSDK of the Index Coop.",
   "engines": {
     "node": ">=18"
