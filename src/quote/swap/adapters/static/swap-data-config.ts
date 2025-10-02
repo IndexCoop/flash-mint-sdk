@@ -3,27 +3,33 @@ import type { SwapData, SwapDataV5 } from 'utils'
 import { zeroAddress } from 'viem'
 
 const mainnet = {
+  steth: getTokenByChainAndSymbol(1, 'stETH').address,
+  usdc: getTokenByChainAndSymbol(1, 'USDC').address,
+  usdt: getTokenByChainAndSymbol(1, 'USDT').address,
+  xaut: getTokenByChainAndSymbol(1, 'XAUt').address,
   wbtc: getTokenByChainAndSymbol(1, 'WBTC').address,
   weth: getTokenByChainAndSymbol(1, 'WETH').address,
-  usdc: getTokenByChainAndSymbol(1, 'USDC').address,
-  steth: getTokenByChainAndSymbol(1, 'stETH').address,
 }
 
 const base = {
   cbbtc: getTokenByChainAndSymbol(8453, 'cbBTC').address,
-  wbtc: getTokenByChainAndSymbol(8453, 'WBTC').address,
-  weth: getTokenByChainAndSymbol(8453, 'WETH').address,
   usdc: getTokenByChainAndSymbol(8453, 'USDC').address,
   usol: getTokenByChainAndSymbol(8453, 'uSOL').address,
   usui: getTokenByChainAndSymbol(8453, 'uSUI').address,
   uxrp: getTokenByChainAndSymbol(8453, 'uXRP').address,
+  wbtc: getTokenByChainAndSymbol(8453, 'WBTC').address,
+  weth: getTokenByChainAndSymbol(8453, 'WETH').address,
   wsteth: getTokenByChainAndSymbol(8453, 'wstETH').address,
 }
 
 const arbitrum = {
+  aave: getTokenByChainAndSymbol(42161, 'AAVE').address,
+  arb: getTokenByChainAndSymbol(42161, 'ARB').address,
+  link: getTokenByChainAndSymbol(42161, 'LINK').address,
   wbtc: getTokenByChainAndSymbol(42161, 'WBTC').address,
   weth: getTokenByChainAndSymbol(42161, 'WETH').address,
   usdc: getTokenByChainAndSymbol(42161, 'USDC').address,
+  usdt0: getTokenByChainAndSymbol(42161, 'USD₮0').address,
 }
 
 export const SwapDataConfig: Readonly<{
@@ -85,6 +91,68 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
+    'ETH3x': {
+      [mainnet.weth]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.weth],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.usdt]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.usdt, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.usdc]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.usdc, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.wbtc]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.wbtc, mainnet.weth],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
     'BTC2X': {
       [mainnet.weth]: {
         contract: 'FlashMintLeveraged',
@@ -128,6 +196,145 @@ export const SwapDataConfig: Readonly<{
           path: [mainnet.wbtc],
           fees: [],
           exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'BTC3x': {
+      [mainnet.weth]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.wbtc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.weth, mainnet.wbtc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.usdt]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.wbtc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.usdt, mainnet.wbtc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.usdc]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.wbtc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.usdc, mainnet.wbtc],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.wbtc]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.wbtc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.wbtc],
+          fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'GOLD3x': {
+      [mainnet.weth]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.weth, mainnet.wbtc, mainnet.xaut],
+          fees: [3000, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.usdt]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.usdt, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.usdc]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.usdc, mainnet.usdt, mainnet.xaut],
+          fees: [100, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.wbtc]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.wbtc, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [mainnet.xaut]: {
+        contract: 'FlashMintLeveraged',
+        swapDataDebtForCollateral: {
+          path: [mainnet.usdt, mainnet.xaut],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [mainnet.xaut],
+          fees: [],
+          exchange: 0,
           pool: zeroAddress,
         },
       },
@@ -1187,6 +1394,237 @@ export const SwapDataConfig: Readonly<{
         swapDataInputToken: {
           path: [arbitrum.wbtc, arbitrum.usdc],
           fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'ARB2x': {
+      [arbitrum.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.arb],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.arb],
+          fees: [100, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.usdt0]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.arb],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.usdt0, arbitrum.arb],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.arb],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.weth, arbitrum.usdt0, arbitrum.arb],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.wbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.arb],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.arb],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.arb]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.arb],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.arb],
+          fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'AAVE2x': {
+      [arbitrum.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.aave],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.aave],
+          fees: [100, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.usdt0]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.aave],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.usdt0, arbitrum.aave],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.aave],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.weth, arbitrum.usdt0, arbitrum.aave],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.wbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.aave],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.aave],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.aave]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.aave],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.aave],
+          fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'LINK2x': {
+      [arbitrum.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.link],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.link],
+          fees: [100, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.usdt0]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.link],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.usdt0, arbitrum.link],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.link],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.weth, arbitrum.usdt0, arbitrum.link],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.wbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.link],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.link],
+          fees: [500, 3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.link]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.usdt0, arbitrum.link],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.link],
+          fees: [],
           exchange: 3,
           pool: zeroAddress,
         },

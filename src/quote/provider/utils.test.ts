@@ -174,4 +174,52 @@ describe('getContractType()', () => {
     )
     expect(contractType).toBe(FlashMintContractType.static)
   })
+
+  test('returns correct contract type for ETH3x on mainnet', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH3x').symbol,
+      ChainId.Mainnet,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
+  test('returns correct contract type for BTC3x on mainnet', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC3x').symbol,
+      ChainId.Mainnet,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
+  test('returns correct contract type for GOLD3x on mainnet', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Mainnet, 'GOLD3x').symbol,
+      ChainId.Mainnet,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
+  test('returns correct contract type for ARB2x on Arbitrum', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Arbitrum, 'ARB2x').symbol,
+      ChainId.Arbitrum,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
+  test('returns correct contract type for AAVE2x on Arbitrum', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Arbitrum, 'AAVE2x').symbol,
+      ChainId.Arbitrum,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
+
+  test('returns correct contract type for LINK2x on Arbitrum', async () => {
+    const contractType = getContractType(
+      getTokenByChainAndSymbol(ChainId.Arbitrum, 'LINK2x').symbol,
+      ChainId.Arbitrum,
+    )
+    expect(contractType).toBe(FlashMintContractType.static)
+  })
 })

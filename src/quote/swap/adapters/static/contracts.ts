@@ -9,11 +9,17 @@ import FlashMintLeveragedMorphoV2Abi from 'constants/abis/FlashMintLeveragedMorp
 
 import type { Address } from 'viem'
 
+// base
 const BTC2X = getTokenByChainAndSymbol(base.id, 'BTC2X')
 const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const ETH2X = getTokenByChainAndSymbol(base.id, 'ETH2X')
 const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')
+
+// mainnet exceptions
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
+const eth_BTC3X = getTokenByChainAndSymbol(mainnet.id, 'BTC3x')
+const eth_ETH3X = getTokenByChainAndSymbol(mainnet.id, 'ETH3x')
+const eth_GOLD3X = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
 
 export function getContract(chainId: number, address: Address): Address {
   if (chainId === mainnet.id) {
@@ -21,6 +27,16 @@ export function getContract(chainId: number, address: Address): Address {
       // ExchangeIssuanceLeveraged
       return '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1'
     }
+
+    if (
+      // FlashMintLeveraged for these
+      isAddressEqual(address, eth_GOLD3X.address) ||
+      isAddressEqual(address, eth_BTC3X.address) ||
+      isAddressEqual(address, eth_ETH3X.address)
+    ) {
+      return '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48'
+    }
+
     // FlashMintLeveraged
     return '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
   }
@@ -52,6 +68,7 @@ export function getContract(chainId: number, address: Address): Address {
 
 export const ABI: { [key: string]: any } = {
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0': FlashMintLeveragedAbi,
+  '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48': FlashMintLeveragedAbi, // New FlashMintLeveraged for ETH3x, BTC3x, GOLD3x
   '0xc6b3B4624941287bB7BdD8255302c1b337e42194': FlashMintLeveragedExtendedAbi,
   '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8':
     FlashMintLeveragedMorphoAaveLMAbi,

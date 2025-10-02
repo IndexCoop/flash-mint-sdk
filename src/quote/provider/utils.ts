@@ -1,6 +1,6 @@
 import type { TransactionRequest } from '@ethersproject/abstract-provider'
 import { BigNumber } from '@ethersproject/bignumber'
-import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
+import { type Symbol_, getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 
 import { ChainId } from 'constants/chains'
 
@@ -11,8 +11,11 @@ import {
 } from './index'
 
 const btc2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC2X')
+const btc3x = getTokenByChainAndSymbol(ChainId.Mainnet, 'BTC3x')
 const dpi = getTokenByChainAndSymbol(ChainId.Mainnet, 'DPI')
 const eth2x = getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH2X')
+const eth3x = getTokenByChainAndSymbol(ChainId.Mainnet, 'ETH3x')
+const gold3x = getTokenByChainAndSymbol(ChainId.Mainnet, 'GOLD3x')
 const mvi = getTokenByChainAndSymbol(ChainId.Mainnet, 'MVI')
 const hyeth = getTokenByChainAndSymbol(ChainId.Mainnet, 'hyETH')
 const iceth = getTokenByChainAndSymbol(ChainId.Mainnet, 'icETH')
@@ -60,11 +63,18 @@ export function getContractType(
     return FlashMintContractType.static
   }
 
-  if (token === btc2x.symbol || token === eth2x.symbol) {
-    return FlashMintContractType.static
-  }
-
-  if (token === iceth.symbol) {
+  if (
+    (
+      [
+        btc2x.symbol,
+        eth2x.symbol,
+        btc3x.symbol,
+        eth3x.symbol,
+        gold3x.symbol,
+        iceth.symbol,
+      ] as Symbol_[]
+    ).includes(token as Symbol_)
+  ) {
     return FlashMintContractType.static
   }
 
