@@ -420,7 +420,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
-    'ETH3x': {
+    'ETH3X': {
       [base.usdc]: {
         contract: 'FlashMintLeveragedExtended',
         swapDataDebtForCollateral: {
@@ -526,7 +526,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
-    'BTC3x': {
+    'BTC3X': {
       [base.usdc]: {
         contract: 'FlashMintLeveragedMorphoAaveLM',
         swapDataDebtForCollateral: {
