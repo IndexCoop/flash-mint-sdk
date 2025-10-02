@@ -246,7 +246,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     ARB2x: {
-      setAmounts: ['1', '5'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
+      setAmounts: ['1', '2'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'USD₮0', exchangeRate: 3000 },
