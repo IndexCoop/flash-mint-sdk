@@ -272,8 +272,8 @@ export const SwapDataConfig: Readonly<{
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [mainnet.weth, mainnet.xaut],
-          fees: [3000],
+          path: [mainnet.weth, mainnet.wbtc, mainnet.xaut],
+          fees: [3000, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -317,8 +317,8 @@ export const SwapDataConfig: Readonly<{
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [mainnet.wbtc, mainnet.usdt, mainnet.xaut],
-          fees: [3000, 3000],
+          path: [mainnet.wbtc, mainnet.xaut],
+          fees: [3000],
           exchange: 3,
           pool: zeroAddress,
         },

@@ -30,6 +30,7 @@ export function getContract(chainId: number, address: Address): Address {
 
     if (
       // FlashMintLeveraged for these
+      isAddressEqual(address, eth_GOLD3X.address) ||
       isAddressEqual(address, eth_BTC3X.address) ||
       isAddressEqual(address, eth_ETH3X.address)
     ) {
