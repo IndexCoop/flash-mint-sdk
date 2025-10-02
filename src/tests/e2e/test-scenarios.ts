@@ -128,11 +128,11 @@ const testScenarios: TestScenarios = {
       ],
     },
     ETH3x: {
-      setAmounts: ['1', '10', '100'],
+      setAmounts: ['1', '10', '50'],
       inputTokens: [
-        { symbol: 'USDT', exchangeRate: 300 },
-        { symbol: 'USDC', exchangeRate: 300 },
-        { symbol: 'WETH', exchangeRate: 0.1 },
+        { symbol: 'USDT', exchangeRate: 1300 },
+        { symbol: 'USDC', exchangeRate: 1300 },
+        { symbol: 'WETH', exchangeRate: 0.3 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
     },
