@@ -1546,9 +1546,9 @@ export const SwapDataConfig: Readonly<{
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [arbitrum.aave],
+          path: [],
           fees: [],
-          exchange: 3,
+          exchange: 0,
           pool: zeroAddress,
         },
       },

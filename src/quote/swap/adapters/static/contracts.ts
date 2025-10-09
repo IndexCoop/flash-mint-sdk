@@ -51,7 +51,7 @@ export function getContract(chainId: number, address: Address): Address {
             // Use aave flashloan 
             isAddressEqual(address, arb_AAVE2X.address) 
         ) {
-            return "0x57C3BD274FB2fe7cF37C70a8ec051eee08ffa143"
+            return "0xC9E4AEcbD3C7dE90782fa8c9FB3BF993Ee68A3dd"
         }
         // FlashMintLeveragedExtended
         return "0xc6b3B4624941287bB7BdD8255302c1b337e42194";
@@ -81,7 +81,7 @@ export function getContract(chainId: number, address: Address): Address {
 export const ABI: { [key: string]: any } = {
     "0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0": FlashMintLeveragedAbi,
     "0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48": FlashMintLeveragedAbi, // New FlashMintLeveraged for ETH3x, BTC3x, GOLD3x
-    "0x57C3BD274FB2fe7cF37C70a8ec051eee08ffa143": FlashMintLeveragedAbi,
+    "0xC9E4AEcbD3C7dE90782fa8c9FB3BF993Ee68A3dd": FlashMintLeveragedAbi,
     "0xc6b3B4624941287bB7BdD8255302c1b337e42194": FlashMintLeveragedExtendedAbi,
     "0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8":
         FlashMintLeveragedMorphoAaveLMAbi,
