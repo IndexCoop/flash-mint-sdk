@@ -256,16 +256,18 @@ const testScenarios: TestScenarios = {
       ],
     },
     // TODO: There seems to be no flashloan liquidity on balancer for AAVE2x so we have to find an alternative flashloan source for this
-    // AAVE2x: {
-    //   setAmounts: ['1', '10', '100'],
-    //   inputTokens: [
-    //     { symbol: 'USDC', exchangeRate: 3000 },
-    //     { symbol: 'USD₮0', exchangeRate: 3000 },
-    //     { symbol: 'WETH', exchangeRate: 1 },
-    //     { symbol: 'WBTC', exchangeRate: 0.1 },
-    //     { symbol: 'AAVE', exchangeRate: 5 },
-    //   ],
-    // },
+    AAVE2x: {
+        setAmounts: ['1',
+            // '10', '100' 
+        ],
+      inputTokens: [
+        // { symbol: 'USDC', exchangeRate: 3000 },
+        // { symbol: 'USD₮0', exchangeRate: 3000 },
+        // { symbol: 'WETH', exchangeRate: 1 },
+        // { symbol: 'WBTC', exchangeRate: 0.1 },
+        { symbol: 'AAVE', exchangeRate: 5 },
+      ],
+    },
     LINK2x: {
       setAmounts: ['1', '5'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
       inputTokens: [
