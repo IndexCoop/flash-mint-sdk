@@ -79,6 +79,7 @@ export const ABI: { [key: string]: any } = {
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0': FlashMintLeveragedAbi,
   '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48': FlashMintLeveragedAbi, // New FlashMintLeveraged for ETH3x, GOLD3x
   '0x7663043EBE3f9f5E53cbf56F9F36fA5233ef055D': FlashMintLeveragedAbi, // New FlashMintLeveraged for BTC3x
+  '0xd5A152a058eDe7331B9ad3521bad03d4CCfD6Bb9': FlashMintLeveragedAbi, // New FlashMintLeveraged for AAVE2x
   '0xC9E4AEcbD3C7dE90782fa8c9FB3BF993Ee68A3dd': FlashMintLeveragedAbi,
   '0xc6b3B4624941287bB7BdD8255302c1b337e42194': FlashMintLeveragedExtendedAbi,
   '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8':
