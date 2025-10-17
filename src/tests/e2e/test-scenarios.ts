@@ -155,7 +155,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     GOLD3x: {
-      setAmounts: ['1', '2'], // TODO: Higher amounts result in errors around 
+      setAmounts: ['1', '2'], // TODO: Higher amounts result in errors around
       inputTokens: [
         { symbol: 'USDT', exchangeRate: 1500 },
         { symbol: 'USDC', exchangeRate: 1500 },
@@ -257,7 +257,7 @@ const testScenarios: TestScenarios = {
     },
     // TODO: There seems to be no flashloan liquidity on balancer for AAVE2x so we have to find an alternative flashloan source for this
     AAVE2x: {
-      setAmounts: [ '1' ],
+      setAmounts: ['1'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'USD₮0', exchangeRate: 3000 },
