@@ -1480,14 +1480,14 @@ export const SwapDataConfig: Readonly<{
       [arbitrum.usdc]: {
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.aave],
-          fees: [3000],
+          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.aave],
-          fees: [100, 3000],
+          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [100, 500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -1495,14 +1495,14 @@ export const SwapDataConfig: Readonly<{
       [arbitrum.usdt0]: {
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.aave],
-          fees: [3000],
+          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [arbitrum.usdt0, arbitrum.aave],
-          fees: [3000],
+          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -1510,14 +1510,14 @@ export const SwapDataConfig: Readonly<{
       [arbitrum.weth]: {
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.aave],
-          fees: [3000],
+          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [arbitrum.weth, arbitrum.usdt0, arbitrum.aave],
-          fees: [500, 3000],
+          path: [arbitrum.weth, arbitrum.aave],
+          fees: [3000],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -1525,14 +1525,14 @@ export const SwapDataConfig: Readonly<{
       [arbitrum.wbtc]: {
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.aave],
-          fees: [3000],
+          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
         swapDataInputToken: {
-          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.aave],
-          fees: [500, 3000],
+          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -1540,8 +1540,8 @@ export const SwapDataConfig: Readonly<{
       [arbitrum.aave]: {
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.aave],
-          fees: [3000],
+          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
+          fees: [500, 3000],
           exchange: 3,
           pool: zeroAddress,
         },
