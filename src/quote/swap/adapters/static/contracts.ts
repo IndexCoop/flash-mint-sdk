@@ -27,7 +27,7 @@ export function getContract(chainId: number, address: Address): Address {
   if (chainId === mainnet.id) {
     if (isAddressEqual(address, icETH.address)) {
       // ExchangeIssuanceLeveraged
-      return '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1'
+      return '0x945Db358C69A4Be68aB5b835f2f56af1CcF4E2d1'
     }
 
     if (
