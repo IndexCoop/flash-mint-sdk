@@ -340,21 +340,6 @@ export const SwapDataConfig: Readonly<{
       },
     },
     'icETH': {
-      [mainnet.steth]: {
-        contract: 'ExchangeIssuanceLeveraged',
-        swapDataDebtForCollateral: {
-          path: ['0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', mainnet.steth],
-          fees: [],
-          exchange: 4,
-          pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
-        },
-        swapDataInputToken: {
-          path: [mainnet.steth],
-          fees: [],
-          exchange: 4,
-          pool: '0xDC24316b9AE028F1497c275EB9192a3Ea0f67022',
-        },
-      },
       [mainnet.weth]: {
         contract: 'ExchangeIssuanceLeveraged',
         swapDataDebtForCollateral: {

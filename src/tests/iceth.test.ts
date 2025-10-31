@@ -41,7 +41,7 @@ describe('icETH (mainnet)', () => {
     await factory.executeTx()
   })
 
-  test('can redeem for stETH', async () => {
+  test.skip('can redeem for stETH', async () => {
     await factory.fetchQuote({
       chainId: 1,
       isMinting: false,
