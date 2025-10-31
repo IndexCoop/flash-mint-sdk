@@ -86,5 +86,6 @@ export const ABI: { [key: string]: any } = {
     FlashMintLeveragedMorphoAaveLMAbi,
   '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE': FlashMintLeveragedExtendedAbi,
   '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42': FlashMintLeveragedMorphoV2Abi,
-  '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1': ExchangeIssuanceLeveraged,
+  '0x945Db358C69A4Be68aB5b835f2f56af1CcF4E2d1': ExchangeIssuanceLeveraged, // New icETH contract
+  '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1': ExchangeIssuanceLeveraged, // Old icETH contract
 }
