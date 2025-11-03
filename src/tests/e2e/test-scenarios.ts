@@ -171,6 +171,13 @@ const testScenarios: TestScenarios = {
         { symbol: 'WETH', exchangeRate: 2 },
       ],
     },
+    icETH: {
+      setAmounts: ['1', '10', '100'],
+      inputTokens: [
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+      ],
+    },
   },
   42161: {
     ETH2X: {
