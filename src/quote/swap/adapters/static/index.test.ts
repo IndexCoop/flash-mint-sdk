@@ -71,7 +71,7 @@ describe('StaticQuoteProvider', () => {
     console.log(quote)
     expect(quote.isMinting).toBe(false)
     expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
-    expect(quote.tx.to).toBe('0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1')
+    expect(quote.tx.to).toBe('0x40e8e58052272496dcf42953CF7e699B522Fe8A3')
     expect(quote.tx.data).toBeDefined()
   })
 })
