@@ -252,19 +252,8 @@ const testScenarios: TestScenarios = {
         { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
     },
-    ARB2x: {
-      setAmounts: ['1', '2'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
-      inputTokens: [
-        { symbol: 'USDC', exchangeRate: 3000 },
-        { symbol: 'USD₮0', exchangeRate: 3000 },
-        { symbol: 'WETH', exchangeRate: 1 },
-        { symbol: 'WBTC', exchangeRate: 0.1 },
-        { symbol: 'ARB', exchangeRate: 2500 },
-      ],
-    },
-    // TODO: There seems to be no flashloan liquidity on balancer for AAVE2x so we have to find an alternative flashloan source for this
     AAVE2x: {
-      setAmounts: ['1'],
+      setAmounts: ['1', '10', '20'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'USD₮0', exchangeRate: 3000 },
@@ -274,7 +263,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     LINK2x: {
-      setAmounts: ['1', '5'], // TODO: Review LINK liquidity on alternative flashloan providers for higher amounts
+      setAmounts: ['1', '10', '20'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'USD₮0', exchangeRate: 3000 },
