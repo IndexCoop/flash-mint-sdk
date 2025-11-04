@@ -47,11 +47,8 @@ export function getContract(chainId: number, address: Address): Address {
   }
 
   if (chainId === arbitrum.id) {
-    if (isAddressEqual(address, arb_AAVE2X.address)) {
-      return '0xd5A152a058eDe7331B9ad3521bad03d4CCfD6Bb9'
-    }
-    // FlashMintLeveragedExtended
-    return '0xc6b3B4624941287bB7BdD8255302c1b337e42194'
+    // FlashMintLeveragedAaveFL
+    return '0xd5A152a058eDe7331B9ad3521bad03d4CCfD6Bb9'
   }
 
   // Base
