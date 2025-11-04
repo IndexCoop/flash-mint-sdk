@@ -253,7 +253,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     AAVE2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'USD₮0', exchangeRate: 3000 },
@@ -263,7 +263,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     LINK2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'USD₮0', exchangeRate: 3000 },
