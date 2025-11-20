@@ -155,7 +155,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     GOLD3x: {
-      setAmounts: ['1', '2'], // TODO: Higher amounts result in errors around
+      setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'USDT', exchangeRate: 1500 },
         { symbol: 'USDC', exchangeRate: 1500 },
