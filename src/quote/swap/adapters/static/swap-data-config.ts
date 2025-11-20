@@ -46,7 +46,7 @@ export const SwapDataConfig: Readonly<{
   1: {
     'ETH2X': {
       [mainnet.weth]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdc, mainnet.weth],
           fees: [500],
@@ -61,7 +61,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdc, mainnet.weth],
           fees: [500],
@@ -76,7 +76,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.wbtc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdc, mainnet.weth],
           fees: [500],
@@ -93,7 +93,7 @@ export const SwapDataConfig: Readonly<{
     },
     'ETH3x': {
       [mainnet.weth]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.weth],
           fees: [500],
@@ -108,7 +108,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdt]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.weth],
           fees: [500],
@@ -123,7 +123,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.weth],
           fees: [500],
@@ -138,7 +138,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.wbtc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.weth],
           fees: [500],
@@ -155,7 +155,7 @@ export const SwapDataConfig: Readonly<{
     },
     'BTC2X': {
       [mainnet.weth]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdc, mainnet.wbtc],
           fees: [3000],
@@ -170,7 +170,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdc, mainnet.wbtc],
           fees: [3000],
@@ -185,7 +185,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.wbtc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdc, mainnet.wbtc],
           fees: [3000],
@@ -202,7 +202,7 @@ export const SwapDataConfig: Readonly<{
     },
     'BTC3x': {
       [mainnet.weth]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.wbtc],
           fees: [500],
@@ -217,7 +217,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdt]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.wbtc],
           fees: [500],
@@ -232,7 +232,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.wbtc],
           fees: [500],
@@ -247,7 +247,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.wbtc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.wbtc],
           fees: [500],
@@ -264,7 +264,7 @@ export const SwapDataConfig: Readonly<{
     },
     'GOLD3x': {
       [mainnet.weth]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
           fees: [500],
@@ -279,7 +279,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdt]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
           fees: [500],
@@ -294,7 +294,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.usdc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
           fees: [500],
@@ -309,7 +309,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.wbtc]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
           fees: [500],
@@ -324,7 +324,7 @@ export const SwapDataConfig: Readonly<{
         },
       },
       [mainnet.xaut]: {
-        contract: 'FlashMintLeveraged',
+        contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
           fees: [500],
