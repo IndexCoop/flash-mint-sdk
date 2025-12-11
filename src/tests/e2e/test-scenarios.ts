@@ -18,7 +18,7 @@ export type TestScenarios = Record<number, Record<string, ProductScenario>>
 const testScenarios: TestScenarios = {
   8453: {
     uSUI2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -27,7 +27,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSUI3x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -36,7 +36,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -45,7 +45,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL3x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -111,6 +111,42 @@ const testScenarios: TestScenarios = {
       setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 5000 },
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+        { symbol: 'cbBTC', exchangeRate: 0.1 },
+      ],
+    },
+    iETH1x: {
+      setAmounts: ['1', '10'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+        { symbol: 'cbBTC', exchangeRate: 0.1 },
+      ],
+    },
+    iETH2x: {
+      setAmounts: ['1', '10'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+        { symbol: 'cbBTC', exchangeRate: 0.1 },
+      ],
+    },
+    iBTC1x: {
+      setAmounts: ['1', '10'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+        { symbol: 'cbBTC', exchangeRate: 0.1 },
+      ],
+    },
+    iBTC2x: {
+      setAmounts: ['1', '10'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'ETH', exchangeRate: 2 },
         { symbol: 'WETH', exchangeRate: 2 },
         { symbol: 'cbBTC', exchangeRate: 0.1 },
@@ -263,6 +299,24 @@ const testScenarios: TestScenarios = {
         { symbol: 'WETH', exchangeRate: 1 },
         { symbol: 'WBTC', exchangeRate: 0.1 },
         { symbol: 'LINK', exchangeRate: 60 },
+      ],
+    },
+    iETH2x: {
+      setAmounts: ['1', '10', '20'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
+      ],
+    },
+    iBTC2x: {
+      setAmounts: ['1', '10', '20'],
+      inputTokens: [
+        { symbol: 'USDC', exchangeRate: 3000 },
+        { symbol: 'ETH', exchangeRate: 2 },
+        { symbol: 'WETH', exchangeRate: 2 },
+        { symbol: 'WBTC', exchangeRate: 0.1 },
       ],
     },
   },

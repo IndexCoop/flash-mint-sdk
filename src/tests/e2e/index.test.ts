@@ -25,7 +25,7 @@ import {
 // Factor by which to round down the latest block number to run all tests against the same block
 // Gives tradeoff between avoiding tests running "stale" while still leveraging caching to some extend to improve performance
 const BLOCK_ROUNDING_MAINNET = 1000
-const BLOCK_ROUNDING_L2 = 10000
+const BLOCK_ROUNDING_L2 = 1000
 const ALCHEMY_KEY = process.env.ALCHEMY_API_KEY
 if (!ALCHEMY_KEY) throw new Error('Please set ALCHEMY_API_KEY')
 
