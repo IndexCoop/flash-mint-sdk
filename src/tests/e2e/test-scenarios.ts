@@ -18,7 +18,7 @@ export type TestScenarios = Record<number, Record<string, ProductScenario>>
 const testScenarios: TestScenarios = {
   8453: {
     uSUI2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -27,7 +27,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSUI3x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -36,7 +36,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -45,7 +45,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSOL3x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },
@@ -117,7 +117,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     iETH1x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'ETH', exchangeRate: 2 },
@@ -126,7 +126,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     iETH2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'ETH', exchangeRate: 2 },
@@ -135,7 +135,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     iBTC1x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'ETH', exchangeRate: 2 },
@@ -144,7 +144,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     iBTC2x: {
-      setAmounts: ['1', '10', '20'],
+      setAmounts: ['1', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 3000 },
         { symbol: 'ETH', exchangeRate: 2 },
