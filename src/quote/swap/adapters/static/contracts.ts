@@ -23,11 +23,6 @@ const base_iBTC2x = getTokenByChainAndSymbol(base.id, 'iBTC2x')
 
 // mainnet exceptions
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
-const eth_BTC3X = getTokenByChainAndSymbol(mainnet.id, 'BTC3x')
-const eth_ETH3X = getTokenByChainAndSymbol(mainnet.id, 'ETH3x')
-const eth_GOLD3X = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
-
-const arb_AAVE2X = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
 
 export function getContract(chainId: number, address: Address): Address {
   if (chainId === mainnet.id) {
@@ -36,20 +31,8 @@ export function getContract(chainId: number, address: Address): Address {
       return '0x40e8e58052272496dcf42953CF7e699B522Fe8A3'
     }
 
-    if (
-      // FlashMintLeveraged for these
-      isAddressEqual(address, eth_GOLD3X.address) ||
-      isAddressEqual(address, eth_ETH3X.address)
-    ) {
-      return '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48'
-    }
-
-    if (isAddressEqual(address, eth_BTC3X.address)) {
-      return '0x7663043EBE3f9f5E53cbf56F9F36fA5233ef055D'
-    }
-
-    // FlashMintLeveraged
-    return '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0'
+    // FlashMintLeveragedAaveFL
+    return '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF'
   }
 
   if (chainId === arbitrum.id) {
@@ -84,6 +67,7 @@ export function getContract(chainId: number, address: Address): Address {
 
 export const ABI: { [key: string]: any } = {
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0': FlashMintLeveragedAbi,
+  '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF': FlashMintLeveragedAbi, // Mainnet FlashMintLeveraged (Aave FL)
   '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48': FlashMintLeveragedAbi, // New FlashMintLeveraged for ETH3x, GOLD3x
   '0x7663043EBE3f9f5E53cbf56F9F36fA5233ef055D': FlashMintLeveragedAbi, // New FlashMintLeveraged for BTC3x
   '0xd5A152a058eDe7331B9ad3521bad03d4CCfD6Bb9': FlashMintLeveragedAbi, // New FlashMintLeveraged for AAVE2x
