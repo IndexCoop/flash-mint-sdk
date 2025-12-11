@@ -267,7 +267,7 @@ export const SwapDataConfig: Readonly<{
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
-          fees: [3000],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -282,13 +282,13 @@ export const SwapDataConfig: Readonly<{
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
-          fees: [3000],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },
         swapDataInputToken: {
           path: [mainnet.usdt, mainnet.xaut],
-          fees: [3000],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -297,13 +297,13 @@ export const SwapDataConfig: Readonly<{
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
-          fees: [3000],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },
         swapDataInputToken: {
           path: [mainnet.usdc, mainnet.usdt, mainnet.xaut],
-          fees: [100, 3000],
+          fees: [100, 500],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -312,7 +312,7 @@ export const SwapDataConfig: Readonly<{
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
-          fees: [3000],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },
@@ -327,7 +327,7 @@ export const SwapDataConfig: Readonly<{
         contract: 'FlashMintLeveragedAaveFL',
         swapDataDebtForCollateral: {
           path: [mainnet.usdt, mainnet.xaut],
-          fees: [3000],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },
