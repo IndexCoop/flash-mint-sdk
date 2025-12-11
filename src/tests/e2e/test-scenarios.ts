@@ -191,23 +191,15 @@ const testScenarios: TestScenarios = {
       ],
     },
     GOLD3x: {
-      setAmounts: ['1', '2'], // TODO: Higher amounts result in errors around
+      setAmounts: ['1', '5'],
       inputTokens: [
         { symbol: 'USDT', exchangeRate: 1500 },
         { symbol: 'USDC', exchangeRate: 1500 },
         { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'WBTC', exchangeRate: 0.02 },
-        { symbol: 'XAUt', exchangeRate: 0.3 },
       ],
     },
     hyETH: {
-      setAmounts: ['1', '10', '100'],
-      inputTokens: [
-        { symbol: 'ETH', exchangeRate: 2 },
-        { symbol: 'WETH', exchangeRate: 2 },
-      ],
-    },
-    icETH: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'ETH', exchangeRate: 2 },

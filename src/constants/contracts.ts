@@ -9,6 +9,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
     FlashMintLeveragedZeroEx: '0x58093c03B4e7804D0127A6D0A5D86dcbd5652113',
     FlashMintLeveragedZeroEx_AaveV2:
       '0x8B46956eA9a87c0AD3cb71911dDdEd23bE10e04d',
+    FlashMintLeveragedAaveFL: '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF',
   },
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
