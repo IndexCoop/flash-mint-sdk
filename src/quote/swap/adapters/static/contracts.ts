@@ -9,6 +9,10 @@ import FlashMintLeveragedMorphoV2Abi from 'constants/abis/FlashMintLeveragedMorp
 
 import type { Address } from 'viem'
 
+// mainnet exceptions
+const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
+const eth_GOLD3X = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
+
 // base
 const BTC2X = getTokenByChainAndSymbol(base.id, 'BTC2X')
 const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
@@ -21,13 +25,16 @@ const base_iETH2x = getTokenByChainAndSymbol(base.id, 'iETH2x')
 const base_iBTC1x = getTokenByChainAndSymbol(base.id, 'iBTC1x')
 const base_iBTC2x = getTokenByChainAndSymbol(base.id, 'iBTC2x')
 
-const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
-
 export function getContract(chainId: number, address: Address): Address {
   if (chainId === mainnet.id) {
     if (isAddressEqual(address, icETH.address)) {
       // ExchangeIssuanceLeveraged
       return '0x40e8e58052272496dcf42953CF7e699B522Fe8A3'
+    }
+
+    if (isAddressEqual(address, eth_GOLD3X.address)) {
+      // FlashMintLeveraged
+      return '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48'
     }
 
     // FlashMintLeveragedAaveFL
