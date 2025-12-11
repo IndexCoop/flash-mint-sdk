@@ -15,13 +15,8 @@ const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const ETH2X = getTokenByChainAndSymbol(base.id, 'ETH2X')
 const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')
 
-// mainnet exceptions
+// mainnet tokens
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
-const eth_BTC3X = getTokenByChainAndSymbol(mainnet.id, 'BTC3x')
-const eth_ETH3X = getTokenByChainAndSymbol(mainnet.id, 'ETH3x')
-const eth_GOLD3X = getTokenByChainAndSymbol(mainnet.id, 'GOLD3x')
-
-const arb_AAVE2X = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
 
 export function getContract(chainId: number, address: Address): Address {
   if (chainId === mainnet.id) {
@@ -30,19 +25,7 @@ export function getContract(chainId: number, address: Address): Address {
       return '0x40e8e58052272496dcf42953CF7e699B522Fe8A3'
     }
 
-    if (
-      // FlashMintLeveraged for these
-      isAddressEqual(address, eth_GOLD3X.address) ||
-      isAddressEqual(address, eth_ETH3X.address)
-    ) {
-      return '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF'
-    }
-
-    if (isAddressEqual(address, eth_BTC3X.address)) {
-      return '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF'
-    }
-
-    // FlashMintLeveraged
+    // FlashMintLeveragedAaveFL
     return '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF'
   }
 
