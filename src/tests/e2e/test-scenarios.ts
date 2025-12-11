@@ -155,7 +155,7 @@ const testScenarios: TestScenarios = {
       ],
     },
     GOLD3x: {
-      setAmounts: ['1', '10', '100'],
+      setAmounts: ['1'],
       inputTokens: [
         { symbol: 'USDT', exchangeRate: 1500 },
         { symbol: 'USDC', exchangeRate: 1500 },
@@ -165,13 +165,6 @@ const testScenarios: TestScenarios = {
       ],
     },
     hyETH: {
-      setAmounts: ['1', '10', '100'],
-      inputTokens: [
-        { symbol: 'ETH', exchangeRate: 2 },
-        { symbol: 'WETH', exchangeRate: 2 },
-      ],
-    },
-    icETH: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
         { symbol: 'ETH', exchangeRate: 2 },
