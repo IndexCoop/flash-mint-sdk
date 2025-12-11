@@ -1002,6 +1002,194 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
+    'iETH1x': {
+      [base.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+        },
+      },
+      [base.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [base.cbbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'iETH2x': {
+      [base.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+        },
+      },
+      [base.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [base.cbbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'iBTC1x': {
+      [base.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+        },
+      },
+      [base.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [base.cbbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'iBTC2x': {
+      [base.usdc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+        },
+      },
+      [base.weth]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.weth, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [base.cbbtc]: {
+        contract: 'FlashMintLeveragedExtended',
+        swapDataDebtForCollateral: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [base.cbbtc, base.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
   },
   42161: {
     'BTC2X': {
@@ -1610,6 +1798,100 @@ export const SwapDataConfig: Readonly<{
         swapDataInputToken: {
           path: [arbitrum.link],
           fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'iETH2x': {
+      [arbitrum.usdc]: {
+        contract: 'FlashMintLeveragedAaveFL',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.weth, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.weth]: {
+        contract: 'FlashMintLeveragedAaveFL',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.weth, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.weth, arbitrum.usdc],
+          fees: [3000],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.wbtc]: {
+        contract: 'FlashMintLeveragedAaveFL',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.weth, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.wbtc, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+    },
+    'iBTC2x': {
+      [arbitrum.usdc]: {
+        contract: 'FlashMintLeveragedAaveFL',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.wbtc, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [],
+          fees: [],
+          exchange: 0,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.weth]: {
+        contract: 'FlashMintLeveragedAaveFL',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.wbtc, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.weth, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+      },
+      [arbitrum.wbtc]: {
+        contract: 'FlashMintLeveragedAaveFL',
+        swapDataDebtForCollateral: {
+          path: [arbitrum.wbtc, arbitrum.usdc],
+          fees: [500],
+          exchange: 3,
+          pool: zeroAddress,
+        },
+        swapDataInputToken: {
+          path: [arbitrum.wbtc, arbitrum.usdc],
+          fees: [500],
           exchange: 3,
           pool: zeroAddress,
         },

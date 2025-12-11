@@ -15,6 +15,12 @@ const BTC3X = getTokenByChainAndSymbol(base.id, 'BTC3X')
 const ETH2X = getTokenByChainAndSymbol(base.id, 'ETH2X')
 const ETH3X = getTokenByChainAndSymbol(base.id, 'ETH3X')
 
+// base inverse tokens
+const base_iETH1x = getTokenByChainAndSymbol(base.id, 'iETH1x')
+const base_iETH2x = getTokenByChainAndSymbol(base.id, 'iETH2x')
+const base_iBTC1x = getTokenByChainAndSymbol(base.id, 'iBTC1x')
+const base_iBTC2x = getTokenByChainAndSymbol(base.id, 'iBTC2x')
+
 // mainnet exceptions
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
 const eth_BTC3X = getTokenByChainAndSymbol(mainnet.id, 'BTC3x')
@@ -62,7 +68,11 @@ export function getContract(chainId: number, address: Address): Address {
 
   if (
     isAddressEqual(address, ETH2X.address) ||
-    isAddressEqual(address, ETH3X.address)
+    isAddressEqual(address, ETH3X.address) ||
+    isAddressEqual(address, base_iETH1x.address) ||
+    isAddressEqual(address, base_iETH2x.address) ||
+    isAddressEqual(address, base_iBTC1x.address) ||
+    isAddressEqual(address, base_iBTC2x.address)
   ) {
     // FlashMintLeveragedExtended
     return '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE'
