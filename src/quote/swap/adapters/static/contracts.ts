@@ -43,13 +43,7 @@ export function getContract(chainId: number, address: Address): Address {
   // Base
   if (
     isAddressEqual(address, BTC2X.address) ||
-    isAddressEqual(address, BTC3X.address)
-  ) {
-    // FlashMintLeveragedMorphoAaveLM
-    return '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8'
-  }
-
-  if (
+    isAddressEqual(address, BTC3X.address) ||
     isAddressEqual(address, ETH2X.address) ||
     isAddressEqual(address, ETH3X.address) ||
     isAddressEqual(address, base_iETH1x.address) ||
@@ -57,8 +51,8 @@ export function getContract(chainId: number, address: Address): Address {
     isAddressEqual(address, base_iBTC1x.address) ||
     isAddressEqual(address, base_iBTC2x.address)
   ) {
-    // FlashMintLeveragedExtended
-    return '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE'
+    // FlashMintLeveragedMorphoAaveLM
+    return '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8'
   }
 
   // FlashMintLeveragedMorphoV2
