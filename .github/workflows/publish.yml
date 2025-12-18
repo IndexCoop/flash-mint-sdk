@@ -50,6 +50,8 @@ jobs:
       - name: Wait for hardhat nodes to start
         run: sleep 10
       - run: npm run test:e2e:mainnet
+        env:
+          MAINNET_BLOCK_NUMBER: 24040573
   e2e-base:
     runs-on: ubuntu-latest
     steps:

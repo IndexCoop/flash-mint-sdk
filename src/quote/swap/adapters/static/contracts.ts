@@ -32,7 +32,7 @@ export function getContract(chainId: number, address: Address): Address {
     }
 
     // FlashMintLeveragedAaveFL
-    return '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF'
+    return '0xb2eb42e5a360834676df36fb3a00aa398dc9d721'
   }
 
   if (chainId === arbitrum.id) {
@@ -61,7 +61,7 @@ export function getContract(chainId: number, address: Address): Address {
 
 export const ABI: { [key: string]: any } = {
   '0x45c00508C14601fd1C1e296eB3C0e3eEEdCa45D0': FlashMintLeveragedAbi,
-  '0xBc50B57ef01F009A9097df4A921eA1b1AA0f0cFF': FlashMintLeveragedAbi, // Mainnet FlashMintLeveraged (Aave FL)
+  '0xb2eb42e5a360834676df36fb3a00aa398dc9d721': FlashMintLeveragedAbi, // Mainnet FlashMintLeveraged (Aave FL)
   '0xb4354dDfc4dda5B1244aa80caf210eEb6D96Db48': FlashMintLeveragedAbi, // New FlashMintLeveraged for ETH3x, GOLD3x
   '0x7663043EBE3f9f5E53cbf56F9F36fA5233ef055D': FlashMintLeveragedAbi, // New FlashMintLeveraged for BTC3x
   '0xd5A152a058eDe7331B9ad3521bad03d4CCfD6Bb9': FlashMintLeveragedAbi, // New FlashMintLeveraged for AAVE2x
