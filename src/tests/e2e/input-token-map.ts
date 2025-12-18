@@ -6,7 +6,7 @@ export type InputTokenMap = Record<number, Record<string, InputTokenMapEntry>>
 
 const inputTokenMap: InputTokenMap = {
   8453: {
-    USDC: { whale: '0x315503AD1c0F1B6D958CDCeb7e46413F32bc3b5a' },
+    USDC: { whale: '0x8da91A6298eA5d1A8Bc985e99798fd0A0f05701a' },
     cbBTC: { whale: '0xE4caBCb27575E01343EbFa8dE82bFE5fc8908aEd' },
     WETH: { whale: '0x621e7c767004266c8109e83143ab0Da521B650d6' },
     ETH: { whale: '0x621e7c767004266c8109e83143ab0Da521B650d6' },
