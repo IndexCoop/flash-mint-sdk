@@ -10,6 +10,8 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
     FlashMintLeveragedZeroEx_AaveV2:
       '0x8B46956eA9a87c0AD3cb71911dDdEd23bE10e04d',
     FlashMintLeveragedAaveFL: '0xb2eb42e5a360834676df36fb3a00aa398dc9d721',
+    Eth2xFliRedemptionHelper: '0x5Efda1DBD6ADcEe04CF8Bd6599af3D9b2c8Fc85f',
+    Btc2xFliRedemptionHelper: '0xD7937c7cbE8BE535d536f8BEF0c301651E400852',
   },
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',

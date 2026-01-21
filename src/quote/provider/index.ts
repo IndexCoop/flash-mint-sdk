@@ -7,7 +7,10 @@ import {
   ZeroExTransactionBuilder,
 } from 'flashmint'
 
+import { ChainId } from 'constants/chains'
 import { Contracts } from 'constants/contracts'
+import { getRpcProvider } from 'utils/rpc-provider'
+import { getFliRedemptionHelperContract } from 'utils/contracts'
 import {
   FlashMintHyEthQuoteProvider,
   LeveragedZeroExQuoteProvider,
@@ -33,6 +36,7 @@ export enum FlashMintQuoteProviderErrorCode {
   CONFIGURATION_ERROR = 'CONFIGURATION_ERROR',
   ENCODING_ERROR = 'ENCODING_ERROR',
   INDEX_TOKEN_NOT_SUPPORTED = 'INDEX_TOKEN_NOT_SUPPORTED',
+  MINTING_NOT_SUPPORTED = 'MINTING_NOT_SUPPORTED',
   OPTIMIZATION_FAILED_HIGHER_THAN_INPUT = 'OPTIMIZATION_FAILED_HIGHER_THAN_INPUT',
   OPTIMIZATION_FAILED_MAX_DEVIATION = 'OPTIMIZATION_FAILED_MAX_DEVIATION',
   QUOTE_FAILED = 'QUOTE_FAILED',
@@ -53,6 +57,7 @@ export interface FlashMintQuoteRequest {
   indexTokenAmount: string
   inputTokenAmount?: string
   slippage: number
+  recipient?: string
 }
 
 export interface FlashMintQuote {
@@ -192,6 +197,11 @@ export class FlashMintQuoteProvider
     const indexTokenAmount = BigNumber.from(request.indexTokenAmount)
     const indexToken = isMinting ? outputToken : inputToken
     const inputOutputToken = isMinting ? inputToken : outputToken
+
+    const fliRedemptionResult = await this.handleFliRedemption(request)
+    if (fliRedemptionResult !== null) {
+      return fliRedemptionResult
+    }
 
     const contractType = getContractType(indexToken.symbol, chainId)
 
@@ -485,6 +495,112 @@ export class FlashMintQuoteProvider
             txRequest,
           ),
         }
+      }
+    }
+  }
+
+  private async handleFliRedemption(
+    request: FlashMintQuoteRequest,
+  ): Promise<Result<FlashMintQuote> | null> {
+    const { chainId, inputToken, isMinting, outputToken, slippage, recipient } =
+      request
+
+    if (chainId !== ChainId.Mainnet) return null
+
+    const fliConfig: Record<string, { helper: string; outputSymbol: string }> = {
+      'ETH2x-FLI': {
+        helper: Contracts[ChainId.Mainnet].Eth2xFliRedemptionHelper,
+        outputSymbol: 'ETH2X',
+      },
+      'BTC2x-FLI': {
+        helper: Contracts[ChainId.Mainnet].Btc2xFliRedemptionHelper,
+        outputSymbol: 'BTC2X',
+      },
+    }
+
+    const config = fliConfig[inputToken.symbol]
+    if (!config) return null
+
+    if (isMinting) {
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.MINTING_NOT_SUPPORTED,
+          message: `Minting is not supported for ${inputToken.symbol}. Only redemption is available.`,
+        },
+      }
+    }
+
+    const expectedOutput = getTokenByChainAndSymbol(chainId, config.outputSymbol)
+    if (
+      !expectedOutput ||
+      outputToken.address.toLowerCase() !== expectedOutput.address.toLowerCase()
+    ) {
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.CONFIGURATION_ERROR,
+          message: `Invalid output token for ${inputToken.symbol}. Expected: ${config.outputSymbol}`,
+        },
+      }
+    }
+
+    if (!recipient) {
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.CONFIGURATION_ERROR,
+          message: 'Recipient address is required for FLI redemption',
+        },
+      }
+    }
+
+    try {
+      const provider = getRpcProvider(this.rpcUrl)
+      const helperContract = getFliRedemptionHelperContract(
+        config.helper,
+        provider,
+      )
+
+      const indexTokenAmount = BigNumber.from(request.indexTokenAmount)
+
+      const outputAmount: BigNumber =
+        await helperContract.getNestedTokenReceivedOnRedemption(indexTokenAmount)
+
+      const tx = await helperContract.populateTransaction.redeem(
+        indexTokenAmount,
+        recipient,
+      )
+
+      return {
+        success: true,
+        data: {
+          chainId,
+          contractType: FlashMintContractType.static,
+          contract: config.helper,
+          isMinting: false,
+          inputToken,
+          outputToken,
+          inputAmount: indexTokenAmount,
+          outputAmount,
+          indexTokenAmount,
+          inputOutputAmount: outputAmount,
+          quoteAmount: outputAmount,
+          slippage,
+          tx: {
+            to: tx.to,
+            data: tx.data,
+          },
+        },
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: {
+          code: FlashMintQuoteProviderErrorCode.QUOTE_FAILED,
+          message: 'Error fetching FLI redemption quote',
+          originalError: error,
+        },
       }
     }
   }

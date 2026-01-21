@@ -3,6 +3,7 @@ import { Contract } from '@ethersproject/contracts'
 import { FlashMintAbis } from 'utils/abis'
 import EXCHANGE_ISSUANCE_ZERO_EX_ABI from '../constants/abis/ExchangeIssuanceZeroEx.json'
 import FLASHMINT_HYETH_ABI from '../constants/abis/FlashMintHyEth.json'
+import FLI_REDEMPTION_HELPER_ABI from '../constants/abis/FliRedemptionHelper.json'
 
 import { ChainId } from '../constants/chains'
 import { Contracts } from '../constants/contracts'
@@ -62,4 +63,11 @@ export function getFlashMintContract(
 ): Contract {
   const abi = FlashMintAbis[contract]
   return new Contract(contract, abi, providerSigner)
+}
+
+export const getFliRedemptionHelperContract = (
+  helperAddress: string,
+  signerOrProvider: Signer | Provider | undefined,
+): Contract => {
+  return new Contract(helperAddress, FLI_REDEMPTION_HELPER_ABI, signerOrProvider)
 }
