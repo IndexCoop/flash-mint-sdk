@@ -18,6 +18,10 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
   [ChainId.Base]: {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
     FlashMintLeveragedZeroEx: '0xBbE31D5946Dd3dabf797744732A7E18cbb4DE2a9',
+    // Non-leveraged FlashMint with DEXAdapterV5 (Aerodrome SlipStream support).
+    // Used for the post-disengage Morpho leverage tokens (uSOL2x/3x, uSUI2x/3x,
+    // uXRP2x/3x) that the leveraged flashmints reject with "TOO MANY COMPONENTS".
+    FlashMintDexV5: '0x5958732DcdAF3e7a2401b7015742124832070DB7',
   },
 }
 

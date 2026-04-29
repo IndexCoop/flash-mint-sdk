@@ -2,6 +2,7 @@ import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { arbitrum, base, mainnet } from 'viem/chains'
 
 import ExchangeIssuanceLeveraged from 'constants/abis/ExchangeIssuanceLeveraged.json'
+import FlashMintDexV5Abi from 'constants/abis/FlashMintDexV5.json'
 import FlashMintLeveragedAbi from 'constants/abis/FlashMintLeveraged.json'
 import FlashMintLeveragedExtendedAbi from 'constants/abis/FlashMintLeveragedExtended.json'
 import FlashMintLeveragedMorphoAaveLMAbi from 'constants/abis/FlashMintLeveragedMorphoAaveLM.json'
@@ -20,6 +21,19 @@ const base_iETH1x = getTokenByChainAndSymbol(base.id, 'iETH1x')
 const base_iETH2x = getTokenByChainAndSymbol(base.id, 'iETH2x')
 const base_iBTC1x = getTokenByChainAndSymbol(base.id, 'iBTC1x')
 const base_iBTC2x = getTokenByChainAndSymbol(base.id, 'iBTC2x')
+
+// base — post-disengage Morpho leverage tokens. Routed through FlashMintDexV5
+// (DEXAdapterV5 with Aerodrome SlipStream support); the leveraged flashmints
+// reject these with "TOO MANY COMPONENTS" once the borrow is closed.
+const base_uSOL2x = getTokenByChainAndSymbol(base.id, 'uSOL2x')
+const base_uSOL3x = getTokenByChainAndSymbol(base.id, 'uSOL3x')
+const base_uSUI2x = getTokenByChainAndSymbol(base.id, 'uSUI2x')
+const base_uSUI3x = getTokenByChainAndSymbol(base.id, 'uSUI3x')
+const base_uXRP2x = getTokenByChainAndSymbol(base.id, 'uXRP2x')
+const base_uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
+
+// FlashMintDexV5 — non-leveraged FlashMint on Base
+const FLASH_MINT_DEX_V5_BASE = '0x5958732DcdAF3e7a2401b7015742124832070DB7'
 
 // mainnet exceptions
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
@@ -55,6 +69,18 @@ export function getContract(chainId: number, address: Address): Address {
     return '0xb86E1EEf76Bc835E73B8C80eb786262C33d086D8'
   }
 
+  // Post-disengage Morpho leverage products → FlashMintDexV5
+  if (
+    isAddressEqual(address, base_uSOL2x.address) ||
+    isAddressEqual(address, base_uSOL3x.address) ||
+    isAddressEqual(address, base_uSUI2x.address) ||
+    isAddressEqual(address, base_uSUI3x.address) ||
+    isAddressEqual(address, base_uXRP2x.address) ||
+    isAddressEqual(address, base_uXRP3x.address)
+  ) {
+    return FLASH_MINT_DEX_V5_BASE
+  }
+
   // FlashMintLeveragedMorphoV2
   return '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42'
 }
@@ -73,6 +99,7 @@ export const ABI: { [key: string]: any } = {
     FlashMintLeveragedMorphoAaveLMAbi,
   '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE': FlashMintLeveragedExtendedAbi,
   '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42': FlashMintLeveragedMorphoV2Abi,
+  '0x5958732DcdAF3e7a2401b7015742124832070DB7': FlashMintDexV5Abi, // Base FlashMintDexV5
   '0x945Db358C69A4Be68aB5b835f2f56af1CcF4E2d1': ExchangeIssuanceLeveraged, // New icETH contract
   '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1': ExchangeIssuanceLeveraged, // Old icETH contract
 }

@@ -2,6 +2,47 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import type { SwapData, SwapDataV5 } from 'utils'
 import { zeroAddress } from 'viem'
 
+// Two flavours of static-adapter config entry.
+//   'leveragedV5' (default — no `kind` field): the legacy leveraged FlashMint
+//      shape with swapDataDebtForCollateral + swapDataInputToken.
+//   'dexV5':                                   FlashMintDexV5 (non-leveraged)
+//      shape with per-component WETH↔component swaps and an input/output ↔ WETH
+//      bridge. Used for the post-disengage Morpho leverage products that the
+//      leveraged flashmints reject with "TOO MANY COMPONENTS".
+export type LeveragedConfigEntry = {
+  contract: string
+  swapDataDebtForCollateral: SwapData | SwapDataV5
+  swapDataInputToken: SwapData | SwapDataV5
+}
+
+export type DexV5ConfigEntry = {
+  kind: 'dexV5'
+  contract: 'FlashMintDexV5'
+  // WETH → component, one per SetToken component, in component order.
+  componentSwapDataIssue: SwapDataV5[]
+  // component → WETH, one per SetToken component, in component order.
+  componentSwapDataRedeem: SwapDataV5[]
+  // input/output token ↔ WETH bridge. Use a noop SwapData when input/output is
+  // ETH or WETH (the contract short-circuits).
+  swapDataInputToWeth: SwapDataV5
+  swapDataWethToInput: SwapDataV5
+}
+
+export type StaticConfigEntry = LeveragedConfigEntry | DexV5ConfigEntry
+
+export function isDexV5Entry(e: StaticConfigEntry): e is DexV5ConfigEntry {
+  return (e as DexV5ConfigEntry).kind === 'dexV5'
+}
+
+const noopSwapV5: SwapDataV5 = {
+  exchange: 0,
+  path: [],
+  fees: [],
+  tickSpacing: [],
+  pool: zeroAddress,
+  poolIds: [],
+}
+
 const mainnet = {
   steth: getTokenByChainAndSymbol(1, 'stETH').address,
   usdc: getTokenByChainAndSymbol(1, 'USDC').address,
@@ -32,14 +73,92 @@ const arbitrum = {
   usdt0: getTokenByChainAndSymbol(42161, 'USD₮0').address,
 }
 
+// Builds a FlashMintDexV5 config entry for the post-disengage Morpho leverage
+// products on Base. `collateral` is the underlying asset (uSOL/uSUI/uXRP);
+// `is3x` adds the USDC dust component. `inputToken` (omitted = WETH) selects
+// the input/output ↔ WETH bridge.
+function dexV5Entry(
+  collateral: string,
+  is3x: boolean,
+  baseTokens: typeof base,
+  inputToken?: string,
+): DexV5ConfigEntry {
+  // Aerodrome SlipStream tickSpacing=200 for collateral ↔ WETH.
+  const collateralFromWeth: SwapDataV5 = {
+    exchange: 7,
+    path: [baseTokens.weth, collateral],
+    fees: [],
+    tickSpacing: [200],
+    pool: zeroAddress,
+    poolIds: [],
+  }
+  const collateralToWeth: SwapDataV5 = {
+    exchange: 7,
+    path: [collateral, baseTokens.weth],
+    fees: [],
+    tickSpacing: [200],
+    pool: zeroAddress,
+    poolIds: [],
+  }
+  // Uniswap V3 0.05% USDC ↔ WETH for the 3x dust component.
+  const usdcFromWeth: SwapDataV5 = {
+    exchange: 3,
+    path: [baseTokens.weth, baseTokens.usdc],
+    fees: [500],
+    tickSpacing: [],
+    pool: zeroAddress,
+    poolIds: [],
+  }
+  const usdcToWeth: SwapDataV5 = {
+    exchange: 3,
+    path: [baseTokens.usdc, baseTokens.weth],
+    fees: [500],
+    tickSpacing: [],
+    pool: zeroAddress,
+    poolIds: [],
+  }
+  const componentSwapDataIssue = is3x
+    ? [collateralFromWeth, usdcFromWeth]
+    : [collateralFromWeth]
+  const componentSwapDataRedeem = is3x
+    ? [collateralToWeth, usdcToWeth]
+    : [collateralToWeth]
+  // Bridge for the user's input/output token. WETH input short-circuits to
+  // noopSwap. USDC and cbBTC bridge via Uniswap V3 0.05%.
+  let swapDataInputToWeth: SwapDataV5 = noopSwapV5
+  let swapDataWethToInput: SwapDataV5 = noopSwapV5
+  if (inputToken && inputToken !== baseTokens.weth) {
+    swapDataInputToWeth = {
+      exchange: 3,
+      path: [inputToken, baseTokens.weth],
+      fees: [500],
+      tickSpacing: [],
+      pool: zeroAddress,
+      poolIds: [],
+    }
+    swapDataWethToInput = {
+      exchange: 3,
+      path: [baseTokens.weth, inputToken],
+      fees: [500],
+      tickSpacing: [],
+      pool: zeroAddress,
+      poolIds: [],
+    }
+  }
+  return {
+    kind: 'dexV5',
+    contract: 'FlashMintDexV5',
+    componentSwapDataIssue,
+    componentSwapDataRedeem,
+    swapDataInputToWeth,
+    swapDataWethToInput,
+  }
+}
+
 export const SwapDataConfig: Readonly<{
   [chainId: number]: Readonly<{
     [indexTokenSymbol: string]: Readonly<{
-      [inputToken: string]: Readonly<{
-        contract: string
-        swapDataDebtForCollateral: SwapData | SwapDataV5
-        swapDataInputToken: SwapData | SwapDataV5
-      }>
+      [inputToken: string]: Readonly<StaticConfigEntry>
     }>
   }>
 }> = {
@@ -594,241 +713,29 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
+    // Post-disengage Morpho leverage products are routed through FlashMintDexV5
+    // (non-leveraged FlashMint with Aerodrome SlipStream support). uSOL/uSUI/uXRP
+    // collateral ↔ WETH via Aerodrome SlipStream tickSpacing=200; USDC dust on 3x
+    // products ↔ WETH via Uniswap V3 0.05% fee tier.
     'uSOL2x': {
-      [base.weth]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [200],
-        },
-      },
-      [base.usdc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
-      [base.cbbtc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.cbbtc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
+      [base.weth]: dexV5Entry(base.usol, false, base),
+      [base.usdc]: dexV5Entry(base.usol, false, base, base.usdc),
+      [base.cbbtc]: dexV5Entry(base.usol, false, base, base.cbbtc),
     },
     'uSOL3x': {
-      [base.weth]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          pool: zeroAddress,
-          poolIds: [],
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          pool: zeroAddress,
-          poolIds: [],
-          tickSpacing: [200],
-        },
-      },
-      [base.usdc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          pool: zeroAddress,
-          poolIds: [],
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          pool: zeroAddress,
-          poolIds: [],
-          tickSpacing: [100, 200],
-        },
-      },
-      [base.cbbtc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.cbbtc, base.weth, base.usol],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
+      [base.weth]: dexV5Entry(base.usol, true, base),
+      [base.usdc]: dexV5Entry(base.usol, true, base, base.usdc),
+      [base.cbbtc]: dexV5Entry(base.usol, true, base, base.cbbtc),
     },
     'uSUI2x': {
-      [base.weth]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.usdc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.cbbtc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.cbbtc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
+      [base.weth]: dexV5Entry(base.usui, false, base),
+      [base.usdc]: dexV5Entry(base.usui, false, base, base.usdc),
+      [base.cbbtc]: dexV5Entry(base.usui, false, base, base.cbbtc),
     },
     'uSUI3x': {
-      [base.weth]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.usdc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.cbbtc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.cbbtc, base.weth, base.usui],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
+      [base.weth]: dexV5Entry(base.usui, true, base),
+      [base.usdc]: dexV5Entry(base.usui, true, base, base.usdc),
+      [base.cbbtc]: dexV5Entry(base.usui, true, base, base.cbbtc),
     },
     'wstETH15x': {
       [base.weth]: {
@@ -909,122 +816,14 @@ export const SwapDataConfig: Readonly<{
       },
     },
     'uXRP2x': {
-      [base.weth]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.usdc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.cbbtc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.cbbtc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
+      [base.weth]: dexV5Entry(base.uxrp, false, base),
+      [base.usdc]: dexV5Entry(base.uxrp, false, base, base.usdc),
+      [base.cbbtc]: dexV5Entry(base.uxrp, false, base, base.cbbtc),
     },
     'uXRP3x': {
-      [base.weth]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.usdc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          tickSpacing: [100, 200],
-          poolIds: [],
-          pool: zeroAddress,
-        },
-      },
-      [base.cbbtc]: {
-        contract: 'FlashMintLeveragedMorphoV2',
-        swapDataDebtForCollateral: {
-          path: [base.usdc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-        swapDataInputToken: {
-          path: [base.cbbtc, base.weth, base.uxrp],
-          fees: [],
-          exchange: 7,
-          poolIds: [],
-          pool: zeroAddress,
-          tickSpacing: [100, 200],
-        },
-      },
+      [base.weth]: dexV5Entry(base.uxrp, true, base),
+      [base.usdc]: dexV5Entry(base.uxrp, true, base, base.usdc),
+      [base.cbbtc]: dexV5Entry(base.uxrp, true, base, base.cbbtc),
     },
     'iETH1x': {
       [base.usdc]: {

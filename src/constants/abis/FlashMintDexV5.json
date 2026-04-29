@@ -1,0 +1,1224 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IController",
+        "name": "_setController",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IController",
+        "name": "_indexController",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "quickRouter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "sushiRouter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "uniV3Router",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "uniV3Quoter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "curveAddressProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "curveCalculator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "balV2Vault",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aerodromeRouter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aerodromeFactory",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aerodromeSlipstreamRouter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "aerodromeSlipstreamQuoter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "weth",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DEXAdapterV5.Addresses",
+        "name": "_dexAddresses",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract IERC20",
+        "name": "_inputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountInputToken",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountSetIssued",
+        "type": "uint256"
+      }
+    ],
+    "name": "FlashMint",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract IERC20",
+        "name": "_outputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountSetRedeemed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountOutputToken",
+        "type": "uint256"
+      }
+    ],
+    "name": "FlashRedeem",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "ETH_ADDRESS",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "WETH",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_issuanceModule",
+        "type": "address"
+      }
+    ],
+    "name": "approveSetToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_spender",
+        "type": "address"
+      }
+    ],
+    "name": "approveToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20[]",
+        "name": "_tokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address",
+        "name": "_spender",
+        "type": "address"
+      }
+    ],
+    "name": "approveTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dexAdapter",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "quickRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "sushiRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "uniV3Router",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "uniV3Quoter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "curveAddressProvider",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "curveCalculator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "balV2Vault",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "aerodromeRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "aerodromeFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "aerodromeSlipstreamRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "aerodromeSlipstreamQuoter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "weth",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract ISetToken",
+            "name": "setToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountSetToken",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData[]",
+            "name": "componentSwapData",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "issuanceModule",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDebtIssuance",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.IssueRedeemParams",
+        "name": "_issueParams",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "int24[]",
+            "name": "tickSpacing",
+            "type": "int24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "poolIds",
+            "type": "bytes32[]"
+          },
+          {
+            "internalType": "enum DEXAdapterV5.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct DEXAdapterV5.SwapData",
+        "name": "_swapDataInputTokenToWeth",
+        "type": "tuple"
+      }
+    ],
+    "name": "getIssueExactSet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract ISetToken",
+            "name": "setToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountSetToken",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData[]",
+            "name": "componentSwapData",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "issuanceModule",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDebtIssuance",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.IssueRedeemParams",
+        "name": "_redeemParams",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "int24[]",
+            "name": "tickSpacing",
+            "type": "int24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "poolIds",
+            "type": "bytes32[]"
+          },
+          {
+            "internalType": "enum DEXAdapterV5.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct DEXAdapterV5.SwapData",
+        "name": "_swapDataWethToOutputToken",
+        "type": "tuple"
+      }
+    ],
+    "name": "getRedeemExactSet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_issuanceModule",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isDebtIssuance",
+        "type": "bool"
+      },
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amountSetToken",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRequiredIssuanceComponents",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "components",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "positions",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_issuanceModule",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isDebtIssuance",
+        "type": "bool"
+      },
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amountSetToken",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRequiredRedemptionComponents",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "components",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "positions",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "indexController",
+    "outputs": [
+      {
+        "internalType": "contract IController",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract ISetToken",
+            "name": "setToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountSetToken",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData[]",
+            "name": "componentSwapData",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "issuanceModule",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDebtIssuance",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.IssueRedeemParams",
+        "name": "_issueParams",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "contract IERC20",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "limitAmt",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData",
+            "name": "swapDataTokenToWeth",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData",
+            "name": "swapDataWethToToken",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.PaymentInfo",
+        "name": "_paymentInfo",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minRefundValueInWeth",
+        "type": "uint256"
+      }
+    ],
+    "name": "issueExactSetFromERC20",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "paymentTokenSpent",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract ISetToken",
+            "name": "setToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountSetToken",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData[]",
+            "name": "componentSwapData",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "issuanceModule",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDebtIssuance",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.IssueRedeemParams",
+        "name": "_issueParams",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minEthRefund",
+        "type": "uint256"
+      }
+    ],
+    "name": "issueExactSetFromETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "ethSpent",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract ISetToken",
+            "name": "setToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountSetToken",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData[]",
+            "name": "componentSwapData",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "issuanceModule",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDebtIssuance",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.IssueRedeemParams",
+        "name": "_redeemParams",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "contract IERC20",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "limitAmt",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData",
+            "name": "swapDataTokenToWeth",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData",
+            "name": "swapDataWethToToken",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.PaymentInfo",
+        "name": "_paymentInfo",
+        "type": "tuple"
+      }
+    ],
+    "name": "redeemExactSetForERC20",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "outputTokenReceived",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "contract ISetToken",
+            "name": "setToken",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amountSetToken",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address[]",
+                "name": "path",
+                "type": "address[]"
+              },
+              {
+                "internalType": "uint24[]",
+                "name": "fees",
+                "type": "uint24[]"
+              },
+              {
+                "internalType": "int24[]",
+                "name": "tickSpacing",
+                "type": "int24[]"
+              },
+              {
+                "internalType": "address",
+                "name": "pool",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32[]",
+                "name": "poolIds",
+                "type": "bytes32[]"
+              },
+              {
+                "internalType": "enum DEXAdapterV5.Exchange",
+                "name": "exchange",
+                "type": "uint8"
+              }
+            ],
+            "internalType": "struct DEXAdapterV5.SwapData[]",
+            "name": "componentSwapData",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "address",
+            "name": "issuanceModule",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isDebtIssuance",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct FlashMintDexV5.IssueRedeemParams",
+        "name": "_redeemParams",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minEthReceive",
+        "type": "uint256"
+      }
+    ],
+    "name": "redeemExactSetForETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "ethReceived",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setController",
+    "outputs": [
+      {
+        "internalType": "contract IController",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IERC20[]",
+        "name": "_tokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_to",
+        "type": "address"
+      }
+    ],
+    "name": "withdrawTokens",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

@@ -49,9 +49,9 @@ export class StaticQuoteProvider {
       ? request.outputAmount
       : request.inputAmount
 
-    const swapData = getSwapData(request)
+    const entry = getSwapData(request)
 
-    if (!swapData) {
+    if (!entry) {
       console.error('Error fetching quote swap data')
       return null
     }
@@ -61,8 +61,7 @@ export class StaticQuoteProvider {
       indexToken.address as Address,
       indexTokenAmount,
       maxInputAmount,
-      swapData.swapDataDebtForCollateral,
-      swapData.swapDataInputToken,
+      entry,
       chainId,
       this.rpcUrl,
     )
@@ -92,9 +91,8 @@ export class StaticQuoteProvider {
     ).toString()
 
     const tx = buildTransaction(
-      request,
-      swapData.swapDataDebtForCollateral,
-      swapData.swapDataInputToken,
+      { ...request, inputAmount: BigInt(inputAmount), outputAmount: BigInt(outputAmount) },
+      entry,
       inputOutputAmount,
     )
 

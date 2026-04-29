@@ -1,9 +1,16 @@
 import { getTokenAddressOrWeth } from 'utils'
-import { SwapDataConfig } from './swap-data-config'
+import {
+  isDexV5Entry,
+  type LeveragedConfigEntry,
+  type StaticConfigEntry,
+  SwapDataConfig,
+} from './swap-data-config'
 
 import type { StaticQuoteRequest } from './'
 
-export function getSwapData(request: StaticQuoteRequest) {
+export function getSwapData(
+  request: StaticQuoteRequest,
+): StaticConfigEntry | null {
   const { chainId, inputToken, outputToken, isMinting } = request
   const indexToken = isMinting ? outputToken : inputToken
   const inputOutputToken = isMinting ? inputToken : outputToken
@@ -14,28 +21,36 @@ export function getSwapData(request: StaticQuoteRequest) {
       inputOutputToken.address,
       chainId,
     )
-    let data = tokenData[inputTokenAddress]
+    const data = tokenData[inputTokenAddress]
 
     if (!data) return null
 
-    if (!isMinting) {
-      data = structuredClone(data)
-
-      data.swapDataDebtForCollateral.path.reverse()
-      data.swapDataDebtForCollateral.fees.reverse()
-      data.swapDataInputToken.path.reverse()
-      data.swapDataInputToken.fees.reverse()
-
-      if (
-        'tickSpacing' in data.swapDataDebtForCollateral &&
-        'tickSpacing' in data.swapDataInputToken
-      ) {
-        data.swapDataDebtForCollateral.tickSpacing.reverse()
-        data.swapDataInputToken.tickSpacing.reverse()
-      }
+    // dexV5 entries already carry separate Issue and Redeem swap data, so no
+    // path-reverse is needed (or possible — componentSwapData is an array per
+    // component, not a single round-trip path).
+    if (isDexV5Entry(data)) {
+      return data
     }
 
-    return data
+    const leveraged = data as LeveragedConfigEntry
+    if (!isMinting) {
+      const cloned = structuredClone(leveraged)
+      cloned.swapDataDebtForCollateral.path.reverse()
+      cloned.swapDataDebtForCollateral.fees.reverse()
+      cloned.swapDataInputToken.path.reverse()
+      cloned.swapDataInputToken.fees.reverse()
+
+      if (
+        'tickSpacing' in cloned.swapDataDebtForCollateral &&
+        'tickSpacing' in cloned.swapDataInputToken
+      ) {
+        cloned.swapDataDebtForCollateral.tickSpacing.reverse()
+        cloned.swapDataInputToken.tickSpacing.reverse()
+      }
+      return cloned
+    }
+
+    return leveraged
   } catch (error) {
     console.error(
       `Error fetching swap data for ${indexToken.symbol} - ${inputOutputToken.symbol} on ${chainId}:`,
