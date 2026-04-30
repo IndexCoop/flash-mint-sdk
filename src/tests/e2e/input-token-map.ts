@@ -6,10 +6,12 @@ export type InputTokenMap = Record<number, Record<string, InputTokenMapEntry>>
 
 const inputTokenMap: InputTokenMap = {
   8453: {
-    USDC: { whale: '0x8da91A6298eA5d1A8Bc985e99798fd0A0f05701a' },
+    // USDC: Aerodrome USDC/USDbC stable pool — large, sticky USDC holder.
+    USDC: { whale: '0xcDAC0d6c6C59727a65F871236188350531885C43' },
     cbBTC: { whale: '0xE4caBCb27575E01343EbFa8dE82bFE5fc8908aEd' },
-    WETH: { whale: '0x621e7c767004266c8109e83143ab0Da521B650d6' },
-    ETH: { whale: '0x621e7c767004266c8109e83143ab0Da521B650d6' },
+    // WETH/ETH: Morpho Blue is the deepest WETH holder on Base (>60k WETH).
+    WETH: { whale: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb' },
+    ETH: { whale: '0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb' },
   },
   1: {
     USDC: { whale: '0x37305B1cD40574E4C5Ce33f8e8306Be057fD7341' },
