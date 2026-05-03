@@ -92,6 +92,140 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
         }
 
         describe(`  • product ${productSymbol}`, () => {
+          if (cfg.redeemOnly) {
+            if (!cfg.whale) {
+              throw new Error(
+                `redeemOnly product ${productSymbol} on ${chainId} is missing a whale`,
+              )
+            }
+            const setWhale = cfg.whale
+            for (const setAmtStr of cfg.setAmounts) {
+              const setAmt = wei(setAmtStr).toString()
+
+              describe(`    – redeem ${setAmtStr}`, () => {
+                for (const { symbol: sym } of cfg.inputTokens) {
+                  const outputToken =
+                    sym === 'ETH'
+                      ? ETH
+                      : getTokenByChainAndSymbol(chainId, sym)!
+
+                  describe(`      ◦ via ${sym}`, () => {
+                    let taker: string
+                    let setTokenContract: ethers.Contract
+                    let outputContract: ethers.Contract | null
+                    let redeemQuote: Awaited<
+                      ReturnType<FlashMintQuoteProvider['getQuote']>
+                    >['data']
+                    let outputBefore: ethers.BigNumber
+                    let outputAfter: ethers.BigNumber
+
+                    before(async () => {
+                      // reset fork
+                      await localProvider.send('hardhat_reset', [
+                        {
+                          forking: {
+                            jsonRpcUrl: upstreamRpc,
+                            blockNumber: forkBlock,
+                          },
+                        },
+                      ])
+                      await localProvider.send('evm_mine', [])
+
+                      // impersonate SetToken whale and the taker
+                      taker = '0xd8da6bf26964af9d7eed9e03e53415d37aa96045'
+                      const topUp = ethers.utils
+                        .parseEther('1000000')
+                        .toHexString()
+                      for (const a of [setWhale, taker]) {
+                        await localProvider.send(
+                          'hardhat_impersonateAccount',
+                          [a],
+                        )
+                        await localProvider.send('hardhat_setBalance', [
+                          a,
+                          topUp,
+                        ])
+                      }
+
+                      // transfer setAmount of SetToken from whale to taker
+                      const whaleSigner = localProvider.getSigner(setWhale)
+                      setTokenContract = new ethers.Contract(
+                        indexToken.address,
+                        ERC20_ABI,
+                        localProvider.getSigner(taker),
+                      )
+                      await setTokenContract
+                        .connect(whaleSigner)
+                        .transfer(taker, setAmt)
+
+                      // fetch redeem quote
+                      const redeemReq: FlashMintQuoteRequest = {
+                        chainId,
+                        isMinting: false,
+                        inputToken: indexToken,
+                        outputToken,
+                        indexTokenAmount: setAmt,
+                        inputTokenAmount: setAmt,
+                        slippage: 0.5,
+                      }
+                      const rr = await flashProvider.getQuote(redeemReq)
+                      if (!rr.success) {
+                        throw new Error(
+                          `Redeem quote failed: ${rr.error?.message}`,
+                        )
+                      }
+                      redeemQuote = rr.data
+
+                      // approve & execute redeem
+                      const takerSigner = localProvider.getSigner(taker)
+                      await setTokenContract
+                        .connect(takerSigner)
+                        .approve(redeemQuote.tx.to, setAmt)
+
+                      outputContract =
+                        sym === 'ETH'
+                          ? null
+                          : new ethers.Contract(
+                              outputToken.address,
+                              ERC20_ABI,
+                              localProvider,
+                            )
+                      outputBefore =
+                        sym === 'ETH'
+                          ? await takerSigner.getBalance()
+                          : await outputContract!.balanceOf(taker)
+                      const tx = await takerSigner.sendTransaction({
+                        to: redeemQuote.tx.to,
+                        data: redeemQuote.tx.data!,
+                        value: redeemQuote.tx.value
+                          ? ethers.BigNumber.from(redeemQuote.tx.value)
+                          : undefined,
+                        gasLimit: 5_000_000,
+                      })
+                      const receipt = await tx.wait()
+                      outputAfter =
+                        sym === 'ETH'
+                          ? (await takerSigner.getBalance()).add(
+                              receipt.gasUsed.mul(tx.gasPrice),
+                            )
+                          : await outputContract!.balanceOf(taker)
+                    })
+
+                    it('burned exactly setAmount of SetToken', async () => {
+                      const remaining = await setTokenContract.balanceOf(taker)
+                      expect(remaining).to.equal(0)
+                    })
+
+                    it('received output token from redeem', () => {
+                      expect(outputAfter).to.be.gt(outputBefore)
+                    })
+                  })
+                }
+              })
+            }
+            return
+          }
+
           for (const setAmtStr of cfg.setAmounts) {
             const setAmt = wei(setAmtStr).toString()
 

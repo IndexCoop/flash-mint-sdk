@@ -5,7 +5,18 @@ export interface InputTokenConfig {
 
 export interface ProductScenario {
   setAmounts: string[]
+  // For full mint+redeem coverage: input tokens to mint with (and redeem back to).
+  // For `redeemOnly` products: the output tokens to redeem into.
   inputTokens: InputTokenConfig[]
+  // Mark a product as redeem-only when issuance via the SDK isn't reliably
+  // testable (e.g. deprecated/delevered Morpho leverage products where
+  // FlashMintDexV5's issue path overshoots the per-share equity buffer at
+  // non-trivial setAmounts). The runner skips mint and instead acquires
+  // SetTokens by impersonating `whale` and transferring `setAmount` to the taker
+  // before quoting+executing the redeem.
+  redeemOnly?: boolean
+  // SetToken whale address — required when `redeemOnly` is true.
+  whale?: string
 }
 
 /**
@@ -53,15 +64,40 @@ const testScenarios: TestScenarios = {
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],
     },
-    // uXRP2x / uXRP3x e2e mint coverage temporarily disabled: at these products'
-    // post-disengage state the SetToken's stored Morpho external position unit
-    // for uXRP drifts by ~7530 wei per set (uXRP2x) vs the actual Morpho
-    // collateral, so DebtIssuanceModuleV3.issue() pulls more uXRP than the
-    // FlashMintDexV5 0.45.1 buffer (`setAmount/1e18 + 1`) supplies. At
-    // setAmount ≥ ~0.0001 ether the call reverts with ERC20InsufficientBalance.
-    // Routing/quote logic is unchanged — this only suppresses the e2e mint
-    // assertion until a 0.45.2 contract release with a per-component buffer
-    // that scales with the component amount, not just setAmount.
+    // uXRP2x / uXRP3x: deprecated post-disengage Morpho leverage products.
+    // Issuance via FlashMintDexV5 0.45.1 overshoots the per-share equity buffer
+    // at non-trivial setAmounts because the SetToken's stored external Morpho
+    // position unit for uXRP has drifted vs the actual Morpho collateral; V3's
+    // external getRequiredComponentIssuanceUnits returns balance-derived units
+    // while issue() pulls position-derived units, so FlashMint runs short.
+    // Redemption uses position-derived math in BOTH the external view AND the
+    // internal pull, so it is unaffected — `redeemOnly: true` skips mint and
+    // exercises redeem only, by impersonating the largest-holder whale and
+    // transferring the SetToken to the taker before redeeming. The other 4
+    // delevered products (uSOL2x/3x, uSUI2x/3x) still cover mint+redeem above.
+    uXRP2x: {
+      redeemOnly: true,
+      whale: '0xaB8131FE3C0cB081630502ED26C89C51103E37ce',
+      // Whale only holds ~0.011 uXRP2x — supply is tiny (~0.024). Use 0.01 to
+      // leave a sliver as headroom across repeated test runs.
+      setAmounts: ['0.01'],
+      inputTokens: [
+        { symbol: 'WETH', exchangeRate: 0.5 },
+        { symbol: 'USDC', exchangeRate: 2000 },
+        { symbol: 'cbBTC', exchangeRate: 0.05 },
+      ],
+    },
+    uXRP3x: {
+      redeemOnly: true,
+      whale: '0x5E7732D6407C332cf91780DC084B36102cDeA094',
+      // whale balance ~85 uXRP3x
+      setAmounts: ['5'],
+      inputTokens: [
+        { symbol: 'WETH', exchangeRate: 0.5 },
+        { symbol: 'USDC', exchangeRate: 2000 },
+        { symbol: 'cbBTC', exchangeRate: 0.05 },
+      ],
+    },
     BTC2X: {
       setAmounts: ['1', '10', '100'],
       inputTokens: [
