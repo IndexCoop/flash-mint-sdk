@@ -64,37 +64,26 @@ const testScenarios: TestScenarios = {
         { symbol: 'cbBTC', exchangeRate: 0.1 },
       ],
     },
-    // uXRP2x / uXRP3x: deprecated post-disengage Morpho leverage products.
-    // Issuance via FlashMintDexV5 0.45.1 overshoots the per-share equity buffer
-    // at non-trivial setAmounts because the SetToken's stored external Morpho
-    // position unit for uXRP has drifted vs the actual Morpho collateral; V3's
-    // external getRequiredComponentIssuanceUnits returns balance-derived units
-    // while issue() pulls position-derived units, so FlashMint runs short.
-    // Redemption uses position-derived math in BOTH the external view AND the
-    // internal pull, so it is unaffected — `redeemOnly: true` skips mint and
-    // exercises redeem only, by impersonating the largest-holder whale and
-    // transferring the SetToken to the taker before redeeming. The other 4
-    // delevered products (uSOL2x/3x, uSUI2x/3x) still cover mint+redeem above.
     uXRP2x: {
-      redeemOnly: true,
-      whale: '0xaB8131FE3C0cB081630502ED26C89C51103E37ce',
-      // Whale only holds ~0.011 uXRP2x — supply is tiny (~0.024). Use 0.01 to
-      // leave a sliver as headroom across repeated test runs.
-      setAmounts: ['0.01'],
+      // Whale-sourced supply is tiny (~0.024 uXRP2x); pick a setAmount that
+      // fits within typical issuance capacity. Pre-0.45.2 of FlashMintDexV5
+      // this would still revert at any non-trivial size due to the V3
+      // balance-vs-position drift on uXRP's Morpho position; the 0.45.2
+      // sync-before-issue fix closes it.
+      setAmounts: ['0.005', '0.01'],
       inputTokens: [
-        { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'USDC', exchangeRate: 2000 },
+        { symbol: 'ETH', exchangeRate: 0.5 },
+        { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'cbBTC', exchangeRate: 0.05 },
       ],
     },
     uXRP3x: {
-      redeemOnly: true,
-      whale: '0x5E7732D6407C332cf91780DC084B36102cDeA094',
-      // whale balance ~85 uXRP3x
-      setAmounts: ['5'],
+      setAmounts: ['1', '5'],
       inputTokens: [
-        { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'USDC', exchangeRate: 2000 },
+        { symbol: 'ETH', exchangeRate: 0.5 },
+        { symbol: 'WETH', exchangeRate: 0.5 },
         { symbol: 'cbBTC', exchangeRate: 0.05 },
       ],
     },
