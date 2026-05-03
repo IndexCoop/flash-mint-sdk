@@ -90,11 +90,17 @@ export class StaticQuoteProvider {
       isMinting ? indexTokenAmount : inputOutputAmount
     ).toString()
 
-    const tx = buildTransaction(
-      { ...request, inputAmount: BigInt(inputAmount), outputAmount: BigInt(outputAmount) },
-      entry,
-      inputOutputAmount,
-    )
+    // Pass the original request through (with the user's maxIn / setAmount).
+    // Legacy leveraged contracts encode `request.inputAmount` directly as
+    // _maxAmountInputToken; dexV5 uses it as PaymentInfo.limitAmt. In both
+    // cases we want the *user's headline max*, not the slippage-adjusted
+    // quote — overriding here would (a) tighten the on-chain limit
+    // unnecessarily and (b) break the e2e test's `tx.data.includes(req.inputTokenAmount)`
+    // substring check that all the leveraged-product specs rely on.
+    // The slippage-adjusted amount is still surfaced via the returned
+    // `inputAmount`/`outputAmount` strings below and via `inputOutputAmount`
+    // (4th arg, used as the redeem-side min-output bound in tx encoding).
+    const tx = buildTransaction(request, entry, inputOutputAmount)
 
     return {
       chainId,
