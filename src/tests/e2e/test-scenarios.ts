@@ -38,17 +38,17 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSUI3x: {
-      // setAmount=1 still fails the actual redeem tx (not the quote — the
-      // dexV5 0-amount-component noopSwap substitution in resolveDexV5SwapData
-      // unblocks getQuote here) because the per-set USDC dust unit lands
-      // *just* over the tokenTransferBuffer threshold (~11 wei) at quote time
-      // but post-sync inside the redeem tx the V3 module's clamp can flip the
-      // pull direction by ±1 wei vs what the SDK saw, leaving FlashMintDexV5
-      // with one wei less than its swap target → ERC20 balance revert.
-      // Direct DebtIssuanceModule.redeem(1) works fine; only the FlashMintDexV5
-      // wrap path is sensitive at this exact amount. Mitigation would be a
-      // sync-equivalent simulate before quoting; tracked separately.
-      setAmounts: ['10'],
+      // setAmount=1 reverts upstream in DebtIssuanceModuleV3 (not in
+      // FlashMintDexV5). The V3 module computes the position-based USDC
+      // transfer quantity, which lands at ≤ `tokenTransferBuffer` (10 wei)
+      // for uSUI3x at setAmount=1. The internal `_resolveEquityPositions`
+      // then computes `componentQuantity - tokenTransferBuffer` raw (no
+      // SafeMath in 0.6.10), underflows to ~MaxUint256, and SetToken's
+      // `invokeTransfer(USDC, FM, MaxUint256)` reverts with `ERC20: transfer
+      // amount exceeds balance`. Fix would require an upstream
+      // DebtIssuanceModuleV3 patch (governance change). Use setAmount=5+ to
+      // stay above the buffer.
+      setAmounts: ['5', '10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
         { symbol: 'ETH', exchangeRate: 0.5 },

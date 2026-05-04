@@ -21,7 +21,7 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
     // Non-leveraged FlashMint with DEXAdapterV5 (Aerodrome SlipStream support).
     // Used for the post-disengage Morpho leverage tokens (uSOL2x/3x, uSUI2x/3x,
     // uXRP2x/3x) that the leveraged flashmints reject with "TOO MANY COMPONENTS".
-    FlashMintDexV5: '0xA3b9F8f6a1d2641c68757e13e601DDc988d99f17',
+    FlashMintDexV5: '0xdeB2BB9f5F848eCDd4983f908748793dAeC32c7d',
   },
 }
 

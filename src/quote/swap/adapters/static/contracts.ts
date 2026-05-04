@@ -33,7 +33,7 @@ const base_uXRP2x = getTokenByChainAndSymbol(base.id, 'uXRP2x')
 const base_uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 
 // FlashMintDexV5 — non-leveraged FlashMint on Base
-const FLASH_MINT_DEX_V5_BASE = '0xA3b9F8f6a1d2641c68757e13e601DDc988d99f17'
+const FLASH_MINT_DEX_V5_BASE = '0xdeB2BB9f5F848eCDd4983f908748793dAeC32c7d'
 
 // mainnet exceptions
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
@@ -99,7 +99,7 @@ export const ABI: { [key: string]: any } = {
     FlashMintLeveragedMorphoAaveLMAbi,
   '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE': FlashMintLeveragedExtendedAbi,
   '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42': FlashMintLeveragedMorphoV2Abi,
-  '0xA3b9F8f6a1d2641c68757e13e601DDc988d99f17': FlashMintDexV5Abi, // Base FlashMintDexV5
+  '0xdeB2BB9f5F848eCDd4983f908748793dAeC32c7d': FlashMintDexV5Abi, // Base FlashMintDexV5
   '0x945Db358C69A4Be68aB5b835f2f56af1CcF4E2d1': ExchangeIssuanceLeveraged, // New icETH contract
   '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1': ExchangeIssuanceLeveraged, // Old icETH contract
 }
