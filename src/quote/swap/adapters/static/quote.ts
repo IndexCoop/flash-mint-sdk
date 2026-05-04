@@ -1,16 +1,18 @@
 import { ABI, getContract } from 'quote/swap/adapters/static/contracts'
 import { createClientWithUrl } from 'utils/clients'
+import type { SwapDataV5 } from 'utils'
 import { decodeFunctionResult, encodeFunctionData } from 'viem'
 import { base } from 'viem/chains'
 
 import {
   type DexV5ConfigEntry,
   isDexV5Entry,
+  noopSwapV5,
   type StaticConfigEntry,
 } from './swap-data-config'
 
 import type { Result } from 'quote/interfaces'
-import type { Address } from 'viem'
+import type { Address, PublicClient } from 'viem'
 
 // DebtIssuanceModuleV3 on Base. Used as the issuanceModule param for
 // FlashMintDexV5 IssueRedeemParams.
@@ -103,6 +105,103 @@ export function buildIssueRedeemParams(
     isDebtIssuance: true,
   }
 }
+
+// Minimal ABI of the V3-style issuance module getRequired*Units views.
+const ISSUANCE_MODULE_VIEWS_ABI = [
+  {
+    inputs: [
+      { name: '_setToken', type: 'address' },
+      { name: '_quantity', type: 'uint256' },
+    ],
+    name: 'getRequiredComponentIssuanceUnits',
+    outputs: [
+      { name: 'components', type: 'address[]' },
+      { name: 'equityUnits', type: 'uint256[]' },
+      { name: 'debtUnits', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { name: '_setToken', type: 'address' },
+      { name: '_quantity', type: 'uint256' },
+    ],
+    name: 'getRequiredComponentRedemptionUnits',
+    outputs: [
+      { name: 'components', type: 'address[]' },
+      { name: 'equityUnits', type: 'uint256[]' },
+      { name: 'debtUnits', type: 'uint256[]' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
+/**
+ * Returns a copy of `entry` whose `componentSwapDataIssue` (when minting) or
+ * `componentSwapDataRedeem` (when redeeming) has each per-component swap
+ * replaced with `noopSwap` for any component the issuance module reports as
+ * 0-amount at this `indexTokenAmount`.
+ *
+ * Background: DebtIssuanceModuleV3 may return 0 for the equity unit of a
+ * tiny dust component (e.g. uSUI3x's USDC dust at small redemption amounts —
+ * the per-set unit floors to ≤ tokenTransferBuffer, so the buffer-subtraction
+ * clamps to 0). FlashMintDexV5 then iterates components and calls
+ * `dexAdapter.swapExact*` with that 0 amount, which the underlying router
+ * (UniV3, Aerodrome SlipStream, …) rejects. Substituting `noopSwap`
+ * (`Exchange.None`) makes DEXAdapterV5 short-circuit the call and return 0
+ * cleanly — the contract still mints / redeems correctly, it just doesn't
+ * route a meaningless 0-amount swap through a router.
+ *
+ * Returns the entry unmodified if the lookup fails (best-effort — the
+ * pre-substitution path already worked at non-trivial amounts and the static
+ * fallback keeps that working).
+ */
+export async function resolveDexV5SwapDataForAmount(
+  entry: DexV5ConfigEntry,
+  indexToken: Address,
+  indexTokenAmount: bigint,
+  isMinting: boolean,
+  chainId: number,
+  rpcUrl: string,
+): Promise<DexV5ConfigEntry> {
+  try {
+    const publicClient = createClientWithUrl(chainId, rpcUrl)!
+    const result = (await publicClient.readContract({
+      address: BASE_DEBT_ISSUANCE_MODULE_V3 as Address,
+      abi: ISSUANCE_MODULE_VIEWS_ABI,
+      functionName: isMinting
+        ? 'getRequiredComponentIssuanceUnits'
+        : 'getRequiredComponentRedemptionUnits',
+      args: [indexToken, indexTokenAmount],
+    })) as readonly [readonly Address[], readonly bigint[], readonly bigint[]]
+    const equityUnits = result[1]
+
+    const staticSwaps = isMinting
+      ? entry.componentSwapDataIssue
+      : entry.componentSwapDataRedeem
+    if (staticSwaps.length !== equityUnits.length) return entry
+
+    let substituted = false
+    const resolved: SwapDataV5[] = staticSwaps.map((swap, i) => {
+      if (equityUnits[i] === BigInt(0)) {
+        substituted = true
+        return noopSwapV5
+      }
+      return swap
+    })
+    if (!substituted) return entry
+    return isMinting
+      ? { ...entry, componentSwapDataIssue: resolved }
+      : { ...entry, componentSwapDataRedeem: resolved }
+  } catch {
+    return entry
+  }
+}
+
+// `publicClient` parameter type used by callers wanting to share a client.
+export type _DexV5PublicClient = PublicClient
 
 function encodeLeveragedQuoteCall(
   abi: any,

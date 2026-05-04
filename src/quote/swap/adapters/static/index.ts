@@ -1,8 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { getQuote } from 'quote/swap/adapters/static/quote'
+import {
+  getQuote,
+  resolveDexV5SwapDataForAmount,
+} from 'quote/swap/adapters/static/quote'
 import { getSwapData } from 'quote/swap/adapters/static/swap-data'
 import { buildTransaction } from 'quote/swap/adapters/static/transaction'
 import { slippageAdjustedTokenAmount } from 'utils'
+
+import { isDexV5Entry } from './swap-data-config'
 
 import type { QuoteToken } from 'quote/interfaces'
 import type { Address, TransactionRequest } from 'viem'
@@ -49,12 +54,28 @@ export class StaticQuoteProvider {
       ? request.outputAmount
       : request.inputAmount
 
-    const entry = getSwapData(request)
+    const staticEntry = getSwapData(request)
 
-    if (!entry) {
+    if (!staticEntry) {
       console.error('Error fetching quote swap data')
       return null
     }
+
+    // For dexV5 entries, resolve the per-component swap data against the
+    // issuance module's live unit calculation: any component reporting 0 wei
+    // at this amount gets a `noopSwap` substituted so DEXAdapterV5 doesn't
+    // try to route a 0-amount swap through a router (which reverts).
+    // No-op for legacy leveraged entries.
+    const entry = isDexV5Entry(staticEntry)
+      ? await resolveDexV5SwapDataForAmount(
+          staticEntry,
+          indexToken.address as Address,
+          indexTokenAmount,
+          isMinting,
+          chainId,
+          this.rpcUrl,
+        )
+      : staticEntry
 
     const quoteAmountResult = await getQuote(
       isMinting,

@@ -34,7 +34,11 @@ export function isDexV5Entry(e: StaticConfigEntry): e is DexV5ConfigEntry {
   return (e as DexV5ConfigEntry).kind === 'dexV5'
 }
 
-const noopSwapV5: SwapDataV5 = {
+// `Exchange.None` swap. Used wherever DEXAdapterV5 needs to short-circuit a
+// per-component swap (e.g. when the issuance module reports a 0-amount
+// component on issue or redeem — `swapExact*` would otherwise revert inside
+// the underlying router on the 0-amount call).
+export const noopSwapV5: SwapDataV5 = {
   exchange: 0,
   path: [],
   fees: [],

@@ -38,11 +38,16 @@ const testScenarios: TestScenarios = {
       ],
     },
     uSUI3x: {
-      // setAmount=1 hits an edge case on uSUI3x specifically: the per-set USDC
-      // dust requirement (~11 wei) rounds the redeem-side USDC component to 0
-      // wei, which the static dexV5 redeem quote then can't swap (no liquidity
-      // on a 0-amount swap). At setAmount=10 the USDC component is non-zero
-      // and the redeem quote succeeds.
+      // setAmount=1 still fails the actual redeem tx (not the quote — the
+      // dexV5 0-amount-component noopSwap substitution in resolveDexV5SwapData
+      // unblocks getQuote here) because the per-set USDC dust unit lands
+      // *just* over the tokenTransferBuffer threshold (~11 wei) at quote time
+      // but post-sync inside the redeem tx the V3 module's clamp can flip the
+      // pull direction by ±1 wei vs what the SDK saw, leaving FlashMintDexV5
+      // with one wei less than its swap target → ERC20 balance revert.
+      // Direct DebtIssuanceModule.redeem(1) works fine; only the FlashMintDexV5
+      // wrap path is sensitive at this exact amount. Mitigation would be a
+      // sync-equivalent simulate before quoting; tracked separately.
       setAmounts: ['10'],
       inputTokens: [
         { symbol: 'USDC', exchangeRate: 1000 },
