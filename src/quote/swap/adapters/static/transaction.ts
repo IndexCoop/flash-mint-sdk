@@ -1,9 +1,10 @@
 import { ABI, getContract } from 'quote/swap/adapters/static/contracts'
-import { encodeFunctionData } from 'viem'
+import { encodeFunctionData, zeroAddress } from 'viem'
 
 import { buildIssueRedeemParams } from './quote'
 import {
   type DexV5ConfigEntry,
+  isAaveDeleveredRedeemEntry,
   isDexV5Entry,
   type StaticConfigEntry,
 } from './swap-data-config'
@@ -28,6 +29,27 @@ export function buildTransaction(
   const indexToken = isMinting ? outputToken : inputToken
   const contractAddress = getContract(chainId, indexToken.address as Address)
   const abi = ABI[contractAddress]
+
+  if (isAaveDeleveredRedeemEntry(entry)) {
+    if (isMinting) {
+      throw new Error(
+        'AaveV3DeleveredRedeemer route is redemption-only — issuance not supported',
+      )
+    }
+    // `redeem(setToken, amount, recipient)` — recipient = address(0) tells the
+    // contract to default to msg.sender (lets the SDK encode without knowing
+    // the connected wallet).
+    const data = encodeFunctionData({
+      abi: abi as any,
+      functionName: 'redeem',
+      args: [
+        indexToken.address,
+        BigInt(inputAmount.toString()),
+        zeroAddress,
+      ],
+    })
+    return { to: contractAddress, data }
+  }
 
   if (isDexV5Entry(entry)) {
     return buildDexV5Transaction(

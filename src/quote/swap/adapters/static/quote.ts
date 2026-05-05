@@ -6,6 +6,7 @@ import { base } from 'viem/chains'
 
 import {
   type DexV5ConfigEntry,
+  isAaveDeleveredRedeemEntry,
   isDexV5Entry,
   noopSwapV5,
   type StaticConfigEntry,
@@ -28,6 +29,27 @@ export async function getQuote(
   chainId: number,
   rpcUrl: string,
 ): Promise<Result<bigint>> {
+  // AaveV3DeleveredRedeemer entry: redemption-only, no on-chain quoter view to
+  // call. The contract burns the SetToken's collateral aTokens 1:1 for the
+  // underlying via Aave V3 Pool.withdraw, so the predicted output is just
+  // setAmount * unitsPerSet / 1e18. Issuance is not supported.
+  if (isAaveDeleveredRedeemEntry(entry)) {
+    if (isMinting) {
+      return {
+        success: false,
+        error: {
+          code: 'IssueNotSupported',
+          message:
+            'Issuance not supported for delevered Aave-collateralized SetTokens. Use the redeem-only route.',
+        },
+      }
+    }
+    return {
+      success: true,
+      data: (indexTokenAmount * entry.unitsPerSet) / 10n ** 18n,
+    }
+  }
+
   const publicClient = createClientWithUrl(chainId, rpcUrl)!
 
   const contractAddress = getContract(chainId, indexToken)

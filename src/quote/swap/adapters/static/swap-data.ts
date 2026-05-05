@@ -1,5 +1,6 @@
 import { getTokenAddressOrWeth } from 'utils'
 import {
+  isAaveDeleveredRedeemEntry,
   isDexV5Entry,
   type LeveragedConfigEntry,
   type StaticConfigEntry,
@@ -29,6 +30,12 @@ export function getSwapData(
     // path-reverse is needed (or possible — componentSwapData is an array per
     // component, not a single round-trip path).
     if (isDexV5Entry(data)) {
+      return data
+    }
+
+    // AaveV3DeleveredRedeemer entries have no swap data at all — the contract
+    // unwraps aTokens via Aave Pool.withdraw, no DEX leg involved. Return verbatim.
+    if (isAaveDeleveredRedeemEntry(data)) {
       return data
     }
 

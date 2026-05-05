@@ -1,6 +1,7 @@
 import { getTokenByChainAndSymbol, isAddressEqual } from '@indexcoop/tokenlists'
 import { arbitrum, base, mainnet } from 'viem/chains'
 
+import AaveV3DeleveredRedeemerAbi from 'constants/abis/AaveV3DeleveredRedeemer.json'
 import ExchangeIssuanceLeveraged from 'constants/abis/ExchangeIssuanceLeveraged.json'
 import FlashMintDexV5Abi from 'constants/abis/FlashMintDexV5.json'
 import FlashMintLeveragedAbi from 'constants/abis/FlashMintLeveraged.json'
@@ -35,6 +36,17 @@ const base_uXRP3x = getTokenByChainAndSymbol(base.id, 'uXRP3x')
 // FlashMintDexV5 — non-leveraged FlashMint on Base
 const FLASH_MINT_DEX_V5_BASE = '0xdeB2BB9f5F848eCDd4983f908748793dAeC32c7d'
 
+// arbitrum — post-disengage Aave-collateralized leverage tokens. Routed through
+// the AaveV3DeleveredRedeemer (a single-purpose helper that calls
+// DebtIssuanceModuleV3.redeem and burns the resulting aTokens 1:1 for underlying
+// via Aave V3 Pool.withdraw). The leveraged FlashMintLeveragedAaveFL rejects
+// these once the borrow is closed.
+const arb_AAVE2x = getTokenByChainAndSymbol(arbitrum.id, 'AAVE2x')
+const arb_LINK2x = getTokenByChainAndSymbol(arbitrum.id, 'LINK2x')
+// Filled in once the AaveV3DeleveredRedeemer is deployed on Arbitrum.
+const AAVE_V3_DELEVERED_REDEEMER_ARB =
+  '0x0000000000000000000000000000000000000000'
+
 // mainnet exceptions
 const icETH = getTokenByChainAndSymbol(mainnet.id, 'icETH')
 
@@ -50,6 +62,13 @@ export function getContract(chainId: number, address: Address): Address {
   }
 
   if (chainId === arbitrum.id) {
+    if (
+      isAddressEqual(address, arb_AAVE2x.address) ||
+      isAddressEqual(address, arb_LINK2x.address)
+    ) {
+      // AaveV3DeleveredRedeemer
+      return AAVE_V3_DELEVERED_REDEEMER_ARB
+    }
     // FlashMintLeveragedAaveFL
     return '0xd5A152a058eDe7331B9ad3521bad03d4CCfD6Bb9'
   }
@@ -100,6 +119,7 @@ export const ABI: { [key: string]: any } = {
   '0xE6c18c4C9FC6909EDa546649EBE33A8159256CBE': FlashMintLeveragedExtendedAbi,
   '0x8bD6eecCb08bEf1Ad035C078E471A0f5b08eFb42': FlashMintLeveragedMorphoV2Abi,
   '0xdeB2BB9f5F848eCDd4983f908748793dAeC32c7d': FlashMintDexV5Abi, // Base FlashMintDexV5
+  [AAVE_V3_DELEVERED_REDEEMER_ARB]: AaveV3DeleveredRedeemerAbi, // Arbitrum AaveV3DeleveredRedeemer (placeholder address)
   '0x945Db358C69A4Be68aB5b835f2f56af1CcF4E2d1': ExchangeIssuanceLeveraged, // New icETH contract
   '0x981b21A2912A427f491f1e5b9Bf9cCa16FA794e1': ExchangeIssuanceLeveraged, // Old icETH contract
 }

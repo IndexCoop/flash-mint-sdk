@@ -2,13 +2,16 @@ import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import type { SwapData, SwapDataV5 } from 'utils'
 import { zeroAddress } from 'viem'
 
-// Two flavours of static-adapter config entry.
+// Three flavours of static-adapter config entry.
 //   'leveragedV5' (default — no `kind` field): the legacy leveraged FlashMint
 //      shape with swapDataDebtForCollateral + swapDataInputToken.
 //   'dexV5':                                   FlashMintDexV5 (non-leveraged)
 //      shape with per-component WETH↔component swaps and an input/output ↔ WETH
 //      bridge. Used for the post-disengage Morpho leverage products that the
 //      leveraged flashmints reject with "TOO MANY COMPONENTS".
+//   'aaveDeleveredRedeem':                     AaveV3DeleveredRedeemer
+//      (single-output redeemer for delevered Aave-collateralized SetTokens whose
+//      components are aTokens with no DEX liquidity). Redemption-only.
 export type LeveragedConfigEntry = {
   contract: string
   swapDataDebtForCollateral: SwapData | SwapDataV5
@@ -28,10 +31,35 @@ export type DexV5ConfigEntry = {
   swapDataWethToInput: SwapDataV5
 }
 
-export type StaticConfigEntry = LeveragedConfigEntry | DexV5ConfigEntry
+export type AaveDeleveredRedeemEntry = {
+  kind: 'aaveDeleveredRedeem'
+  contract: 'AaveV3DeleveredRedeemer'
+  // The token the user effectively receives. For AAVE2x → AAVE; for LINK2x → LINK.
+  // Used as the headline `outputToken` for SDK quotes. (For LINK2x, USDT dust is
+  // also forwarded by the contract, but its value is ~$0.00 and not surfaced
+  // in the quote.)
+  underlyingToken: string
+  // Per-set unit of the headline component (the collateral aToken), scaled to
+  // 1e18-set-units. Aave V3 aTokens redeem 1:1 with underlying so this is also
+  // the per-set underlying delivered. Refresh from chain at deploy time.
+  // For AAVE2x:  863_285_415_590_294_069 wei aArbAAVE per 1e18 set
+  // For LINK2x: 14_472_672_577_246_974_018 wei aArbLINK per 1e18 set
+  unitsPerSet: bigint
+}
+
+export type StaticConfigEntry =
+  | LeveragedConfigEntry
+  | DexV5ConfigEntry
+  | AaveDeleveredRedeemEntry
 
 export function isDexV5Entry(e: StaticConfigEntry): e is DexV5ConfigEntry {
   return (e as DexV5ConfigEntry).kind === 'dexV5'
+}
+
+export function isAaveDeleveredRedeemEntry(
+  e: StaticConfigEntry,
+): e is AaveDeleveredRedeemEntry {
+  return (e as AaveDeleveredRedeemEntry).kind === 'aaveDeleveredRedeem'
 }
 
 // `Exchange.None` swap. Used wherever DEXAdapterV5 needs to short-circuit a
@@ -1524,158 +1552,32 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
+    // Post-disengage Aave-collateralized leverage products. Their components
+    // are Aave aTokens with no DEX liquidity, so FlashMintLeveragedAaveFL (and
+    // FlashMintDexV5) cannot route them. Instead the SDK targets a small
+    // single-purpose AaveV3DeleveredRedeemer contract that calls
+    // DebtIssuanceModuleV3.redeem and burns the resulting aTokens 1:1 for the
+    // underlying via Aave V3 Pool.withdraw to the user. Redemption-only —
+    // issuance is not supported (these products are deprecated).
+    //
+    // Single route per product: input = SetToken, output = the underlying that
+    // the SetToken's collateral aToken redeems for. AAVE2x → AAVE; LINK2x →
+    // LINK (LINK2x also forwards ~9150 wei dust USDT per set as a side effect,
+    // not surfaced in the quote).
     'AAVE2x': {
-      [arbitrum.usdc]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [100, 500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
-      [arbitrum.usdt0]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
-      [arbitrum.weth]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.weth, arbitrum.aave],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
-      [arbitrum.wbtc]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
       [arbitrum.aave]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.weth, arbitrum.aave],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [],
-          fees: [],
-          exchange: 0,
-          pool: zeroAddress,
-        },
+        kind: 'aaveDeleveredRedeem',
+        contract: 'AaveV3DeleveredRedeemer',
+        underlyingToken: arbitrum.aave,
+        unitsPerSet: 863285415590294069n,
       },
     },
     'LINK2x': {
-      [arbitrum.usdc]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.link],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.usdc, arbitrum.usdt0, arbitrum.link],
-          fees: [100, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
-      [arbitrum.usdt0]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.link],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.usdt0, arbitrum.link],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
-      [arbitrum.weth]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.link],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.weth, arbitrum.usdt0, arbitrum.link],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
-      [arbitrum.wbtc]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.link],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.wbtc, arbitrum.usdt0, arbitrum.link],
-          fees: [500, 3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-      },
       [arbitrum.link]: {
-        contract: 'FlashMintLeveragedAaveFL',
-        swapDataDebtForCollateral: {
-          path: [arbitrum.usdt0, arbitrum.link],
-          fees: [3000],
-          exchange: 3,
-          pool: zeroAddress,
-        },
-        swapDataInputToken: {
-          path: [arbitrum.link],
-          fees: [],
-          exchange: 3,
-          pool: zeroAddress,
-        },
+        kind: 'aaveDeleveredRedeem',
+        contract: 'AaveV3DeleveredRedeemer',
+        underlyingToken: arbitrum.link,
+        unitsPerSet: 14472672577246974018n,
       },
     },
     'iETH2x': {

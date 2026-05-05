@@ -14,6 +14,11 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
     FlashMintLeveragedZeroEx: '0xdb4b7d3f812D0A8D98A1E17F9750c4E7a6477291',
+    // Single-purpose redeemer for AAVE2x and LINK2x in their post-disengage
+    // state (aToken-only or aToken + USDT-dust components). Calls
+    // DebtIssuanceModuleV3.redeem and burns the resulting aTokens 1:1 for
+    // underlying via Aave V3 Pool.withdraw. Filled in once deployed.
+    AaveV3DeleveredRedeemer: '0x0000000000000000000000000000000000000000',
   },
   [ChainId.Base]: {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',

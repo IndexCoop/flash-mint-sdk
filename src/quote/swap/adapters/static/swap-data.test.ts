@@ -1,9 +1,13 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ETH } from 'constants/tokens'
 import { Exchange } from 'utils'
-import { base } from 'viem/chains'
+import { arbitrum, base } from 'viem/chains'
 import { getSwapData } from './swap-data'
-import { isDexV5Entry, type LeveragedConfigEntry } from './swap-data-config'
+import {
+  isAaveDeleveredRedeemEntry,
+  isDexV5Entry,
+  type LeveragedConfigEntry,
+} from './swap-data-config'
 
 import type { StaticQuoteRequest } from 'quote/swap/adapters/static'
 
@@ -212,5 +216,50 @@ describe('Static swap data', () => {
       poolIds: [],
       tickSpacing: [1, 100],
     })
+  })
+
+  test('returns aaveDeleveredRedeem entry for AAVE2x on Arbitrum (redeem to AAVE)', () => {
+    const chainId = arbitrum.id
+    const aave = getTokenByChainAndSymbol(chainId, 'AAVE')
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'AAVE2x'),
+      outputToken: aave,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isAaveDeleveredRedeemEntry(result))
+      fail('expected aaveDeleveredRedeem entry')
+    expect(result.contract).toBe('AaveV3DeleveredRedeemer')
+    expect(result.underlyingToken.toLowerCase()).toBe(aave.address.toLowerCase())
+    // aArbAAVE per-set unit (~0.86 aArbAAVE per 1e18 set), pinned at planning time.
+    expect(result.unitsPerSet).toBe(863285415590294069n)
+  })
+
+  test('returns aaveDeleveredRedeem entry for LINK2x on Arbitrum (redeem to LINK)', () => {
+    const chainId = arbitrum.id
+    const link = getTokenByChainAndSymbol(chainId, 'LINK')
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'LINK2x'),
+      outputToken: link,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isAaveDeleveredRedeemEntry(result))
+      fail('expected aaveDeleveredRedeem entry')
+    expect(result.contract).toBe('AaveV3DeleveredRedeemer')
+    expect(result.underlyingToken.toLowerCase()).toBe(link.address.toLowerCase())
+    expect(result.unitsPerSet).toBe(14472672577246974018n)
   })
 })

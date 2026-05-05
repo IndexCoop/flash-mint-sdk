@@ -237,14 +237,21 @@ const testScenarios: TestScenarios = {
     // ETH2xBTC: every mint reverts with arithmetic-overflow panic 0x11 inside
     // FlashMintLeveragedAaveFL — same broken on-chain math as ETH2X/ETH3X
     // above. Disabled until investigated / fixed.
-    // AAVE2x and LINK2x have been delevered on Arbitrum (LR=1.0x) which makes
-    // the existing leveraged FlashMintLeveragedAaveFL revert with
-    // `ExchangeIssuance: TOO MANY COMPONENTS` / `TOO MANY EQUITY POSITIONS`
-    // for any issue — the flash-mint contract's component layout assumes the
-    // [collateral, debt] shape that the SetToken no longer has. There is no
-    // FlashMintDexV5 deployment on Arbitrum yet (Base only), so the SDK has
-    // no working route. Re-enable once a FlashMintDexV5 lands on Arbitrum and
-    // routes these products through it (cf. Base uSOL/uSUI/uXRP).
+    //
+    // AAVE2x and LINK2x: delevered (LR=1.0x), aTokens-as-components shape that
+    // the leveraged FlashMint can't handle. Now routed via the SDK through a
+    // small `AaveV3DeleveredRedeemer` contract on Arbitrum which calls
+    // DebtIssuanceModuleV3.redeem then Aave V3 Pool.withdraw to deliver the
+    // underlying (AAVE / LINK + USDT dust on LINK2x). Redemption-only —
+    // issuance not supported. The redeem path is covered end-to-end by the
+    // AaveV3DeleveredRedeemer integration spec in the SC repo
+    // (test/integration/arbitrum/aaveV3DeleveredRedeemer.spec.ts in
+    // index-coop-smart-contracts#226). Not added to the SDK e2e harness here
+    // because `redeemOnly` mode requires a SetToken whale, and AAVE2x/LINK2x
+    // total supplies are tiny (0.155 / 1.51 sets) so a stable on-chain whale
+    // is hard to pin without extending the harness with a "bootstrap via V3
+    // module issuance" mode. Defer until/unless we want SDK-side e2e here.
+    //
     // iETH2x: every mint reverts with Aave `ReserveFrozen()`. Disabled
     // until the Aave reserve is unfrozen.
     iBTC2x: {

@@ -1,0 +1,49 @@
+[
+  {
+    "inputs": [
+      { "internalType": "contract IPool", "name": "_pool", "type": "address" },
+      { "internalType": "contract IDebtIssuanceModule", "name": "_issuanceModule", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "caller", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "recipient", "type": "address" },
+      { "indexed": true, "internalType": "contract ISetToken", "name": "setToken", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "setTokenAmount", "type": "uint256" }
+    ],
+    "name": "Redeemed",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "issuanceModule",
+    "outputs": [{ "internalType": "contract IDebtIssuanceModule", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pool",
+    "outputs": [{ "internalType": "contract IPool", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "contract ISetToken", "name": "_setToken", "type": "address" },
+      { "internalType": "uint256", "name": "_amount", "type": "uint256" },
+      { "internalType": "address", "name": "_recipient", "type": "address" }
+    ],
+    "name": "redeem",
+    "outputs": [
+      { "internalType": "address[]", "name": "components", "type": "address[]" },
+      { "internalType": "uint256[]", "name": "amountsToUser", "type": "uint256[]" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
