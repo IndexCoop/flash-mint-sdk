@@ -1,8 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { getQuote } from 'quote/swap/adapters/static/quote'
+import {
+  getQuote,
+  resolveDexV5SwapDataForAmount,
+} from 'quote/swap/adapters/static/quote'
 import { getSwapData } from 'quote/swap/adapters/static/swap-data'
 import { buildTransaction } from 'quote/swap/adapters/static/transaction'
 import { slippageAdjustedTokenAmount } from 'utils'
+
+import { isDexV5Entry } from './swap-data-config'
 
 import type { QuoteToken } from 'quote/interfaces'
 import type { Address, TransactionRequest } from 'viem'
@@ -49,20 +54,35 @@ export class StaticQuoteProvider {
       ? request.outputAmount
       : request.inputAmount
 
-    const swapData = getSwapData(request)
+    const staticEntry = getSwapData(request)
 
-    if (!swapData) {
+    if (!staticEntry) {
       console.error('Error fetching quote swap data')
       return null
     }
+
+    // For dexV5 entries, resolve the per-component swap data against the
+    // issuance module's live unit calculation: any component reporting 0 wei
+    // at this amount gets a `noopSwap` substituted so DEXAdapterV5 doesn't
+    // try to route a 0-amount swap through a router (which reverts).
+    // No-op for legacy leveraged entries.
+    const entry = isDexV5Entry(staticEntry)
+      ? await resolveDexV5SwapDataForAmount(
+          staticEntry,
+          indexToken.address as Address,
+          indexTokenAmount,
+          isMinting,
+          chainId,
+          this.rpcUrl,
+        )
+      : staticEntry
 
     const quoteAmountResult = await getQuote(
       isMinting,
       indexToken.address as Address,
       indexTokenAmount,
       maxInputAmount,
-      swapData.swapDataDebtForCollateral,
-      swapData.swapDataInputToken,
+      entry,
       chainId,
       this.rpcUrl,
     )
@@ -91,12 +111,17 @@ export class StaticQuoteProvider {
       isMinting ? indexTokenAmount : inputOutputAmount
     ).toString()
 
-    const tx = buildTransaction(
-      request,
-      swapData.swapDataDebtForCollateral,
-      swapData.swapDataInputToken,
-      inputOutputAmount,
-    )
+    // Pass the original request through (with the user's maxIn / setAmount).
+    // Legacy leveraged contracts encode `request.inputAmount` directly as
+    // _maxAmountInputToken; dexV5 uses it as PaymentInfo.limitAmt. In both
+    // cases we want the *user's headline max*, not the slippage-adjusted
+    // quote — overriding here would (a) tighten the on-chain limit
+    // unnecessarily and (b) break the e2e test's `tx.data.includes(req.inputTokenAmount)`
+    // substring check that all the leveraged-product specs rely on.
+    // The slippage-adjusted amount is still surfaced via the returned
+    // `inputAmount`/`outputAmount` strings below and via `inputOutputAmount`
+    // (4th arg, used as the redeem-side min-output bound in tx encoding).
+    const tx = buildTransaction(request, entry, inputOutputAmount)
 
     return {
       chainId,

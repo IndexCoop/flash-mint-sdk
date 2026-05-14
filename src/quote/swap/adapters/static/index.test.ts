@@ -52,6 +52,48 @@ describe('StaticQuoteProvider', () => {
     expect(quote.tx.data).toBeDefined()
   })
 
+  test('AAVE2x redeem on Arbitrum routes through FlashMintAaveDelevered', async () => {
+    const AAVE2x = getTokenByChainAndSymbol(42161, 'AAVE2x')
+    const AAVE = getTokenByChainAndSymbol(42161, 'AAVE')
+    const request = {
+      chainId: 42161,
+      isMinting: false,
+      inputToken: AAVE2x,
+      outputToken: AAVE,
+      inputAmount: wei(0.01).toBigInt(),
+      outputAmount: wei(0.01).toBigInt(),
+      slippage: 0.5,
+      taker,
+    }
+    const rpcUrl = getAlchemyProviderUrl(request.chainId)
+    const provider = new StaticQuoteProvider(rpcUrl)
+    const quote = await provider.getQuote(request)
+    if (!quote) fail()
+    expect(quote.isMinting).toBe(false)
+    expect(quote.tx.to).toBe('0x85eC64C97b6E17e7092cE584a2643C6C824E51FC')
+    expect(BigInt(quote.outputAmount) > BigInt(0)).toBe(true)
+    expect(quote.tx.data).toBeDefined()
+  })
+
+  test('AAVE2x mint on Arbitrum is rejected with IssueNotSupported', async () => {
+    // Mint short-circuits before the RPC call, so a placeholder URL is fine.
+    const AAVE2x = getTokenByChainAndSymbol(42161, 'AAVE2x')
+    const AAVE = getTokenByChainAndSymbol(42161, 'AAVE')
+    const request = {
+      chainId: 42161,
+      isMinting: true,
+      inputToken: AAVE,
+      outputToken: AAVE2x,
+      inputAmount: wei(0.01).toBigInt(),
+      outputAmount: wei(0.01).toBigInt(),
+      slippage: 0.5,
+      taker,
+    }
+    const provider = new StaticQuoteProvider('http://placeholder.invalid')
+    const quote = await provider.getQuote(request)
+    expect(quote).toBeNull()
+  })
+
   test('getting a quote for redeeming icETH', async () => {
     const icETH = getTokenByChainAndSymbol(1, 'icETH')
     const request = {

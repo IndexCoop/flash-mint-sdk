@@ -1,8 +1,13 @@
 import { getTokenByChainAndSymbol } from '@indexcoop/tokenlists'
 import { ETH } from 'constants/tokens'
 import { Exchange } from 'utils'
-import { base } from 'viem/chains'
+import { arbitrum, base } from 'viem/chains'
 import { getSwapData } from './swap-data'
+import {
+  isAaveDeleveredRedeemEntry,
+  isDexV5Entry,
+  type LeveragedConfigEntry,
+} from './swap-data-config'
 
 import type { StaticQuoteRequest } from 'quote/swap/adapters/static'
 
@@ -48,7 +53,7 @@ describe('Static swap data', () => {
       slippage: 0.5,
       taker: '0x',
     }
-    const result = getSwapData(request)
+    const result = getSwapData(request) as LeveragedConfigEntry
     if (!result) fail()
     expect(result.swapDataDebtForCollateral).toEqual({
       exchange: 3,
@@ -81,7 +86,7 @@ describe('Static swap data', () => {
       slippage: 0.5,
       taker: '0x',
     }
-    const result = getSwapData(request)
+    const result = getSwapData(request) as LeveragedConfigEntry
     if (!result) fail()
     expect(result.swapDataDebtForCollateral).toEqual({
       exchange: Exchange.Curve,
@@ -103,6 +108,77 @@ describe('Static swap data', () => {
     })
   })
 
+  test('returns dexV5 entry for delevered Morpho leverage tokens (uSOL2x)', () => {
+    const chainId = base.id
+    const WETH = '0x4200000000000000000000000000000000000006'
+    const uSOL = '0x9B8Df6E244526ab5F6e6400d331DB28C8fdDdb55'
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: true,
+      inputToken: getTokenByChainAndSymbol(chainId, 'WETH'),
+      outputToken: getTokenByChainAndSymbol(chainId, 'uSOL2x'),
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isDexV5Entry(result)) fail('expected dexV5 entry')
+    expect(result.contract).toBe('FlashMintDexV5')
+    expect(result.componentSwapDataIssue).toEqual([
+      {
+        exchange: Exchange.AerodromeSlipstream,
+        path: [WETH, uSOL],
+        fees: [],
+        tickSpacing: [200],
+        pool: '0x0000000000000000000000000000000000000000',
+        poolIds: [],
+      },
+    ])
+    expect(result.componentSwapDataRedeem).toEqual([
+      {
+        exchange: Exchange.AerodromeSlipstream,
+        path: [uSOL, WETH],
+        fees: [],
+        tickSpacing: [200],
+        pool: '0x0000000000000000000000000000000000000000',
+        poolIds: [],
+      },
+    ])
+    // WETH input → noopSwap (contract short-circuits internally).
+    expect(result.swapDataInputToWeth.exchange).toBe(Exchange.None)
+    expect(result.swapDataWethToInput.exchange).toBe(Exchange.None)
+  })
+
+  test('returns dexV5 entry with USDC dust component for 3x products (uSOL3x)', () => {
+    const chainId = base.id
+    const USDC = '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: true,
+      inputToken: getTokenByChainAndSymbol(chainId, 'USDC'),
+      outputToken: getTokenByChainAndSymbol(chainId, 'uSOL3x'),
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isDexV5Entry(result)) fail('expected dexV5 entry')
+    // 3x products carry two component swaps (collateral + USDC dust).
+    expect(result.componentSwapDataIssue).toHaveLength(2)
+    expect(result.componentSwapDataRedeem).toHaveLength(2)
+    // USDC bridge must be UniV3 fee=500 (no Aerodrome path for the bridge).
+    expect(result.swapDataInputToWeth.exchange).toBe(Exchange.UniV3)
+    expect(result.swapDataInputToWeth.fees).toEqual([500])
+    expect(result.swapDataInputToWeth.path).toEqual([
+      USDC,
+      '0x4200000000000000000000000000000000000006',
+    ])
+  })
+
   test('reverses swap data for redeeming - base', () => {
     const chainId = base.id
     const request: StaticQuoteRequest = {
@@ -115,7 +191,7 @@ describe('Static swap data', () => {
       slippage: 0.5,
       taker: '0x',
     }
-    const result = getSwapData(request)
+    const result = getSwapData(request) as LeveragedConfigEntry
     if (!result) fail()
     expect(result.swapDataDebtForCollateral).toEqual({
       exchange: 7,
@@ -140,5 +216,76 @@ describe('Static swap data', () => {
       poolIds: [],
       tickSpacing: [1, 100],
     })
+  })
+
+  test('returns aaveDeleveredRedeem entry for AAVE2x → AAVE (passthrough)', () => {
+    const chainId = arbitrum.id
+    const aave = getTokenByChainAndSymbol(chainId, 'AAVE')
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'AAVE2x'),
+      outputToken: aave,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isAaveDeleveredRedeemEntry(result))
+      fail('expected aaveDeleveredRedeem entry')
+    expect(result.contract).toBe('FlashMintAaveDelevered')
+    expect(result.outputToken.toLowerCase()).toBe(aave.address.toLowerCase())
+    // single component, noop swap (AAVE-as-underlying = output)
+    expect(result.componentSwapData).toHaveLength(1)
+    expect(result.componentSwapData[0].path).toHaveLength(0)
+  })
+
+  test('returns aaveDeleveredRedeem entry for AAVE2x → USDC (multi-hop)', () => {
+    const chainId = arbitrum.id
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'AAVE2x'),
+      outputToken: usdc,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isAaveDeleveredRedeemEntry(result))
+      fail('expected aaveDeleveredRedeem entry')
+    expect(result.componentSwapData).toHaveLength(1)
+    // AAVE → WETH → USDC, fees [3000, 500]
+    expect(result.componentSwapData[0].fees).toEqual([3000, 500])
+    expect(result.componentSwapData[0].path).toHaveLength(3)
+  })
+
+  test('returns aaveDeleveredRedeem entry for LINK2x → LINK (collateral passthrough + USDT swap)', () => {
+    const chainId = arbitrum.id
+    const link = getTokenByChainAndSymbol(chainId, 'LINK')
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'LINK2x'),
+      outputToken: link,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isAaveDeleveredRedeemEntry(result))
+      fail('expected aaveDeleveredRedeem entry')
+    expect(result.componentSwapData).toHaveLength(2)
+    // [0] = noop (LINK passthrough); [1] = USDT → WETH → LINK
+    expect(result.componentSwapData[0].path).toHaveLength(0)
+    expect(result.componentSwapData[1].path).toHaveLength(3)
+    expect(result.componentSwapData[1].fees).toEqual([3000, 3000])
   })
 })

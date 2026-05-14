@@ -14,10 +14,18 @@ export const Contracts: { [key: number]: { [key: string]: Address } } = {
   [ChainId.Arbitrum]: {
     DebtIssuanceModuleV3: '0x4ac26c26116fa976352b70700af58bc2442489d8',
     FlashMintLeveragedZeroEx: '0xdb4b7d3f812D0A8D98A1E17F9750c4E7a6477291',
+    // Exit ramp for post-disengage AAVE2x and LINK2x. Unwraps the SetToken's
+    // aToken components via Aave V3 Pool.withdraw, then swaps each underlying
+    // to a chosen output token via DEXAdapterV3 (UniV3 paths).
+    FlashMintAaveDelevered: '0x85eC64C97b6E17e7092cE584a2643C6C824E51FC',
   },
   [ChainId.Base]: {
     DebtIssuanceModuleV3: '0xa30E87311407dDcF1741901A8F359b6005252F22',
     FlashMintLeveragedZeroEx: '0xBbE31D5946Dd3dabf797744732A7E18cbb4DE2a9',
+    // Non-leveraged FlashMint with DEXAdapterV5 (Aerodrome SlipStream support).
+    // Used for the post-disengage Morpho leverage tokens (uSOL2x/3x, uSUI2x/3x,
+    // uXRP2x/3x) that the leveraged flashmints reject with "TOO MANY COMPONENTS".
+    FlashMintDexV5: '0xdeB2BB9f5F848eCDd4983f908748793dAeC32c7d',
   },
 }
 
