@@ -147,13 +147,49 @@ describe('🏭 SDK parameterized mint & redeem tests (FlashMintQuoteProvider)', 
                         ])
                       }
 
-                      // transfer setAmount of SetToken from whale to taker
                       const whaleSigner = localProvider.getSigner(setWhale)
                       setTokenContract = new ethers.Contract(
                         indexToken.address,
                         ERC20_ABI,
                         localProvider.getSigner(taker),
                       )
+
+                      // Optional bootstrap: whale issues fresh SetTokens for itself
+                      // via the issuance module so we don't need an on-chain SetToken
+                      // holder for tiny-supply products.
+                      if (cfg.bootstrap) {
+                        const bumped = ethers.BigNumber.from(setAmt)
+                          .mul(110)
+                          .div(100)
+                        const ISSUE_MODULE_ABI = [
+                          'function issue(address _setToken, uint256 _quantity, address _to) external',
+                        ]
+                        for (const c of cfg.bootstrap.components) {
+                          const componentAmt = ethers.BigNumber.from(c.perSet)
+                            .mul(bumped)
+                            .div(ethers.BigNumber.from(10).pow(18))
+                          const erc20 = new ethers.Contract(
+                            c.token,
+                            ERC20_ABI,
+                            whaleSigner,
+                          )
+                          await erc20.approve(
+                            cfg.bootstrap.issuanceModule,
+                            ethers.constants.MaxUint256,
+                          )
+                          // Sanity-check whale has enough; if not, the issue call
+                          // below will revert with a clearer message anyway.
+                          void componentAmt
+                        }
+                        const im = new ethers.Contract(
+                          cfg.bootstrap.issuanceModule,
+                          ISSUE_MODULE_ABI,
+                          whaleSigner,
+                        )
+                        await im.issue(indexToken.address, bumped, setWhale)
+                      }
+
+                      // transfer setAmount of SetToken from whale to taker
                       await setTokenContract
                         .connect(whaleSigner)
                         .transfer(taker, setAmt)

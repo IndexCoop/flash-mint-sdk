@@ -5,6 +5,7 @@ import { decodeFunctionResult, encodeFunctionData } from 'viem'
 import { base } from 'viem/chains'
 
 import {
+  type AaveDeleveredRedeemEntry,
   type DexV5ConfigEntry,
   isAaveDeleveredRedeemEntry,
   isDexV5Entry,
@@ -14,6 +15,44 @@ import {
 
 import type { Result } from 'quote/interfaces'
 import type { Address, PublicClient } from 'viem'
+
+const ETH_SENTINEL = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address
+
+async function callRedeemQuote(
+  entry: AaveDeleveredRedeemEntry,
+  indexToken: Address,
+  indexTokenAmount: bigint,
+  chainId: number,
+  rpcUrl: string,
+): Promise<Result<bigint>> {
+  const contractAddress = getContract(chainId, indexToken)
+  const abi = ABI[contractAddress]
+  const data = encodeFunctionData({
+    abi,
+    functionName: 'getRedeemExactSet',
+    args: [indexToken, indexTokenAmount, entry.outputToken, entry.componentSwapData],
+  })
+  try {
+    const publicClient = createClientWithUrl(chainId, rpcUrl)!
+    const callResult = await publicClient.call({ to: contractAddress, data })
+    if (!callResult || !callResult.data) throw new Error('No call result received')
+    const decoded = decodeFunctionResult({
+      abi,
+      functionName: 'getRedeemExactSet',
+      data: callResult.data,
+    })
+    return { success: true, data: decoded as unknown as bigint }
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        code: 'QuoteCallFailed',
+        message: 'getRedeemExactSet call failed',
+        originalError: err,
+      },
+    }
+  }
+}
 
 // DebtIssuanceModuleV3 on Base. Used as the issuanceModule param for
 // FlashMintDexV5 IssueRedeemParams.
@@ -29,10 +68,6 @@ export async function getQuote(
   chainId: number,
   rpcUrl: string,
 ): Promise<Result<bigint>> {
-  // AaveV3DeleveredRedeemer entry: redemption-only, no on-chain quoter view to
-  // call. The contract burns the SetToken's collateral aTokens 1:1 for the
-  // underlying via Aave V3 Pool.withdraw, so the predicted output is just
-  // setAmount * unitsPerSet / 1e18. Issuance is not supported.
   if (isAaveDeleveredRedeemEntry(entry)) {
     if (isMinting) {
       return {
@@ -44,10 +79,8 @@ export async function getQuote(
         },
       }
     }
-    return {
-      success: true,
-      data: (indexTokenAmount * entry.unitsPerSet) / 10n ** 18n,
-    }
+    // Use the contract's own getRedeemExactSet view-via-eth_call estimator.
+    return await callRedeemQuote(entry, indexToken, indexTokenAmount, chainId, rpcUrl)
   }
 
   const publicClient = createClientWithUrl(chainId, rpcUrl)!

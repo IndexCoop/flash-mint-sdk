@@ -1,0 +1,399 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IController",
+        "name": "_setController",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IPool",
+        "name": "_aaveV3Pool",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IDebtIssuanceModule",
+        "name": "_debtIssuanceModule",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "quickRouter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "sushiRouter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "uniV3Router",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "uniV3Quoter",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "curveAddressProvider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "curveCalculator",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "balV2Vault",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "weth",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct DEXAdapterV3.Addresses",
+        "name": "_addresses",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_outputToken",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountSetRedeemed",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amountOutputToken",
+        "type": "uint256"
+      }
+    ],
+    "name": "FlashRedeem",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "ETH_ADDRESS",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "aaveV3Pool",
+    "outputs": [
+      {
+        "internalType": "contract IPool",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "addresses",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "quickRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "sushiRouter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "uniV3Router",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "uniV3Quoter",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "curveAddressProvider",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "curveCalculator",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "balV2Vault",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "weth",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "debtIssuanceModule",
+    "outputs": [
+      {
+        "internalType": "contract IDebtIssuanceModule",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_setAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_outputToken",
+        "type": "address"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "poolIds",
+            "type": "bytes32[]"
+          },
+          {
+            "internalType": "enum DEXAdapterV3.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct DEXAdapterV3.SwapData[]",
+        "name": "_componentSwapData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "getRedeemExactSet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "outputAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_setAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_outputToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minAmountOutputToken",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "poolIds",
+            "type": "bytes32[]"
+          },
+          {
+            "internalType": "enum DEXAdapterV3.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct DEXAdapterV3.SwapData[]",
+        "name": "_componentSwapData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "redeemExactSetForERC20",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract ISetToken",
+        "name": "_setToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_setAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_minAmountOutputToken",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address[]",
+            "name": "path",
+            "type": "address[]"
+          },
+          {
+            "internalType": "uint24[]",
+            "name": "fees",
+            "type": "uint24[]"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32[]",
+            "name": "poolIds",
+            "type": "bytes32[]"
+          },
+          {
+            "internalType": "enum DEXAdapterV3.Exchange",
+            "name": "exchange",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct DEXAdapterV3.SwapData[]",
+        "name": "_componentSwapData",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "redeemExactSetForETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setController",
+    "outputs": [
+      {
+        "internalType": "contract IController",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

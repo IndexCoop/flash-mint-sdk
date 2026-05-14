@@ -1,8 +1,9 @@
 import { ABI, getContract } from 'quote/swap/adapters/static/contracts'
-import { encodeFunctionData, zeroAddress } from 'viem'
+import { encodeFunctionData } from 'viem'
 
 import { buildIssueRedeemParams } from './quote'
 import {
+  type AaveDeleveredRedeemEntry,
   type DexV5ConfigEntry,
   isAaveDeleveredRedeemEntry,
   isDexV5Entry,
@@ -33,22 +34,16 @@ export function buildTransaction(
   if (isAaveDeleveredRedeemEntry(entry)) {
     if (isMinting) {
       throw new Error(
-        'AaveV3DeleveredRedeemer route is redemption-only — issuance not supported',
+        'FlashMintAaveDelevered route is redemption-only — issuance not supported',
       )
     }
-    // `redeem(setToken, amount, recipient)` — recipient = address(0) tells the
-    // contract to default to msg.sender (lets the SDK encode without knowing
-    // the connected wallet).
-    const data = encodeFunctionData({
-      abi: abi as any,
-      functionName: 'redeem',
-      args: [
-        indexToken.address,
-        BigInt(inputAmount.toString()),
-        zeroAddress,
-      ],
-    })
-    return { to: contractAddress, data }
+    return buildAaveDeleveredRedeemTransaction(
+      request,
+      entry,
+      contractAddress,
+      abi,
+      quoteAmount,
+    )
   }
 
   if (isDexV5Entry(entry)) {
@@ -205,3 +200,34 @@ function buildDexV5Transaction(
   return { to: contractAddress, data }
 }
 
+function buildAaveDeleveredRedeemTransaction(
+  request: StaticQuoteRequest,
+  entry: AaveDeleveredRedeemEntry,
+  contractAddress: Address,
+  abi: unknown,
+  quoteAmount: bigint,
+): TransactionRequest {
+  const { inputAmount, inputToken, outputToken } = request
+  const indexToken = inputToken
+  const setAmount = BigInt(inputAmount.toString())
+  if (outputToken.symbol === 'ETH') {
+    const data = encodeFunctionData({
+      abi: abi as any,
+      functionName: 'redeemExactSetForETH',
+      args: [indexToken.address, setAmount, quoteAmount, entry.componentSwapData],
+    })
+    return { to: contractAddress, data }
+  }
+  const data = encodeFunctionData({
+    abi: abi as any,
+    functionName: 'redeemExactSetForERC20',
+    args: [
+      indexToken.address,
+      setAmount,
+      outputToken.address,
+      quoteAmount,
+      entry.componentSwapData,
+    ],
+  })
+  return { to: contractAddress, data }
+}

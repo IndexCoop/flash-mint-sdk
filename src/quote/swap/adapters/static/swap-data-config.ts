@@ -33,18 +33,17 @@ export type DexV5ConfigEntry = {
 
 export type AaveDeleveredRedeemEntry = {
   kind: 'aaveDeleveredRedeem'
-  contract: 'AaveV3DeleveredRedeemer'
-  // The token the user effectively receives. For AAVE2x → AAVE; for LINK2x → LINK.
-  // Used as the headline `outputToken` for SDK quotes. (For LINK2x, USDT dust is
-  // also forwarded by the contract, but its value is ~$0.00 and not surfaced
-  // in the quote.)
-  underlyingToken: string
-  // Per-set unit of the headline component (the collateral aToken), scaled to
-  // 1e18-set-units. Aave V3 aTokens redeem 1:1 with underlying so this is also
-  // the per-set underlying delivered. Refresh from chain at deploy time.
-  // For AAVE2x:  863_285_415_590_294_069 wei aArbAAVE per 1e18 set
-  // For LINK2x: 14_472_672_577_246_974_018 wei aArbLINK per 1e18 set
-  unitsPerSet: bigint
+  contract: 'FlashMintAaveDelevered'
+  // The output token the user receives. ETH-as-output is signalled by
+  // `0xEeee…EEeE` (DEXAdapter ETH sentinel) and triggers
+  // `redeemExactSetForETH` instead of `redeemExactSetForERC20`.
+  outputToken: string
+  // Per-component swap data, in the SetToken's component order. For each
+  // component the contract first unwraps any aToken to underlying via Aave
+  // Pool.withdraw, then swaps that underlying into `outputToken` via
+  // DEXAdapterV3 using this swap data. Use a noopSwap (path=[]) when the
+  // underlying is already the output token (the adapter short-circuits).
+  componentSwapData: SwapDataV5[]
 }
 
 export type StaticConfigEntry =
@@ -104,6 +103,11 @@ const arbitrum = {
   usdc: getTokenByChainAndSymbol(42161, 'USDC').address,
   usdt0: getTokenByChainAndSymbol(42161, 'USD₮0').address,
 }
+
+// Legacy bridged USDT on Arbitrum — distinct from USDT₮0. The Arbitrum LINK2x
+// SetToken holds this token as a dust component, so any per-component swap
+// data for LINK2x must use it on the input side of that leg.
+const ARB_USDT_LEGACY = '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9'
 
 // Builds a FlashMintDexV5 config entry for the post-disengage Morpho leverage
 // products on Base. `collateral` is the underlying asset (uSOL/uSUI/uXRP);
@@ -1552,32 +1556,90 @@ export const SwapDataConfig: Readonly<{
         },
       },
     },
-    // Post-disengage Aave-collateralized leverage products. Their components
-    // are Aave aTokens with no DEX liquidity, so FlashMintLeveragedAaveFL (and
-    // FlashMintDexV5) cannot route them. Instead the SDK targets a small
-    // single-purpose AaveV3DeleveredRedeemer contract that calls
-    // DebtIssuanceModuleV3.redeem and burns the resulting aTokens 1:1 for the
-    // underlying via Aave V3 Pool.withdraw to the user. Redemption-only —
-    // issuance is not supported (these products are deprecated).
+    // Post-disengage Aave-collateralized leverage products. Components are Aave
+    // aTokens with no DEX liquidity, so FlashMintLeveragedAaveFL rejects them
+    // ("TOO MANY COMPONENTS" / "TOO MANY EQUITY POSITIONS"). Routed instead
+    // through FlashMintAaveDelevered (deployed at 0x85eC…51FC), which unwraps
+    // each aToken via Aave V3 Pool.withdraw and then swaps the underlying to
+    // the requested output via DEXAdapterV3 using per-component swap data.
+    // Redemption-only — issuance is not supported (deprecated).
     //
-    // Single route per product: input = SetToken, output = the underlying that
-    // the SetToken's collateral aToken redeems for. AAVE2x → AAVE; LINK2x →
-    // LINK (LINK2x also forwards ~9150 wei dust USDT per set as a side effect,
-    // not surfaced in the quote).
+    // SetToken component order on-chain (verified):
+    //   AAVE2x: [aArbAAVE]
+    //   LINK2x: [aArbLINK, USDT-legacy 0xfd086bc7…b69fcbb9 (~9 wei dust per set)]
+    //
+    // Per-component swap data is FROM the underlying (after the contract's
+    // aToken unwrap, or the component itself if not an aToken) TO the output
+    // token. Use noopSwapV5 (path=[]) when the underlying already matches the
+    // output token — DEXAdapterV3 short-circuits.
+    //
+    // ETH-as-output is signalled by the DEXAdapter ETH sentinel
+    // (0xEeee…EEeE); the static-adapter transaction encoder picks
+    // redeemExactSetForETH and reuses the WETH swap data automatically.
     'AAVE2x': {
+      // → AAVE (collateral underlying = output)
       [arbitrum.aave]: {
         kind: 'aaveDeleveredRedeem',
-        contract: 'AaveV3DeleveredRedeemer',
-        underlyingToken: arbitrum.aave,
-        unitsPerSet: 863285415590294069n,
+        contract: 'FlashMintAaveDelevered',
+        outputToken: arbitrum.aave,
+        componentSwapData: [noopSwapV5],
+      },
+      // → WETH
+      [arbitrum.weth]: {
+        kind: 'aaveDeleveredRedeem',
+        contract: 'FlashMintAaveDelevered',
+        outputToken: arbitrum.weth,
+        componentSwapData: [
+          { path: [arbitrum.aave, arbitrum.weth], fees: [3000], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+        ],
+      },
+      // → USDC (multi-hop AAVE → WETH → USDC)
+      [arbitrum.usdc]: {
+        kind: 'aaveDeleveredRedeem',
+        contract: 'FlashMintAaveDelevered',
+        outputToken: arbitrum.usdc,
+        componentSwapData: [
+          { path: [arbitrum.aave, arbitrum.weth, arbitrum.usdc], fees: [3000, 500], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+        ],
       },
     },
     'LINK2x': {
+      // → LINK (collateral passthrough; USDT dust swapped in via WETH)
       [arbitrum.link]: {
         kind: 'aaveDeleveredRedeem',
-        contract: 'AaveV3DeleveredRedeemer',
-        underlyingToken: arbitrum.link,
-        unitsPerSet: 14472672577246974018n,
+        contract: 'FlashMintAaveDelevered',
+        outputToken: arbitrum.link,
+        componentSwapData: [
+          noopSwapV5,
+          { path: [ARB_USDT_LEGACY, arbitrum.weth, arbitrum.link], fees: [3000, 3000], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+        ],
+      },
+      // → WETH
+      [arbitrum.weth]: {
+        kind: 'aaveDeleveredRedeem',
+        contract: 'FlashMintAaveDelevered',
+        outputToken: arbitrum.weth,
+        componentSwapData: [
+          { path: [arbitrum.link, arbitrum.weth], fees: [3000], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+          { path: [ARB_USDT_LEGACY, arbitrum.weth], fees: [3000], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+        ],
+      },
+      // → USDC (LINK → WETH → USDC; USDT → USDC via 0.01% stable pool)
+      [arbitrum.usdc]: {
+        kind: 'aaveDeleveredRedeem',
+        contract: 'FlashMintAaveDelevered',
+        outputToken: arbitrum.usdc,
+        componentSwapData: [
+          { path: [arbitrum.link, arbitrum.weth, arbitrum.usdc], fees: [3000, 500], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+          { path: [ARB_USDT_LEGACY, arbitrum.usdc], fees: [100], exchange: 3,
+            pool: zeroAddress, poolIds: [], tickSpacing: [] },
+        ],
       },
     },
     'iETH2x': {

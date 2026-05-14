@@ -218,7 +218,7 @@ describe('Static swap data', () => {
     })
   })
 
-  test('returns aaveDeleveredRedeem entry for AAVE2x on Arbitrum (redeem to AAVE)', () => {
+  test('returns aaveDeleveredRedeem entry for AAVE2x → AAVE (passthrough)', () => {
     const chainId = arbitrum.id
     const aave = getTokenByChainAndSymbol(chainId, 'AAVE')
     const request: StaticQuoteRequest = {
@@ -235,13 +235,37 @@ describe('Static swap data', () => {
     if (!result) fail()
     if (!isAaveDeleveredRedeemEntry(result))
       fail('expected aaveDeleveredRedeem entry')
-    expect(result.contract).toBe('AaveV3DeleveredRedeemer')
-    expect(result.underlyingToken.toLowerCase()).toBe(aave.address.toLowerCase())
-    // aArbAAVE per-set unit (~0.86 aArbAAVE per 1e18 set), pinned at planning time.
-    expect(result.unitsPerSet).toBe(863285415590294069n)
+    expect(result.contract).toBe('FlashMintAaveDelevered')
+    expect(result.outputToken.toLowerCase()).toBe(aave.address.toLowerCase())
+    // single component, noop swap (AAVE-as-underlying = output)
+    expect(result.componentSwapData).toHaveLength(1)
+    expect(result.componentSwapData[0].path).toHaveLength(0)
   })
 
-  test('returns aaveDeleveredRedeem entry for LINK2x on Arbitrum (redeem to LINK)', () => {
+  test('returns aaveDeleveredRedeem entry for AAVE2x → USDC (multi-hop)', () => {
+    const chainId = arbitrum.id
+    const usdc = getTokenByChainAndSymbol(chainId, 'USDC')
+    const request: StaticQuoteRequest = {
+      chainId,
+      isMinting: false,
+      inputToken: getTokenByChainAndSymbol(chainId, 'AAVE2x'),
+      outputToken: usdc,
+      outputAmount: BigInt(1),
+      inputAmount: BigInt(1),
+      slippage: 0.5,
+      taker: '0x',
+    }
+    const result = getSwapData(request)
+    if (!result) fail()
+    if (!isAaveDeleveredRedeemEntry(result))
+      fail('expected aaveDeleveredRedeem entry')
+    expect(result.componentSwapData).toHaveLength(1)
+    // AAVE → WETH → USDC, fees [3000, 500]
+    expect(result.componentSwapData[0].fees).toEqual([3000, 500])
+    expect(result.componentSwapData[0].path).toHaveLength(3)
+  })
+
+  test('returns aaveDeleveredRedeem entry for LINK2x → LINK (collateral passthrough + USDT swap)', () => {
     const chainId = arbitrum.id
     const link = getTokenByChainAndSymbol(chainId, 'LINK')
     const request: StaticQuoteRequest = {
@@ -258,8 +282,10 @@ describe('Static swap data', () => {
     if (!result) fail()
     if (!isAaveDeleveredRedeemEntry(result))
       fail('expected aaveDeleveredRedeem entry')
-    expect(result.contract).toBe('AaveV3DeleveredRedeemer')
-    expect(result.underlyingToken.toLowerCase()).toBe(link.address.toLowerCase())
-    expect(result.unitsPerSet).toBe(14472672577246974018n)
+    expect(result.componentSwapData).toHaveLength(2)
+    // [0] = noop (LINK passthrough); [1] = USDT → WETH → LINK
+    expect(result.componentSwapData[0].path).toHaveLength(0)
+    expect(result.componentSwapData[1].path).toHaveLength(3)
+    expect(result.componentSwapData[1].fees).toEqual([3000, 3000])
   })
 })

@@ -17,6 +17,16 @@ export interface ProductScenario {
   redeemOnly?: boolean
   // SetToken whale address — required when `redeemOnly` is true.
   whale?: string
+  // Optional bootstrap step: when set (and `redeemOnly` is true), the runner
+  // impersonates `whale`, transfers each `components[i].token` from `whale` to
+  // itself in the right per-set ratio, then calls `issuanceModule.issue` to
+  // mint setAmount of the SetToken to `whale`. Lets the runner work with tiny-
+  // supply SetTokens that have no stable on-chain holder — `whale` only needs
+  // to hold the underlying components, not the SetToken itself.
+  bootstrap?: {
+    issuanceModule: string
+    components: { token: string; perSet: bigint }[]
+  }
 }
 
 /**
@@ -237,21 +247,60 @@ const testScenarios: TestScenarios = {
     // ETH2xBTC: every mint reverts with arithmetic-overflow panic 0x11 inside
     // FlashMintLeveragedAaveFL — same broken on-chain math as ETH2X/ETH3X
     // above. Disabled until investigated / fixed.
-    //
-    // AAVE2x and LINK2x: delevered (LR=1.0x), aTokens-as-components shape that
-    // the leveraged FlashMint can't handle. Now routed via the SDK through a
-    // small `AaveV3DeleveredRedeemer` contract on Arbitrum which calls
-    // DebtIssuanceModuleV3.redeem then Aave V3 Pool.withdraw to deliver the
-    // underlying (AAVE / LINK + USDT dust on LINK2x). Redemption-only —
-    // issuance not supported. The redeem path is covered end-to-end by the
-    // AaveV3DeleveredRedeemer integration spec in the SC repo
-    // (test/integration/arbitrum/aaveV3DeleveredRedeemer.spec.ts in
-    // index-coop-smart-contracts#226). Not added to the SDK e2e harness here
-    // because `redeemOnly` mode requires a SetToken whale, and AAVE2x/LINK2x
-    // total supplies are tiny (0.155 / 1.51 sets) so a stable on-chain whale
-    // is hard to pin without extending the harness with a "bootstrap via V3
-    // module issuance" mode. Defer until/unless we want SDK-side e2e here.
-    //
+
+    // AAVE2x: delevered (LR=1.0×). Components: [aArbAAVE]. Routed via
+    // FlashMintAaveDelevered (0x85eC…51FC), redemption-only. The whale is the
+    // Aave V3 Arbitrum Collector — it holds enough aArbAAVE to bootstrap fresh
+    // SetTokens via DebtIssuanceModuleV3 inside the harness.
+    AAVE2x: {
+      redeemOnly: true,
+      whale: '0x053D55f9B5AF8694c503EB288a1B7E552f590710',
+      bootstrap: {
+        issuanceModule: '0x4AC26c26116Fa976352b70700af58Bc2442489d8',
+        components: [
+          {
+            token: '0xf329e36C7bF6E5E86ce2150875a84Ce77f477375', // aArbAAVE
+            perSet: 870_000_000_000_000_000n,                   // ~0.87 per set
+          },
+        ],
+      },
+      setAmounts: ['0.01', '0.05'],
+      inputTokens: [
+        { symbol: 'AAVE', exchangeRate: 1 },
+        { symbol: 'WETH', exchangeRate: 200 },
+        { symbol: 'ETH', exchangeRate: 200 },
+        { symbol: 'USDC', exchangeRate: 100 },
+      ],
+    },
+
+    // LINK2x: delevered (LR=1.0×). Components: [aArbLINK, USDT-legacy dust].
+    // Same FlashMintAaveDelevered route; setAmount is small to stay within the
+    // collector's ~3.34 aArbLINK budget across multiple per-output cases.
+    LINK2x: {
+      redeemOnly: true,
+      whale: '0x053D55f9B5AF8694c503EB288a1B7E552f590710',
+      bootstrap: {
+        issuanceModule: '0x4AC26c26116Fa976352b70700af58Bc2442489d8',
+        components: [
+          {
+            token: '0x191c10Aa4AF7C30e871E70C95dB0E4eb77237530', // aArbLINK
+            perSet: 14_500_000_000_000_000_000n,                // ~14.5 per set
+          },
+          {
+            token: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9', // USDT (legacy)
+            perSet: 9200n,                                       // ~9200 wei per set (dust)
+          },
+        ],
+      },
+      setAmounts: ['0.01'],
+      inputTokens: [
+        { symbol: 'LINK', exchangeRate: 1 },
+        { symbol: 'WETH', exchangeRate: 1 },
+        { symbol: 'ETH', exchangeRate: 1 },
+        { symbol: 'USDC', exchangeRate: 10 },
+      ],
+    },
+
     // iETH2x: every mint reverts with Aave `ReserveFrozen()`. Disabled
     // until the Aave reserve is unfrozen.
     iBTC2x: {
