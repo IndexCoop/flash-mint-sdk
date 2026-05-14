@@ -264,7 +264,7 @@ const testScenarios: TestScenarios = {
           },
         ],
       },
-      setAmounts: ['0.01', '0.05'],
+      setAmounts: ['0.01', '0.1', '1.0'],
       inputTokens: [
         { symbol: 'AAVE', exchangeRate: 1 },
         { symbol: 'WETH', exchangeRate: 200 },
@@ -292,7 +292,7 @@ const testScenarios: TestScenarios = {
           },
         ],
       },
-      setAmounts: ['0.01'],
+      setAmounts: ['0.01', '0.1'],
       inputTokens: [
         { symbol: 'LINK', exchangeRate: 1 },
         { symbol: 'WETH', exchangeRate: 1 },
